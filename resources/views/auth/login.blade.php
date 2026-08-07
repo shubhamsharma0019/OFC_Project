@@ -1,7 +1,7 @@
 @php
     $pageTitle = 'Admin Login - OnlyFreshers';
     $brandName = 'OnlyFreshers';
-    $logoPath = 'ofclogo1.png';
+    $logoPath = 'ofclogo1.svg';
     $dashboardUrl = url('/admin/dashboard');
 
     $stats = [
@@ -37,582 +37,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $pageTitle }}</title>
-
-    <style>
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #061942;
-            background: #eaf3ff;
-            font-weight: 500;
-        }
-
-        .page {
-            min-height: 100vh;
-            display: grid;
-            grid-template-columns: 1fr 1.08fr;
-            gap: 34px;
-            align-items: center;
-            padding: 16px 46px;
-            box-sizing: border-box;
-            background:
-                radial-gradient(circle at 34% 58%, rgba(7, 95, 228, 0.08) 0 260px, transparent 261px),
-                linear-gradient(130deg, #ffffff, #dfeeff);
-        }
-
-        .left-panel {
-            min-height: 540px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .logo img {
-            width: 245px;
-            height: auto;
-            display: block;
-        }
-
-        .logo-fallback {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            color: #075fe4;
-            font-size: 28px;
-            line-height: 1;
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .logo-fallback span:first-child {
-            width: 46px;
-            height: 46px;
-            border-radius: 13px;
-            background: #075fe4;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .welcome-text {
-            margin-top: 62px;
-            max-width: 520px;
-        }
-
-        .welcome-text h1 {
-            margin: 0 0 16px;
-            font-size: 46px;
-            line-height: 1.12;
-            font-weight: 600;
-        }
-
-        .welcome-text h1 span {
-            color: #075fe4;
-        }
-
-        .welcome-text p {
-            max-width: 610px;
-            margin: 0;
-            color: #34445e;
-            font-size: 20px;
-            line-height: 1.45;
-            font-weight: 500;
-        }
-
-        .blue-line {
-            width: 58px;
-            height: 3px;
-            border-radius: 20px;
-            background: #075fe4;
-            margin: 20px 0 22px;
-        }
-
-        .stats-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-bottom: 0;
-            position: relative;
-            z-index: 5;
-        }
-
-        .stat-pill {
-            min-width: 116px;
-            padding: 10px 14px;
-            border-radius: 16px;
-            background: rgba(219, 234, 254, 0.9);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-sizing: border-box;
-        }
-
-        .stat-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            color: white;
-            background: #075fe4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .stat-pill strong {
-            display: block;
-            color: #075fe4;
-            font-size: 20px;
-            line-height: 1;
-            font-weight: 700;
-        }
-
-        .stat-pill span {
-            color: #061942;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .illustration {
-            position: relative;
-            left: auto;
-            bottom: auto;
-            width: 430px;
-            height: 150px;
-            margin: 38px auto 0;
-            z-index: 1;
-        }
-
-        .table {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 24px;
-            height: 10px;
-            background: #b9cceb;
-            border-radius: 20px;
-        }
-
-        .person {
-            position: absolute;
-            bottom: 34px;
-            width: 116px;
-            height: 136px;
-            border-radius: 70px 70px 10px 10px;
-            background: linear-gradient(#ffd4b7 0 32%, #ffffff 32% 52%, #075fe4 52%);
-        }
-
-        .person::before {
-            content: "";
-            position: absolute;
-            width: 62px;
-            height: 48px;
-            border-radius: 45px 45px 25px 25px;
-            top: -22px;
-            left: 27px;
-            background: #10204a;
-        }
-
-        .person.one {
-            left: 120px;
-        }
-
-        .person.two {
-            left: 285px;
-            width: 106px;
-            height: 126px;
-        }
-
-        .laptop {
-            position: absolute;
-            left: 205px;
-            bottom: 34px;
-            width: 165px;
-            height: 74px;
-            border-radius: 9px;
-            background: linear-gradient(145deg, #e5edf9, #aebbd0);
-            box-shadow: 0 8px 18px rgba(6, 25, 66, 0.14);
-            z-index: 3;
-        }
-
-        .laptop::after {
-            content: "";
-            position: absolute;
-            left: 74px;
-            top: 31px;
-            width: 19px;
-            height: 19px;
-            border-radius: 50%;
-            background: white;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 540px;
-            min-height: 500px;
-            border-radius: 24px;
-            background: white;
-            padding: 26px 38px 20px;
-            box-sizing: border-box;
-            box-shadow: 0 22px 45px rgba(6, 25, 66, 0.08);
-        }
-
-        .form-title {
-            text-align: center;
-            margin-bottom: 22px;
-        }
-
-        .form-title h2 {
-            margin: 0;
-            font-size: 28px;
-            line-height: 1.1;
-            font-weight: 600;
-        }
-
-        .title-line {
-            width: 58px;
-            height: 3px;
-            border-radius: 20px;
-            background: #075fe4;
-            margin: 10px auto 12px;
-        }
-
-        .form-title p {
-            margin: 0;
-            color: #52607a;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 7px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .input-box {
-            display: flex;
-            align-items: center;
-            border: 1px solid #bcd2f2;
-            border-radius: 12px;
-            background: white;
-            overflow: hidden;
-        }
-
-        .input-icon {
-            width: 52px;
-            height: 46px;
-            border-right: 1px solid #dce7f8;
-            color: #52607a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-
-        input {
-            width: 100%;
-            height: 46px;
-            border: 0;
-            outline: none;
-            padding: 0 18px;
-            color: #061942;
-            font-size: 16px;
-            font-weight: 500;
-            box-sizing: border-box;
-        }
-
-        input::placeholder {
-            color: #74839d;
-        }
-
-        .password-eye {
-            padding: 0 18px;
-            border: 0;
-            background: transparent;
-            color: #52607a;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .login-options {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 4px 0 18px;
-            font-size: 14px;
-        }
-
-        .remember {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            color: #061942;
-            font-weight: 600;
-        }
-
-        .remember input {
-            width: 20px;
-            height: 20px;
-            padding: 0;
-            accent-color: #075fe4;
-        }
-
-        a {
-            color: #075fe4;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .login-button {
-            width: 100%;
-            height: 46px;
-            border: 0;
-            border-radius: 11px;
-            background: #075fe4;
-            color: white;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 8px 18px rgba(7, 95, 228, 0.24);
-        }
-
-        .login-button:hover {
-            background: #003f9e;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 22px;
-            margin: 16px 10px;
-            color: #52607a;
-            font-size: 14px;
-        }
-
-        .divider span {
-            height: 1px;
-            background: #cddbf0;
-            flex: 1;
-        }
-
-        .google-button {
-            width: 100%;
-            height: 44px;
-            border: 1px solid #cddbf0;
-            border-radius: 11px;
-            background: white;
-            color: #061942;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .google-button span {
-            color: #075fe4;
-            font-size: 22px;
-            margin-right: 14px;
-            vertical-align: middle;
-        }
-
-        .secure-text {
-            margin: 16px 0 0;
-            text-align: center;
-            color: #52607a;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .secure-text span {
-            color: #075fe4;
-            margin-right: 10px;
-            font-weight: 700;
-        }
-
-        .login-error {
-            display: none;
-            margin: 0 0 14px;
-            padding: 10px 12px;
-            border-radius: 7px;
-            background: #fff0f1;
-            color: #ff1f2f;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        @media (max-width: 1100px) {
-            .page {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .left-panel {
-                min-height: 520px;
-            }
-
-            .login-card {
-                max-width: 100%;
-            }
-        }
-
-        @media (max-width: 700px) {
-            .page {
-                padding: 18px;
-            }
-
-            .logo img {
-                width: 230px;
-            }
-
-            .welcome-text {
-                margin-top: 55px;
-            }
-
-            .welcome-text h1 {
-                font-size: 40px;
-            }
-
-            .welcome-text p {
-                font-size: 18px;
-            }
-
-            .stats-row {
-                display: none;
-            }
-
-            .illustration {
-                transform: scale(0.65);
-                left: -70px;
-                bottom: -10px;
-            }
-
-            .login-card {
-                border-radius: 22px;
-                padding: 34px 24px 26px;
-            }
-
-            .form-title h2 {
-                font-size: 32px;
-            }
-
-            .form-title p,
-            label,
-            input,
-            .login-options,
-            .google-button {
-                font-size: 16px;
-            }
-
-            .input-icon,
-            input {
-                height: 52px;
-            }
-
-            .login-options {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-        }
-    </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <main class="page">
-        <section class="left-panel">
-            <a href="{{ url('/') }}" class="logo">
+<body class="min-h-screen bg-[#eaf3ff] font-sans font-medium text-[#061942]">
+    <main class="grid min-h-screen grid-cols-1 items-center gap-[30px] bg-[radial-gradient(circle_at_34%_58%,rgba(7,95,228,0.08)_0_260px,transparent_261px),linear-gradient(130deg,#ffffff,#dfeeff)] px-[18px] py-[18px] lg:grid-cols-[1fr_1.08fr] lg:gap-[34px] lg:px-[46px] lg:py-4">
+        <section class="relative min-h-[520px] overflow-hidden lg:min-h-[540px]">
+            <a href="{{ url('/') }}" class="inline-flex items-center no-underline">
                 @if (file_exists(public_path($logoPath)))
-                    <img src="{{ asset($logoPath) }}" alt="{{ $brandName }} Logo">
+                    <img src="{{ asset($logoPath) }}" alt="{{ $brandName }} Logo" class="block h-auto w-[230px] lg:w-[245px]">
                 @else
-                    <span class="logo-fallback"><span>OF</span><span>{{ $brandName }}</span></span>
+                    <span class="inline-flex items-center gap-3 text-[28px] font-bold leading-none text-[#075fe4]">
+                        <span class="flex h-[46px] w-[46px] items-center justify-center rounded-[13px] bg-[#075fe4] text-lg text-white">OF</span>
+                        <span>{{ $brandName }}</span>
+                    </span>
                 @endif
             </a>
 
-            <div class="welcome-text">
-                <h1>Welcome to <span>{{ $brandName }}</span></h1>
-                <p>Manage jobs, review candidates, and build a strong fresher hiring pipeline with ease.</p>
-                <div class="blue-line"></div>
+            <div class="mt-[55px] max-w-[520px] lg:mt-[62px]">
+                <h1 class="mb-4 text-[40px] font-semibold leading-[1.12] text-[#061942] lg:text-[46px]">
+                    Welcome to <span class="text-[#075fe4]">{{ $brandName }}</span>
+                </h1>
+
+                <p class="m-0 max-w-[610px] text-lg leading-[1.45] text-[#34445e] lg:text-xl">
+                    Manage jobs, review candidates, and build a strong fresher hiring pipeline with ease.
+                </p>
+
+                <div class="my-[22px] h-[3px] w-[58px] rounded-full bg-[#075fe4]"></div>
             </div>
 
-            <div class="stats-row">
+            <div class="relative z-[5] mb-0 hidden flex-wrap gap-3.5 sm:flex">
                 @foreach ($stats as $stat)
-                    <div class="stat-pill">
-                        <div class="stat-icon">{{ $stat['icon'] }}</div>
+                    <div class="flex min-w-[116px] items-center gap-3 rounded-2xl bg-[#dbeafe]/90 px-3.5 py-2.5">
+                        <div class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-lg bg-[#075fe4] text-sm font-bold text-white">
+                            {{ $stat['icon'] }}
+                        </div>
+
                         <div>
-                            <strong>{{ $stat['value'] }}</strong>
-                            <span>{{ $stat['label'] }}</span>
+                            <strong class="block text-xl font-bold leading-none text-[#075fe4]">{{ $stat['value'] }}</strong>
+                            <span class="text-[13px] font-medium text-[#061942]">{{ $stat['label'] }}</span>
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            <div class="illustration" aria-hidden="true">
-                <div class="person one"></div>
-                <div class="person two"></div>
-                <div class="laptop"></div>
-                <div class="table"></div>
+            <div class="relative z-[1] mx-auto mt-[38px] h-[150px] w-[430px] origin-top-left scale-[0.65] sm:scale-100" aria-hidden="true">
+                <div class="absolute bottom-[34px] left-[120px] h-[136px] w-[116px] rounded-[70px_70px_10px_10px] bg-[linear-gradient(#ffd4b7_0_32%,#ffffff_32%_52%,#075fe4_52%)] before:absolute before:left-[27px] before:top-[-22px] before:h-12 before:w-[62px] before:rounded-[45px_45px_25px_25px] before:bg-[#10204a] before:content-['']"></div>
+                <div class="absolute bottom-[34px] left-[285px] h-[126px] w-[106px] rounded-[70px_70px_10px_10px] bg-[linear-gradient(#ffd4b7_0_32%,#ffffff_32%_52%,#075fe4_52%)] before:absolute before:left-[27px] before:top-[-22px] before:h-12 before:w-[62px] before:rounded-[45px_45px_25px_25px] before:bg-[#10204a] before:content-['']"></div>
+                <div class="absolute bottom-[34px] left-[205px] z-[3] h-[74px] w-[165px] rounded-[9px] bg-[linear-gradient(145deg,#e5edf9,#aebbd0)] shadow-[0_8px_18px_rgba(6,25,66,0.14)] after:absolute after:left-[74px] after:top-[31px] after:h-[19px] after:w-[19px] after:rounded-full after:bg-white after:content-['']"></div>
+                <div class="absolute inset-x-0 bottom-6 h-2.5 rounded-full bg-[#b9cceb]"></div>
             </div>
         </section>
 
-        <section class="login-card">
-            <div class="form-title">
-                <h2>Admin Login</h2>
-                <div class="title-line"></div>
-                <p>Fill in your details to continue</p>
+        <section class="w-full max-w-[540px] rounded-[22px] bg-white px-6 pb-[26px] pt-[34px] shadow-[0_22px_45px_rgba(6,25,66,0.08)] lg:min-h-[500px] lg:rounded-3xl lg:px-[38px] lg:pb-5 lg:pt-[26px]">
+            <div class="mb-[22px] text-center">
+                <h2 class="m-0 text-[32px] font-semibold leading-[1.1] text-[#061942] lg:text-[28px]">Admin Login</h2>
+                <div class="mx-auto mb-3 mt-2.5 h-[3px] w-[58px] rounded-full bg-[#075fe4]"></div>
+                <p class="m-0 text-base font-medium text-[#52607a]">Fill in your details to continue</p>
             </div>
 
             <form id="adminLoginForm" method="POST" action="{{ $dashboardUrl }}">
                 @csrf
-                <p class="login-error" id="loginError">Email ya password galat hai.</p>
+                <p class="mb-3.5 hidden rounded-lg bg-[#fff0f1] px-3 py-2.5 text-sm font-semibold text-[#ff1f2f]" id="loginError">Email ya password galat hai.</p>
 
                 @foreach ($loginFields as $field)
-                    <div class="form-group">
-                        <label for="{{ $field['id'] }}">{{ $field['label'] }}</label>
-                        <div class="input-box">
-                            <div class="input-icon">{{ $field['icon'] }}</div>
+                    <div class="mb-[15px]">
+                        <label for="{{ $field['id'] }}" class="mb-[7px] block text-base font-semibold text-[#061942] lg:text-sm">{{ $field['label'] }}</label>
+
+                        <div class="flex items-center overflow-hidden rounded-xl border border-[#bcd2f2] bg-white">
+                            <div class="flex h-[52px] w-[52px] shrink-0 items-center justify-center border-r border-[#dce7f8] text-[22px] text-[#52607a] lg:h-[46px]">
+                                {{ $field['icon'] }}
+                            </div>
+
                             <input
                                 type="{{ $field['type'] }}"
                                 id="{{ $field['id'] }}"
                                 name="{{ $field['id'] }}"
                                 placeholder="{{ $field['placeholder'] }}"
                                 value="{{ old($field['id'], $field['value']) }}"
+                                class="h-[52px] w-full border-0 px-[18px] text-base font-medium text-[#061942] outline-none placeholder:text-[#74839d] lg:h-[46px]"
                             >
+
                             @if (!empty($field['toggle']))
-                                <button class="password-eye" type="button" id="passwordToggle">Show</button>
+                                <button class="px-[18px] text-sm font-medium text-[#52607a]" type="button" id="passwordToggle">Show</button>
                             @endif
                         </div>
                     </div>
                 @endforeach
 
-                <div class="login-options">
-                    <label class="remember">
-                        <input type="checkbox" name="remember" checked>
+                <div class="mb-[18px] mt-1 flex flex-col items-start gap-3 text-base font-semibold sm:flex-row sm:items-center sm:justify-between lg:text-sm">
+                    <label class="flex items-center gap-3.5 text-[#061942]">
+                        <input type="checkbox" name="remember" checked class="h-5 w-5 accent-[#075fe4]">
                         Remember me
                     </label>
-                    <a href="#">Forgot password?</a>
+                    <a href="#" class="font-semibold text-[#075fe4] no-underline">Forgot password?</a>
                 </div>
 
-                <button type="submit" class="login-button">Login</button>
+                <button type="submit" class="h-[46px] w-full rounded-[11px] bg-[#075fe4] text-lg font-semibold text-white shadow-[0_8px_18px_rgba(7,95,228,0.24)] transition hover:bg-[#003f9e]">Login</button>
             </form>
 
-            <div class="divider">
-                <span></span>
+            <div class="mx-2.5 my-4 flex items-center gap-[22px] text-sm text-[#52607a]">
+                <span class="h-px flex-1 bg-[#cddbf0]"></span>
                 <p>or</p>
-                <span></span>
+                <span class="h-px flex-1 bg-[#cddbf0]"></span>
             </div>
 
-            <button class="google-button" type="button"><span>G</span>Continue with Google</button>
+            <button class="h-11 w-full rounded-[11px] border border-[#cddbf0] bg-white text-base font-semibold text-[#061942] lg:text-sm" type="button">
+                <span class="mr-3.5 align-middle text-[22px] text-[#075fe4]">G</span>Continue with Google
+            </button>
 
-            <p class="secure-text"><span>SH</span>Protected by enterprise-grade authentication</p>
+            <p class="mt-4 text-center text-sm font-medium text-[#52607a]"><span class="mr-2.5 font-bold text-[#075fe4]">SH</span>Protected by enterprise-grade authentication</p>
         </section>
     </main>
 
@@ -631,7 +164,7 @@
                 localStorage.setItem('onlyFreshersAdminLogin', 'yes');
                 window.location.href = dashboardUrl;
             } else {
-                loginError.style.display = 'block';
+                loginError.classList.remove('hidden');
             }
         });
 

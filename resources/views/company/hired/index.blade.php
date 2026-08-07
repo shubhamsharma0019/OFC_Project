@@ -114,7 +114,7 @@
             const matchDepartment = department === 'All Departments' || row.dataset.department === department;
             const show = matchSearch && matchJob && matchDepartment;
 
-            row.style.display = show ? '' : 'none';
+            row.classList.toggle('hidden', !show);
             if (show) count++;
         });
 

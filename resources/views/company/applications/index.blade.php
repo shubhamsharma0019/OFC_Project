@@ -132,7 +132,7 @@
             const matchSearch = row.dataset.name.includes(search);
             const show = matchJob && matchStatus && matchSearch;
 
-            row.style.display = show ? '' : 'none';
+            row.classList.toggle('hidden', !show);
             if (show) count++;
         });
 

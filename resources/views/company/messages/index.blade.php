@@ -160,7 +160,7 @@
             const matchSearch = row.dataset.name.includes(search);
             const matchFilter = activeFilter === 'all' || row.dataset[activeFilter] === 'yes';
             const show = matchSearch && matchFilter;
-            row.style.display = show ? 'grid' : 'none';
+            row.classList.toggle('hidden', !show);
             if (show) visibleCount++;
         });
         inboxFooter.textContent = 'Showing 1 to ' + visibleCount + ' of 12 conversations';

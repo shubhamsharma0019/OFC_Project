@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" role="img" aria-label="OnlyFreshers Logo">
+  <rect width="420" height="96" rx="20" fill="#ffffff"/>
+  <rect x="12" y="18" width="60" height="60" rx="16" fill="#075fe4"/>
+  <path d="M28 48c0-11 7-19 18-19s18 8 18 19-7 19-18 19-18-8-18-19Zm11 0c0 6 3 10 7 10s7-4 7-10-3-10-7-10-7 4-7 10Z" fill="#fff"/>
+  <path d="M86 34h26c11 0 18 6 18 15s-7 15-18 15h-14v14H86V34Zm12 10v10h13c4 0 7-2 7-5s-3-5-7-5H98Z" fill="#061942"/>
+  <text x="142" y="47" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="800" fill="#061942">Only</text>
+  <text x="214" y="47" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="800" fill="#075fe4">Freshers</text>
+  <text x="144" y="68" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="1.5" fill="#52607a">JOBS • TRAINING • HIRING</text>
+</svg>

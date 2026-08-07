@@ -86,7 +86,7 @@
         let count = 0;
         notices.forEach(function (notice) {
             const match = filter === 'all' || notice.dataset.type === filter || (filter === 'unread' && notice.dataset.read === 'false');
-            notice.style.display = match ? 'grid' : 'none';
+            notice.classList.toggle('hidden', !match);
             if (match) count++;
         });
         showingText.textContent = 'Showing 1 to ' + count + ' of ' + count + ' notifications';

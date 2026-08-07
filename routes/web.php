@@ -1,10 +1,48 @@
-﻿<?php
+<?php
 
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('public.home');
 });
+
+Route::view('/about', 'public.about');
+Route::view('/job', 'public.jobs.index');
+Route::view('/jobs', 'public.jobs.index');
+Route::view('/job/show', 'public.jobs.show');
+Route::view('/jobs/show', 'public.jobs.show');
+Route::view('/fast-track', 'public.fast-track.index');
+Route::view('/fast-track/how-it-works', 'public.fast-track.how-it-works');
+Route::view('/fast-track/login', 'fast-track.login');
+Route::redirect('/direct-mode', '/direct-mode/login');
+Route::view('/direct-mode/login', 'direct-mode.login');
+Route::view('/direct-mode/register', 'direct-mode.register');
+Route::view('/direct-mode/dashboard', 'direct-mode.dashboard');
+Route::view('/direct-mode/profile', 'direct-mode.profile');
+Route::view('/direct-mode/assessments', 'direct-mode.assessments');
+Route::view('/direct-mode/jobs', 'direct-mode.jobs');
+Route::view('/direct-mode/jobs/{slug}', 'direct-mode.job-details');
+Route::view('/direct-mode/applications', 'direct-mode.applications');
+Route::view('/direct-mode/interviews', 'direct-mode.interviews');
+Route::view('/direct-mode/offers', 'direct-mode.offers');
+Route::view('/direct-mode/activity', 'direct-mode.activity');
+Route::view('/direct-mode/settings', 'direct-mode.settings');
+Route::view('/fast-track/dashboard', 'fresher.fast-track.index');
+Route::view('/fast-track/profile', 'fresher.profile.show');
+Route::view('/fast-track/courses', 'fresher.fast-track.courses');
+Route::view('/fast-track/assessment', 'fresher.fast-track.assessment');
+Route::view('/fast-track/final-assessment', 'fresher.final-assessment.index');
+Route::view('/fast-track/course-details', 'fresher.fast-track.course-details');
+Route::view('/fast-track/training', 'fresher.fast-track.training');
+Route::view('/fast-track/training-progress', 'fresher.fast-track.training-progress');
+Route::view('/fast-track/job-recommendations', 'fresher.fast-track.job-recommendations');
+Route::view('/fast-track/certificate', 'fresher.fast-track.certificate');
+Route::view('/training-partners', 'public.training-partners.index');
+Route::view('/training-partners/show', 'public.training-partners.show');
+Route::view('/courses', 'public.courses.index');
+Route::view('/courses/show', 'public.courses.show');
+Route::view('/certificates/verify', 'public.certificates.verify');
+
 
 Route::view('/company/dashboard-preview', 'company.dashboard');
 Route::view('/company/dashboard', 'company.dashboard');
@@ -88,3 +126,21 @@ Route::view('/training-partner/progress/show', 'training-partner.progress.show')
 Route::view('/training-partner/progress/edit', 'training-partner.progress.edit');
 Route::view('/training-partner/students', 'training-partner.students.index');
 Route::view('/training-partner/students/show', 'training-partner.students.show');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

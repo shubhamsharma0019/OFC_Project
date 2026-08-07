@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-label="Fast track study illustration">
+  <rect width="720" height="420" rx="36" fill="#f8fbff"/>
+  <rect x="120" y="76" width="480" height="270" rx="28" fill="#ffffff" stroke="#dce7f8" stroke-width="4"/>
+  <rect x="170" y="122" width="180" height="22" rx="11" fill="#075fe4" opacity=".18"/>
+  <rect x="170" y="166" width="282" height="16" rx="8" fill="#dce7f8"/>
+  <rect x="170" y="198" width="220" height="16" rx="8" fill="#dce7f8"/>
+  <rect x="170" y="242" width="136" height="42" rx="10" fill="#075fe4"/>
+  <text x="198" y="268" font-family="Arial" font-size="15" font-weight="700" fill="#fff">Learn</text>
+  <circle cx="505" cy="214" r="72" fill="#fff0e2"/>
+  <path d="M468 232l28-72 54 52-82 20Z" fill="#f37a22"/>
+  <path d="M496 160l24 24" stroke="#061942" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="178" cy="328" r="38" fill="#eafaf8"/>
+  <circle cx="570" cy="92" r="42" fill="#dbeafe"/>
+</svg>

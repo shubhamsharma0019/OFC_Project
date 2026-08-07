@@ -16,8 +16,8 @@
 
 <div>
     <a href="/admin/dashboard" class="mb-6 flex h-12 items-center">
-        @if (file_exists(public_path('ofclogo1.png')))
-            <img src="{{ asset('ofclogo1.png') }}" alt="OnlyFreshers Logo" class="block max-h-11 w-[190px] object-contain object-left">
+        @if (file_exists(public_path('ofclogo1.svg')))
+            <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block max-h-11 w-[190px] object-contain object-left">
         @else
             <span class="flex items-center gap-2 text-[#075fe4]">
                 <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#075fe4] text-base font-bold text-white">OF</span>

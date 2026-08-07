@@ -152,7 +152,7 @@
             const matchesJob = job === 'All Jobs' || row.dataset.job === job;
             const matchesInterviewer = interviewer === 'All Interviewers' || row.dataset.interviewer === interviewer;
             const show = matchesStatus && matchesSearch && matchesJob && matchesInterviewer;
-            row.style.display = show ? '' : 'none';
+            row.classList.toggle('hidden', !show);
             if (show) visible++;
         });
 
