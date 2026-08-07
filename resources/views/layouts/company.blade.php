@@ -60,13 +60,13 @@
 
                     <div
                         class="flex items-center gap-2.5 sm:border-l sm:border-[#dce7f8] sm:pl-3 lg:gap-[14px] lg:pl-[22px]">
-                        <div
+                        <div id="company-topbar-initial"
                             class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#075fe4] text-[17px] font-bold text-white lg:h-[46px] lg:w-[46px] lg:text-xl">
-                            T</div>
+                            C</div>
                         <div class="min-w-0">
-                            <h3
+                            <h3 id="company-topbar-name"
                                 class="max-w-[128px] truncate text-sm font-bold text-[#061942] sm:max-w-[180px] lg:max-w-[150px]">
-                                TechNova Solutions</h3>
+                                Company</h3>
                             <p class="hidden text-xs text-[#52607a] sm:block">Company</p>
                         </div>
                         <button class="text-xl" type="button" aria-label="User menu"></button>
@@ -91,6 +91,24 @@
             sidebar.classList.toggle('translate-x-0');
             backdrop.classList.toggle('hidden');
         }
+
+        function syncCompanyChrome(profile = null) {
+            const storedUser = JSON.parse(localStorage.getItem('ofc_auth_user') || 'null');
+            const storedProfile = profile || JSON.parse(localStorage.getItem('ofc_company_profile') || 'null');
+            const name = storedProfile?.company_name || storedUser?.name || 'Company';
+            const initial = name.charAt(0).toUpperCase();
+
+            document.querySelectorAll('[data-company-name]').forEach((item) => item.textContent = name);
+            document.querySelectorAll('[data-company-initial]').forEach((item) => item.textContent = initial);
+
+            const topbarName = document.getElementById('company-topbar-name');
+            const topbarInitial = document.getElementById('company-topbar-initial');
+            if (topbarName) topbarName.textContent = name;
+            if (topbarInitial) topbarInitial.textContent = initial;
+        }
+
+        syncCompanyChrome();
+        document.addEventListener('company-profile-loaded', (event) => syncCompanyChrome(event.detail));
     </script>
     @stack('scripts')
 </body>

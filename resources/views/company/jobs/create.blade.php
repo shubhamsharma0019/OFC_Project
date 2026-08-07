@@ -9,6 +9,7 @@
 
     $experienceLevels = ['0 - 1 Year', '1 - 3 Years', '3 - 5 Years', '5+ Years'];
     $employmentTypes = ['Full Time', 'Part Time', 'Internship', 'Contract'];
+    $hiringModes = ['direct' => 'Direct Hiring', 'fast_track' => 'Fast Track'];
     $skills = [];
 @endphp
 
@@ -21,18 +22,20 @@
         </div>
 
         <form id="postJobForm" class="grid grid-cols-1 gap-x-7 gap-y-6 md:grid-cols-2">
+            <p id="jobMessage" class="hidden rounded-lg border px-4 py-3 text-sm font-bold md:col-span-2"></p>
+
             <div>
                 <label for="jobTitle" class="mb-2 block text-[13px] font-bold text-[#061942]">
                     Job Title <span class="text-[#ff3045]">*</span>
                 </label>
-                <input id="jobTitle" type="text" placeholder="Enter job title" class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
+                <input id="jobTitle" name="title" type="text" placeholder="Enter job title" required class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
             </div>
 
             <div>
-                <label for="jobRole" class="mb-2 block text-[13px] font-bold text-[#061942]">
-                    Job Role <span class="text-[#ff3045]">*</span>
+                <label for="qualification" class="mb-2 block text-[13px] font-bold text-[#061942]">
+                    Qualification
                 </label>
-                <input id="jobRole" type="text" placeholder="Enter job role" class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
+                <input id="qualification" name="qualification" type="text" placeholder="Example: B.Tech, BCA, MCA" class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
             </div>
 
             <div>
@@ -59,11 +62,43 @@
                 </select>
             </div>
 
+            <div>
+                <label for="hiringMode" class="mb-2 block text-[13px] font-bold text-[#061942]">
+                    Hiring Mode <span class="text-[#ff3045]">*</span>
+                </label>
+                <select id="hiringMode" name="hiring_mode" required class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
+                    @foreach ($hiringModes as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="md:col-span-2">
                 <label for="location" class="mb-2 block text-[13px] font-bold text-[#061942]">
                     Location <span class="text-[#ff3045]">*</span>
                 </label>
-                <input id="location" type="text" placeholder="Enter job location" class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
+                <input id="location" name="location" type="text" placeholder="Enter job location" class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
+            </div>
+
+            <div>
+                <label for="salary" class="mb-2 block text-[13px] font-bold text-[#061942]">
+                    Salary
+                </label>
+                <input id="salary" name="salary" type="text" placeholder="Example: 3-5 LPA" class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
+            </div>
+
+            <div>
+                <label for="openings" class="mb-2 block text-[13px] font-bold text-[#061942]">
+                    Openings <span class="text-[#ff3045]">*</span>
+                </label>
+                <input id="openings" name="openings" type="number" min="1" max="10000" value="1" required class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
+            </div>
+
+            <div class="md:col-span-2">
+                <label for="applicationLastDate" class="mb-2 block text-[13px] font-bold text-[#061942]">
+                    Application Last Date
+                </label>
+                <input id="applicationLastDate" name="application_last_date" type="date" class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none transition placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
             </div>
 
             <div class="md:col-span-2">
@@ -97,8 +132,8 @@
                         <button type="button" class="text-[17px] font-bold text-[#24344f]">&#9776;</button>
                         <button type="button" class="text-[17px] font-bold text-[#24344f]">&#128279;</button>
                     </div>
-                    <textarea id="description" placeholder="Write job description" class="min-h-[120px] w-full resize-y border-0 bg-white px-[18px] py-[18px] text-[15px] leading-relaxed text-[#24344f] outline-none placeholder:text-[#8a96aa]"></textarea>
-                </div>
+                <textarea id="description" name="description" placeholder="Write job description" required class="min-h-[120px] w-full resize-y border-0 bg-white px-[18px] py-[18px] text-[15px] leading-relaxed text-[#24344f] outline-none placeholder:text-[#8a96aa]"></textarea>
+            </div>
             </div>
 
             <button type="submit" class="md:col-span-2 h-[52px] rounded-lg bg-[#075fe4] text-base font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,0.16)] transition hover:bg-[#0554cc]">
@@ -137,35 +172,125 @@
         return skills;
     }
 
-    function saveCompanyJob(status) {
-        const jobs = JSON.parse(localStorage.getItem('companyJobs') || '[]');
-        const today = new Date();
-        const dateText = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const token = localStorage.getItem('ofc_auth_token');
+    const form = document.getElementById('postJobForm');
+    const message = document.getElementById('jobMessage');
+    const publishButton = form.querySelector('button[type="submit"]');
+    const draftButton = document.getElementById('saveDraft');
 
-        jobs.unshift({
-            title: document.getElementById('jobTitle').value || 'Untitled Job',
-            role: document.getElementById('jobRole').value,
-            experience: document.getElementById('experience').value || '0 - 1 Year',
-            type: document.getElementById('employmentType').value || 'Full Time',
-            location: document.getElementById('location').value || 'Not added',
-            description: document.getElementById('description').value,
-            skills: getSkills(),
-            applications: 0,
-            status: status,
-            date: dateText
+    function showMessage(text, type = 'error') {
+        message.textContent = text;
+        message.className = `rounded-lg border px-4 py-3 text-sm font-bold md:col-span-2 ${type === 'success' ? 'border-[#b9e7c9] bg-[#f1fff5] text-[#138a43]' : 'border-[#ffd1d7] bg-[#fff7f8] text-[#ff3045]'}`;
+    }
+
+    function buildPayload(status) {
+        const experience = document.getElementById('experience').value;
+        const employmentType = document.getElementById('employmentType').value;
+        const skills = getSkills();
+
+        return {
+            title: document.getElementById('jobTitle').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            required_skills: skills.join(', '),
+            qualification: document.getElementById('qualification').value.trim() || experience,
+            location: document.getElementById('location').value.trim(),
+            salary: document.getElementById('salary').value.trim(),
+            job_type: employmentType,
+            openings: Number(document.getElementById('openings').value || 1),
+            hiring_mode: document.getElementById('hiringMode').value,
+            application_last_date: document.getElementById('applicationLastDate').value || null,
+            status,
+        };
+    }
+
+    async function ensureCompanyCanPost() {
+        if (!token) {
+            window.location.href = '/company/login';
+            return false;
+        }
+
+        const response = await fetch('/api/company/profile', {
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
         });
 
-        localStorage.setItem('companyJobs', JSON.stringify(jobs));
-        window.location.href = '/company/jobs';
+        if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem('ofc_auth_token');
+            window.location.href = '/company/login';
+            return false;
+        }
+
+        const result = await response.json();
+        const profile = result.data?.profile;
+
+        if (!profile) {
+            window.location.href = '/company/profile/edit';
+            return false;
+        }
+
+        localStorage.setItem('ofc_company_profile', JSON.stringify(profile));
+        document.dispatchEvent(new CustomEvent('company-profile-loaded', { detail: profile }));
+
+        if (profile.approval_status === 'pending') {
+            window.location.href = '/company/approval/pending';
+            return false;
+        }
+
+        if (profile.approval_status === 'rejected') {
+            window.location.href = '/company/approval/rejected';
+            return false;
+        }
+
+        return true;
+    }
+
+    async function saveCompanyJob(status) {
+        const canPost = await ensureCompanyCanPost();
+        if (!canPost) return;
+
+        const activeButton = status === 'active' ? publishButton : draftButton;
+        activeButton.disabled = true;
+        activeButton.textContent = status === 'active' ? 'Publishing...' : 'Saving...';
+
+        try {
+            const response = await fetch('/api/company/jobs', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(buildPayload(status)),
+            });
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                const validationMessage = result.errors ? Object.values(result.errors).flat()[0] : null;
+                throw new Error(validationMessage || result.message || 'Unable to save job.');
+            }
+
+            showMessage(result.message || 'Job saved successfully.', 'success');
+            setTimeout(() => window.location.href = '/company/jobs', 700);
+        } catch (error) {
+            showMessage(error.message || 'Something went wrong.');
+        } finally {
+            activeButton.disabled = false;
+            draftButton.textContent = 'Save Draft';
+            publishButton.textContent = 'Publish Job';
+        }
     }
 
     document.getElementById('saveDraft').addEventListener('click', function () {
-        saveCompanyJob('Draft');
+        saveCompanyJob('draft');
     });
 
     document.getElementById('postJobForm').addEventListener('submit', function (event) {
         event.preventDefault();
-        saveCompanyJob('Active');
+        saveCompanyJob('active');
     });
+
+    ensureCompanyCanPost();
 </script>
 @endpush
