@@ -4,28 +4,6 @@
 
 @php
     $activePage = 'certificate';
-    $student = ['name' => 'Ananya Gupta', 'notifications' => 3];
-
-    $stats = [
-        ['label' => 'Certificates Earned', 'value' => '1', 'hint' => 'Keep learning and earn more', 'icon' => 'CE'],
-        ['label' => 'Lessons Completed', 'value' => '28/74', 'hint' => 'Across All Courses', 'icon' => 'LC'],
-        ['label' => 'Total Study Time', 'value' => '12h 45m', 'hint' => 'Keep it up!', 'icon' => 'ST'],
-        ['label' => 'Overall Progress', 'value' => '38%', 'hint' => 'You are doing great!', 'icon' => 'OP'],
-    ];
-
-    $certificates = [
-        [
-            'student' => 'Ananya Gupta',
-            'course' => 'Full Stack Development',
-            'description' => 'Build modern web applications from scratch and become a full stack developer.',
-            'badge' => 'Most Popular',
-            'date' => '20 May 2026',
-            'duration' => '12 Months',
-            'certificateId' => 'OF-2026-05-0001',
-            'credentialId' => '9f3c7b2e-8a4d-4f91-bc1a-2e7b8c9d0123',
-            'status' => 'Verified',
-        ],
-    ];
 @endphp
 
 @section('content')
@@ -35,76 +13,20 @@
                 <h1 class="text-[27px] font-bold leading-tight text-[#061942]">Certificate</h1>
                 <p class="mt-2 text-sm font-medium text-[#334b83]">View and download your earned certificates.</p>
             </div>
-            <button class="inline-flex h-[42px] items-center justify-center rounded-md border border-[#075fe4] bg-white px-5 text-sm font-bold text-[#075fe4] transition hover:bg-[#eff5ff]" type="button">Download All Certificates</button>
+            <a class="inline-flex h-[42px] items-center justify-center rounded-md border border-[#075fe4] bg-white px-5 text-sm font-bold text-[#075fe4] transition hover:bg-[#eff5ff]" href="/fast-track/courses">Browse Courses</a>
         </div>
 
         <div id="certificateStats" class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach ($stats as $item)
-                <article class="grid grid-cols-[60px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                    <span class="grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">{{ $item['icon'] }}</span>
-                    <div class="min-w-0">
-                        <h2 class="mb-1 text-2xl font-bold text-[#061942]">{{ $item['value'] }}</h2>
-                        <p class="mb-1 text-sm font-medium text-[#334b83]">{{ $item['label'] }}</p>
-                        <small class="text-xs text-[#334b83]">{{ $item['hint'] }}</small>
-                    </div>
-                </article>
-            @endforeach
+            <article class="rounded-lg border border-[#dce7f8] bg-white p-5 text-sm font-semibold text-[#334b83] shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:col-span-2 xl:col-span-4">Loading certificates...</article>
         </div>
 
         <div class="flex gap-8 overflow-x-auto border-b border-[#dce7f8]">
-            <button class="shrink-0 border-b-[3px] border-[#075fe4] px-6 pb-3 text-sm font-bold text-[#075fe4]" type="button">Earned Certificates</button>
-            <button class="shrink-0 border-b-[3px] border-transparent px-6 pb-3 text-sm font-bold text-[#334b83]" type="button">In Progress</button>
+            <button id="earnedTab" class="shrink-0 border-b-[3px] border-[#075fe4] px-6 pb-3 text-sm font-bold text-[#075fe4]" type="button" data-filter="earned">Earned Certificates</button>
+            <button id="progressTab" class="shrink-0 border-b-[3px] border-transparent px-6 pb-3 text-sm font-bold text-[#334b83]" type="button" data-filter="progress">In Progress</button>
         </div>
 
         <div id="certificateList" class="space-y-5">
-            @foreach ($certificates as $cert)
-                <article class="grid gap-7 rounded-lg border border-[#dce7f8] bg-white p-2 shadow-[0_10px_24px_rgba(6,25,66,.04)] xl:grid-cols-[1.08fr_1fr]">
-                    <div class="relative min-h-[350px] overflow-hidden border border-[#d7b15f] bg-white p-7 text-center">
-                        <div class="absolute -right-24 -top-24 h-[170px] w-[170px] rotate-45 border-[28px] border-b-transparent border-l-transparent border-r-[#d7a63b] border-t-[#07306e]"></div>
-                        <div class="absolute -bottom-24 -left-24 h-[170px] w-[170px] rotate-45 border-[28px] border-b-[#d7a63b] border-l-[#07306e] border-r-transparent border-t-transparent"></div>
-
-                        @if (file_exists(public_path('ofclogo1.svg')))
-                            <img class="mx-auto mb-4 w-[170px]" src="/ofclogo1.svg" alt="OnlyFreshers">
-                        @else
-                            <div class="mx-auto mb-4 text-lg font-black text-[#075fe4]">OnlyFreshers</div>
-                        @endif
-
-                        <h2 class="my-2 font-serif text-[30px] tracking-[5px] text-[#061942]">CERTIFICATE</h2>
-                        <h3 class="mb-5 font-serif text-lg tracking-[4px] text-[#061942]">OF COMPLETION</h3>
-                        <p class="text-sm text-[#334b83]">This is to certify that</p>
-                        <div class="my-4 inline-block border-b border-[#d7a63b] px-10 pb-2 font-serif text-[36px] italic text-[#061942]">{{ $cert['student'] }}</div>
-                        <p class="text-sm text-[#334b83]">has successfully completed the course</p>
-                        <div class="my-3 text-lg font-black text-[#061942]">{{ $cert['course'] }}</div>
-                        <p class="text-sm text-[#334b83]">and has demonstrated the required skills and knowledge.</p>
-                        <div class="mx-auto mt-5 grid h-[62px] w-[62px] place-items-center rounded-full bg-[#d7a63b] text-lg font-black text-white">OF</div>
-                        <div class="mt-7 flex justify-around gap-4 text-xs text-[#334b83]"><span>{{ $cert['date'] }}<br>Date</span><span>Authorized Signatory<br>OnlyFreshers</span></div>
-                    </div>
-
-                    <div class="p-5">
-                        <span class="inline-flex rounded-md bg-[#e2f9ea] px-3 py-1.5 text-xs font-bold text-[#05843e]">{{ $cert['status'] }}</span>
-                        <h2 class="mt-5 flex flex-wrap items-center gap-2 text-[22px] font-bold text-[#061942]">
-                            <span>{{ $cert['course'] }}</span>
-                            <span class="rounded-md bg-[#efeaff] px-2.5 py-1 text-[11px] font-bold text-[#673de6]">{{ $cert['badge'] }}</span>
-                        </h2>
-                        <p class="mt-2 max-w-xl text-sm leading-7 text-[#334b83]">{{ $cert['description'] }}</p>
-
-                        <div class="my-6 grid gap-4">
-                            @foreach ([['DE', 'Date Earned', $cert['date']], ['DU', 'Duration', $cert['duration']], ['CI', 'Certificate ID', $cert['certificateId']], ['CR', 'Credential ID', $cert['credentialId']]] as $row)
-                                <div class="grid grid-cols-[28px_150px_minmax(0,1fr)] items-center gap-3 text-sm text-[#334b83] max-sm:grid-cols-[28px_minmax(0,1fr)]">
-                                    <span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">{{ $row[0] }}</span>
-                                    <span>{{ $row[1] }}</span>
-                                    <strong class="break-words font-semibold text-[#061942] max-sm:col-start-2">{{ $row[2] }}</strong>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="grid gap-3">
-                            <button class="h-[42px] rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white hover:bg-[#064fc0]" type="button">Download Certificate</button>
-                            <button class="h-[42px] rounded-md border border-[#075fe4] bg-white px-5 text-sm font-bold text-[#075fe4] hover:bg-[#eff5ff]" type="button">Share Certificate</button>
-                        </div>
-                    </div>
-                </article>
-            @endforeach
+            <article class="rounded-lg border border-[#dce7f8] bg-white p-8 text-center text-sm font-semibold text-[#334b83] shadow-[0_10px_24px_rgba(6,25,66,.04)]">Loading certificates...</article>
         </div>
 
         <article class="flex flex-col gap-5 rounded-lg border border-[#cfe0ff] bg-[#eaf2ff] p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:flex-row lg:items-center lg:justify-between">
@@ -124,71 +46,193 @@
 <script>
     const certificateStats = document.getElementById('certificateStats');
     const certificateList = document.getElementById('certificateList');
+    const earnedTab = document.getElementById('earnedTab');
+    const progressTab = document.getElementById('progressTab');
+    let certificateRows = [];
+    let enrollmentRows = [];
+    let activeFilter = 'earned';
 
-    function renderCertificateStats(certificates) {
-        if (!certificateStats) return;
-        const rows = [
-            ['CE', 'Certificates Earned', certificates.length, 'Keep learning and earn more'],
-            ['LC', 'Courses Certified', certificates.length, 'Fast Track completions'],
-            ['ST', 'Latest Certificate', certificates[0] ? FastTrack.date(certificates[0].issued_at || certificates[0].created_at) : '-', 'Auto generated after passing'],
-            ['OP', 'Verification', certificates.length ? 'Ready' : 'Locked', 'Certificate status'],
-        ];
-        certificateStats.innerHTML = rows.map(function (row) {
-            return `<article class="grid grid-cols-[60px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]"><span class="grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">${row[0]}</span><div class="min-w-0"><h2 class="mb-1 text-2xl font-bold text-[#061942]">${FastTrack.esc(row[2])}</h2><p class="mb-1 text-sm font-medium text-[#334b83]">${row[1]}</p><small class="text-xs text-[#334b83]">${row[3]}</small></div></article>`;
-        }).join('');
+    function certificateCourse(certificate) {
+        return certificate.course || certificate.course_enrollment?.course || certificate.enrollment?.course || {};
     }
 
-    function renderCertificates(certificates) {
-        if (!certificateList) return;
-        if (!certificates.length) {
-            certificateList.innerHTML = FastTrack.emptyState('Certificate not generated yet', 'Complete training and pass the final assessment to generate your Fast Track certificate.', '/fast-track/final-assessment', 'Final Assessment');
+    function certificateProgress(certificate) {
+        return certificate.course_enrollment?.training_progress || certificate.enrollment?.training_progress || {};
+    }
+
+    function renderStatCard(icon, label, value, hint) {
+        return `<article class="grid grid-cols-[60px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+            <span class="grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">${FastTrack.esc(icon)}</span>
+            <div class="min-w-0">
+                <h2 class="mb-1 text-2xl font-bold text-[#061942]">${FastTrack.esc(value)}</h2>
+                <p class="mb-1 text-sm font-medium text-[#334b83]">${FastTrack.esc(label)}</p>
+                <small class="text-xs text-[#334b83]">${FastTrack.esc(hint)}</small>
+            </div>
+        </article>`;
+    }
+
+    function renderStats() {
+        const completedEnrollments = enrollmentRows.filter((item) => String(item.enrollment_status || '').toLowerCase() === 'completed').length;
+        const progressAverage = enrollmentRows.length
+            ? Math.round(enrollmentRows.reduce((sum, item) => sum + FastTrack.progress(item), 0) / enrollmentRows.length)
+            : 0;
+        const latestCertificate = certificateRows[0] ? FastTrack.date(certificateRows[0].issued_at || certificateRows[0].created_at) : '-';
+
+        certificateStats.innerHTML = [
+            renderStatCard('CE', 'Certificates Earned', certificateRows.length, 'Generated after final assessment'),
+            renderStatCard('CC', 'Courses Completed', completedEnrollments, 'Fast Track completions'),
+            renderStatCard('LC', 'Latest Certificate', latestCertificate, 'Most recent issue date'),
+            renderStatCard('OP', 'Overall Progress', progressAverage + '%', 'Across enrolled courses'),
+        ].join('');
+    }
+
+    function renderTabs() {
+        const activeClasses = 'border-[#075fe4] text-[#075fe4]';
+        const inactiveClasses = 'border-transparent text-[#334b83]';
+        earnedTab.className = `shrink-0 border-b-[3px] px-6 pb-3 text-sm font-bold ${activeFilter === 'earned' ? activeClasses : inactiveClasses}`;
+        progressTab.className = `shrink-0 border-b-[3px] px-6 pb-3 text-sm font-bold ${activeFilter === 'progress' ? activeClasses : inactiveClasses}`;
+    }
+
+    function renderCertificateCard(certificate) {
+        const course = certificateCourse(certificate);
+        const progress = certificateProgress(certificate);
+        const courseName = FastTrack.courseName(course);
+        const studentName = certificate.fresher_profile?.user?.name || FastTrack.user().name || 'Student';
+        const issueDate = certificate.issued_at || certificate.created_at;
+        const score = certificate.final_assessment_result?.overall_score || certificate.final_assessment_result?.score || '-';
+        const certificateUrl = certificate.certificate_url || certificate.file_url || '';
+
+        return `<article class="grid gap-7 rounded-lg border border-[#dce7f8] bg-white p-2 shadow-[0_10px_24px_rgba(6,25,66,.04)] xl:grid-cols-[1.08fr_1fr]">
+            <div class="relative min-h-[350px] overflow-hidden border border-[#d7b15f] bg-white p-7 text-center">
+                <div class="absolute -right-24 -top-24 h-[170px] w-[170px] rotate-45 border-[28px] border-b-transparent border-l-transparent border-r-[#d7a63b] border-t-[#07306e]"></div>
+                <div class="absolute -bottom-24 -left-24 h-[170px] w-[170px] rotate-45 border-[28px] border-b-[#d7a63b] border-l-[#07306e] border-r-transparent border-t-transparent"></div>
+                <div class="mx-auto mb-4 text-lg font-black text-[#075fe4]">OnlyFreshers</div>
+                <h2 class="my-2 font-serif text-[30px] tracking-[5px] text-[#061942]">CERTIFICATE</h2>
+                <h3 class="mb-5 font-serif text-lg tracking-[4px] text-[#061942]">OF COMPLETION</h3>
+                <p class="text-sm text-[#334b83]">This is to certify that</p>
+                <div class="my-4 inline-block max-w-full border-b border-[#d7a63b] px-10 pb-2 font-serif text-[32px] italic text-[#061942] max-sm:px-4 max-sm:text-2xl">${FastTrack.esc(studentName)}</div>
+                <p class="text-sm text-[#334b83]">has successfully completed the course</p>
+                <div class="my-3 text-lg font-black text-[#061942]">${FastTrack.esc(courseName)}</div>
+                <p class="text-sm text-[#334b83]">and has demonstrated the required skills and knowledge.</p>
+                <div class="mx-auto mt-5 grid h-[62px] w-[62px] place-items-center rounded-full bg-[#d7a63b] text-lg font-black text-white">OF</div>
+                <div class="mt-7 flex justify-around gap-4 text-xs text-[#334b83]"><span>${FastTrack.date(issueDate)}<br>Date</span><span>Authorized Signatory<br>OnlyFreshers</span></div>
+            </div>
+            <div class="p-5">
+                <span class="inline-flex rounded-md bg-[#e2f9ea] px-3 py-1.5 text-xs font-bold text-[#05843e]">Verified</span>
+                <h2 class="mt-5 text-[22px] font-bold text-[#061942]">${FastTrack.esc(courseName)}</h2>
+                <p class="mt-2 max-w-xl text-sm leading-7 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
+                <div class="my-6 grid gap-4">
+                    ${infoRow('DE', 'Date Earned', FastTrack.date(issueDate))}
+                    ${infoRow('CI', 'Certificate ID', certificate.certificate_number || certificate.id)}
+                    ${infoRow('SC', 'Final Score', score === '-' ? '-' : score + '%')}
+                    ${infoRow('PR', 'Training Progress', (progress.progress_percentage || 100) + '%')}
+                </div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                    <button class="download-certificate h-[42px] rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white hover:bg-[#064fc0]" type="button" data-certificate-id="${FastTrack.esc(certificate.id)}">Download</button>
+                    ${certificateUrl ? `<a class="inline-flex h-[42px] items-center justify-center rounded-md border border-[#075fe4] bg-white px-5 text-sm font-bold text-[#075fe4] hover:bg-[#eff5ff]" href="${FastTrack.esc(certificateUrl)}" target="_blank" rel="noopener">Open</a>` : ''}
+                </div>
+            </div>
+        </article>`;
+    }
+
+    function infoRow(icon, label, value) {
+        return `<div class="grid grid-cols-[28px_150px_minmax(0,1fr)] items-center gap-3 text-sm text-[#334b83] max-sm:grid-cols-[28px_minmax(0,1fr)]">
+            <span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">${FastTrack.esc(icon)}</span>
+            <span>${FastTrack.esc(label)}</span>
+            <strong class="break-words font-semibold text-[#061942] max-sm:col-start-2">${FastTrack.esc(value || '-')}</strong>
+        </div>`;
+    }
+
+    function renderProgressCard(enrollment) {
+        const course = enrollment.course || {};
+        const progress = FastTrack.progress(enrollment);
+        const isCompleted = String(enrollment.enrollment_status || '').toLowerCase() === 'completed';
+
+        return `<article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div class="min-w-0">
+                    <span class="mb-3 inline-flex rounded-md ${isCompleted ? 'bg-[#e2f9ea] text-[#05843e]' : 'bg-[#fff0de] text-[#d06d00]'} px-3 py-1.5 text-xs font-bold">${isCompleted ? 'Ready For Certificate' : 'In Progress'}</span>
+                    <h2 class="text-xl font-bold text-[#061942]">${FastTrack.esc(FastTrack.courseName(course))}</h2>
+                    <p class="mt-2 text-sm leading-7 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
+                </div>
+                <a class="inline-flex h-10 shrink-0 items-center justify-center rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white" href="${isCompleted ? '/fast-track/final-assessment' : '/fast-track/training-progress'}">${isCompleted ? 'Final Assessment' : 'Continue Training'}</a>
+            </div>
+            <div class="mt-5 h-3 overflow-hidden rounded-full bg-[#eaf2ff]"><div class="h-full rounded-full bg-[#075fe4]" style="width:${Math.max(0, Math.min(100, progress))}%"></div></div>
+            <p class="mt-2 text-xs font-bold text-[#334b83]">${progress}% completed</p>
+        </article>`;
+    }
+
+    function renderList() {
+        renderTabs();
+        if (activeFilter === 'progress') {
+            const pending = enrollmentRows.filter((item) => !certificateRows.some((certificate) => Number(certificate.course_enrollment_id) === Number(item.id)));
+            certificateList.innerHTML = pending.length
+                ? pending.map(renderProgressCard).join('')
+                : FastTrack.emptyState('No courses in progress', 'Enroll in a Fast Track course to start working toward a certificate.', '/fast-track/courses', 'Browse Courses');
             return;
         }
-        certificateList.innerHTML = certificates.map(function (certificate) {
-            const course = certificate.course || (certificate.enrollment && certificate.enrollment.course) || {};
-            const title = FastTrack.courseName(course);
-            return `<article class="grid gap-7 rounded-lg border border-[#dce7f8] bg-white p-2 shadow-[0_10px_24px_rgba(6,25,66,.04)] xl:grid-cols-[1.08fr_1fr]">
-                <div class="relative min-h-[350px] overflow-hidden border border-[#d7b15f] bg-white p-7 text-center">
-                    <div class="mx-auto mb-4 text-lg font-black text-[#075fe4]">OnlyFreshers</div>
-                    <h2 class="my-2 font-serif text-[30px] tracking-[5px] text-[#061942]">CERTIFICATE</h2>
-                    <h3 class="mb-5 font-serif text-lg tracking-[4px] text-[#061942]">OF COMPLETION</h3>
-                    <p class="text-sm text-[#334b83]">This is to certify that</p>
-                    <div class="my-4 inline-block border-b border-[#d7a63b] px-10 pb-2 font-serif text-[32px] italic text-[#061942]">${FastTrack.esc(certificate.student_name || (FastTrack.user().name || 'Student'))}</div>
-                    <p class="text-sm text-[#334b83]">has successfully completed the course</p>
-                    <div class="my-3 text-lg font-black text-[#061942]">${FastTrack.esc(title)}</div>
-                    <div class="mx-auto mt-5 grid h-[62px] w-[62px] place-items-center rounded-full bg-[#d7a63b] text-lg font-black text-white">OF</div>
-                    <div class="mt-7 flex justify-around gap-4 text-xs text-[#334b83]"><span>${FastTrack.date(certificate.issued_at || certificate.created_at)}<br>Date</span><span>Authorized Signatory<br>OnlyFreshers</span></div>
-                </div>
-                <div class="p-5">
-                    <span class="inline-flex rounded-md bg-[#e2f9ea] px-3 py-1.5 text-xs font-bold text-[#05843e]">${FastTrack.esc(FastTrack.statusText(certificate.status || 'verified'))}</span>
-                    <h2 class="mt-5 text-[22px] font-bold text-[#061942]">${FastTrack.esc(title)}</h2>
-                    <p class="mt-2 max-w-xl text-sm leading-7 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
-                    <div class="my-6 grid gap-4">
-                        <div class="grid grid-cols-[28px_150px_minmax(0,1fr)] items-center gap-3 text-sm text-[#334b83] max-sm:grid-cols-[28px_minmax(0,1fr)]"><span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">DE</span><span>Date Earned</span><strong class="font-semibold text-[#061942] max-sm:col-start-2">${FastTrack.date(certificate.issued_at || certificate.created_at)}</strong></div>
-                        <div class="grid grid-cols-[28px_150px_minmax(0,1fr)] items-center gap-3 text-sm text-[#334b83] max-sm:grid-cols-[28px_minmax(0,1fr)]"><span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">CI</span><span>Certificate ID</span><strong class="break-words font-semibold text-[#061942] max-sm:col-start-2">${FastTrack.esc(certificate.certificate_number || certificate.id)}</strong></div>
-                    </div>
-                    <button class="download-certificate h-[42px] rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white hover:bg-[#064fc0]" type="button" data-certificate-id="${FastTrack.esc(certificate.id)}">Download Certificate</button>
-                </div>
-            </article>`;
-        }).join('');
+
+        certificateList.innerHTML = certificateRows.length
+            ? certificateRows.map(renderCertificateCard).join('')
+            : FastTrack.emptyState('Certificate not generated yet', 'Complete training and pass the final assessment to generate your Fast Track certificate.', '/fast-track/final-assessment', 'Final Assessment');
 
         certificateList.querySelectorAll('.download-certificate').forEach(function (button) {
-            button.addEventListener('click', async function () {
-                const response = await fetch('/api/fresher/certificates/' + button.dataset.certificateId + '/download', { headers: { Authorization: 'Bearer ' + FastTrack.token(), Accept: 'application/pdf' } });
-                if (!response.ok) return;
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                window.open(url, '_blank');
-            });
+            button.addEventListener('click', downloadCertificate);
         });
     }
 
-    FastTrack.getJson('/api/fresher/certificates')
-        .then(function (result) {
-            const certificates = FastTrack.apiData(result, 'certificates') || [];
-            renderCertificateStats(certificates);
-            renderCertificates(certificates);
-        })
-        .catch(function () {});
+    async function downloadCertificate(event) {
+        const button = event.currentTarget;
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Downloading...';
+        try {
+            const response = await fetch('/api/fresher/certificates/' + button.dataset.certificateId + '/download', {
+                headers: { Authorization: 'Bearer ' + FastTrack.token(), Accept: '*/*' },
+            });
+            if (!response.ok) throw new Error('Certificate download nahi ho paaya.');
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'certificate';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            alert(error.message || 'Certificate download nahi ho paaya.');
+        } finally {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+
+    function loadCertificates() {
+        Promise.all([
+            FastTrack.getJson('/api/fresher/certificates'),
+            FastTrack.enrollments().catch(function () { return []; }),
+        ]).then(function ([certificateResult, enrollments]) {
+            certificateRows = FastTrack.apiData(certificateResult, 'certificates') || [];
+            enrollmentRows = Array.isArray(enrollments) ? enrollments : [];
+            renderStats();
+            renderList();
+        }).catch(function (error) {
+            certificateStats.innerHTML = '';
+            certificateList.innerHTML = FastTrack.emptyState('Certificates load nahi ho paaye', error.message || 'Please login again and try.', '/fast-track/login', 'Login');
+        });
+    }
+
+    earnedTab.addEventListener('click', function () {
+        activeFilter = 'earned';
+        renderList();
+    });
+
+    progressTab.addEventListener('click', function () {
+        activeFilter = 'progress';
+        renderList();
+    });
+
+    loadCertificates();
 </script>
 @endpush

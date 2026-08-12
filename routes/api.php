@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\AdminEnrollmentController;
 use App\Http\Controllers\Api\AdminFresherController;
 use App\Http\Controllers\Api\AdminJobController;
+use App\Http\Controllers\Api\AdminSettingsController;
+use App\Http\Controllers\Api\AdminSystemLogController;
 use App\Http\Controllers\Api\AdminTrainingPartnerController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompanyApplicationController;
@@ -725,6 +727,37 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get(
             '/',
             [AdminAssessmentController::class, 'index']
+        );
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Settings Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('admin/settings')->group(function () {
+        Route::get(
+            '/',
+            [AdminSettingsController::class, 'show']
+        );
+
+        Route::put(
+            '/',
+            [AdminSettingsController::class, 'update']
+        );
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin System Log Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('admin/system-logs')->group(function () {
+        Route::get(
+            '/',
+            [AdminSystemLogController::class, 'index']
         );
     });
 

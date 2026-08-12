@@ -1,6 +1,6 @@
 (function () {
-    const tokenKeys = ['onlyfreshers_token', 'auth_token', 'token'];
-    const userKeys = ['onlyfreshers_user', 'auth_user', 'user'];
+    const tokenKeys = ['ofc_auth_token', 'onlyfreshers_token', 'auth_token', 'token'];
+    const userKeys = ['ofc_auth_user', 'onlyfreshers_user', 'auth_user', 'user'];
 
     function token() {
         for (const key of tokenKeys) {
@@ -148,8 +148,15 @@
 
         const logout = document.getElementById('fastTrackLogout');
         if (logout) {
-            logout.addEventListener('click', function () {
-                tokenKeys.concat(userKeys).forEach((key) => localStorage.removeItem(key));
+            logout.addEventListener('click', function (event) {
+                event.preventDefault();
+                getJson('/api/auth/profile').then(function () {
+                    return fetch('/api/auth/logout', { method: 'POST', headers: headers(false) });
+                }).catch(function () {}).finally(function () {
+                    tokenKeys.concat(userKeys).forEach((key) => localStorage.removeItem(key));
+                    localStorage.removeItem('fast_track_course_id');
+                    window.location.href = '/fast-track/login';
+                });
             });
         }
     }

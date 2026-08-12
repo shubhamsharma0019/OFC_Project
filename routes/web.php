@@ -15,6 +15,7 @@ Route::view('/jobs/show', 'public.jobs.show');
 Route::view('/fast-track', 'public.fast-track.index');
 Route::view('/fast-track/how-it-works', 'public.fast-track.how-it-works');
 Route::view('/fast-track/login', 'fast-track.login');
+Route::view('/fast-track/register', 'fast-track.register');
 Route::redirect('/direct-mode', '/direct-mode/login');
 Route::view('/direct-mode/login', 'direct-mode.login');
 Route::view('/direct-mode/register', 'direct-mode.register');
@@ -135,9 +136,6 @@ Route::view('/training-partner/progress/show', 'training-partner.progress.show')
 Route::view('/training-partner/progress/edit', 'training-partner.progress.edit');
 Route::view('/training-partner/students', 'training-partner.students.index');
 Route::view('/training-partner/students/show', 'training-partner.students.show');
-
-
-
 
 
 

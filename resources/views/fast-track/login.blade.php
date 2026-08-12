@@ -63,7 +63,7 @@
 
                 <button class="flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-[#dce7f8] bg-white text-sm font-semibold text-[#071743] transition hover:bg-[#f6f9ff]" type="button"><span class="text-[17px] font-black text-[#075fe4]">G</span> Continue with Google</button>
 
-                <p class="mt-6 text-center text-sm text-[#071743]">Don't have an account? <a class="font-bold text-[#075fe4]" href="#">Register</a></p>
+                <p class="mt-6 text-center text-sm text-[#071743]">Don't have an account? <a class="font-bold text-[#075fe4]" href="/fast-track/register">Register</a></p>
             </form>
         </section>
     </main>
@@ -90,7 +90,7 @@
                 submitButton.textContent = 'Logging in...';
 
                 try {
-                    const response = await fetch('/api/login', {
+                    const response = await fetch('/api/auth/login', {
                         method: 'POST',
                         headers: {
                             Accept: 'application/json',
@@ -109,6 +109,8 @@
                         throw new Error('Fast Track flow fresher account ke liye hai.');
                     }
 
+                    localStorage.setItem('ofc_auth_token', result.data.token);
+                    localStorage.setItem('ofc_auth_user', JSON.stringify(user || {}));
                     localStorage.setItem('onlyfreshers_token', result.data.token);
                     localStorage.setItem('onlyfreshers_user', JSON.stringify(user || {}));
                     window.location.href = '/fast-track/dashboard';

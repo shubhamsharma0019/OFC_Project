@@ -5,8 +5,8 @@
 @php
     $activePage = 'jobs';
     $filters = [
-        ['title' => 'Job Type', 'items' => ['Full Time', 'Part Time', 'Internship', 'Contract']],
-        ['title' => 'Work Mode', 'items' => ['Direct', 'Fast Track']],
+        ['title' => 'Job Type', 'name' => 'job_type', 'items' => ['Full Time', 'Part Time', 'Internship', 'Contract']],
+        ['title' => 'Work Mode', 'name' => 'hiring_mode', 'items' => ['Direct', 'Fast Track']],
     ];
 @endphp
 
@@ -36,7 +36,7 @@
                             <div class="mb-3.5 border-b border-[#dce7f8] pb-3.5 last:mb-0 last:border-b-0 last:pb-0">
                                 <p class="mb-2.5 text-[13px] font-semibold text-[#061942]">{{ $filter['title'] }}</p>
                                 @foreach ($filter['items'] as $item)
-                                    <label class="mb-2 block text-sm font-medium text-[#24344f]"><input type="checkbox" class="mr-2 accent-[#075fe4]" disabled>{{ $item }}</label>
+                                    <label class="mb-2 block text-sm font-medium text-[#24344f]"><input type="checkbox" class="sidebar-filter mr-2 accent-[#075fe4]" data-filter="{{ $filter['name'] }}" value="{{ $item }}">{{ $item }}</label>
                                 @endforeach
                             </div>
                         @endforeach
@@ -87,6 +87,7 @@
     const sideLocationInput = document.getElementById('sideLocationInput');
     const modeSelect = document.getElementById('modeSelect');
     const sortSelect = document.getElementById('sortSelect');
+    const initialParams = new URLSearchParams(window.location.search);
 
     function escapeHtml(value) {
         return String(value || '').replace(/[&<>"']/g, (character) => ({
@@ -146,7 +147,15 @@
     }
 
     function renderJobs() {
-        const sorted = [...jobs].sort((a, b) => {
+        const checkedTypes = Array.from(document.querySelectorAll('.sidebar-filter[data-filter="job_type"]:checked')).map((item) => item.value.toLowerCase());
+        const checkedModes = Array.from(document.querySelectorAll('.sidebar-filter[data-filter="hiring_mode"]:checked')).map((item) => item.value.toLowerCase().replace(/\s+/g, '_'));
+        const filtered = jobs.filter((job) => {
+            const typeOk = !checkedTypes.length || checkedTypes.includes(String(job.job_type || '').toLowerCase());
+            const modeOk = !checkedModes.length || checkedModes.includes(String(job.hiring_mode || '').toLowerCase());
+            return typeOk && modeOk;
+        });
+
+        const sorted = [...filtered].sort((a, b) => {
             const first = new Date(a.created_at || 0).getTime();
             const second = new Date(b.created_at || 0).getTime();
             return sortSelect.value === 'oldest' ? first - second : second - first;
@@ -170,7 +179,7 @@
                         <span>${escapeHtml(job.job_type || 'Job Type')}</span>
                         <span>${escapeHtml(job.hiring_mode === 'fast_track' ? 'Fast Track' : 'Direct')}</span>
                     </div>
-                    <p class="line-clamp-2 text-sm font-medium leading-[1.6] text-[#24344f]">${escapeHtml(job.description)}</p>
+                    <p class="line-clamp-2 text-sm font-medium leading-[1.6] text-[#24344f]">${escapeHtml(job.description || job.qualification || 'Apply for this fresher opportunity.')}</p>
                 </div>
                 <div class="sm:col-start-2 lg:col-start-auto lg:text-right">
                     <div class="mb-4 text-[13px] font-medium text-[#52607a] lg:mb-7">${escapeHtml(humanDate(job.created_at))}</div>
@@ -237,8 +246,8 @@
 
                 <aside class="min-w-0">
                     <div class="mb-[22px] rounded-lg border border-[#dce7f8] bg-white p-[22px] shadow-[0_10px_24px_rgba(6,25,66,0.04)]">
-                        <button type="button" class="mb-3 flex h-11 w-full items-center justify-center rounded-lg border border-[#075fe4] bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#003f9e]">Apply Now</button>
-                        <button type="button" class="flex h-11 w-full items-center justify-center rounded-lg border border-[#a9c5f6] bg-white text-sm font-bold text-[#075fe4] transition hover:bg-[#075fe4] hover:text-white">Save Job</button>
+                        <a href="${job.hiring_mode === 'fast_track' ? '/fast-track/login' : '/direct-mode/login'}" class="mb-3 flex h-11 w-full items-center justify-center rounded-lg border border-[#075fe4] bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#003f9e]">Apply Now</a>
+                        <a href="/jobs/show?job=${escapeHtml(job.id)}" class="flex h-11 w-full items-center justify-center rounded-lg border border-[#a9c5f6] bg-white text-sm font-bold text-[#075fe4] transition hover:bg-[#075fe4] hover:text-white">Open Detail Page</a>
                     </div>
 
                     <div class="rounded-lg border border-[#dce7f8] bg-white p-[22px] shadow-[0_10px_24px_rgba(6,25,66,0.04)]">
@@ -287,11 +296,17 @@
             loadJobs();
         });
     });
+    document.querySelectorAll('.sidebar-filter').forEach((checkbox) => {
+        checkbox.addEventListener('change', renderJobs);
+    });
     jobList.addEventListener('click', (event) => {
         const button = event.target.closest('.view-job');
         if (button) showDetail(button.dataset.id);
     });
 
+    if (initialParams.get('job')) {
+        showDetail(initialParams.get('job'));
+    }
     loadJobs();
 </script>
 @endpush
