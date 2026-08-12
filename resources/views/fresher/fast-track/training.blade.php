@@ -119,5 +119,44 @@
             });
         });
     });
+
+    const trainingGrid = document.getElementById('trainingGrid');
+
+    function renderTraining(enrollments) {
+        if (!trainingGrid) return;
+        if (!enrollments.length) {
+            trainingGrid.innerHTML = '<div class="sm:col-span-2 xl:col-span-4">' + FastTrack.emptyState('No training enrolled yet', 'Enroll in a Fast Track course to unlock training progress.', '/fast-track/courses', 'Browse Courses') + '</div>';
+            return;
+        }
+
+        trainingGrid.innerHTML = enrollments.map(function (enrollment, index) {
+            const course = FastTrack.course(enrollment);
+            const title = FastTrack.courseName(course);
+            const progress = FastTrack.progress(enrollment);
+            const paid = enrollment.payment_status === 'paid' || enrollment.enrollment_status === 'enrolled' || enrollment.enrollment_status === 'completed';
+            return `
+                <article class="training-card overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,.04)]" data-progress="${progress}">
+                    <div class="relative h-[135px] p-4" style="background:linear-gradient(135deg, ${index % 2 ? '#6041db' : '#24249c'}, #dff5ff);">
+                        <span class="inline-flex rounded-lg ${progress > 0 ? 'bg-[#e6fff0] text-[#05843e]' : 'bg-white/90 text-[#334b83]'} px-3 py-1.5 text-xs font-bold">${FastTrack.esc(FastTrack.statusText(enrollment.training_status || enrollment.enrollment_status))}</span>
+                        <span class="float-right rounded-full bg-white px-2.5 py-2 text-xs font-black text-[#075fe4]">${progress}%</span>
+                        <h4 class="absolute bottom-7 left-5 text-4xl font-black text-white">${FastTrack.initials(title)}</h4>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="mb-2 text-base font-bold text-[#061942]">${FastTrack.esc(title)}</h3>
+                        <p class="mb-5 text-sm leading-6 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
+                        <div class="mb-3 h-2 overflow-hidden rounded-full bg-[#e9edf5]"><span class="block h-full rounded-full bg-[#075fe4]" style="width:${progress}%;"></span></div>
+                        <small class="text-xs font-medium text-[#334b83]">${progress}% Completed</small>
+                        <div class="mt-5 grid grid-cols-[1fr_44px] gap-3">
+                            <a class="inline-flex h-[38px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold ${paid ? 'bg-[#075fe4] text-white' : 'bg-white text-[#075fe4]'}" href="/fast-track/training-progress">${paid ? 'Continue Learning' : 'Payment Pending'}</a>
+                            <a class="grid h-[38px] place-items-center rounded-lg border border-[#dce7f8] bg-white text-xs font-black text-[#061942] hover:bg-[#f5f8ff]" href="/fast-track/course-details?course=${encodeURIComponent(course.id || '')}">DT</a>
+                        </div>
+                    </div>
+                </article>`;
+        }).join('');
+    }
+
+    FastTrack.enrollments().then(renderTraining).catch(function () {
+        if (trainingGrid) trainingGrid.insertAdjacentHTML('afterbegin', '<div class="sm:col-span-2 xl:col-span-4 rounded-lg border border-[#ffd6a8] bg-[#fff8ef] p-4 text-sm font-semibold text-[#8a5200]">Live training data nahi aa pa raha. Static preview retained hai.</div>');
+    });
 </script>
 @endpush

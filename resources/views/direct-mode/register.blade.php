@@ -1,9 +1,4 @@
 @php
-    $stats = [
-        ['value' => '12k+', 'label' => 'Jobs Posted', 'icon' => 'briefcase'],
-        ['value' => '8k+', 'label' => 'Freshers Hired', 'icon' => 'users'],
-        ['value' => '320+', 'label' => 'Companies', 'icon' => 'building'],
-    ];
     $features = [
         ['title' => 'Verified Jobs', 'text' => 'Apply to trusted fresher openings', 'icon' => 'shield'],
         ['title' => 'Direct Applications', 'text' => 'Connect with companies faster', 'icon' => 'send'],
@@ -18,18 +13,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Direct Mode Register</title>
     <style>
-        *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#071849;background:#fff;font-weight:500}a{text-decoration:none;color:inherit}.page{min-height:100vh;padding:14px 20px 10px;background:linear-gradient(135deg,#fff,#f4f8ff)}.topbar{height:48px;display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:12px}.logo img{width:218px;display:block}.top-right{display:flex;align-items:center;gap:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #d8dff1;border-radius:7px;overflow:hidden;background:#fff}.stat{min-width:128px;height:44px;display:flex;align-items:center;gap:10px;padding:6px 12px;border-right:1px solid #d8dff1}.stat:last-child{border-right:0}.icon{width:30px;height:30px;border-radius:9px;background:#edf4ff;color:#075fe4;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.stat strong{display:block;font-size:13px}.stat span:last-child{font-size:10px;color:#41527d}.role{height:44px;border:0;border-radius:6px;background:#075fe4;color:#fff;padding:0 20px;font-size:13px;font-weight:700}.auth-card{border:1px solid #d8e4fb;border-radius:8px;background:#fff;box-shadow:0 14px 34px rgba(6,25,66,.08);display:grid;grid-template-columns:39% 61%;overflow:hidden}.intro{padding:36px 42px 24px;background:linear-gradient(145deg,#fff,#f6f9ff)}.intro h1{margin:0 0 14px;font-size:28px;line-height:1.3;font-weight:800;letter-spacing:0}.intro h1 span{color:#075fe4}.intro p{margin:0;color:#41527d;font-size:13px;line-height:1.6;max-width:420px}.illustration{margin-top:20px;display:flex;justify-content:center}.illustration img{width:min(390px,100%);height:300px;object-fit:contain;object-position:center bottom}.form-wrap{padding:18px 30px 14px;display:flex;align-items:center}.form-panel{width:100%;border:1px solid #dfe6f5;border-radius:8px;padding:16px 20px 14px;background:#fff}.tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #dfe6f5;margin-bottom:16px}.tab{height:36px;border:0;background:transparent;color:#657190;font-size:15px;font-weight:800;cursor:pointer}.tab.active{color:#075fe4;border-bottom:3px solid #075fe4}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}.field.full{grid-column:1/-1}label{display:block;margin-bottom:6px;font-size:11px;font-weight:800}label span{color:#ff2036}.control{height:38px;border:1px solid #cfd8eb;border-radius:6px;display:grid;grid-template-columns:42px 1fr;align-items:center;background:#fff;overflow:hidden}.control .input-icon{height:100%;border-right:1px solid #dfe6f5;display:flex;align-items:center;justify-content:center;color:#657190}.input-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}input,select{width:100%;height:100%;border:0;outline:0;padding:0 12px;font-size:12px;color:#071849;background:transparent}input::placeholder{color:#6e7da2}.password{grid-template-columns:42px 1fr 42px}.eye{border:0;background:transparent;color:#657190;cursor:pointer;font-size:11px}.terms{display:flex;align-items:center;gap:9px;margin:12px 0;font-size:11px;color:#41527d}.terms input{width:16px;height:16px}.terms a{color:#075fe4;font-weight:800}.primary{width:100%;height:38px;border:0;border-radius:6px;background:#075fe4;color:#fff;font-size:13px;font-weight:800;cursor:pointer}.divider{display:flex;align-items:center;gap:16px;margin:14px auto 12px;max-width:260px;color:#657190;font-size:12px}.divider:before,.divider:after{content:"";height:1px;background:#e3e8f4;flex:1}.google{height:36px;width:46%;min-width:240px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:12px;border:1px solid #d2dbea;border-radius:6px;background:#fff;font-size:12px;font-weight:800;cursor:pointer}.google span{color:#ea4335;font-size:16px}.switch{text-align:center;margin:12px 0 0;color:#657190;font-size:11px}.switch a{color:#075fe4;font-weight:800}.feature-bar{margin-top:14px;border:1px solid #dfe6f5;border-radius:8px;background:#fff;display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:10px 18px}.feature{display:flex;align-items:center;gap:12px;padding:0 16px;border-right:1px solid #eef2f8}.feature:last-child{border-right:0}.feature h3{margin:0 0 4px;font-size:12px}.feature p{margin:0;color:#41527d;font-size:10px}.copyright{text-align:center;color:#41527d;font-size:10px;margin:10px 0 0}@media(max-width:1100px){.stats{display:none}.auth-card{grid-template-columns:1fr}.intro{padding:28px}.illustration img{height:260px}.feature-bar{grid-template-columns:repeat(2,1fr);gap:14px}.feature{border-right:0}}@media(max-width:760px){.page{padding:12px}.topbar{height:auto;flex-direction:column;align-items:flex-start}.logo img{width:210px}.top-right,.role{width:100%}.form-wrap{padding:14px}.form-panel{padding:16px}.grid{grid-template-columns:1fr;gap:14px}.intro h1{font-size:24px}.intro p{font-size:12px}.google{width:100%;min-width:0}.feature-bar{grid-template-columns:1fr}.feature{padding:8px 0}}
-    html,body{min-height:100%;overflow-x:hidden}.page{min-height:100vh;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:14px;padding:18px 22px 12px!important}.topbar{height:auto!important;min-height:52px;margin-bottom:0!important;max-width:1280px;width:100%;margin-left:auto;margin-right:auto}.logo img{width:205px!important;height:auto;object-fit:contain}.top-right{min-width:0}.stats{grid-template-columns:repeat(3,minmax(132px,1fr))}.stat{min-width:0!important;height:46px!important}.stat>span:last-child{min-width:0}.stat strong,.stat span:last-child span{white-space:nowrap}.role{white-space:nowrap}.auth-card{max-width:1280px;width:100%;margin:0 auto;grid-template-columns:minmax(360px,39%) minmax(0,1fr)!important;min-height:0}.intro{min-width:0;display:flex;flex-direction:column;justify-content:center;padding:32px 40px!important}.intro h1{max-width:430px}.illustration{min-height:0;margin-top:18px!important}.illustration img{width:min(360px,100%)!important;height:270px!important}.form-wrap{min-width:0;padding:18px 28px!important;align-items:center!important}.form-panel{min-width:0;padding:18px 20px!important}.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px 20px!important}.field{min-width:0}.control{min-width:0}.control input,.control select{min-width:0}.terms span{line-height:1.4}.feature-bar{max-width:1280px;width:100%;margin:0 auto!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;padding:12px 18px!important}.feature{min-width:0}.feature div{min-width:0}.feature h3,.feature p{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.copyright{margin:0!important}@media(max-width:1120px){.page{display:block}.topbar{margin-bottom:14px!important}.auth-card{grid-template-columns:1fr!important}.intro{padding:26px 28px!important}.illustration img{height:230px!important}.feature-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-top:14px!important}.feature:nth-child(2n){border-right:0}.feature{padding:8px 10px!important}.stats{display:none!important}}@media(max-width:760px){.page{padding:14px!important}.topbar{align-items:stretch!important}.top-right{flex-direction:column;align-items:stretch!important;width:100%}.role{width:100%}.intro{padding:22px!important}.intro h1{font-size:24px!important}.illustration img{height:190px!important}.form-wrap{padding:14px!important}.form-panel{padding:16px!important}.grid{grid-template-columns:1fr!important}.feature-bar{grid-template-columns:1fr!important}.feature{border-right:0!important;border-bottom:1px solid #eef2f8}.feature:last-child{border-bottom:0}.google{width:100%!important;min-width:0!important}.terms{align-items:flex-start!important}}
+        *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#071849;background:#fff;font-weight:500}a{text-decoration:none;color:inherit}.page{min-height:100vh;padding:14px 20px 10px;background:linear-gradient(135deg,#fff,#f4f8ff)}.topbar{height:48px;display:flex;align-items:center;justify-content:flex-start;gap:18px;margin-bottom:12px}.logo{display:flex;align-items:center}.logo img{width:205px;max-height:48px;display:block;object-fit:contain;object-position:left center}.logo-fallback{display:none;align-items:center;gap:10px;color:#075fe4;font-size:22px;font-weight:800}.logo-fallback b{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#075fe4;color:#fff;font-size:16px}.icon{width:30px;height:30px;border-radius:9px;background:#edf4ff;color:#075fe4;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.auth-card{border:1px solid #d8e4fb;border-radius:8px;background:#fff;box-shadow:0 14px 34px rgba(6,25,66,.08);display:grid;grid-template-columns:39% 61%;overflow:hidden}.intro{padding:36px 42px 24px;background:linear-gradient(145deg,#fff,#f6f9ff)}.intro h1{margin:0 0 14px;font-size:28px;line-height:1.3;font-weight:800;letter-spacing:0}.intro h1 span{color:#075fe4}.intro p{margin:0;color:#41527d;font-size:13px;line-height:1.6;max-width:420px}.illustration{margin-top:20px;display:flex;justify-content:center}.illustration img{width:min(390px,100%);height:300px;object-fit:contain;object-position:center bottom}.form-wrap{padding:18px 30px 14px;display:flex;align-items:center}.form-panel{width:100%;border:1px solid #dfe6f5;border-radius:8px;padding:16px 20px 14px;background:#fff}.tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #dfe6f5;margin-bottom:16px}.tab{height:36px;border:0;background:transparent;color:#657190;font-size:15px;font-weight:800;cursor:pointer}.tab.active{color:#075fe4;border-bottom:3px solid #075fe4}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}.field.full{grid-column:1/-1}label{display:block;margin-bottom:6px;font-size:11px;font-weight:800}label span{color:#ff2036}.control{height:38px;border:1px solid #cfd8eb;border-radius:6px;display:grid;grid-template-columns:42px 1fr;align-items:center;background:#fff;overflow:hidden}.control .input-icon{height:100%;border-right:1px solid #dfe6f5;display:flex;align-items:center;justify-content:center;color:#657190}.input-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}input,select{width:100%;height:100%;border:0;outline:0;padding:0 12px;font-size:12px;color:#071849;background:transparent}input::placeholder{color:#6e7da2}.password{grid-template-columns:42px 1fr 42px}.eye{border:0;background:transparent;color:#657190;cursor:pointer;font-size:11px}.terms{display:flex;align-items:center;gap:9px;margin:12px 0;font-size:11px;color:#41527d}.terms input{width:16px;height:16px}.terms a{color:#075fe4;font-weight:800}.primary{width:100%;height:38px;border:0;border-radius:6px;background:#075fe4;color:#fff;font-size:13px;font-weight:800;cursor:pointer}.primary:disabled{opacity:.7;cursor:not-allowed}.form-alert{display:none;margin:0 0 14px;border-radius:6px;padding:10px 12px;font-size:12px;font-weight:700;line-height:1.45}.form-alert.error{display:block;background:#fff1f2;color:#c8102e;border:1px solid #ffd0d7}.form-alert.success{display:block;background:#ecfdf3;color:#087443;border:1px solid #baf0ce}.field-error{min-height:14px;margin-top:4px;color:#c8102e;font-size:10px;font-weight:700}.control.invalid{border-color:#ff8da0;background:#fff9fa}.divider{display:flex;align-items:center;gap:16px;margin:14px auto 12px;max-width:260px;color:#657190;font-size:12px}.divider:before,.divider:after{content:"";height:1px;background:#e3e8f4;flex:1}.google{height:36px;width:46%;min-width:240px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:12px;border:1px solid #d2dbea;border-radius:6px;background:#fff;font-size:12px;font-weight:800;cursor:pointer}.google span{color:#ea4335;font-size:16px}.switch{text-align:center;margin:12px 0 0;color:#657190;font-size:11px}.switch a{color:#075fe4;font-weight:800}.feature-bar{margin-top:14px;border:1px solid #dfe6f5;border-radius:8px;background:#fff;display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:10px 18px}.feature{display:flex;align-items:center;gap:12px;padding:0 16px;border-right:1px solid #eef2f8}.feature:last-child{border-right:0}.feature h3{margin:0 0 4px;font-size:12px}.feature p{margin:0;color:#41527d;font-size:10px}.copyright{text-align:center;color:#41527d;font-size:10px;margin:10px 0 0}@media(max-width:1100px){.auth-card{grid-template-columns:1fr}.intro{padding:28px}.illustration img{height:260px}.feature-bar{grid-template-columns:repeat(2,1fr);gap:14px}.feature{border-right:0}}@media(max-width:760px){.page{padding:12px}.topbar{height:auto;flex-direction:column;align-items:flex-start}.logo img{width:205px}.form-wrap{padding:14px}.form-panel{padding:16px}.grid{grid-template-columns:1fr;gap:14px}.intro h1{font-size:24px}.intro p{font-size:12px}.google{width:100%;min-width:0}.feature-bar{grid-template-columns:1fr}.feature{padding:8px 0}}
+    html,body{min-height:100%;overflow-x:hidden}.page{min-height:100vh;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:14px;padding:18px 22px 12px!important}.topbar{height:auto!important;min-height:52px;margin-bottom:0!important;max-width:1280px;width:100%;margin-left:auto;margin-right:auto}.auth-card{max-width:1280px;width:100%;margin:0 auto;grid-template-columns:minmax(360px,39%) minmax(0,1fr)!important;min-height:0}.intro{min-width:0;display:flex;flex-direction:column;justify-content:center;padding:32px 40px!important}.intro h1{max-width:430px}.illustration{min-height:0;margin-top:18px!important}.illustration img{width:min(360px,100%)!important;height:270px!important}.form-wrap{min-width:0;padding:18px 28px!important;align-items:center!important}.form-panel{min-width:0;padding:18px 20px!important}.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px 20px!important}.field{min-width:0}.control{min-width:0}.control input,.control select{min-width:0}.terms span{line-height:1.4}.feature-bar{max-width:1280px;width:100%;margin:0 auto!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;padding:12px 18px!important}.feature{min-width:0}.feature div{min-width:0}.feature h3,.feature p{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.copyright{margin:0!important}@media(max-width:1120px){.page{display:block}.topbar{margin-bottom:14px!important}.auth-card{grid-template-columns:1fr!important}.intro{padding:26px 28px!important}.illustration img{height:230px!important}.feature-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-top:14px!important}.feature:nth-child(2n){border-right:0}.feature{padding:8px 10px!important}}@media(max-width:760px){.page{padding:14px!important}.topbar{align-items:flex-start!important}.intro{padding:22px!important}.intro h1{font-size:24px!important}.illustration img{height:190px!important}.form-wrap{padding:14px!important}.form-panel{padding:16px!important}.grid{grid-template-columns:1fr!important}.feature-bar{grid-template-columns:1fr!important}.feature{border-right:0!important;border-bottom:1px solid #eef2f8}.feature:last-child{border-bottom:0}.google{width:100%!important;min-width:0!important}.terms{align-items:flex-start!important}}
 </style>
 </head>
 <body>
     <main class="page">
         <header class="topbar">
-            <a class="logo" href="/"><img src="/ofclogo1.svg" alt="OnlyFreshers"></a>
-            <div class="top-right">
-                <div class="stats" id="stats"></div>
-                <button class="role">Role: Direct Mode</button>
-            </div>
+            <a class="logo" href="/">
+                <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <span class="logo-fallback"><b>OF</b>OnlyFreshers</span>
+            </a>
         </header>
 
         <section class="auth-card">
@@ -46,18 +40,20 @@
                         <button class="tab active" type="button">Register</button>
                     </div>
 
-                    <form>
+                    <form id="directRegisterForm" novalidate>
+                        <div id="registerAlert" class="form-alert" role="alert"></div>
                         <div class="grid">
-                            <div class="field"><label>Full Name <span>*</span></label><div class="control"><span class="input-icon" data-icon="user"></span><input type="text" placeholder="Enter your full name"></div></div>
-                            <div class="field"><label>Email Address <span>*</span></label><div class="control"><span class="input-icon" data-icon="mail"></span><input type="email" placeholder="Enter your email"></div></div>
-                            <div class="field"><label>Mobile Number <span>*</span></label><div class="control"><span class="input-icon" data-icon="phone"></span><input type="tel" placeholder="Enter mobile number"></div></div>
-                            <div class="field"><label>Qualification <span>*</span></label><div class="control"><span class="input-icon" data-icon="graduation"></span><input type="text" placeholder="Enter qualification"></div></div>
-                            <div class="field"><label>Password <span>*</span></label><div class="control password"><span class="input-icon" data-icon="lock"></span><input type="password" placeholder="Create a password"><button class="eye" type="button" data-toggle-password>Show</button></div></div>
-                            <div class="field"><label>Confirm Password <span>*</span></label><div class="control password"><span class="input-icon" data-icon="lock"></span><input type="password" placeholder="Confirm your password"><button class="eye" type="button" data-toggle-password>Show</button></div></div>
-                            <div class="field full"><label>Interested Role <span>*</span></label><div class="control" style="grid-template-columns:1fr 44px"><select><option>Select interested role</option><option>Software Developer</option><option>Data Analyst</option><option>UI/UX Designer</option><option>Digital Marketing</option></select><span class="input-icon" data-icon="chevron"></span></div></div>
+                            <div class="field"><label>Full Name <span>*</span></label><div class="control"><span class="input-icon" data-icon="user"></span><input name="name" type="text" placeholder="Enter your full name" autocomplete="name" required></div><div class="field-error" data-error-for="name"></div></div>
+                            <div class="field"><label>Email Address <span>*</span></label><div class="control"><span class="input-icon" data-icon="mail"></span><input name="email" type="email" placeholder="Enter your email" autocomplete="email" required></div><div class="field-error" data-error-for="email"></div></div>
+                            <div class="field"><label>Mobile Number <span>*</span></label><div class="control"><span class="input-icon" data-icon="phone"></span><input name="phone" type="tel" placeholder="Enter mobile number" autocomplete="tel" required></div><div class="field-error" data-error-for="phone"></div></div>
+                            <div class="field"><label>Qualification <span>*</span></label><div class="control"><span class="input-icon" data-icon="graduation"></span><input name="qualification" type="text" placeholder="Enter qualification" required></div><div class="field-error" data-error-for="qualification"></div></div>
+                            <div class="field"><label>Password <span>*</span></label><div class="control password"><span class="input-icon" data-icon="lock"></span><input name="password" type="password" placeholder="Create a password" autocomplete="new-password" required minlength="8"><button class="eye" type="button" data-toggle-password>Show</button></div><div class="field-error" data-error-for="password"></div></div>
+                            <div class="field"><label>Confirm Password <span>*</span></label><div class="control password"><span class="input-icon" data-icon="lock"></span><input name="password_confirmation" type="password" placeholder="Confirm your password" autocomplete="new-password" required minlength="8"><button class="eye" type="button" data-toggle-password>Show</button></div><div class="field-error" data-error-for="password_confirmation"></div></div>
+                            <div class="field full"><label>Interested Role <span>*</span></label><div class="control" style="grid-template-columns:1fr 44px"><select name="interested_role" required><option value="">Select interested role</option><option>Software Developer</option><option>Data Analyst</option><option>UI/UX Designer</option><option>Digital Marketing</option></select><span class="input-icon" data-icon="chevron"></span></div><div class="field-error" data-error-for="interested_role"></div></div>
                         </div>
-                        <label class="terms"><input type="checkbox"> <span>I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></span></label>
-                        <button class="primary" type="button">Create Account</button>
+                        <label class="terms"><input name="terms" type="checkbox" required> <span>I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></span></label>
+                        <div class="field-error" data-error-for="terms"></div>
+                        <button class="primary" type="submit" data-submit>Create Account</button>
                         <div class="divider">OR</div>
                         <button class="google" type="button"><span>G</span> Sign up with Google</button>
                         <p class="switch">Already have an account? <a href="/direct-mode/login">Login</a></p>
@@ -72,9 +68,6 @@
 
     <script>
         const icons = {
-            briefcase:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>',
-            users:'<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"></path><circle cx="12" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path></svg>',
-            building:'<svg viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h9v18"></path><path d="M15 9h3a2 2 0 0 1 2 2v10"></path><path d="M8 7h3M8 11h3M8 15h3"></path></svg>',
             shield:'<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg>',
             send:'<svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>',
             file:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path></svg>',
@@ -86,9 +79,7 @@
             lock:'<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>',
             chevron:'<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>'
         };
-        const stats = @json($stats);
         const features = @json($features);
-        document.getElementById('stats').innerHTML = stats.map(item => `<div class="stat"><span class="icon">${icons[item.icon]}</span><span><strong>${item.value}</strong><span>${item.label}</span></span></div>`).join('');
         document.getElementById('features').innerHTML = features.map(item => `<article class="feature"><span class="icon">${icons[item.icon]}</span><div><h3>${item.title}</h3><p>${item.text}</p></div></article>`).join('');
         document.querySelectorAll('[data-icon]').forEach(item => item.innerHTML = icons[item.dataset.icon]);
         document.querySelectorAll('[data-toggle-password]').forEach(button => button.addEventListener('click', () => {
@@ -96,6 +87,124 @@
             input.type = input.type === 'password' ? 'text' : 'password';
             button.textContent = input.type === 'password' ? 'Show' : 'Hide';
         }));
+
+        const form = document.getElementById('directRegisterForm');
+        const alertBox = document.getElementById('registerAlert');
+        const submitButton = form.querySelector('[data-submit]');
+
+        const setAlert = (message, type = 'error') => {
+            alertBox.textContent = message || '';
+            alertBox.className = message ? `form-alert ${type}` : 'form-alert';
+        };
+
+        const clearErrors = () => {
+            setAlert('');
+            form.querySelectorAll('[data-error-for]').forEach(item => item.textContent = '');
+            form.querySelectorAll('.control.invalid').forEach(item => item.classList.remove('invalid'));
+        };
+
+        const setFieldError = (name, message) => {
+            const error = form.querySelector(`[data-error-for="${name}"]`);
+            const field = form.elements[name];
+            const control = field?.closest('.control');
+            if (error) error.textContent = Array.isArray(message) ? message[0] : message;
+            if (control) control.classList.add('invalid');
+        };
+
+        const validateForm = () => {
+            const values = Object.fromEntries(new FormData(form).entries());
+            let valid = true;
+
+            ['name', 'email', 'phone', 'qualification', 'password', 'password_confirmation', 'interested_role'].forEach(name => {
+                if (!String(values[name] || '').trim()) {
+                    setFieldError(name, 'This field is required.');
+                    valid = false;
+                }
+            });
+
+            if (values.password && values.password.length < 8) {
+                setFieldError('password', 'Password must be at least 8 characters.');
+                valid = false;
+            }
+
+            if (values.password && values.password_confirmation && values.password !== values.password_confirmation) {
+                setFieldError('password_confirmation', 'Password confirmation does not match.');
+                valid = false;
+            }
+
+            if (!form.elements.terms.checked) {
+                setFieldError('terms', 'Please accept the terms to continue.');
+                valid = false;
+            }
+
+            return valid;
+        };
+
+        const postJson = async (url, payload, token = null) => {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                },
+                body: JSON.stringify(payload),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                const error = new Error(data.message || 'Something went wrong. Please try again.');
+                error.payload = data;
+                throw error;
+            }
+            return data;
+        };
+
+        form.addEventListener('submit', async event => {
+            event.preventDefault();
+            clearErrors();
+
+            if (!validateForm()) {
+                setAlert('Please fix the highlighted fields.');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const payload = Object.fromEntries(formData.entries());
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Creating Account...';
+
+            try {
+                const registerResponse = await postJson('/api/auth/register', {
+                    name: payload.name.trim(),
+                    email: payload.email.trim(),
+                    password: payload.password,
+                    password_confirmation: payload.password_confirmation,
+                    role: 'fresher',
+                });
+
+                const { token, user } = registerResponse.data;
+                localStorage.setItem('onlyfreshers_token', token);
+                localStorage.setItem('onlyfreshers_user', JSON.stringify(user));
+                localStorage.setItem('onlyfreshers_mode', 'direct');
+
+                await postJson('/api/fresher/profile', {
+                    phone: payload.phone.trim(),
+                    qualification: payload.qualification.trim(),
+                    skills: payload.interested_role,
+                }, token);
+
+                setAlert('Account created successfully. Redirecting...', 'success');
+                window.location.href = '/direct-mode/dashboard';
+            } catch (error) {
+                const errors = error.payload?.errors || {};
+                Object.entries(errors).forEach(([name, messages]) => setFieldError(name, messages));
+                setAlert(error.message);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create Account';
+            }
+        });
     </script>
 </body>
 </html>

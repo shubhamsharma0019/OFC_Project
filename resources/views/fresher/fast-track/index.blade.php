@@ -45,7 +45,7 @@
 
         <div class="grid items-start gap-8 xl:grid-cols-[500px_minmax(0,1fr)]">
             <div class="space-y-5">
-                <div class="grid gap-5 sm:grid-cols-2">
+                <div id="dashboardStatsGrid" class="grid gap-5 sm:grid-cols-2">
                     @foreach ($stats as $stat)
                         <article class="flex min-h-[190px] items-center justify-center rounded-lg border border-[#dce7f8] bg-white p-6 text-center shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                             <div>
@@ -107,3 +107,38 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    const dashboardStatsGrid = document.getElementById('dashboardStatsGrid');
+
+    function renderDashboard(data, enrollments, unread) {
+        if (!dashboardStatsGrid) return;
+        const profile = data.profile_completion || data.profile_completion_percentage || 0;
+        const assessment = data.initial_assessment || {};
+        const assessmentScore = assessment.score_percentage || assessment.score || 0;
+        const currentTraining = enrollments.filter((item) => item.enrollment_status !== 'completed').length;
+        const stats = [
+            ['Profile Completion', profile, '#19a85b', '%'],
+            ['Assessment Score', assessmentScore, '#7744eb', '%'],
+        ];
+
+        dashboardStatsGrid.innerHTML = stats.map(function (stat) {
+            return `<article class="flex min-h-[190px] items-center justify-center rounded-lg border border-[#dce7f8] bg-white p-6 text-center shadow-[0_10px_24px_rgba(6,25,66,.04)]"><div><div class="mx-auto mb-4 flex h-[116px] w-[116px] items-center justify-center rounded-full" style="background:conic-gradient(${stat[2]} 0 ${stat[1]}%, #e9edf5 ${stat[1]}% 100%);"><span class="flex h-[86px] w-[86px] items-center justify-center rounded-full bg-white text-[28px] font-bold text-[#061942]">${stat[1]}${stat[3]}</span></div><h3 class="text-base font-medium leading-snug text-[#061942]">${stat[0].replace(' ', '<br>')}</h3></div></article>`;
+        }).join('') + [
+            ['TR', 'Current Training', currentTraining],
+            ['NT', 'Notifications', unread],
+        ].map(function (stat) {
+            return `<article class="grid min-h-[125px] grid-cols-[64px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]"><span class="grid h-10 w-10 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">${stat[0]}</span><div><div class="mb-1 text-[26px] font-bold leading-none text-[#061942]">${stat[2]}</div><p class="text-sm leading-snug text-[#24344f]">${stat[1].replace(' ', '<br>')}</p></div></article>`;
+        }).join('');
+    }
+
+    Promise.all([
+        FastTrack.getJson('/api/fresher/dashboard').catch(() => ({ data: {} })),
+        FastTrack.enrollments().catch(() => []),
+        FastTrack.getJson('/api/notifications/unread-count').catch(() => ({ data: { unread_count: 0 } })),
+    ]).then(function (responses) {
+        renderDashboard(FastTrack.apiData(responses[0]) || {}, responses[1] || [], FastTrack.apiData(responses[2], 'unread_count') || 0);
+    }).catch(function () {});
+</script>
+@endpush

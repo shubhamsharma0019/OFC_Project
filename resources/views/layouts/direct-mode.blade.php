@@ -10,7 +10,7 @@
         ['key' => 'offers', 'title' => 'Offers', 'url' => '/direct-mode/offers', 'icon' => 'trophy'],
         ['key' => 'activity', 'title' => 'Activity', 'url' => '/direct-mode/activity', 'icon' => 'activity'],
         ['key' => 'settings', 'title' => 'Settings', 'url' => '/direct-mode/settings', 'icon' => 'settings'],
-        ['key' => 'logout', 'title' => 'Logout', 'url' => '#', 'icon' => 'logout'],
+        ['key' => 'logout', 'title' => 'Logout', 'url' => '/direct-mode/logout', 'icon' => 'logout'],
     ];
 @endphp
 <!DOCTYPE html>
@@ -23,6 +23,23 @@
         *{box-sizing:border-box}body{margin:0;height:100vh;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#06123f;background:#f7fbff;font-weight:500}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}.shell{height:100vh;overflow:hidden;display:grid;grid-template-columns:250px minmax(0,1fr);background:linear-gradient(135deg,#fbfdff,#f1f7ff)}.sidebar{position:sticky;top:0;height:100vh;min-width:0;overflow:hidden;background:#fff;border-right:1px solid #d8e4f7;display:flex;flex-direction:column;justify-content:space-between}.brand{height:82px;display:flex;align-items:center;padding:0 34px;border-bottom:1px solid #d8e4f7}.brand img{display:block;width:200px;max-width:100%;height:auto;object-fit:contain;object-position:left center}.menu{max-height:calc(100vh - 300px);overflow-y:auto;padding:24px 18px 12px;display:grid;gap:8px}.menu-item{min-height:46px;border-radius:8px;display:flex;align-items:center;gap:15px;padding:0 18px;font-size:14px;font-weight:700;position:relative;color:#06123f;white-space:nowrap}.menu-item.active{background:#eaf2ff;color:#064cff}.menu-item.active:before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;background:#064cff;border-radius:6px}.icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.boost{margin:18px;padding:18px;border-radius:9px;background:#eef5ff;text-align:center}.rocket{height:96px;position:relative}.rocket:before{content:"";position:absolute;left:50%;top:13px;width:66px;height:66px;background:linear-gradient(135deg,#0d67ff,#163ade);clip-path:polygon(50% 0,82% 23%,68% 68%,100% 82%,65% 88%,50% 100%,35% 88%,0 82%,32% 68%,18% 23%);transform:translateX(-50%) rotate(35deg)}.rocket:after{content:"";position:absolute;left:34px;right:34px;bottom:5px;height:18px;border-radius:50%;background:#dce8ff}.boost h3{margin:0 0 10px;font-size:15px;line-height:1.25}.boost p{margin:0 0 16px;font-size:13px;line-height:1.35;color:#26375e}.primary{height:36px;border:1px solid #064cff;border-radius:6px;background:#064cff;color:#fff;font-size:13px;font-weight:800;padding:0 20px;cursor:pointer}.main{height:100vh;min-width:0;overflow-y:auto;display:grid;grid-template-rows:82px minmax(0,max-content)}.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #d8e4f7;display:grid;grid-template-columns:1fr minmax(320px,603px) 1fr;align-items:center;gap:26px;padding:0 38px}.hamb{font-size:25px;line-height:1;color:#06123f}.search-top{height:46px;border:1px solid #cbd8ee;border-radius:7px;background:#fbfdff;display:flex;align-items:center;gap:14px;padding:0 16px;color:#26375e}.search-top input{border:0;outline:0;background:transparent;width:100%;min-width:0;color:#26375e}.top-user{justify-self:end;display:flex;align-items:center;gap:14px;min-width:0}.top-bell{position:relative;border:0;background:transparent;color:#06123f;padding:0;cursor:pointer}.top-bell b{position:absolute;right:-8px;top:-11px;background:#064cff;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center}.top-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:50%;border:5px solid #e6eefb;background:center top/cover no-repeat}.top-user strong{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page{min-width:0;padding:24px 28px 26px}.welcome{margin:0 0 18px 4px}.welcome small{font-size:13px;color:#526287}.welcome h1{margin:4px 0 0;font-size:22px;line-height:1.2}.footer{min-height:58px;border-top:1px solid #d8e4f7;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 32px;font-size:13px;color:#26375e}.footer nav{display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px}.footer i{height:16px;width:1px;background:#7d8aaa}@media(max-width:1240px){.shell{grid-template-columns:1fr}.sidebar{display:none}.topbar{grid-template-columns:32px minmax(0,1fr) auto}.top-user strong{display:none}}@media(max-width:760px){.main{grid-template-rows:auto minmax(0,1fr) auto}.topbar{grid-template-columns:1fr auto;gap:14px;padding:14px}.hamb{display:none}.search-top{grid-column:1/-1;grid-row:2}.top-user{grid-column:2;grid-row:1}.page{padding:16px}.footer,.footer nav{height:auto;flex-direction:column;align-items:flex-start}.footer{padding:16px}.footer i{display:none}}
     </style>
     @stack('styles')
+    <style>
+        @media(max-width:900px){
+            html,body{width:100%;overflow-x:hidden}
+            .shell,.main,.topbar{width:100%!important;max-width:100%!important;min-width:0!important}
+            .topbar{grid-template-columns:1fr auto!important;gap:14px!important;padding:14px!important}
+            .search-top{width:100%!important;max-width:100%!important;min-width:0!important}
+            .page,.assess-page{width:100%!important;max-width:100%!important;min-width:0!important;padding-left:14px!important;padding-right:14px!important;overflow-x:hidden}
+            .welcome{width:100%!important;max-width:100%!important;min-width:0!important;margin-left:0!important;margin-right:0!important}
+            .layout,.content-grid,.hero,.metrics,.stats,.settings-body,.offer-grid,.chart-wrap,.page-grid{width:100%!important;max-width:100%!important;min-width:0!important;grid-template-columns:minmax(0,1fr)!important}
+            .panel,.card,.main-card,.side-card,.jobs-panel,.apps-panel,.settings-card,.offer-card,.section,.chart-card,.overview,.table-card,.other,.form-card{width:100%!important;max-width:100%!important;min-width:0!important}
+            .tabs,.meta-row,.title-row,.welcome-bar,.side-head,.section-head,.form-head{max-width:100%!important;min-width:0!important}
+            .table{max-width:100%!important;overflow-x:auto!important}
+            .row,.application,.other-row{max-width:100%!important}
+            input,select,textarea{max-width:100%!important;min-width:0!important}
+            .search-top input{width:0!important;flex:1 1 0!important}
+        }
+    </style>
 </head>
 <body>
     <div class="shell">
@@ -31,7 +48,14 @@
                 <a class="brand" href="/direct-mode/dashboard"><img src="/ofclogo1.svg" alt="OnlyFreshers" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span style="display:none;align-items:center;gap:10px;color:#075fe4;font-size:22px;font-weight:800"><b style="display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#075fe4;color:#fff;font-size:16px">OF</b>OnlyFreshers</span></a>
                 <nav class="menu">
                     @foreach ($menuItems as $item)
-                        <a class="menu-item {{ ($activePage ?? '') === $item['key'] ? 'active' : '' }}" href="{{ $item['url'] }}"><span class="icon" data-icon="{{ $item['icon'] }}"></span>{{ $item['title'] }}</a>
+                        <a class="menu-item {{ ($activePage ?? '') === $item['key'] ? 'active' : '' }}" href="{{ $item['url'] }}">
+                            @if ($item['key'] === 'offers')
+                                <span class="icon"><svg viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M5 5H3v3a4 4 0 0 0 4 4"></path><path d="M19 5h2v3a4 4 0 0 1-4 4"></path></svg></span>
+                            @else
+                                <span class="icon" data-icon="{{ $item['icon'] }}"></span>
+                            @endif
+                            {{ $item['title'] }}
+                        </a>
                     @endforeach
                 </nav>
             </div>
@@ -73,6 +97,12 @@
         document.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=window.directModeIcons[el.dataset.icon]||el.innerHTML});
     </script>
     @stack('scripts')
+    <script>
+        document.querySelectorAll('.sidebar [data-icon], .topbar [data-icon]').forEach(el => {
+            const icon = window.directModeIcons && window.directModeIcons[el.dataset.icon];
+            if (icon) el.innerHTML = icon;
+        });
+    </script>
 </body>
 </html>
 

@@ -44,6 +44,8 @@
             <p class="mt-2 text-sm font-medium text-[#334b83]">Complete the assessment to discover your skills and get personalized course recommendations.</p>
         </div>
 
+        <article id="initialAssessmentRunner" class="hidden rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]"></article>
+
         <article class="grid gap-6 rounded-lg border border-[#dce7f8] bg-white px-6 py-6 shadow-[0_10px_24px_rgba(6,25,66,.04)] xl:grid-cols-[150px_minmax(0,1fr)_260px] xl:items-center xl:px-8">
             <div class="grid h-[105px] w-[120px] place-items-center rounded-xl bg-[#eaf2ff] text-[32px] font-black text-[#075fe4]">IA</div>
             <div>
@@ -131,3 +133,66 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    const initialAssessmentRunner = document.getElementById('initialAssessmentRunner');
+    let initialAttemptId = null;
+    let initialQuestions = [];
+
+    function showInitialStart() {
+        if (!initialAssessmentRunner) return;
+        initialAssessmentRunner.classList.remove('hidden');
+        initialAssessmentRunner.innerHTML = `<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 class="text-lg font-bold text-[#061942]">Live Initial Assessment</h2><p class="mt-2 text-sm text-[#334b83]">Start the real assessment to generate your dynamic recommended track.</p></div><button id="startInitialAssessmentBtn" class="h-10 rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white" type="button">Start Assessment</button></div>`;
+        document.getElementById('startInitialAssessmentBtn').addEventListener('click', startInitialAssessment);
+    }
+
+    function renderInitialQuestions() {
+        initialAssessmentRunner.innerHTML = `<form id="initialAssessmentForm" class="space-y-5">
+            <div><h2 class="text-lg font-bold text-[#061942]">Assessment Questions</h2><p class="mt-2 text-sm text-[#334b83]">Select one option for every question.</p></div>
+            ${initialQuestions.map(function (question, index) {
+                const options = question.options || [question.option_a, question.option_b, question.option_c, question.option_d].filter(Boolean);
+                return `<fieldset class="rounded-lg border border-[#e6eef8] p-4"><legend class="mb-3 text-sm font-bold text-[#061942]">${index + 1}. ${FastTrack.esc(question.question || question.title)}</legend>${options.map(function (option, optionIndex) { return `<label class="mb-2 flex gap-3 text-sm text-[#334b83]"><input class="mt-1" type="radio" name="q_${question.id}" value="${optionIndex + 1}" required><span>${FastTrack.esc(option.text || option)}</span></label>`; }).join('')}</fieldset>`;
+            }).join('')}
+            <button class="h-10 rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white" type="submit">Submit Assessment</button>
+        </form>`;
+        document.getElementById('initialAssessmentForm').addEventListener('submit', submitInitialAssessment);
+    }
+
+    function renderInitialResult(result) {
+        const score = result.score_percentage || result.percentage || result.score || 0;
+        initialAssessmentRunner.innerHTML = `<div class="grid gap-5 md:grid-cols-[1fr_180px] md:items-center"><div><h2 class="text-lg font-bold text-[#061942]">Assessment Completed</h2><p class="mt-2 text-sm text-[#334b83]">Recommended Track: <strong class="text-[#061942]">${FastTrack.esc(result.recommended_track || result.track || 'Fast Track Courses')}</strong></p><a class="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white" href="/fast-track/courses">Explore Courses</a></div><div class="mx-auto flex h-[120px] w-[120px] items-center justify-center rounded-full" style="background:conic-gradient(#075fe4 0 ${score}%, #e9edf5 ${score}% 100%);"><span class="flex h-[86px] w-[86px] items-center justify-center rounded-full bg-white text-xl font-black">${score}%</span></div></div>`;
+    }
+
+    function startInitialAssessment() {
+        initialAssessmentRunner.innerHTML = '<p class="text-sm font-semibold text-[#334b83]">Starting assessment...</p>';
+        FastTrack.postJson('/api/fresher/assessment/start')
+            .then(function (result) {
+                const attempt = FastTrack.apiData(result, 'attempt') || FastTrack.apiData(result);
+                initialAttemptId = attempt.id;
+                return FastTrack.getJson('/api/fresher/assessment/' + initialAttemptId + '/questions');
+            })
+            .then(function (result) {
+                initialQuestions = FastTrack.apiData(result, 'questions') || [];
+                renderInitialQuestions();
+            })
+            .catch(function (error) {
+                initialAssessmentRunner.innerHTML = `<p class="text-sm font-semibold text-[#8a5200]">${FastTrack.esc(error.message || 'Assessment could not start.')}</p>`;
+            });
+    }
+
+    function submitInitialAssessment(event) {
+        event.preventDefault();
+        const answers = initialQuestions.map(function (question) {
+            const checked = event.target.querySelector('[name="q_' + question.id + '"]:checked');
+            return { question_id: question.id, selected_option: checked ? checked.value : null };
+        });
+        FastTrack.postJson('/api/fresher/assessment/' + initialAttemptId + '/submit', { answers: answers })
+            .then(function () { return FastTrack.getJson('/api/fresher/assessment/' + initialAttemptId + '/result'); })
+            .then(function (result) { renderInitialResult(FastTrack.apiData(result, 'result') || FastTrack.apiData(result)); })
+            .catch(function (error) { alert(error.message || 'Submit failed'); });
+    }
+
+    showInitialStart();
+</script>
+@endpush

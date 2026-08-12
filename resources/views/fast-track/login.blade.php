@@ -80,9 +80,43 @@
         }
 
         if (fastTrackLoginForm) {
-            fastTrackLoginForm.addEventListener('submit', function (event) {
+            fastTrackLoginForm.addEventListener('submit', async function (event) {
                 event.preventDefault();
-                alert('Fast Track login submitted.');
+                const submitButton = fastTrackLoginForm.querySelector('[type="submit"]');
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Logging in...';
+
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email, password }),
+                    });
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.message || 'Login failed.');
+                    }
+
+                    const user = result.data && result.data.user;
+                    if (user && user.role && user.role !== 'fresher') {
+                        throw new Error('Fast Track flow fresher account ke liye hai.');
+                    }
+
+                    localStorage.setItem('onlyfreshers_token', result.data.token);
+                    localStorage.setItem('onlyfreshers_user', JSON.stringify(user || {}));
+                    window.location.href = '/fast-track/dashboard';
+                } catch (error) {
+                    alert(error.message || 'Login failed.');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Login';
+                }
             });
         }
     </script>

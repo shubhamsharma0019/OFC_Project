@@ -1,32 +1,5 @@
 @php
     $user = $user ?? ['name' => 'Ananya Gupta', 'avatar' => '/student.svg', 'notifications' => 3];
-    $summary = [
-        ['value' => '2', 'title' => 'Upcoming', 'sub' => 'Interviews', 'icon' => 'calendar', 'tone' => 'blue-soft'],
-        ['value' => '3', 'title' => 'Completed', 'sub' => 'Interviews', 'icon' => 'check-square', 'tone' => 'purple-soft'],
-        ['value' => '0', 'title' => 'Rescheduled', 'sub' => 'Interviews', 'icon' => 'clock', 'tone' => 'orange-soft'],
-        ['value' => '0', 'title' => 'Cancelled', 'sub' => 'Interviews', 'icon' => 'x', 'tone' => 'red-soft'],
-    ];
-    $upcoming = [
-        ['title' => 'Frontend Developer', 'company' => 'TechNova Solutions', 'logo' => 'TS', 'sub' => 'TechNova', 'tone' => 'navy', 'date' => '15 May 2024 (Wed)', 'time' => '11:00 AM', 'mode' => 'Video Interview', 'countdown' => '2 Days', 'people' => ['A', 'R', '+1']],
-        ['title' => 'Software Engineer', 'company' => 'InfoByte', 'logo' => 'iB', 'sub' => 'InfoByte', 'tone' => 'orange', 'date' => '20 May 2024 (Mon)', 'time' => '02:30 PM', 'mode' => 'Google Meet', 'countdown' => '7 Days', 'people' => ['S', 'K', '+2']],
-    ];
-    $past = [
-        ['title' => 'React Developer', 'company' => 'CodeWave', 'logo' => 'CW', 'sub' => 'CodeWave', 'tone' => 'black', 'date' => '10 May 2024 (Fri)', 'time' => '10:00 AM', 'mode' => 'Video Interview'],
-        ['title' => 'Backend Developer', 'company' => 'DataMinds', 'logo' => 'DT', 'sub' => 'DataMinds', 'tone' => 'purple-logo', 'date' => '05 May 2024 (Sun)', 'time' => '04:00 PM', 'mode' => 'Google Meet'],
-    ];
-    $tips = [
-        ['title' => 'Research the Company', 'text' => 'Understand their products, values and latest news.', 'icon' => 'building', 'tone' => 'blue-soft'],
-        ['title' => 'Review Job Description', 'text' => 'Focus on key skills and responsibilities.', 'icon' => 'clipboard', 'tone' => 'green-soft'],
-        ['title' => 'Practice Common Questions', 'text' => 'Prepare answers for frequently asked questions.', 'icon' => 'book', 'tone' => 'purple-soft'],
-        ['title' => 'Test Your Setup', 'text' => 'Check your internet, camera and microphone.', 'icon' => 'trophy', 'tone' => 'orange-soft'],
-    ];
-    $weeks = [
-        ['28','29','30','1','2','3','4'],
-        ['5','6','7','8','9','10','11'],
-        ['12','13','14','15','16','17','18'],
-        ['19','20','21','22','23','24','25'],
-        ['26','27','28','29','30','31','1'],
-    ];
 @endphp
 
 @php $activePage = 'interviews'; @endphp
@@ -44,38 +17,34 @@
         @media(max-width:760px){.interview .primary,.interview .outline,.past-row .outline{width:max-content;max-width:100%}}
 
 body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!important;min-height:0!important;overflow:hidden!important;grid-template-columns:250px minmax(0,1fr)!important}.sidebar{position:sticky!important;top:0!important;height:100vh!important;overflow:hidden!important;justify-content:space-between!important}.menu{max-height:calc(100vh - 300px)!important;overflow-y:auto!important}.main{height:100vh!important;overflow-y:auto!important;grid-template-rows:82px minmax(0,max-content)!important}.topbar{position:sticky!important;top:0!important;z-index:20!important;height:82px!important;grid-template-columns:1fr minmax(320px,603px) 1fr!important;padding:0 38px!important}.footer{display:none!important}.page{min-width:0;padding:24px 28px 32px!important}.layout{grid-template-columns:minmax(0,1fr) minmax(320px,372px)!important;align-items:start}.main-card,.side-card{max-width:100%;overflow:hidden}.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.metric{min-width:0}.metric div{min-width:0}.metric b,.metric span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.section{max-width:100%;overflow:hidden}.interview{grid-template-columns:76px minmax(220px,1fr) 90px 112px 112px 118px!important;gap:14px}.interview .info,.past-row .info{min-width:0}.info h3,.info p{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{gap:14px}.meta span{display:inline-flex;align-items:center;gap:5px;min-width:0}.past-row{grid-template-columns:64px minmax(220px,1fr) 90px 118px!important}.calendar{gap:16px 12px}.side{min-width:0}@media(max-width:1320px){.layout{grid-template-columns:1fr!important}.interview{grid-template-columns:76px minmax(0,1fr) 90px 112px 118px!important}.interview .primary{grid-column:2 / -1;justify-self:start}.past-row{grid-template-columns:64px minmax(0,1fr) 90px 118px!important}}@media(max-width:760px){.metrics{grid-template-columns:1fr!important}.interview,.past-row{grid-template-columns:1fr!important}.info h3,.info p{white-space:normal}.interview .primary{grid-column:auto}.calendar{gap:14px 8px}}
-.interview{grid-template-columns:76px minmax(0,1fr) 92px 104px 124px!important;grid-template-rows:auto auto;column-gap:14px;row-gap:10px;align-items:center}.interview>.logo,.interview>.info,.interview>.badge,.interview>.countdown{grid-row:1 / span 2}.interview>.outline{grid-column:5;grid-row:1;width:124px;min-width:0;padding:0 10px}.interview>.primary{grid-column:5;grid-row:2;width:124px;min-width:0;padding:0 10px}.countdown{text-align:center}.badge{width:92px;padding:0 8px}.people{margin-top:14px}.main-card{min-width:0}.section{padding:17px 18px}.layout{grid-template-columns:minmax(0,1fr) 340px!important;gap:18px}.side-card{padding:18px}.calendar{gap:16px 10px}.tips{gap:15px}.past-row{grid-template-columns:64px minmax(0,1fr) 92px 124px!important}.past-row>.outline{width:124px;min-width:0;padding:0 10px}.metric{grid-template-columns:46px minmax(0,1fr);gap:12px;padding:14px}@media(max-width:1440px){.layout{grid-template-columns:1fr!important}.side{grid-template-columns:1fr 1fr;align-items:start}.interview{grid-template-columns:76px minmax(0,1fr) 92px 104px 124px!important}.past-row{grid-template-columns:64px minmax(0,1fr) 92px 124px!important}}@media(max-width:900px){.side{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}.interview{grid-template-columns:68px minmax(0,1fr) 104px!important;grid-template-rows:auto auto auto}.interview>.logo{grid-column:1;grid-row:1 / span 2}.interview>.info{grid-column:2;grid-row:1 / span 2}.interview>.badge{grid-column:3;grid-row:1;width:100%}.interview>.countdown{grid-column:3;grid-row:2}.interview>.outline{grid-column:2;grid-row:3;width:124px}.interview>.primary{grid-column:3;grid-row:3;width:124px}.past-row{grid-template-columns:58px minmax(0,1fr) 112px!important}.past-row>.outline{grid-column:2 / -1;justify-self:start}}@media(max-width:620px){.metrics,.side,.interview,.past-row{grid-template-columns:1fr!important}.interview>.logo,.interview>.info,.interview>.badge,.interview>.countdown,.interview>.outline,.interview>.primary,.past-row>.outline{grid-column:auto;grid-row:auto;width:max-content;max-width:100%}.countdown{text-align:left}.info h3,.info p{white-space:normal}.meta{gap:10px}.welcome-bar{align-items:flex-start}}
+.interview{grid-template-columns:72px minmax(0,1fr) 96px 108px 128px!important;grid-template-rows:auto auto;column-gap:16px;row-gap:10px;align-items:center}.interview>.logo,.interview>.info,.interview>.badge,.interview>.countdown{grid-row:1 / span 2}.interview>.outline{grid-column:5;grid-row:1;width:128px;min-width:0;padding:0 10px}.interview>.primary{grid-column:5;grid-row:2;width:128px;min-width:0;padding:0 10px}.countdown{text-align:center;justify-self:center;min-width:96px}.countdown strong{white-space:nowrap}.badge{width:96px;padding:0 8px;justify-self:center}.people{margin-top:14px;min-height:22px}.main-card{min-width:0}.section{padding:17px 18px}.layout{grid-template-columns:minmax(0,1fr) 340px!important;gap:18px}.side-card{padding:18px}.calendar{gap:16px 10px;align-items:center}.tips{gap:15px}.past-row{grid-template-columns:60px minmax(0,1fr) 96px 128px!important;column-gap:16px}.past-row>.outline{width:128px;min-width:0;padding:0 10px}.metric{grid-template-columns:46px minmax(0,1fr);gap:12px;padding:14px}.metrics{align-items:stretch}.metric{height:86px}.metric-icon{align-self:center;justify-self:center}.empty{border:1px dashed #cbd8ee;border-radius:10px;background:#fbfdff;padding:24px;text-align:center;color:#43517b}.logo{justify-self:center}.logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}.day.has-interview{color:#6c3ad7;background:#efe7ff;border-radius:50%;width:31px;height:31px;display:grid;place-items:center;margin:-5px auto}.day.has-interview:after{content:"";position:absolute;bottom:-4px;width:6px;height:6px;border-radius:50%;background:#064cff}.day.today{color:#fff;background:#064cff;border-radius:50%;width:31px;height:31px;display:grid;place-items:center;margin:-5px auto}.tip{align-items:start}.tip-icon{margin-top:2px;flex:0 0 46px}.cal-nav strong{text-align:center;min-width:150px}.square{flex:0 0 38px}@media(max-width:1440px){.layout{grid-template-columns:1fr!important}.side{grid-template-columns:1fr 1fr;align-items:start}.interview{grid-template-columns:72px minmax(0,1fr) 96px 108px 128px!important}.past-row{grid-template-columns:60px minmax(0,1fr) 96px 128px!important}}@media(max-width:900px){.side{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}.interview{grid-template-columns:68px minmax(0,1fr) 112px!important;grid-template-rows:auto auto auto;align-items:center}.interview>.logo{grid-column:1;grid-row:1 / span 2}.interview>.info{grid-column:2;grid-row:1 / span 2}.interview>.badge{grid-column:3;grid-row:1;width:112px}.interview>.countdown{grid-column:3;grid-row:2;min-width:112px}.interview>.outline{grid-column:2;grid-row:3;width:128px}.interview>.primary{grid-column:3;grid-row:3;width:128px}.past-row{grid-template-columns:58px minmax(0,1fr) 112px!important}.past-row>.outline{grid-column:2 / -1;justify-self:start}}@media(max-width:620px){.metrics,.side,.interview,.past-row{grid-template-columns:1fr!important}.interview>.logo,.interview>.info,.interview>.badge,.interview>.countdown,.interview>.outline,.interview>.primary,.past-row>.outline{grid-column:auto;grid-row:auto;width:max-content;max-width:100%;justify-self:start}.countdown{text-align:left}.info h3,.info p{white-space:normal}.meta{gap:10px}.welcome-bar{align-items:flex-start}.metric{height:auto;min-height:78px}.calendar{gap:14px 8px}}
 </style>
 @endpush
 
 @section('content')
 <section class="page">
-                <div class="welcome-bar"><div class="welcome"><small>Welcome back,</small><h1>{{ $user['name'] }}!</h1></div><button class="outline" type="button"><span class="icon" data-icon="calendar"></span>Calendar View</button></div>
+                <div class="welcome-bar"><div class="welcome"><small>Welcome back,</small><h1 data-user-name>{{ $user['name'] }}!</h1></div><button class="outline" data-calendar-view type="button"><span class="icon" data-icon="calendar"></span>Calendar View</button></div>
                 <div class="layout">
                     <section class="card main-card">
                         <div class="title"><h2>Interviews</h2><p>Manage your upcoming and past interviews</p></div>
-                        <div class="metrics">@foreach ($summary as $item)<div class="metric"><span class="metric-icon {{ $item['tone'] }}" data-icon="{{ $item['icon'] }}"></span><div><strong>{{ $item['value'] }}</strong><b>{{ $item['title'] }}</b><span>{{ $item['sub'] }}</span></div></div>@endforeach</div>
+                        <div class="metrics" data-metrics></div>
                         <article class="section">
                             <h2>Upcoming Interviews</h2>
-                            @foreach ($upcoming as $item)
-                                <div class="interview"><div class="logo {{ $item['tone'] }}"><div><strong>{{ $item['logo'] }}</strong><span>{{ $item['sub'] }}</span></div></div><div class="info"><h3>{{ $item['title'] }}</h3><p>{{ $item['company'] }}</p><div class="meta"><span><span class="icon" data-icon="calendar"></span>{{ $item['date'] }}</span><span><span class="icon" data-icon="clock"></span>{{ $item['time'] }}</span><span><span class="icon" data-icon="video"></span>{{ $item['mode'] }}</span></div><div class="people">Interviewers:@foreach ($item['people'] as $person)<span class="face">{{ $person }}</span>@endforeach</div></div><span class="badge">Confirmed</span><div class="countdown">Interview in<strong>{{ $item['countdown'] }}</strong></div><button class="outline" type="button">View Details</button><button class="primary" type="button">Prepare Now</button></div>
-                            @endforeach
+                            <div data-upcoming><div class="empty">Loading upcoming interviews...</div></div>
                         </article>
                         <article class="section">
                             <h2>Past Interviews</h2>
-                            @foreach ($past as $item)
-                                <div class="past-row"><div class="logo {{ $item['tone'] }}"><div><strong>{{ $item['logo'] }}</strong><span>{{ $item['sub'] }}</span></div></div><div class="info"><h3>{{ $item['title'] }}</h3><p>{{ $item['company'] }}</p><div class="meta"><span><span class="icon" data-icon="calendar"></span>{{ $item['date'] }}</span><span><span class="icon" data-icon="clock"></span>{{ $item['time'] }}</span><span><span class="icon" data-icon="video"></span>{{ $item['mode'] }}</span></div></div><span class="badge">Completed</span><button class="outline" type="button">View Feedback</button></div>
-                            @endforeach
-                            <a class="view-past" href="#">View All Past Interviews</a>
+                            <div data-past><div class="empty">Loading past interviews...</div></div>
+                            <a class="view-past" data-view-past href="#">View All Past Interviews</a>
                         </article>
                     </section>
                     <aside class="side">
                         <article class="card side-card">
-                            <div class="side-head"><h2>Interview Calendar</h2><a href="#">View Full Calendar</a></div>
-                            <div class="cal-nav"><button class="square" type="button">&lt;</button><strong>May 2024</strong><button class="square" type="button">&gt;</button></div>
-                            <div class="calendar">@foreach (['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $d)<span class="day-name">{{ $d }}</span>@endforeach @foreach ($weeks as $week) @foreach ($week as $day)<span class="day {{ in_array($day, ['28','29','30']) ? 'muted' : '' }} {{ $day === '15' ? 'active' : '' }} {{ $day === '20' ? 'mark' : '' }}">{{ $day }}</span>@endforeach @endforeach</div>
+                            <div class="side-head"><h2>Interview Calendar</h2><a href="#" data-full-calendar>View Full Calendar</a></div>
+                            <div class="cal-nav"><button class="square" data-prev-month type="button">&lt;</button><strong data-month-label>Calendar</strong><button class="square" data-next-month type="button">&gt;</button></div>
+                            <div class="calendar" data-calendar></div>
                         </article>
-                        <article class="card side-card"><h2>Tips to Prepare</h2><div class="tips">@foreach ($tips as $tip)<div class="tip"><span class="tip-icon {{ $tip['tone'] }}" data-icon="{{ $tip['icon'] }}"></span><div><h3>{{ $tip['title'] }}</h3><p>{{ $tip['text'] }}</p></div></div>@endforeach</div><button class="outline" type="button" style="width:100%">View All Tips</button></article>
+                        <article class="card side-card"><h2>Tips to Prepare</h2><div class="tips" data-tips></div><button class="outline" data-view-tips type="button" style="width:100%">View All Tips</button></article>
                     </aside>
                 </div>
             </section>
@@ -84,7 +53,260 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 @push('scripts')
 <script>
         const icons={home:'<svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg>',user:'<svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle></svg>',clipboard:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 7h6M9 12h6"></path></svg>',briefcase:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>',file:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path></svg>',clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>',chart:'<svg viewBox="0 0 24 24"><path d="M3 17 9 11l4 4 8-8"></path><path d="M14 7h7v7"></path></svg>',activity:'<svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>',settings:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4 1.7 1.7 0 0 0 14 21h-4a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3 14v-4a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3h4a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9 1.7 1.7 0 0 0 21 10v4a1.7 1.7 0 0 0-1.6 1Z"></path></svg>',logout:'<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5M21 12H9"></path></svg>',search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>',chevron:'<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>',calendar:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>','check-square':'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="m9 12 2 2 4-4"></path></svg>',x:'<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>',video:'<svg viewBox="0 0 24 24"><path d="M16 13 22 17V7l-6 4Z"></path><rect x="2" y="6" width="14" height="12" rx="2"></rect></svg>',building:'<svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5h10v16M15 9h4v12M8 8h3M8 12h3M8 16h3"></path></svg>',book:'<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5Z"></path></svg>',trophy:'<svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M5 5H3v3a4 4 0 0 0 4 4M19 5h2v3a4 4 0 0 1-4 4"></path></svg>'};
-        document.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=icons[el.dataset.icon]||''});
+        const $ = (selector) => document.querySelector(selector);
+        const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+        const token = localStorage.getItem('onlyfreshers_token') || '';
+        let authUser = {};
+        try { authUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || '{}'); } catch (error) { authUser = {}; }
+        const state = { interviews: [], applications: [], calendarDate: new Date() };
+
+        function hydrateIcons(root = document) {
+            root.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icons[el.dataset.icon] || ''; });
+        }
+
+        function headers() {
+            return { 'Accept': 'application/json', ...(token ? { 'Authorization': `Bearer ${token}` } : {}) };
+        }
+
+        function application(interview) {
+            return interview.job_application || interview.jobApplication || {};
+        }
+
+        function job(interview) {
+            return application(interview).job || {};
+        }
+
+        function company(interview) {
+            return job(interview).company_profile || job(interview).companyProfile || {};
+        }
+
+        function companyName(interview) {
+            return company(interview).company_name || job(interview).company_name || 'Company';
+        }
+
+        function logoText(interview) {
+            return companyName(interview).split(/\s+/).filter(Boolean).slice(0, 2).map(word => word[0]).join('').toUpperCase() || 'OF';
+        }
+
+        function interviewDate(interview) {
+            return interview.interview_date ? new Date(`${interview.interview_date}T${interview.interview_time || '00:00'}`) : null;
+        }
+
+        function isUpcoming(interview) {
+            const date = interviewDate(interview);
+            return date && date >= startOfToday() && !['completed', 'cancelled'].includes(String(interview.status || '').toLowerCase());
+        }
+
+        function isPast(interview) {
+            return !isUpcoming(interview);
+        }
+
+        function startOfToday() {
+            const date = new Date();
+            date.setHours(0, 0, 0, 0);
+            return date;
+        }
+
+        function formatDate(date) {
+            if (!date) return 'Date not shared';
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', weekday: 'short' });
+        }
+
+        function formatTime(time) {
+            if (!time) return 'Time not shared';
+            const [hour, minute] = String(time).split(':');
+            const date = new Date();
+            date.setHours(Number(hour || 0), Number(minute || 0), 0, 0);
+            return date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function countdown(interview) {
+            const date = interviewDate(interview);
+            if (!date) return 'TBD';
+            const days = Math.ceil((date - startOfToday()) / 86400000);
+            if (days <= 0) return 'Today';
+            if (days === 1) return '1 Day';
+            return `${days} Days`;
+        }
+
+        function modeLabel(interview) {
+            if (interview.meeting_link) return 'Video Interview';
+            if (interview.interview_location) return interview.interview_location;
+            return String(interview.interview_mode || 'Interview').replace('_', ' ');
+        }
+
+        function render() {
+            const upcoming = state.interviews.filter(isUpcoming).sort((a, b) => interviewDate(a) - interviewDate(b));
+            const past = state.interviews.filter(isPast).sort((a, b) => (interviewDate(b) || 0) - (interviewDate(a) || 0));
+            renderMetrics(upcoming, past);
+            renderUpcoming(upcoming);
+            renderPast(past);
+            renderCalendar();
+            renderTips();
+        }
+
+        function renderMetrics(upcoming, past) {
+            const completed = state.interviews.filter(item => String(item.status).toLowerCase() === 'completed').length;
+            const cancelled = state.interviews.filter(item => String(item.status).toLowerCase() === 'cancelled').length;
+            const rescheduled = state.interviews.filter(item => String(item.status).toLowerCase() === 'rescheduled').length;
+            const items = [
+                [upcoming.length, 'Upcoming', 'Interviews', 'calendar', 'blue-soft'],
+                [completed || past.length, 'Completed', 'Interviews', 'check-square', 'purple-soft'],
+                [rescheduled, 'Rescheduled', 'Interviews', 'clock', 'orange-soft'],
+                [cancelled, 'Cancelled', 'Interviews', 'x', 'red-soft'],
+            ];
+            $('[data-metrics]').innerHTML = items.map(([value, title, sub, icon, tone]) => `<div class="metric"><span class="metric-icon ${tone}" data-icon="${icon}"></span><div><strong>${value}</strong><b>${title}</b><span>${sub}</span></div></div>`).join('');
+            hydrateIcons($('[data-metrics]'));
+        }
+
+        function renderUpcoming(items) {
+            const wrap = $('[data-upcoming]');
+            if (!items.length) {
+                wrap.innerHTML = '<div class="empty">No upcoming interviews scheduled yet.</div>';
+                return;
+            }
+            wrap.innerHTML = items.map(interview => `
+                <div class="interview" data-job-id="${job(interview).id || ''}">
+                    <div class="logo navy">${logoHtml(interview)}</div>
+                    <div class="info"><h3>${escapeHtml(job(interview).title || 'Interview')}</h3><p>${escapeHtml(companyName(interview))}</p><div class="meta"><span><span class="icon" data-icon="calendar"></span>${escapeHtml(formatDate(interviewDate(interview)))}</span><span><span class="icon" data-icon="clock"></span>${escapeHtml(formatTime(interview.interview_time))}</span><span><span class="icon" data-icon="video"></span>${escapeHtml(modeLabel(interview))}</span></div><div class="people">Interviewers:<span class="face">${escapeHtml(companyName(interview)[0] || 'C')}</span><span class="face">HR</span></div></div>
+                    <span class="badge">${escapeHtml(titleCase(interview.status || 'scheduled'))}</span>
+                    <div class="countdown">Interview in<strong>${escapeHtml(countdown(interview))}</strong></div>
+                    <button class="outline" data-detail type="button">View Details</button>
+                    <button class="primary" data-prepare type="button">Prepare Now</button>
+                </div>`).join('');
+            hydrateIcons(wrap);
+            bindInterviewActions(wrap);
+        }
+
+        function renderPast(items) {
+            const wrap = $('[data-past]');
+            const shown = items.slice(0, 3);
+            if (!shown.length) {
+                wrap.innerHTML = '<div class="empty">No past interviews yet.</div>';
+                return;
+            }
+            wrap.innerHTML = shown.map(interview => `
+                <div class="past-row" data-job-id="${job(interview).id || ''}">
+                    <div class="logo navy">${logoHtml(interview)}</div>
+                    <div class="info"><h3>${escapeHtml(job(interview).title || 'Interview')}</h3><p>${escapeHtml(companyName(interview))}</p><div class="meta"><span><span class="icon" data-icon="calendar"></span>${escapeHtml(formatDate(interviewDate(interview)))}</span><span><span class="icon" data-icon="clock"></span>${escapeHtml(formatTime(interview.interview_time))}</span><span><span class="icon" data-icon="video"></span>${escapeHtml(modeLabel(interview))}</span></div></div>
+                    <span class="badge">${escapeHtml(titleCase(interview.status || 'Completed'))}</span>
+                    <button class="outline" data-feedback type="button">View Feedback</button>
+                </div>`).join('');
+            hydrateIcons(wrap);
+            bindInterviewActions(wrap);
+        }
+
+        function logoHtml(interview) {
+            const logo = company(interview).company_logo;
+            return logo ? `<img src="${escapeAttr(logo)}" alt="${escapeAttr(companyName(interview))}">` : `<div><strong>${escapeHtml(logoText(interview))}</strong><span>${escapeHtml(companyName(interview).slice(0, 8))}</span></div>`;
+        }
+
+        function bindInterviewActions(root) {
+            root.querySelectorAll('[data-detail],[data-feedback]').forEach(button => button.addEventListener('click', event => {
+                const id = event.currentTarget.closest('[data-job-id]').dataset.jobId;
+                if (id) window.location.href = `/direct-mode/jobs/${id}`;
+            }));
+            root.querySelectorAll('[data-prepare]').forEach(button => button.addEventListener('click', () => {
+                document.querySelector('[data-tips]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }));
+        }
+
+        function renderCalendar() {
+            const date = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth(), 1);
+            const month = date.getMonth();
+            const year = date.getFullYear();
+            $('[data-month-label]').textContent = date.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+            const firstDay = date.getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevDays = new Date(year, month, 0).getDate();
+            const marks = new Set(state.interviews.map(interview => interviewDate(interview)).filter(Boolean).filter(item => item.getMonth() === month && item.getFullYear() === year).map(item => item.getDate()));
+            let cells = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(day => `<span class="day-name">${day}</span>`);
+            for (let i = firstDay - 1; i >= 0; i -= 1) cells.push(`<span class="day muted">${prevDays - i}</span>`);
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day += 1) {
+                const cls = [
+                    day === today.getDate() && month === today.getMonth() && year === today.getFullYear() ? 'today' : '',
+                    marks.has(day) ? 'has-interview' : '',
+                ].join(' ');
+                cells.push(`<span class="day ${cls}">${day}</span>`);
+            }
+            while (cells.length % 7 !== 0) cells.push(`<span class="day muted">${cells.length % 7}</span>`);
+            $('[data-calendar]').innerHTML = cells.join('');
+        }
+
+        function renderTips() {
+            const tips = [
+                ['Research the Company', 'Understand their products, values and latest updates.', 'building', 'blue-soft'],
+                ['Review Job Description', 'Focus on role skills, responsibilities and required qualification.', 'clipboard', 'green-soft'],
+                ['Practice Common Questions', 'Prepare your intro, project explanation and fresher basics.', 'book', 'purple-soft'],
+                ['Test Your Setup', 'Check internet, camera, microphone and meeting link before time.', 'trophy', 'orange-soft'],
+            ];
+            $('[data-tips]').innerHTML = tips.map(([title, text, icon, tone]) => `<div class="tip"><span class="tip-icon ${tone}" data-icon="${icon}"></span><div><h3>${title}</h3><p>${text}</p></div></div>`).join('');
+            hydrateIcons($('[data-tips]'));
+        }
+
+        async function loadData() {
+            if (!token) {
+                state.interviews = [];
+                render();
+                return;
+            }
+            try {
+                const dashboard = await fetch('/api/fresher/dashboard', { headers: headers() });
+                const payload = await dashboard.json();
+                if (payload.success === false) throw new Error(payload.message || 'Dashboard load nahi hua.');
+                const data = payload.data || {};
+                const upcoming = data.upcoming_interviews || [];
+                const recent = (data.recent_applications || []).map(app => app.interview ? { ...app.interview, job_application: app } : null).filter(Boolean);
+                const merged = [...upcoming, ...recent];
+                state.interviews = merged.filter((item, index, list) => list.findIndex(candidate => candidate.id === item.id) === index);
+                render();
+            } catch (error) {
+                state.interviews = [];
+                render();
+            }
+        }
+
+        function wireControls() {
+            $('[data-prev-month]').addEventListener('click', () => { state.calendarDate.setMonth(state.calendarDate.getMonth() - 1); renderCalendar(); });
+            $('[data-next-month]').addEventListener('click', () => { state.calendarDate.setMonth(state.calendarDate.getMonth() + 1); renderCalendar(); });
+            $('[data-calendar-view]').addEventListener('click', () => document.querySelector('[data-calendar]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+            $('[data-full-calendar]').addEventListener('click', event => { event.preventDefault(); document.querySelector('[data-calendar]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+            $('[data-view-past]').addEventListener('click', event => { event.preventDefault(); window.location.href = '/direct-mode/applications'; });
+            $('[data-view-tips]').addEventListener('click', () => document.querySelector('[data-tips]')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+            const headerSearch = document.querySelector('.search-top input');
+            if (headerSearch) {
+                headerSearch.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' && headerSearch.value.trim()) {
+                        window.location.href = `/direct-mode/jobs?search=${encodeURIComponent(headerSearch.value.trim())}`;
+                    }
+                });
+            }
+        }
+
+        function updateUserChrome() {
+            const name = authUser.name || 'Fresher';
+            $('[data-user-name]').textContent = `${name}!`;
+            const topUser = document.querySelector('.top-user strong, .user strong');
+            if (topUser) topUser.textContent = name;
+        }
+
+        function titleCase(value) {
+            return String(value || '').replaceAll('_', ' ').replace(/\b\w/g, char => char.toUpperCase());
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+        }
+
+        function escapeAttr(value) {
+            return escapeHtml(value).replace(/`/g, '&#096;');
+        }
+
+        hydrateIcons();
+        updateUserChrome();
+        wireControls();
+        loadData();
     </script>
 @endpush
 

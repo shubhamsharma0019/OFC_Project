@@ -118,5 +118,65 @@
             });
         });
     }
+
+    const jobList = document.getElementById('jobList');
+    let appliedJobIds = new Set();
+
+    function renderJobs(jobs) {
+        if (!jobList) return;
+        if (!jobs.length) {
+            jobList.innerHTML = FastTrack.emptyState('No Fast Track jobs found', 'Fast Track eligible jobs will appear here after companies publish them.', '/fast-track/certificate', 'View Certificate');
+            return;
+        }
+        jobList.innerHTML = jobs.map(function (job) {
+            const company = job.company_profile || job.company || {};
+            const companyName = company.company_name || company.name || job.company_name || 'Company';
+            const search = (job.title + ' ' + companyName + ' ' + (job.location || '')).toLowerCase();
+            const applied = appliedJobIds.has(Number(job.id)) || appliedJobIds.has(String(job.id));
+            return `<article class="job-card grid gap-4 rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:grid-cols-[82px_minmax(0,1fr)_auto] lg:items-center" data-search="${FastTrack.esc(search)}">
+                <span class="grid h-[76px] w-[76px] place-items-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-sm font-black text-[#075fe4]">${FastTrack.initials(companyName)}</span>
+                <div class="min-w-0">
+                    <h2 class="mb-2 text-base font-bold text-[#061942]">${FastTrack.esc(job.title || 'Fast Track Role')}</h2>
+                    <p class="mb-2 text-sm font-medium text-[#334b83]">${FastTrack.esc(companyName)} <strong class="text-[#075fe4]">Verified</strong></p>
+                    <div class="flex flex-wrap gap-3 text-xs font-medium text-[#334b83]"><span>${FastTrack.esc(job.location || 'India')}</span><span>|</span><span>${FastTrack.date(job.created_at)}</span></div>
+                </div>
+                <div>
+                    <div class="mb-4 flex flex-wrap gap-2">
+                        <span class="rounded-lg bg-[#e8f8ef] px-3 py-1.5 text-xs font-bold text-[#05843e]">${FastTrack.esc(job.job_type || 'Full Time')}</span>
+                        <span class="rounded-lg bg-[#efeaff] px-3 py-1.5 text-xs font-bold text-[#673de6]">${FastTrack.esc(job.experience || job.experience_level || 'Fresher')}</span>
+                        <span class="rounded-lg bg-[#eaf2ff] px-3 py-1.5 text-xs font-bold text-[#0b57bd]">Fast Track</span>
+                    </div>
+                    <button class="apply-job-btn inline-flex h-[38px] items-center justify-center rounded-md ${applied ? 'bg-[#e6fff0] text-[#05843e]' : 'bg-[#075fe4] text-white hover:bg-[#064fc0]'} px-5 text-sm font-bold" type="button" data-job-id="${FastTrack.esc(job.id)}" ${applied ? 'disabled' : ''}>${applied ? 'Applied' : 'Apply Now'}</button>
+                </div>
+            </article>`;
+        }).join('');
+
+        jobList.querySelectorAll('.apply-job-btn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                button.textContent = 'Applying...';
+                FastTrack.postJson('/api/fresher/jobs/' + button.dataset.jobId + '/apply')
+                    .then(function () {
+                        button.textContent = 'Applied';
+                        button.disabled = true;
+                        button.className = button.className.replace('bg-[#075fe4] text-white hover:bg-[#064fc0]', 'bg-[#e6fff0] text-[#05843e]');
+                    })
+                    .catch(function (error) {
+                        button.textContent = error.status === 409 ? 'Applied' : 'Apply Now';
+                        if (error.status === 409) button.disabled = true;
+                    });
+            });
+        });
+    }
+
+    Promise.all([
+        FastTrack.getJson('/api/fresher/applications').catch(() => ({ data: { applications: [] } })),
+        FastTrack.getJson('/api/jobs?hiring_mode=fast_track'),
+    ]).then(function (responses) {
+        const applications = FastTrack.apiData(responses[0], 'applications') || [];
+        appliedJobIds = new Set(applications.map((item) => item.job_id || (item.job && item.job.id)).filter(Boolean));
+        renderJobs(FastTrack.apiData(responses[1], 'jobs') || []);
+    }).catch(function () {
+        if (jobList) jobList.insertAdjacentHTML('afterbegin', '<div class="rounded-lg border border-[#ffd6a8] bg-[#fff8ef] p-4 text-sm font-semibold text-[#8a5200]">Live jobs data nahi aa pa raha. Static preview retained hai.</div>');
+    });
 </script>
 @endpush

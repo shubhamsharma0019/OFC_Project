@@ -25,19 +25,19 @@
                 <div class="ml-auto flex items-center gap-3">
                     <button class="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#dce7f8] bg-white text-[#061942] shadow-sm" type="button" aria-label="Notifications">
                         <svg class="h-5 w-5 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
-                        <span class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#ff335f] px-1 text-xs font-bold text-white">{{ $student['notifications'] }}</span>
+                        <span id="fastTrackNotificationCount" class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#ff335f] px-1 text-xs font-bold text-white">{{ $student['notifications'] }}</span>
                     </button>
 
                     <div class="relative flex items-center gap-3">
                         <div class="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-[#1769ff] to-[#17a6a8]"></div>
-                        <h3 class="hidden max-w-[160px] truncate text-sm font-bold text-[#061942] sm:block">{{ $student['name'] }}</h3>
+                        <h3 id="fastTrackStudentName" class="hidden max-w-[160px] truncate text-sm font-bold text-[#061942] sm:block">{{ $student['name'] }}</h3>
                         <button id="fastTrackUserMenuBtn" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#455a82] hover:bg-[#eff5ff]" type="button" aria-label="Open account menu">
                             <svg class="h-5 w-5 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
                         </button>
 
                         <div id="fastTrackUserMenu" class="absolute right-0 top-[calc(100%+12px)] hidden w-44 rounded-lg border border-[#dce7f8] bg-white py-2 shadow-xl">
                             <a class="block px-4 py-2 text-sm font-semibold text-[#061942] hover:bg-[#eff5ff]" href="/fast-track/profile">My Profile</a>
-                            <a class="block px-4 py-2 text-sm font-semibold text-[#061942] hover:bg-[#eff5ff]" href="/fast-track/login">Logout</a>
+                            <a id="fastTrackLogout" class="block px-4 py-2 text-sm font-semibold text-[#061942] hover:bg-[#eff5ff]" href="/fast-track/login">Logout</a>
                         </div>
                     </div>
                 </div>
@@ -76,6 +76,7 @@
             });
         }
     </script>
+    <script src="/js/fast-track-dynamic.js"></script>
     @stack('scripts')
 </body>
 </html>

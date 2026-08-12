@@ -89,6 +89,8 @@
 <script>
     const courseSearchInput = document.getElementById('courseSearchInput');
     const courseFilterBtn = document.getElementById('courseFilterBtn');
+    const courseGrid = document.getElementById('courseGrid');
+    let fastTrackCourses = [];
 
     function filterCourses(mode) {
         const query = (courseSearchInput ? courseSearchInput.value : '').toLowerCase();
@@ -111,5 +113,48 @@
             filterCourses('long');
         });
     }
+
+    function renderDynamicCourses(courses) {
+        if (!courseGrid) return;
+        if (!courses.length) {
+            courseGrid.innerHTML = '<div class="sm:col-span-2 xl:col-span-4">' + FastTrack.emptyState('No courses available', 'Approved Fast Track courses will appear here.', '/fast-track/assessment', 'Take Assessment') + '</div>';
+            return;
+        }
+
+        courseGrid.innerHTML = courses.map(function (course, index) {
+            const title = FastTrack.courseName(course);
+            const text = FastTrack.courseText(course);
+            const fee = course.fee || course.price || course.course_fee || course.amount;
+            return `
+                <article class="course-card flex min-h-[360px] flex-col rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]" data-title="${FastTrack.esc((title + ' ' + text + ' ' + FastTrack.partnerName(course)).toLowerCase())}" data-duration="${FastTrack.esc(FastTrack.courseDuration(course))}">
+                    <span class="mb-5 grid h-[54px] w-[54px] place-items-center rounded-lg text-sm font-black text-white" style="background:${index % 2 ? '#7744eb' : '#071743'};">${FastTrack.initials(title)}</span>
+                    ${index === 0 ? '<span class="mb-4 inline-flex self-start rounded-md bg-[#eee7ff] px-2.5 py-1 text-[11px] font-bold text-[#7744eb]">Recommended</span>' : ''}
+                    <h3 class="mb-3 text-base font-bold text-[#061942]">${FastTrack.esc(title)}</h3>
+                    <p class="mb-5 text-sm leading-6 text-[#334b83]">${FastTrack.esc(text)}</p>
+                    <div class="mt-auto mb-5 grid gap-3 text-sm">
+                        <div class="flex justify-between gap-4 text-[#334b83]"><span>Duration</span><strong class="font-medium text-[#061942]">${FastTrack.esc(FastTrack.courseDuration(course))}</strong></div>
+                        <div class="flex justify-between gap-4 text-[#334b83]"><span>Fees</span><strong class="font-medium text-[#061942]">${FastTrack.money(fee)}</strong></div>
+                        <div class="flex justify-between gap-4 text-[#334b83]"><span>Mode</span><strong class="font-medium text-[#061942]">${FastTrack.esc(FastTrack.courseMode(course))}</strong></div>
+                    </div>
+                    <a class="inline-flex h-[42px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold transition ${index === 0 ? 'bg-[#075fe4] text-white hover:bg-[#064fc0]' : 'bg-white text-[#075fe4] hover:bg-[#eff5ff]'}" href="/fast-track/course-details?course=${encodeURIComponent(course.id)}" data-course-id="${FastTrack.esc(course.id)}">View Details</a>
+                </article>
+            `;
+        }).join('');
+
+        courseGrid.querySelectorAll('[data-course-id]').forEach(function (link) {
+            link.addEventListener('click', function () {
+                FastTrack.rememberCourse(this.dataset.courseId);
+            });
+        });
+    }
+
+    FastTrack.getJson('/api/courses')
+        .then(function (result) {
+            fastTrackCourses = FastTrack.apiData(result, 'courses') || [];
+            renderDynamicCourses(fastTrackCourses);
+        })
+        .catch(function () {
+            if (courseGrid) courseGrid.insertAdjacentHTML('afterbegin', '<div class="sm:col-span-2 xl:col-span-4 rounded-lg border border-[#ffd6a8] bg-[#fff8ef] p-4 text-sm font-semibold text-[#8a5200]">Live course data nahi aa pa raha. Static preview retained hai.</div>');
+        });
 </script>
 @endpush

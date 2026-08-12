@@ -49,7 +49,7 @@
             <p class="mt-2 text-sm font-medium text-[#334b83]">Track your learning journey and monitor your progress.</p>
         </div>
 
-        <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div id="progressStats" class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             @foreach ($cards as $card)
                 <article class="grid grid-cols-[62px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                     <span class="grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">{{ $card['icon'] }}</span>
@@ -120,7 +120,7 @@
                             <th class="border-t border-[#e6eef8] px-3 py-3 font-semibold"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="progressTableBody">
                         @foreach ($courses as $course)
                             <tr>
                                 <td class="border-t border-[#e6eef8] px-3 py-3">
@@ -151,3 +151,51 @@
         </article>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    const progressStats = document.getElementById('progressStats');
+    const progressTableBody = document.getElementById('progressTableBody');
+
+    function renderProgressPage(enrollments) {
+        const completed = enrollments.filter((item) => item.enrollment_status === 'completed' || item.training_status === 'completed').length;
+        const avg = enrollments.length ? Math.round(enrollments.reduce((sum, item) => sum + FastTrack.progress(item), 0) / enrollments.length) : 0;
+
+        if (progressStats) {
+            const stats = [
+                ['EC', 'Enrolled Courses', enrollments.length, '/fast-track/training'],
+                ['CC', 'Courses Completed', completed, '/fast-track/certificate'],
+                ['LC', 'Lessons Completed', avg + '%', '#'],
+                ['OP', 'Overall Progress', avg + '%', '#'],
+            ];
+            progressStats.innerHTML = stats.map(function (stat) {
+                return `<article class="grid grid-cols-[62px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+                    <span class="grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">${stat[0]}</span>
+                    <div class="min-w-0"><h2 class="mb-1 text-2xl font-bold text-[#061942]">${stat[2]}</h2><p class="mb-2 text-sm font-medium text-[#334b83]">${stat[1]}</p><a class="text-xs font-bold text-[#075fe4]" href="${stat[3]}">View -></a></div>
+                </article>`;
+            }).join('');
+        }
+
+        if (progressTableBody) {
+            if (!enrollments.length) {
+                progressTableBody.innerHTML = `<tr><td colspan="6" class="border-t border-[#e6eef8] px-3 py-8 text-center text-sm text-[#334b83]">No training progress yet.</td></tr>`;
+                return;
+            }
+            progressTableBody.innerHTML = enrollments.map(function (enrollment) {
+                const course = FastTrack.course(enrollment);
+                const progress = FastTrack.progress(enrollment);
+                return `<tr>
+                    <td class="border-t border-[#e6eef8] px-3 py-3"><div class="flex items-center gap-4"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#061942] text-[10px] font-black text-white">${FastTrack.initials(FastTrack.courseName(course))}</span><div><strong class="font-bold text-[#061942]">${FastTrack.esc(FastTrack.courseName(course))}</strong><br><span class="text-xs text-[#536484]">${FastTrack.esc(FastTrack.courseDuration(course))}</span></div></div></td>
+                    <td class="border-t border-[#e6eef8] px-3 py-3"><div class="h-2 min-w-[130px] overflow-hidden rounded-full bg-[#e9edf5]"><span class="block h-full rounded-full bg-[#075fe4]" style="width:${progress}%;"></span></div></td>
+                    <td class="border-t border-[#e6eef8] px-3 py-3 font-bold text-[#061942]">${progress}%</td>
+                    <td class="border-t border-[#e6eef8] px-3 py-3"><span class="inline-flex rounded-md px-3 py-1.5 text-xs font-bold bg-[#e6fff0] text-[#05843e]">${FastTrack.esc(FastTrack.statusText(enrollment.training_status || enrollment.enrollment_status))}</span></td>
+                    <td class="border-t border-[#e6eef8] px-3 py-3 text-[#536484]">${FastTrack.date(enrollment.updated_at)}</td>
+                    <td class="border-t border-[#e6eef8] px-3 py-3 text-right"><a class="font-bold text-[#075fe4]" href="/fast-track/course-details?course=${encodeURIComponent(course.id || '')}">Open</a></td>
+                </tr>`;
+            }).join('');
+        }
+    }
+
+    FastTrack.enrollments().then(renderProgressPage).catch(function () {});
+</script>
+@endpush

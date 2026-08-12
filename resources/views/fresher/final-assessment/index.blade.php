@@ -42,6 +42,8 @@
             <p class="mt-2 text-sm font-medium text-[#334b83]">Take the final assessment to test your knowledge and earn your certificate.</p>
         </div>
 
+        <article id="finalAssessmentRunner" class="hidden rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]"></article>
+
         <article class="grid gap-6 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:grid-cols-[165px_minmax(0,1fr)] xl:grid-cols-[165px_minmax(0,1fr)_repeat(3,170px)] xl:items-center">
             <div class="hidden h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-white text-[42px] font-black text-[#075fe4] sm:flex">FA</div>
 
@@ -124,3 +126,69 @@
         </article>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    const finalAssessmentRunner = document.getElementById('finalAssessmentRunner');
+    let finalEnrollment = null;
+    let finalAttemptId = null;
+    let finalQuestions = [];
+
+    function renderFinalLock(enrollments) {
+        const completed = enrollments.find(function (item) {
+            return (item.training_status === 'completed' || item.enrollment_status === 'completed') && (item.payment_status === 'paid' || item.payment_status === 'success');
+        });
+        finalEnrollment = completed;
+        if (!finalAssessmentRunner) return;
+        finalAssessmentRunner.classList.remove('hidden');
+        if (!completed) {
+            finalAssessmentRunner.innerHTML = `<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 class="text-lg font-bold text-[#061942]">Final Assessment Locked</h2><p class="mt-2 text-sm text-[#334b83]">Complete paid training first. Training partner progress must reach 100% before final assessment opens.</p></div><a class="h-10 rounded-md bg-[#075fe4] px-5 py-2.5 text-sm font-bold text-white" href="/fast-track/training-progress">View Progress</a></div>`;
+            return;
+        }
+        finalAssessmentRunner.innerHTML = `<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 class="text-lg font-bold text-[#061942]">Ready: ${FastTrack.esc(FastTrack.courseName(FastTrack.course(completed)))}</h2><p class="mt-2 text-sm text-[#334b83]">Training is complete. Start the real final assessment to generate certificate eligibility.</p></div><button id="startFinalAssessmentBtn" class="h-10 rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white" type="button">Start Final Assessment</button></div>`;
+        document.getElementById('startFinalAssessmentBtn').addEventListener('click', startFinalAssessment);
+    }
+
+    function renderFinalQuestions() {
+        finalAssessmentRunner.innerHTML = `<form id="finalAssessmentForm" class="space-y-5">${finalQuestions.map(function (question, index) {
+            const options = question.options || [question.option_a, question.option_b, question.option_c, question.option_d].filter(Boolean);
+            return `<fieldset class="rounded-lg border border-[#e6eef8] p-4"><legend class="mb-3 text-sm font-bold text-[#061942]">${index + 1}. ${FastTrack.esc(question.question || question.title)}</legend>${options.map(function (option, optionIndex) { return `<label class="mb-2 flex gap-3 text-sm text-[#334b83]"><input class="mt-1" type="radio" name="fq_${question.id}" value="${optionIndex + 1}" required><span>${FastTrack.esc(option.text || option)}</span></label>`; }).join('')}</fieldset>`;
+        }).join('')}<button class="h-10 rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white" type="submit">Submit Final Assessment</button></form>`;
+        document.getElementById('finalAssessmentForm').addEventListener('submit', submitFinalAssessment);
+    }
+
+    function startFinalAssessment() {
+        finalAssessmentRunner.innerHTML = '<p class="text-sm font-semibold text-[#334b83]">Starting final assessment...</p>';
+        FastTrack.postJson('/api/fresher/enrollments/' + finalEnrollment.id + '/final-assessment/start')
+            .then(function (result) {
+                const attempt = FastTrack.apiData(result, 'attempt') || FastTrack.apiData(result);
+                finalAttemptId = attempt.id;
+                return FastTrack.getJson('/api/fresher/final-assessment/' + finalAttemptId + '/questions');
+            })
+            .then(function (result) {
+                finalQuestions = FastTrack.apiData(result, 'questions') || [];
+                renderFinalQuestions();
+            })
+            .catch(function (error) {
+                finalAssessmentRunner.innerHTML = `<p class="text-sm font-semibold text-[#8a5200]">${FastTrack.esc(error.message || 'Final assessment could not start.')}</p>`;
+            });
+    }
+
+    function submitFinalAssessment(event) {
+        event.preventDefault();
+        const answers = finalQuestions.map(function (question) {
+            const checked = event.target.querySelector('[name="fq_' + question.id + '"]:checked');
+            return { question_id: question.id, selected_option: checked ? checked.value : null };
+        });
+        FastTrack.postJson('/api/fresher/final-assessment/' + finalAttemptId + '/submit', { answers: answers })
+            .then(function () { return FastTrack.getJson('/api/fresher/final-assessment/' + finalAttemptId + '/result'); })
+            .then(function (result) {
+                const data = FastTrack.apiData(result, 'result') || FastTrack.apiData(result);
+                finalAssessmentRunner.innerHTML = `<div><h2 class="text-lg font-bold text-[#061942]">Final Assessment Submitted</h2><p class="mt-2 text-sm text-[#334b83]">Score: <strong class="text-[#061942]">${FastTrack.esc(data.score_percentage || data.score || 0)}%</strong>. Certificate status will update automatically after passing.</p><a class="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white" href="/fast-track/certificate">View Certificate</a></div>`;
+            })
+            .catch(function (error) { alert(error.message || 'Submit failed'); });
+    }
+
+    FastTrack.enrollments().then(renderFinalLock).catch(function () {});
+</script>
+@endpush

@@ -49,7 +49,7 @@
             <p class="mt-2 text-sm font-medium text-[#334b83]">Explore course details, curriculum, and other important information.</p>
         </div>
 
-        <article class="grid gap-7 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)] xl:grid-cols-[140px_minmax(0,1fr)_300px] xl:items-center">
+        <article id="courseDetailsHero" class="grid gap-7 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)] xl:grid-cols-[140px_minmax(0,1fr)_300px] xl:items-center">
             <div class="grid h-[126px] w-[126px] place-items-center rounded-lg bg-[#071743] text-3xl font-black text-white">FS</div>
 
             <div class="min-w-0">
@@ -147,5 +147,96 @@
             document.querySelector('[data-panel="' + tab.dataset.tab + '"]').classList.remove('hidden');
         });
     });
+
+    const courseDetailsHero = document.getElementById('courseDetailsHero');
+    const selectedCourseId = FastTrack.selectedCourseId();
+    let currentCourse = null;
+
+    function renderCourseDetails(course) {
+        currentCourse = course;
+        FastTrack.rememberCourse(course.id);
+        const title = FastTrack.courseName(course);
+        const fee = course.fee || course.price || course.course_fee || course.amount;
+        const description = FastTrack.courseText(course);
+        if (courseDetailsHero) {
+            courseDetailsHero.innerHTML = `
+                <div class="grid h-[126px] w-[126px] place-items-center rounded-lg bg-[#071743] text-3xl font-black text-white">${FastTrack.initials(title)}</div>
+                <div class="min-w-0">
+                    <h2 class="mb-3 flex flex-wrap items-center gap-2 text-xl font-bold text-[#061942]">
+                        <span>${FastTrack.esc(title)}</span>
+                        <span class="inline-flex rounded-md bg-[#eee7ff] px-2.5 py-1 text-[11px] font-bold text-[#7744eb]">${FastTrack.esc(FastTrack.partnerName(course))}</span>
+                    </h2>
+                    <p class="mb-6 text-sm leading-6 text-[#334b83]">${FastTrack.esc(description)}</p>
+                    <div class="grid gap-4 text-xs text-[#334b83] sm:grid-cols-2 lg:grid-cols-5">
+                        <span>Duration<b class="mt-2 block text-sm font-bold text-[#061942]">${FastTrack.esc(FastTrack.courseDuration(course))}</b></span>
+                        <span>Fees<b class="mt-2 block text-sm font-bold text-[#061942]">${FastTrack.money(fee)}</b></span>
+                        <span>Mode<b class="mt-2 block text-sm font-bold text-[#061942]">${FastTrack.esc(FastTrack.courseMode(course))}</b></span>
+                        <span>Level<b class="mt-2 block text-sm font-bold text-[#061942]">${FastTrack.esc(course.level || 'Beginner friendly')}</b></span>
+                        <span>Certificate<b class="mt-2 block text-sm font-bold text-[#061942]">Yes</b></span>
+                    </div>
+                </div>
+                <div class="border-t border-[#dce7f8] pt-5 text-center xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
+                    <div class="mb-5 text-sm font-medium text-[#334b83]">Partner <strong class="mx-1 text-base font-bold text-[#061942]">${FastTrack.esc(FastTrack.partnerName(course))}</strong></div>
+                    <button id="dynamicEnrollBtn" class="mb-3 inline-flex h-[42px] w-full items-center justify-center rounded-lg bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#064fc0]" type="button">Enroll Now</button>
+                    <button id="dynamicPayBtn" class="hidden inline-flex h-[42px] w-full items-center justify-center rounded-lg border border-[#075fe4] bg-white text-sm font-bold text-[#075fe4] transition hover:bg-[#eff5ff]" type="button">Pay & Confirm</button>
+                    <p id="dynamicEnrollStatus" class="mt-3 text-xs font-semibold text-[#334b83]"></p>
+                </div>
+            `;
+
+            const enrollBtn = document.getElementById('dynamicEnrollBtn');
+            const payBtn = document.getElementById('dynamicPayBtn');
+            const status = document.getElementById('dynamicEnrollStatus');
+            let enrollmentId = null;
+
+            enrollBtn.addEventListener('click', function () {
+                status.textContent = 'Creating enrollment...';
+                FastTrack.postJson('/api/fresher/courses/' + course.id + '/enroll')
+                    .then(function (result) {
+                        const enrollment = FastTrack.apiData(result, 'enrollment') || FastTrack.apiData(result);
+                        enrollmentId = enrollment.id;
+                        status.textContent = 'Enrollment created. Confirm payment to start training.';
+                        payBtn.classList.remove('hidden');
+                    })
+                    .catch(function (error) {
+                        const existing = error.data && error.data.data && error.data.data.enrollment;
+                        if (existing && existing.id) {
+                            enrollmentId = existing.id;
+                            status.textContent = 'Already enrolled. You can continue payment/training.';
+                            payBtn.classList.remove('hidden');
+                        } else {
+                            status.textContent = error.message || 'Enrollment failed.';
+                        }
+                    });
+            });
+
+            payBtn.addEventListener('click', function () {
+                if (!enrollmentId) return;
+                status.textContent = 'Confirming payment...';
+                FastTrack.postJson('/api/fresher/enrollments/' + enrollmentId + '/payment', {
+                    transaction_id: 'FT-' + Date.now(),
+                    payment_status: 'success',
+                }).then(function () {
+                    status.textContent = 'Payment successful. Training unlocked.';
+                    location.href = '/fast-track/training';
+                }).catch(function (error) {
+                    status.textContent = error.message || 'Payment failed. Please retry.';
+                });
+            });
+        }
+
+        const aboutPanel = document.querySelector('[data-panel="about"]');
+        if (aboutPanel) {
+            aboutPanel.innerHTML = `<h3 class="mb-3 text-base font-bold text-[#061942]">About this Course</h3><p class="mb-5 text-sm leading-7 text-[#061942]">${FastTrack.esc(description)}</p><h3 class="mb-4 text-base font-bold text-[#061942]">What You Will Learn</h3><div class="grid gap-x-9 gap-y-3 sm:grid-cols-2">${String(course.skills || course.curriculum || course.learning_outcomes || '').split(/,|\n/).filter(Boolean).slice(0, 10).map(function (item) { return `<div class="flex items-center gap-2 text-sm font-medium text-[#061942]"><span class="font-black text-[#0a8f3f]">✓</span><span>${FastTrack.esc(item.trim())}</span></div>`; }).join('') || '<div class="text-sm text-[#334b83]">Curriculum will be shared by the training partner.</div>'}</div>`;
+        }
+    }
+
+    (selectedCourseId ? FastTrack.getJson('/api/courses/' + selectedCourseId) : FastTrack.getJson('/api/courses'))
+        .then(function (result) {
+            const course = selectedCourseId ? FastTrack.apiData(result, 'course') : ((FastTrack.apiData(result, 'courses') || [])[0]);
+            if (course) renderCourseDetails(course);
+        })
+        .catch(function () {
+            if (courseDetailsHero) courseDetailsHero.insertAdjacentHTML('beforebegin', '<div class="rounded-lg border border-[#ffd6a8] bg-[#fff8ef] p-4 text-sm font-semibold text-[#8a5200]">Live course detail nahi aa pa raha. Static preview retained hai.</div>');
+        });
 </script>
 @endpush
