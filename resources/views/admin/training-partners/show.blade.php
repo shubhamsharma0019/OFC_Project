@@ -6,40 +6,72 @@
 
 @php
     $activePage = 'training-partners';
-    $stats = [
-        ['label' => 'Total Records', 'value' => '128'],
-        ['label' => 'Active', 'value' => '96'],
-        ['label' => 'Pending', 'value' => '18'],
-        ['label' => 'Updated Today', 'value' => '14'],
-    ];
 @endphp
+
+@section('topbarExtra')
+    <a href="/admin/training-partners" class="inline-flex h-10 items-center justify-center rounded-md border border-[#dce7f8] px-4 text-sm font-bold text-[#075fe4]">Back</a>
+@endsection
 
 @section('content')
     <section class="grid gap-5">
-        <div class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]">
-            <p class="mb-5 text-sm leading-relaxed text-[#52607a]">Review partner profile, courses, payouts and verification status.</p>
-            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                @foreach ($stats as $stat)
-                    <div class="rounded-lg border border-[#e4ecf8] bg-[#f8fbff] p-4">
-                        <p class="text-xs font-bold text-[#52607a]">{{ $stat['label'] }}</p>
-                        <h2 class="mt-2 text-2xl font-bold text-[#061942]">{{ $stat['value'] }}</h2>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="overflow-x-auto rounded-lg border border-[#dce7f8] bg-white shadow-[0_12px_26px_rgba(6,25,66,.05)]">
-            <div class="grid min-w-[760px] grid-cols-[1.4fr_.9fr_.9fr_.8fr] border-b border-[#e4ecf8] px-5 py-4 text-sm font-bold text-[#061942]">
-                <span>Name</span><span>Status</span><span>Owner</span><span>Action</span>
-            </div>
-            @foreach (['Primary Record', 'Secondary Record', 'Review Queue'] as $row)
-                <div class="grid min-w-[760px] grid-cols-[1.4fr_.9fr_.9fr_.8fr] items-center border-b border-[#eef3fb] px-5 py-4 text-sm last:border-b-0">
-                    <strong>{{ $row }}</strong>
-                    <span class="w-max rounded-md bg-[#e8f8ef] px-3 py-1 text-xs font-bold text-[#078346]">Active</span>
-                    <span class="text-[#52607a]">Admin Team</span>
-                    <button class="w-max rounded-md border border-[#075fe4] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button">View</button>
-                </div>
-            @endforeach
-        </div>
+        <div id="detailAlert" class="hidden rounded-lg border border-[#ffd8d8] bg-[#fff4f4] p-4 text-sm font-bold text-[#ff1f2f]"></div>
+        <div id="partnerDetail" class="grid gap-5"><article class="rounded-lg border border-[#dce7f8] bg-white p-5 text-sm text-[#52607a] shadow-[0_12px_26px_rgba(6,25,66,.05)]">Loading training partner details...</article></div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    const token = localStorage.getItem('ofc_auth_token');
+    const partnerId = localStorage.getItem('ofc_selected_admin_training_partner_id');
+    const partnerDetail = document.getElementById('partnerDetail');
+    const detailAlert = document.getElementById('detailAlert');
+
+    if (!token) window.location.href = '/admin/login';
+    if (!partnerId) window.location.href = '/admin/training-partners';
+
+    function escapeHtml(value) { return String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]); }
+    function number(value) { return Number(value || 0).toLocaleString('en-IN'); }
+    function money(value) { return 'Rs. ' + Number(value || 0).toLocaleString('en-IN'); }
+    function formatDate(value) { return value ? new Date(value).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'; }
+    function statusText(value) { return String(value || '-').replaceAll('_', ' '); }
+    function badgeClass(status) { if (status === 'approved' || status === 'active' || status === 'completed' || status === 'paid') return 'bg-[#e8f8ef] text-[#078346]'; if (status === 'rejected' || status === 'blocked' || status === 'failed') return 'bg-[#fff0f1] text-[#ff1f2f]'; return 'bg-[#fff4df] text-[#b86500]'; }
+    function field(label, value) { return `<div class="rounded-lg border border-[#e4ecf8] bg-[#f8fbff] p-4"><p class="text-xs font-bold text-[#52607a]">${label}</p><strong class="mt-2 block break-words text-sm text-[#061942]">${escapeHtml(value || '-')}</strong></div>`; }
+    function miniStat(label, value) { return `<div class="rounded-lg border border-[#e4ecf8] bg-[#f8fbff] p-4"><p class="text-xs font-bold text-[#52607a]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#061942]">${number(value)}</h2></div>`; }
+    function listItem(title, meta, status) { return `<div class="grid gap-2 rounded-lg border border-[#edf2fb] p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"><div><strong class="block text-sm text-[#061942]">${escapeHtml(title)}</strong><p class="mt-1 text-xs text-[#52607a]">${escapeHtml(meta)}</p></div><span class="w-max rounded-md ${badgeClass(status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(status))}</span></div>`; }
+    async function requestJson(url, options = {}) {
+        const response = await fetch(url, { ...options, headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, ...(options.headers || {}) } });
+        if (response.status === 401) { window.location.href = '/admin/login'; return null; }
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.message || 'Request failed.');
+        return payload;
+    }
+    function renderPartner(partner) {
+        const courses = partner.courses || [];
+        const enrollments = courses.flatMap((course) => course.enrollments || []);
+        const revenue = enrollments.flatMap((enrollment) => enrollment.payments || []).filter((payment) => payment.payment_status === 'success').reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+        partnerDetail.innerHTML = `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between"><div class="flex min-w-0 gap-4"><div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-xl font-black text-[#075fe4]">${escapeHtml((partner.institute_name || 'T').slice(0, 1).toUpperCase())}</div><div class="min-w-0"><h2 class="text-2xl font-bold text-[#061942]">${escapeHtml(partner.institute_name || partner.user?.name || 'Training Partner')}</h2><p class="mt-1 text-sm text-[#52607a]">${escapeHtml(partner.email || partner.user?.email || '-')}</p><div class="mt-3 flex flex-wrap gap-2"><span class="rounded-md ${badgeClass(partner.approval_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(partner.approval_status)}</span><span class="rounded-md ${badgeClass(partner.user?.status)} px-3 py-1 text-xs font-bold capitalize">User ${escapeHtml(partner.user?.status || '-')}</span></div></div></div>
+            <div class="flex flex-wrap gap-2"><button id="approveBtn" class="h-10 rounded-md border border-[#078346] px-4 text-sm font-bold text-[#078346]" type="button">Approve</button><button id="rejectBtn" class="h-10 rounded-md border border-[#ff1f2f] px-4 text-sm font-bold text-[#ff1f2f]" type="button">Reject</button><button id="userStatusBtn" class="h-10 rounded-md border border-[#075fe4] px-4 text-sm font-bold text-[#075fe4]" type="button" data-status="${partner.user?.status === 'active' ? 'blocked' : 'active'}">${partner.user?.status === 'active' ? 'Block User' : 'Activate User'}</button></div></div>
+            <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">${miniStat('Courses', courses.length)}${miniStat('Enrollments', enrollments.length)}${miniStat('Completed', enrollments.filter((e) => e.training_status === 'completed').length)}${miniStat('Revenue', money(revenue))}</div>
+        </article>
+        <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><h2 class="mb-4 text-lg font-bold text-[#061942]">Profile</h2><div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">${field('Location', partner.location)}${field('Phone', partner.phone || partner.user?.mobile)}${field('Website', partner.website)}${field('Joined', formatDate(partner.created_at))}${field('Rejection Reason', partner.rejection_reason)}${field('About', partner.about_institute)}</div></article>
+        <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><h2 class="mb-4 text-lg font-bold text-[#061942]">Courses</h2><div class="grid gap-3">${courses.length ? courses.map((course) => listItem(course.course_name || 'Course', (course.category || '-') + ' - ' + (course.enrollments_count || 0) + ' enrollments - ' + money(course.fees), course.status)).join('') : '<div class="rounded-lg border border-[#edf2fb] p-4 text-sm font-semibold text-[#52607a]">No courses found.</div>'}</div></article>`;
+        document.getElementById('approveBtn').onclick = () => action(`/api/admin/training-partners/${partnerId}/approve`, { method: 'POST' });
+        document.getElementById('rejectBtn').onclick = () => { const reason = prompt('Rejection reason?') || 'Rejected by admin.'; action(`/api/admin/training-partners/${partnerId}/reject`, { method: 'POST', body: JSON.stringify({ rejection_reason: reason }) }); };
+        document.getElementById('userStatusBtn').onclick = (event) => action(`/api/admin/training-partners/${partnerId}/user-status`, { method: 'PATCH', body: JSON.stringify({ status: event.target.dataset.status }) });
+    }
+    async function action(url, options) { try { await requestJson(url, options); await loadPartner(); } catch (error) { alert(error.message || 'Action failed.'); } }
+    async function loadPartner() {
+        try {
+            const payload = await requestJson(`/api/admin/training-partners/${partnerId}`);
+            if (!payload) return;
+            renderPartner(payload.data.training_partner);
+        } catch (error) {
+            detailAlert.textContent = error.message || 'Training partner detail load nahi ho paayi.';
+            detailAlert.classList.remove('hidden');
+            partnerDetail.innerHTML = '';
+        }
+    }
+    loadPartner();
+</script>
+@endpush

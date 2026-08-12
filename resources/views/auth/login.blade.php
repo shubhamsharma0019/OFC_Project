@@ -17,7 +17,7 @@
             'id' => 'email',
             'icon' => '@',
             'placeholder' => 'Enter email address',
-            'value' => 'admin@ofc.com',
+            'value' => 'admin@onlyfreshers.com',
         ],
         [
             'label' => 'Password',
@@ -132,7 +132,7 @@
                     <a href="#" class="font-semibold text-[#075fe4] no-underline">Forgot password?</a>
                 </div>
 
-                <button type="submit" class="h-[46px] w-full rounded-[11px] bg-[#075fe4] text-lg font-semibold text-white shadow-[0_8px_18px_rgba(7,95,228,0.24)] transition hover:bg-[#003f9e]">Login</button>
+                <button type="submit" id="loginButton" class="h-[46px] w-full rounded-[11px] bg-[#075fe4] text-lg font-semibold text-white shadow-[0_8px_18px_rgba(7,95,228,0.24)] transition hover:bg-[#003f9e]">Login</button>
             </form>
 
             <div class="mx-2.5 my-4 flex items-center gap-[22px] text-sm text-[#52607a]">
@@ -154,17 +154,56 @@
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const loginError = document.getElementById('loginError');
+        const loginButton = document.getElementById('loginButton');
         const passwordToggle = document.getElementById('passwordToggle');
         const dashboardUrl = @json($dashboardUrl);
 
-        adminLoginForm.addEventListener('submit', function (event) {
-            event.preventDefault();
+        function showError(message) {
+            loginError.textContent = message || 'Email ya password galat hai.';
+            loginError.classList.remove('hidden');
+        }
 
-            if (emailInput.value === 'admin@ofc.com' && passwordInput.value === 'password') {
+        adminLoginForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            loginError.classList.add('hidden');
+            loginButton.disabled = true;
+            loginButton.textContent = 'Logging in...';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: emailInput.value.trim(),
+                        password: passwordInput.value,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Email ya password galat hai.');
+                }
+
+                if (result.data?.user?.role !== 'admin') {
+                    throw new Error('Please login with an admin account.');
+                }
+
+                localStorage.setItem('ofc_auth_token', result.data.token);
+                localStorage.setItem('ofc_auth_user', JSON.stringify(result.data.user));
                 localStorage.setItem('onlyFreshersAdminLogin', 'yes');
                 window.location.href = dashboardUrl;
-            } else {
-                loginError.classList.remove('hidden');
+            } catch (error) {
+                localStorage.removeItem('ofc_auth_token');
+                localStorage.removeItem('ofc_auth_user');
+                localStorage.removeItem('onlyFreshersAdminLogin');
+                showError(error.message || 'Login nahi ho paaya.');
+            } finally {
+                loginButton.disabled = false;
+                loginButton.textContent = 'Login';
             }
         });
 

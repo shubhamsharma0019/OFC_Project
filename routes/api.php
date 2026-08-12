@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AdminApplicationController;
+use App\Http\Controllers\Api\AdminAssessmentController;
 use App\Http\Controllers\Api\AdminAssessmentQuestionController;
 use App\Http\Controllers\Api\AdminCompanyController;
 use App\Http\Controllers\Api\AdminCourseController;
@@ -711,6 +712,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get(
             '/{courseEnrollment}',
             [AdminEnrollmentController::class, 'show']
+        );
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Assessment Monitoring Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('admin/assessments')->group(function () {
+        Route::get(
+            '/',
+            [AdminAssessmentController::class, 'index']
         );
     });
 

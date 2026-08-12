@@ -45,6 +45,27 @@
     </div>
 
     <script>
+        (function guardAdminSession() {
+            if (window.location.pathname === '/admin/login') return;
+
+            const token = localStorage.getItem('ofc_auth_token');
+            const adminLogin = localStorage.getItem('onlyFreshersAdminLogin');
+            let user = null;
+
+            try {
+                user = JSON.parse(localStorage.getItem('ofc_auth_user') || 'null');
+            } catch (error) {
+                user = null;
+            }
+
+            if (!token || adminLogin !== 'yes' || user?.role !== 'admin') {
+                localStorage.removeItem('ofc_auth_token');
+                localStorage.removeItem('ofc_auth_user');
+                localStorage.removeItem('onlyFreshersAdminLogin');
+                window.location.href = '/admin/login';
+            }
+        })();
+
         function toggleAdminSidebar() {
             const sidebar = document.getElementById('admin-sidebar');
             const backdrop = document.getElementById('admin-sidebar-backdrop');
