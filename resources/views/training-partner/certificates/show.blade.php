@@ -4,18 +4,6 @@
 
 @php
     $activePage = 'certificates';
-    $stats = [
-        ['label' => 'Total', 'value' => '124', 'icon' => 'TT'],
-        ['label' => 'Active', 'value' => '86', 'icon' => 'AC'],
-        ['label' => 'Pending', 'value' => '18', 'icon' => 'PN'],
-        ['label' => 'Updated', 'value' => 'Today', 'icon' => 'UP'],
-    ];
-    $rows = [
-        ['name' => 'Full Stack Development', 'type' => 'Course', 'status' => 'Active', 'date' => '10 May 2024'],
-        ['name' => 'Data Science & Analytics', 'type' => 'Course', 'status' => 'Active', 'date' => '09 May 2024'],
-        ['name' => 'React for Beginners', 'type' => 'Course', 'status' => 'Pending', 'date' => '08 May 2024'],
-        ['name' => 'Python Programming', 'type' => 'Course', 'status' => 'Active', 'date' => '07 May 2024'],
-    ];
 @endphp
 
 @section('content')
@@ -25,67 +13,68 @@
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Certificate Details</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">View certificate information and verification status.</p>
             </div>
-            @if ('detail' === 'form')
-                <button class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white" type="button">Save Changes</button>
-            @elseif ('certificates' === 'add-course')
-                <button class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white" type="button">Create Course</button>
-            @endif
+            <div class="flex flex-wrap gap-2">
+                <a href="/training-partner/certificates" class="inline-flex h-10 items-center justify-center rounded-md border border-[#cfd8eb] px-5 text-sm font-bold text-[#26375f]">Back</a>
+                <a id="certificateFileLink" href="#" target="_blank" rel="noopener" class="hidden h-10 items-center justify-center rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white">Open File</a>
+            </div>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach ($stats as $stat)
-                <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">{{ $stat['icon'] }}</span>
-                    <p class="mt-4 text-xs font-bold text-[#526287]">{{ $stat['label'] }}</p>
-                    <h2 class="mt-2 text-2xl font-bold text-[#071544]">{{ $stat['value'] }}</h2>
-                </article>
-            @endforeach
-        </div>
-
-        @if ('detail' === 'form')
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="grid gap-4 lg:grid-cols-2">
-                    <label class="grid gap-2 text-xs font-bold text-[#071544]">Title<input class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none" value="Certificate Details"></label>
-                    <label class="grid gap-2 text-xs font-bold text-[#071544]">Category<select class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none"><option>Development</option><option>Data Science</option></select></label>
-                    <label class="grid gap-2 text-xs font-bold text-[#071544] lg:col-span-2">Description<textarea class="min-h-28 rounded-md border border-[#cfd8eb] p-3 text-sm font-medium outline-none">View certificate information and verification status.</textarea></label>
-                </div>
-            </article>
-        @elseif ('detail' === 'detail')
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <h2 class="mb-4 text-lg font-bold text-[#071544]">Overview</h2>
-                <div class="grid gap-4 lg:grid-cols-3">
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Name</p><strong class="mt-2 block text-[#071544]">Certificate Details</strong></div>
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Status</p><span class="mt-2 inline-flex rounded-md bg-[#e2f9ea] px-3 py-1 text-xs font-bold text-[#05843e]">Active</span></div>
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Updated</p><strong class="mt-2 block text-[#071544]">Today</strong></div>
-                </div>
-            </article>
-        @else
-            <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <input id="tpSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search...">
-                    <select class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option>All Status</option><option>Active</option><option>Pending</option></select>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-[820px] text-left text-sm">
-                        <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Name</th><th class="px-5 py-4">Type</th><th class="px-5 py-4">Date</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Action</th></tr></thead>
-                        <tbody class="divide-y divide-[#e7ebf5] text-[#26375f]">
-                            @foreach ($rows as $row)
-                                <tr class="tp-row" data-name="{{ strtolower($row['name'].' '.$row['type'].' '.$row['status']) }}"><td class="px-5 py-4 font-bold text-[#071544]">{{ $row['name'] }}</td><td class="px-5 py-4">{{ $row['type'] }}</td><td class="px-5 py-4">{{ $row['date'] }}</td><td class="px-5 py-4"><span class="rounded-md {{ $row['status'] === 'Pending' ? 'bg-[#fff0de] text-[#d06d00]' : 'bg-[#e2f9ea] text-[#05843e]' }} px-3 py-1 text-xs font-bold">{{ $row['status'] }}</span></td><td class="px-5 py-4"><button class="rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button">View</button></td></tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </article>
-        @endif
+        <div id="certificateAlert" class="hidden rounded-lg border border-[#ffd8d8] bg-[#fff4f4] p-4 text-sm font-bold text-[#b42318]"></div>
+        <div id="certificateDetail" class="grid gap-5"><article class="rounded-lg border border-[#dddff0] bg-white p-5 text-sm text-[#526287] shadow-[0_12px_26px_rgba(50,35,120,.05)]">Loading certificate...</article></div>
     </section>
 @endsection
 
 @push('scripts')
 <script>
-    const tpSearch = document.getElementById('tpSearch');
-    tpSearch?.addEventListener('input', () => {
-        const query = tpSearch.value.toLowerCase();
-        document.querySelectorAll('.tp-row').forEach(row => row.classList.toggle('hidden', !row.dataset.name.includes(query)));
-    });
+    const token = localStorage.getItem('ofc_auth_token');
+    const certificateId = localStorage.getItem('ofc_selected_training_certificate_id');
+    const certificateAlert = document.getElementById('certificateAlert');
+    const certificateDetail = document.getElementById('certificateDetail');
+    const certificateFileLink = document.getElementById('certificateFileLink');
+
+    if (!token) window.location.href = '/training-partner/login';
+    if (!certificateId) window.location.href = '/training-partner/certificates';
+
+    function escapeHtml(value) { return String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]); }
+    function formatDate(value) { return value ? new Date(value).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'; }
+    function studentName(item) { return item.fresher_profile?.user?.name || 'Fresher #' + (item.fresher_profile?.id || item.id); }
+    function studentEmail(item) { return item.fresher_profile?.user?.email || item.fresher_profile?.phone || '-'; }
+    function courseName(item) { return item.course_enrollment?.course?.course_name || '-'; }
+    function field(label, value) { return `<div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">${label}</p><strong class="mt-2 block break-words text-sm text-[#071544]">${escapeHtml(value || '-')}</strong></div>`; }
+    function renderCertificate(item, url) {
+        if (url) {
+            certificateFileLink.href = url;
+            certificateFileLink.classList.remove('hidden');
+            certificateFileLink.classList.add('inline-flex');
+        }
+        certificateDetail.innerHTML = `<article class="rounded-lg border border-[#dddff0] bg-white p-6 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <div class="rounded-lg border-4 border-[#071544] bg-[#fbfdff] p-8 text-center">
+                <p class="text-xs font-bold uppercase tracking-[.18em] text-[#526287]">Certificate of Completion</p>
+                <h2 class="mt-4 text-2xl font-bold text-[#071544]">${escapeHtml(studentName(item))}</h2>
+                <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#526287]">Successfully completed <strong class="text-[#071544]">${escapeHtml(courseName(item))}</strong> with final assessment score <strong class="text-[#071544]">${escapeHtml(item.final_assessment_result?.overall_score ?? '-')}%</strong>.</p>
+                <p class="mt-5 text-xs font-bold text-[#526287]">${escapeHtml(item.certificate_number)}</p>
+            </div>
+        </article>
+        <div class="grid gap-5 xl:grid-cols-2">
+            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><h2 class="mb-4 text-lg font-bold text-[#071544]">Student</h2><div class="grid gap-4 md:grid-cols-2">${field('Name', studentName(item))}${field('Email', studentEmail(item))}${field('Issued On', formatDate(item.created_at))}${field('Completion Date', formatDate(item.completion_date))}</div></article>
+            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><h2 class="mb-4 text-lg font-bold text-[#071544]">Course & Result</h2><div class="grid gap-4 md:grid-cols-2">${field('Course', courseName(item))}${field('Mode', item.course_enrollment?.course?.training_mode)}${field('Score', (item.final_assessment_result?.overall_score ?? '-') + ' / 100')}${field('Result', item.final_assessment_result?.result || '-')}</div></article>
+        </div>
+        <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><h2 class="mb-4 text-lg font-bold text-[#071544]">Verification</h2><div class="grid gap-4 md:grid-cols-3">${field('Certificate Number', item.certificate_number)}${field('File Path', item.certificate_file)}${field('Status', 'Generated')}</div></article>`;
+    }
+    async function loadCertificate() {
+        try {
+            const response = await fetch(`/api/training-partner/certificates/${certificateId}`, { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
+            if (response.status === 401) { window.location.href = '/training-partner/login'; return; }
+            const payload = await response.json();
+            if (response.status === 403) { window.location.href = '/training-partner/approval/pending'; return; }
+            if (!response.ok || !payload.success) throw new Error(payload.message || 'Certificate load nahi ho paaya.');
+            renderCertificate(payload.data.certificate, payload.data.certificate_url);
+        } catch (error) {
+            certificateAlert.textContent = error.message || 'Certificate load nahi ho paaya.';
+            certificateAlert.classList.remove('hidden');
+            certificateDetail.innerHTML = '';
+        }
+    }
+    loadCertificate();
 </script>
 @endpush

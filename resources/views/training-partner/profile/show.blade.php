@@ -1,21 +1,9 @@
-﻿@extends('layouts.training-partner')
+@extends('layouts.training-partner')
 
 @section('title', 'My Profile')
 
 @php
     $activePage = 'profile';
-    $stats = [
-        ['label' => 'Total', 'value' => '124', 'icon' => 'TT'],
-        ['label' => 'Active', 'value' => '86', 'icon' => 'AC'],
-        ['label' => 'Pending', 'value' => '18', 'icon' => 'PN'],
-        ['label' => 'Updated', 'value' => 'Today', 'icon' => 'UP'],
-    ];
-    $rows = [
-        ['name' => 'Full Stack Development', 'type' => 'Course', 'status' => 'Active', 'date' => '10 May 2024'],
-        ['name' => 'Data Science & Analytics', 'type' => 'Course', 'status' => 'Active', 'date' => '09 May 2024'],
-        ['name' => 'React for Beginners', 'type' => 'Course', 'status' => 'Pending', 'date' => '08 May 2024'],
-        ['name' => 'Python Programming', 'type' => 'Course', 'status' => 'Active', 'date' => '07 May 2024'],
-    ];
 @endphp
 
 @section('content')
@@ -25,67 +13,139 @@
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">My Profile</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">View and manage your institute profile details.</p>
             </div>
-            @if ('profile' === 'form')
-                <button class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white" type="button">Save Changes</button>
-            @elseif ('profile' === 'add-course')
-                <button class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white" type="button">Create Course</button>
-            @endif
+            <a href="/training-partner/profile/edit" class="inline-flex h-10 items-center justify-center rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white">Edit Profile</a>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach ($stats as $stat)
-                <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">{{ $stat['icon'] }}</span>
-                    <p class="mt-4 text-xs font-bold text-[#526287]">{{ $stat['label'] }}</p>
-                    <h2 class="mt-2 text-2xl font-bold text-[#071544]">{{ $stat['value'] }}</h2>
-                </article>
-            @endforeach
-        </div>
+        <div id="profileStatus" class="hidden rounded-lg border px-4 py-3 text-sm font-bold"></div>
 
-        @if ('profile' === 'form')
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="grid gap-4 lg:grid-cols-2">
-                    <label class="grid gap-2 text-xs font-bold text-[#071544]">Title<input class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none" value="My Profile"></label>
-                    <label class="grid gap-2 text-xs font-bold text-[#071544]">Category<select class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none"><option>Development</option><option>Data Science</option></select></label>
-                    <label class="grid gap-2 text-xs font-bold text-[#071544] lg:col-span-2">Description<textarea class="min-h-28 rounded-md border border-[#cfd8eb] p-3 text-sm font-medium outline-none">View and manage your institute profile details.</textarea></label>
+        <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-start">
+                <div id="profileInitial" class="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-[#f3ecff] text-3xl font-black text-[#5b20e6]">TP</div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="min-w-0">
+                            <h2 id="instituteName" class="truncate text-2xl font-bold text-[#071544]">Loading...</h2>
+                            <p id="instituteEmail" class="mt-2 text-sm text-[#526287]">Fetching profile details...</p>
+                        </div>
+                        <span id="approvalBadge" class="inline-flex w-fit rounded-md bg-[#fff0de] px-3 py-1 text-xs font-bold text-[#d06d00]">Loading</span>
+                    </div>
+
+                    <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Phone</p><strong id="phone" class="mt-2 block break-words text-[#071544]">-</strong></div>
+                        <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Location</p><strong id="location" class="mt-2 block break-words text-[#071544]">-</strong></div>
+                        <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Website</p><a id="website" class="mt-2 block break-words font-bold text-[#5b20e6]" href="#">-</a></div>
+                    </div>
                 </div>
-            </article>
-        @elseif ('profile' === 'detail')
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <h2 class="mb-4 text-lg font-bold text-[#071544]">Overview</h2>
-                <div class="grid gap-4 lg:grid-cols-3">
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Name</p><strong class="mt-2 block text-[#071544]">My Profile</strong></div>
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Status</p><span class="mt-2 inline-flex rounded-md bg-[#e2f9ea] px-3 py-1 text-xs font-bold text-[#05843e]">Active</span></div>
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Updated</p><strong class="mt-2 block text-[#071544]">Today</strong></div>
+            </div>
+        </article>
+
+        <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <h2 class="mb-4 text-lg font-bold text-[#071544]">About Institute</h2>
+            <p id="aboutInstitute" class="text-sm leading-7 text-[#26375f]">Loading...</p>
+        </article>
+
+        <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <h2 class="mb-4 text-lg font-bold text-[#071544]">Verification</h2>
+            <div class="grid gap-4 md:grid-cols-2">
+                <div class="rounded-lg border border-[#e7ebf5] p-4">
+                    <p class="text-xs font-bold text-[#526287]">Document</p>
+                    <strong id="documentStatus" class="mt-2 block text-[#071544]">-</strong>
                 </div>
-            </article>
-        @else
-            <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <input id="tpSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search...">
-                    <select class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option>All Status</option><option>Active</option><option>Pending</option></select>
+                <div class="rounded-lg border border-[#e7ebf5] p-4">
+                    <p class="text-xs font-bold text-[#526287]">Last Updated</p>
+                    <strong id="updatedAt" class="mt-2 block text-[#071544]">-</strong>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-[820px] text-left text-sm">
-                        <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Name</th><th class="px-5 py-4">Type</th><th class="px-5 py-4">Date</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Action</th></tr></thead>
-                        <tbody class="divide-y divide-[#e7ebf5] text-[#26375f]">
-                            @foreach ($rows as $row)
-                                <tr class="tp-row" data-name="{{ strtolower($row['name'].' '.$row['type'].' '.$row['status']) }}"><td class="px-5 py-4 font-bold text-[#071544]">{{ $row['name'] }}</td><td class="px-5 py-4">{{ $row['type'] }}</td><td class="px-5 py-4">{{ $row['date'] }}</td><td class="px-5 py-4"><span class="rounded-md {{ $row['status'] === 'Pending' ? 'bg-[#fff0de] text-[#d06d00]' : 'bg-[#e2f9ea] text-[#05843e]' }} px-3 py-1 text-xs font-bold">{{ $row['status'] }}</span></td><td class="px-5 py-4"><button class="rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button">View</button></td></tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </article>
-        @endif
+            </div>
+        </article>
     </section>
 @endsection
 
 @push('scripts')
 <script>
-    const tpSearch = document.getElementById('tpSearch');
-    tpSearch?.addEventListener('input', () => {
-        const query = tpSearch.value.toLowerCase();
-        document.querySelectorAll('.tp-row').forEach(row => row.classList.toggle('hidden', !row.dataset.name.includes(query)));
-    });
+    const token = localStorage.getItem('ofc_auth_token');
+
+    if (!token) {
+        window.location.href = '/training-partner/login';
+    }
+
+    function setText(id, value) {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value || '-';
+    }
+
+    function showStatus(message, type = 'info') {
+        const box = document.getElementById('profileStatus');
+        box.textContent = message;
+        box.className = 'rounded-lg border px-4 py-3 text-sm font-bold ' + (type === 'error'
+            ? 'border-[#ffd7d7] bg-[#fff4f4] text-[#b42318]'
+            : 'border-[#dddff0] bg-white text-[#26375f]');
+    }
+
+    function badgeClass(status) {
+        if (status === 'approved') return 'inline-flex w-fit rounded-md bg-[#e2f9ea] px-3 py-1 text-xs font-bold text-[#05843e]';
+        if (status === 'rejected') return 'inline-flex w-fit rounded-md bg-[#fff4f4] px-3 py-1 text-xs font-bold text-[#b42318]';
+        if (status === 'blocked') return 'inline-flex w-fit rounded-md bg-[#f2f4f7] px-3 py-1 text-xs font-bold text-[#344054]';
+        return 'inline-flex w-fit rounded-md bg-[#fff0de] px-3 py-1 text-xs font-bold text-[#d06d00]';
+    }
+
+    async function loadProfile() {
+        try {
+            const response = await fetch('/api/training-partner/profile', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                },
+            });
+
+            if (response.status === 401) {
+                window.location.href = '/training-partner/login';
+                return;
+            }
+
+            const payload = await response.json();
+            if (!response.ok || !payload.success) throw new Error(payload.message || 'Profile load nahi ho paayi.');
+
+            const user = payload.data?.user || {};
+            const profile = payload.data?.profile || null;
+            localStorage.setItem('ofc_auth_user', JSON.stringify(user));
+            localStorage.setItem('ofc_training_partner_profile', JSON.stringify(profile));
+
+            if (!profile) {
+                showStatus('Training partner profile abhi complete nahi hai. Please profile complete karein.');
+                setText('instituteName', user.name || 'Training Partner');
+                setText('instituteEmail', user.email || '-');
+                document.getElementById('profileInitial').textContent = (user.name || 'TP').slice(0, 2).toUpperCase();
+                return;
+            }
+
+            const name = profile.institute_name || user.name || 'Training Partner';
+            document.dispatchEvent(new CustomEvent('training-partner-profile-loaded', { detail: profile }));
+            setText('instituteName', name);
+            setText('instituteEmail', profile.email || user.email);
+            setText('phone', profile.phone);
+            setText('location', profile.location);
+            setText('aboutInstitute', profile.about_institute || 'No institute description added.');
+            setText('documentStatus', profile.verification_document ? 'Uploaded' : 'Not uploaded');
+            setText('updatedAt', profile.updated_at ? new Date(profile.updated_at).toLocaleDateString('en-IN') : '-');
+            document.getElementById('profileInitial').textContent = name.split(/\s+/).map((word) => word[0]).join('').slice(0, 2).toUpperCase();
+
+            const badge = document.getElementById('approvalBadge');
+            badge.textContent = profile.approval_status || 'pending';
+            badge.className = badgeClass(profile.approval_status);
+
+            const website = document.getElementById('website');
+            if (profile.website) {
+                website.href = profile.website;
+                website.textContent = profile.website;
+            } else {
+                website.removeAttribute('href');
+                website.textContent = '-';
+            }
+        } catch (error) {
+            showStatus(error.message || 'Profile load nahi ho paayi.', 'error');
+        }
+    }
+
+    loadProfile();
 </script>
 @endpush

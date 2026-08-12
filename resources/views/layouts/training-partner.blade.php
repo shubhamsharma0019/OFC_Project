@@ -77,17 +77,17 @@
                         <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
                         <span class="absolute -right-0 -top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#5b20e6] text-[10px] font-extrabold text-white">{{ $partner['notifications'] }}</span>
                     </button>
-                    <div class="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-[#e9edf8] text-[11px] font-black text-[#5b20e6] md:h-10 md:w-10 md:text-[13px]">TP</div>
+                    <div data-training-partner-initial class="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-[#e9edf8] text-[11px] font-black text-[#5b20e6] md:h-10 md:w-10 md:text-[13px]">TP</div>
                     <div class="min-w-0">
-                        <h3 class="max-w-[118px] truncate text-xs font-bold text-[#071544] md:max-w-[150px]">{{ $partner['name'] }}</h3>
-                        <small class="hidden text-[#526287] sm:block">{{ $partner['role'] }}</small>
+                        <h3 data-training-partner-name class="max-w-[118px] truncate text-xs font-bold text-[#071544] md:max-w-[150px]">{{ $partner['name'] }}</h3>
+                        <small class="hidden text-[#526287] sm:block">Training Partner</small>
                     </div>
                     <button class="inline-flex h-[34px] w-[34px] items-center justify-center text-[#071544] [&>svg]:h-[21px] [&>svg]:w-[21px] [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]" id="userMenuBtn" type="button" aria-label="Open profile menu">
                         <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
                     </button>
                     <div class="absolute right-0 top-[54px] z-10 hidden w-40 rounded-lg border border-[#dddff0] bg-white shadow-[0_14px_30px_rgba(34,23,91,0.13)]" id="userMenu">
                         <a class="block px-3.5 py-3 text-[13px] hover:bg-[#f8f4ff]" href="/training-partner/profile">Profile</a>
-                        <a class="block px-3.5 py-3 text-[13px] hover:bg-[#f8f4ff]" href="/training-partner/login">Logout</a>
+                        <button id="trainingPartnerLogout" class="block w-full px-3.5 py-3 text-left text-[13px] hover:bg-[#f8f4ff]" type="button">Logout</button>
                     </div>
                 </div>
             </header>
@@ -109,6 +109,38 @@
                 document.getElementById('userMenu').classList.toggle('hidden');
             });
         }
+
+        function syncTrainingPartnerChrome(profile = null) {
+            const storedUser = JSON.parse(localStorage.getItem('ofc_auth_user') || 'null');
+            const storedProfile = profile || JSON.parse(localStorage.getItem('ofc_training_partner_profile') || 'null');
+            const name = storedProfile?.institute_name || storedUser?.name || 'Training Partner';
+            const initial = name.split(/\s+/).map((word) => word[0]).join('').slice(0, 2).toUpperCase();
+
+            document.querySelectorAll('[data-training-partner-name]').forEach((item) => item.textContent = name);
+            document.querySelectorAll('[data-training-partner-initial]').forEach((item) => item.textContent = initial);
+        }
+
+        document.getElementById('trainingPartnerLogout')?.addEventListener('click', async () => {
+            const token = localStorage.getItem('ofc_auth_token');
+            if (token) {
+                try {
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': 'Bearer ' + token,
+                        },
+                    });
+                } catch (error) {}
+            }
+            localStorage.removeItem('ofc_auth_token');
+            localStorage.removeItem('ofc_auth_user');
+            localStorage.removeItem('ofc_training_partner_profile');
+            window.location.href = '/training-partner/login';
+        });
+
+        syncTrainingPartnerChrome();
+        document.addEventListener('training-partner-profile-loaded', (event) => syncTrainingPartnerChrome(event.detail));
     </script>
     @stack('scripts')
 </body>

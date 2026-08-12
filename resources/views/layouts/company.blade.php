@@ -46,17 +46,17 @@
                     class="col-span-2 flex w-full items-center justify-between gap-2 sm:col-auto sm:w-auto sm:justify-end lg:gap-[18px]">
                     @yield('topbarExtra')
 
-                    <button
+                    <a href="/company/notifications"
                         class="relative inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-white text-[#061942] shadow-[0_8px_18px_rgba(6,25,66,.05)] lg:h-[42px] lg:w-[42px]"
-                        type="button" aria-label="Notifications">
+                        aria-label="Notifications">
                         <svg class="h-[23px] w-[23px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
                             <path d="M10 21h4"></path>
                         </svg>
-                        <span
-                            class="absolute right-[5px] top-1 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-[#ff3045] text-[11px] font-bold text-white">3</span>
-                    </button>
+                        <span data-company-notification-count
+                            class="absolute right-[5px] top-1 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-[#ff3045] text-[11px] font-bold text-white">0</span>
+                    </a>
 
                     <div
                         class="flex items-center gap-2.5 sm:border-l sm:border-[#dce7f8] sm:pl-3 lg:gap-[14px] lg:pl-[22px]">
@@ -107,8 +107,73 @@
             if (topbarInitial) topbarInitial.textContent = initial;
         }
 
+        async function syncCompanyNotificationCount() {
+            const token = localStorage.getItem('ofc_auth_token');
+            if (!token) return;
+
+            try {
+                const response = await fetch('/api/notifications/unread-count', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + token,
+                    },
+                });
+                if (!response.ok) return;
+
+                const payload = await response.json();
+                const count = payload.data?.unread_count || 0;
+                document.querySelectorAll('[data-company-notification-count]').forEach((badge) => {
+                    badge.textContent = count;
+                    badge.classList.toggle('hidden', count === 0);
+                });
+            } catch (error) {
+                // Keep the page usable even if the badge count fails to refresh.
+            }
+        }
+
         syncCompanyChrome();
+        syncCompanyNotificationCount();
         document.addEventListener('company-profile-loaded', (event) => syncCompanyChrome(event.detail));
+        document.addEventListener('company-notifications-updated', syncCompanyNotificationCount);
+
+        const accountMenuButton = document.getElementById('company-account-menu-button');
+        const accountMenu = document.getElementById('company-account-menu');
+        const sidebarLogout = document.getElementById('company-sidebar-logout');
+
+        accountMenuButton?.addEventListener('click', (event) => {
+            event.stopPropagation();
+            accountMenu?.classList.toggle('hidden');
+            accountMenuButton.setAttribute('aria-expanded', accountMenu?.classList.contains('hidden') ? 'false' : 'true');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!accountMenu || accountMenu.classList.contains('hidden')) return;
+            if (accountMenu.contains(event.target) || accountMenuButton?.contains(event.target)) return;
+            accountMenu.classList.add('hidden');
+            accountMenuButton?.setAttribute('aria-expanded', 'false');
+        });
+
+        sidebarLogout?.addEventListener('click', async () => {
+            const token = localStorage.getItem('ofc_auth_token');
+            if (token) {
+                try {
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': 'Bearer ' + token,
+                        },
+                    });
+                } catch (error) {
+                    // Local logout should still complete if the API call fails.
+                }
+            }
+
+            localStorage.removeItem('ofc_auth_token');
+            localStorage.removeItem('ofc_auth_user');
+            localStorage.removeItem('ofc_company_profile');
+            window.location.href = '/company/login';
+        });
     </script>
     @stack('scripts')
 </body>

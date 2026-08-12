@@ -1,21 +1,9 @@
-﻿@extends('layouts.training-partner')
+@extends('layouts.training-partner')
 
 @section('title', 'Edit Profile')
 
 @php
     $activePage = 'profile';
-    $stats = [
-        ['label' => 'Total', 'value' => '124', 'icon' => 'TT'],
-        ['label' => 'Active', 'value' => '86', 'icon' => 'AC'],
-        ['label' => 'Pending', 'value' => '18', 'icon' => 'PN'],
-        ['label' => 'Updated', 'value' => 'Today', 'icon' => 'UP'],
-    ];
-    $rows = [
-        ['name' => 'Full Stack Development', 'type' => 'Course', 'status' => 'Active', 'date' => '10 May 2024'],
-        ['name' => 'Data Science & Analytics', 'type' => 'Course', 'status' => 'Active', 'date' => '09 May 2024'],
-        ['name' => 'React for Beginners', 'type' => 'Course', 'status' => 'Pending', 'date' => '08 May 2024'],
-        ['name' => 'Python Programming', 'type' => 'Course', 'status' => 'Active', 'date' => '07 May 2024'],
-    ];
 @endphp
 
 @section('content')
@@ -25,67 +13,124 @@
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Edit Profile</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">Update institute information and verification details.</p>
             </div>
-            @if ('form' === 'form')
-                <button class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white" type="button">Save Changes</button>
-            @elseif ('profile' === 'add-course')
-                <button class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white" type="button">Create Course</button>
-            @endif
+            <a href="/training-partner/profile" class="inline-flex h-10 items-center justify-center rounded-md border border-[#5b20e6] px-5 text-sm font-bold text-[#5b20e6]">View Profile</a>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach ($stats as $stat)
-                <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">{{ $stat['icon'] }}</span>
-                    <p class="mt-4 text-xs font-bold text-[#526287]">{{ $stat['label'] }}</p>
-                    <h2 class="mt-2 text-2xl font-bold text-[#071544]">{{ $stat['value'] }}</h2>
-                </article>
-            @endforeach
-        </div>
+        <div id="profileMessage" class="hidden rounded-lg border px-4 py-3 text-sm font-bold"></div>
 
-        @if ('form' === 'form')
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="grid gap-4 lg:grid-cols-2">
-                    <label class="grid gap-2 text-xs font-bold text-[#071544]">Title<input class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none" value="Edit Profile"></label>
-                    <label class="grid gap-2 text-xs font-bold text-[#071544]">Category<select class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none"><option>Development</option><option>Data Science</option></select></label>
-                    <label class="grid gap-2 text-xs font-bold text-[#071544] lg:col-span-2">Description<textarea class="min-h-28 rounded-md border border-[#cfd8eb] p-3 text-sm font-medium outline-none">Update institute information and verification details.</textarea></label>
+        <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <form id="profileForm" class="grid gap-4 lg:grid-cols-2">
+                <label class="grid gap-2 text-xs font-bold text-[#071544]">Institute Name <span class="text-[#ff3045]">*</span><input name="institute_name" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none" required></label>
+                <label class="grid gap-2 text-xs font-bold text-[#071544]">Email<input name="email" type="email" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none"></label>
+                <label class="grid gap-2 text-xs font-bold text-[#071544]">Phone<input name="phone" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none"></label>
+                <label class="grid gap-2 text-xs font-bold text-[#071544]">Location<input name="location" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none"></label>
+                <label class="grid gap-2 text-xs font-bold text-[#071544] lg:col-span-2">Website<input name="website" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none" placeholder="https://example.com"></label>
+                <label class="grid gap-2 text-xs font-bold text-[#071544]">Institute Logo<input name="institute_logo" type="file" accept=".jpg,.jpeg,.png,.webp" class="rounded-md border border-[#cfd8eb] px-3 py-2 text-sm font-medium outline-none"></label>
+                <label class="grid gap-2 text-xs font-bold text-[#071544]">Verification Document<input name="verification_document" type="file" accept=".pdf,.jpg,.jpeg,.png" class="rounded-md border border-[#cfd8eb] px-3 py-2 text-sm font-medium outline-none"></label>
+                <label class="grid gap-2 text-xs font-bold text-[#071544] lg:col-span-2">About Institute<textarea name="about_institute" class="min-h-32 rounded-md border border-[#cfd8eb] p-3 text-sm font-medium outline-none"></textarea></label>
+
+                <div class="flex justify-end gap-3 lg:col-span-2">
+                    <a href="/training-partner/profile" class="inline-flex h-10 items-center justify-center rounded-md border border-[#cfd8eb] px-5 text-sm font-bold text-[#26375f]">Cancel</a>
+                    <button id="saveButton" class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-60" type="submit">Save Changes</button>
                 </div>
-            </article>
-        @elseif ('form' === 'detail')
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <h2 class="mb-4 text-lg font-bold text-[#071544]">Overview</h2>
-                <div class="grid gap-4 lg:grid-cols-3">
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Name</p><strong class="mt-2 block text-[#071544]">Edit Profile</strong></div>
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Status</p><span class="mt-2 inline-flex rounded-md bg-[#e2f9ea] px-3 py-1 text-xs font-bold text-[#05843e]">Active</span></div>
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Updated</p><strong class="mt-2 block text-[#071544]">Today</strong></div>
-                </div>
-            </article>
-        @else
-            <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <input id="tpSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search...">
-                    <select class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option>All Status</option><option>Active</option><option>Pending</option></select>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-[820px] text-left text-sm">
-                        <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Name</th><th class="px-5 py-4">Type</th><th class="px-5 py-4">Date</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Action</th></tr></thead>
-                        <tbody class="divide-y divide-[#e7ebf5] text-[#26375f]">
-                            @foreach ($rows as $row)
-                                <tr class="tp-row" data-name="{{ strtolower($row['name'].' '.$row['type'].' '.$row['status']) }}"><td class="px-5 py-4 font-bold text-[#071544]">{{ $row['name'] }}</td><td class="px-5 py-4">{{ $row['type'] }}</td><td class="px-5 py-4">{{ $row['date'] }}</td><td class="px-5 py-4"><span class="rounded-md {{ $row['status'] === 'Pending' ? 'bg-[#fff0de] text-[#d06d00]' : 'bg-[#e2f9ea] text-[#05843e]' }} px-3 py-1 text-xs font-bold">{{ $row['status'] }}</span></td><td class="px-5 py-4"><button class="rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button">View</button></td></tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </article>
-        @endif
+            </form>
+        </article>
     </section>
 @endsection
 
 @push('scripts')
 <script>
-    const tpSearch = document.getElementById('tpSearch');
-    tpSearch?.addEventListener('input', () => {
-        const query = tpSearch.value.toLowerCase();
-        document.querySelectorAll('.tp-row').forEach(row => row.classList.toggle('hidden', !row.dataset.name.includes(query)));
+    const token = localStorage.getItem('ofc_auth_token');
+    const form = document.getElementById('profileForm');
+    const messageBox = document.getElementById('profileMessage');
+    const saveButton = document.getElementById('saveButton');
+
+    if (!token) {
+        window.location.href = '/training-partner/login';
+    }
+
+    function showMessage(message, type = 'success') {
+        messageBox.textContent = message;
+        messageBox.className = 'rounded-lg border px-4 py-3 text-sm font-bold ' + (type === 'error'
+            ? 'border-[#ffd7d7] bg-[#fff4f4] text-[#b42318]'
+            : 'border-[#d4f8df] bg-[#f0fff5] text-[#05843e]');
+    }
+
+    function setField(name, value) {
+        const field = form.elements[name];
+        if (field && field.type !== 'file') field.value = value || '';
+    }
+
+    async function loadProfile() {
+        try {
+            const response = await fetch('/api/training-partner/profile', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                },
+            });
+            if (response.status === 401) {
+                window.location.href = '/training-partner/login';
+                return;
+            }
+            const payload = await response.json();
+            if (!response.ok || !payload.success) throw new Error(payload.message || 'Profile load nahi ho paayi.');
+
+            const user = payload.data?.user || {};
+            const profile = payload.data?.profile || {};
+            localStorage.setItem('ofc_auth_user', JSON.stringify(user));
+            localStorage.setItem('ofc_training_partner_profile', JSON.stringify(profile || null));
+
+            setField('institute_name', profile.institute_name || user.name || '');
+            setField('email', profile.email || user.email || '');
+            setField('phone', profile.phone || '');
+            setField('location', profile.location || '');
+            setField('website', profile.website || '');
+            setField('about_institute', profile.about_institute || '');
+            document.dispatchEvent(new CustomEvent('training-partner-profile-loaded', { detail: profile }));
+        } catch (error) {
+            showMessage(error.message || 'Profile load nahi ho paayi.', 'error');
+        }
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
+
+        const data = new FormData(form);
+        const website = data.get('website');
+        if (website && !/^https?:\/\//i.test(website)) {
+            data.set('website', 'https://' + website);
+        }
+
+        try {
+            const response = await fetch('/api/training-partner/profile', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                },
+                body: data,
+            });
+            const payload = await response.json();
+            if (!response.ok || !payload.success) {
+                const validationMessage = payload.errors ? Object.values(payload.errors).flat()[0] : null;
+                throw new Error(validationMessage || payload.message || 'Profile save nahi ho paayi.');
+            }
+            localStorage.setItem('ofc_training_partner_profile', JSON.stringify(payload.data?.profile || null));
+            showMessage(payload.message || 'Profile saved successfully.');
+            setTimeout(() => {
+                window.location.href = '/training-partner/approval/pending';
+            }, 700);
+        } catch (error) {
+            showMessage(error.message || 'Profile save nahi ho paayi.', 'error');
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Changes';
+        }
     });
+
+    loadProfile();
 </script>
 @endpush

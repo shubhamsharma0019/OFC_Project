@@ -38,7 +38,7 @@
                 <span>{{ $item['title'] }}</span>
 
                 @if (isset($item['badge']))
-                    <span class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ff3045] px-1 text-xs font-bold text-white">
+                    <span data-company-notification-count class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ff3045] px-1 text-xs font-bold text-white">
                         {{ $item['badge'] }}
                     </span>
                 @endif
@@ -47,16 +47,23 @@
     </nav>
 </div>
 
-<div class="flex items-center gap-2.5 rounded-lg border border-[#dce7f8] bg-white p-2.5 shadow-[0_8px_22px_rgba(6,25,66,.04)]">
-    <div data-company-initial class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-[#075fe4] font-bold text-white">
-        C
-    </div>
+<div class="relative">
+    <button id="company-account-menu-button" type="button" class="flex w-full items-center gap-2.5 rounded-lg border border-[#dce7f8] bg-white p-2.5 text-left shadow-[0_8px_22px_rgba(6,25,66,.04)]" aria-label="Open account menu" aria-expanded="false">
+        <span data-company-initial class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-[#075fe4] font-bold text-white">
+            C
+        </span>
 
-    <div class="min-w-0">
-        <h3 data-company-name class="mb-1 truncate text-sm font-bold text-[#061942]">Company</h3>
-        <p class="text-xs text-[#075fe4]">Company Account</p>
-    </div>
+        <span class="min-w-0">
+            <span data-company-name class="mb-1 block truncate text-sm font-bold text-[#061942]">Company</span>
+            <span class="block text-xs text-[#075fe4]">Company Account</span>
+        </span>
 
-    <button type="button" class="ml-auto text-lg text-[#061942]" aria-label="Open account menu">&#8964;</button>
+        <span class="ml-auto text-lg text-[#061942]">&#8964;</span>
+    </button>
+
+    <div id="company-account-menu" class="absolute bottom-[calc(100%+8px)] left-0 right-0 z-[1200] hidden overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_12px_28px_rgba(6,25,66,.14)]">
+        <a href="/company/profile" class="block px-4 py-3 text-sm font-bold text-[#061942] hover:bg-[#f5f9ff]">My Profile</a>
+        <a href="/company/settings" class="block px-4 py-3 text-sm font-bold text-[#061942] hover:bg-[#f5f9ff]">Settings</a>
+        <button id="company-sidebar-logout" type="button" class="block w-full px-4 py-3 text-left text-sm font-bold text-[#b42318] hover:bg-[#fff4f4]">Logout</button>
+    </div>
 </div>
-

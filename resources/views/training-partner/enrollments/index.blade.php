@@ -4,18 +4,6 @@
 
 @php
     $activePage = 'enrollments';
-    $stats = [
-        ['label' => 'Total', 'value' => '124', 'icon' => 'TT'],
-        ['label' => 'Active', 'value' => '86', 'icon' => 'AC'],
-        ['label' => 'Pending', 'value' => '18', 'icon' => 'PN'],
-        ['label' => 'Updated', 'value' => 'Today', 'icon' => 'UP'],
-    ];
-    $rows = [
-        ['name' => 'Full Stack Development', 'type' => 'Course', 'status' => 'Active', 'date' => '10 May 2024'],
-        ['name' => 'Data Science & Analytics', 'type' => 'Course', 'status' => 'Active', 'date' => '09 May 2024'],
-        ['name' => 'React for Beginners', 'type' => 'Course', 'status' => 'Pending', 'date' => '08 May 2024'],
-        ['name' => 'Python Programming', 'type' => 'Course', 'status' => 'Active', 'date' => '07 May 2024'],
-    ];
 @endphp
 
 @section('content')
@@ -25,67 +13,117 @@
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Enrollments</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">View and manage student enrollments in your courses.</p>
             </div>
-            @if ('table' === 'form')
-                <button class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white" type="button">Save Changes</button>
-            @elseif ('enrollments' === 'add-course')
-                <button class="h-10 rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white" type="button">Create Course</button>
-            @endif
+            <a href="/training-partner/training-progress" class="inline-flex h-10 items-center justify-center rounded-md bg-[#5b20e6] px-5 text-sm font-bold text-white">Training Progress</a>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach ($stats as $stat)
-                <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">{{ $stat['icon'] }}</span>
-                    <p class="mt-4 text-xs font-bold text-[#526287]">{{ $stat['label'] }}</p>
-                    <h2 class="mt-2 text-2xl font-bold text-[#071544]">{{ $stat['value'] }}</h2>
-                </article>
-            @endforeach
+        <div id="enrollmentStats" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <article class="rounded-lg border border-[#dddff0] bg-white p-5 text-sm text-[#526287] shadow-[0_12px_26px_rgba(50,35,120,.05)] sm:col-span-2 xl:col-span-4">Loading enrollments...</article>
         </div>
 
-        @if ('table' === 'form')
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="grid gap-4 lg:grid-cols-2">
-                    <label class="grid gap-2 text-xs font-bold text-[#071544]">Title<input class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none" value="Enrollments"></label>
-                    <label class="grid gap-2 text-xs font-bold text-[#071544]">Category<select class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm font-medium outline-none"><option>Development</option><option>Data Science</option></select></label>
-                    <label class="grid gap-2 text-xs font-bold text-[#071544] lg:col-span-2">Description<textarea class="min-h-28 rounded-md border border-[#cfd8eb] p-3 text-sm font-medium outline-none">View and manage student enrollments in your courses.</textarea></label>
-                </div>
-            </article>
-        @elseif ('table' === 'detail')
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <h2 class="mb-4 text-lg font-bold text-[#071544]">Overview</h2>
-                <div class="grid gap-4 lg:grid-cols-3">
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Name</p><strong class="mt-2 block text-[#071544]">Enrollments</strong></div>
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Status</p><span class="mt-2 inline-flex rounded-md bg-[#e2f9ea] px-3 py-1 text-xs font-bold text-[#05843e]">Active</span></div>
-                    <div class="rounded-lg border border-[#e7ebf5] p-4"><p class="text-xs font-bold text-[#526287]">Updated</p><strong class="mt-2 block text-[#071544]">Today</strong></div>
-                </div>
-            </article>
-        @else
-            <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <input id="tpSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search...">
-                    <select class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option>All Status</option><option>Active</option><option>Pending</option></select>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-[820px] text-left text-sm">
-                        <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Name</th><th class="px-5 py-4">Type</th><th class="px-5 py-4">Date</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Action</th></tr></thead>
-                        <tbody class="divide-y divide-[#e7ebf5] text-[#26375f]">
-                            @foreach ($rows as $row)
-                                <tr class="tp-row" data-name="{{ strtolower($row['name'].' '.$row['type'].' '.$row['status']) }}"><td class="px-5 py-4 font-bold text-[#071544]">{{ $row['name'] }}</td><td class="px-5 py-4">{{ $row['type'] }}</td><td class="px-5 py-4">{{ $row['date'] }}</td><td class="px-5 py-4"><span class="rounded-md {{ $row['status'] === 'Pending' ? 'bg-[#fff0de] text-[#d06d00]' : 'bg-[#e2f9ea] text-[#05843e]' }} px-3 py-1 text-xs font-bold">{{ $row['status'] }}</span></td><td class="px-5 py-4"><button class="rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button">View</button></td></tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </article>
-        @endif
+        <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <input id="enrollmentSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search student or course...">
+                <select id="trainingFilter" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option value="all">All Training</option><option value="not_started">Not Started</option><option value="in_progress">In Progress</option><option value="completed">Completed</option></select>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[1040px] text-left text-sm">
+                    <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Student</th><th class="px-5 py-4">Course</th><th class="px-5 py-4">Enrollment</th><th class="px-5 py-4">Payment</th><th class="px-5 py-4">Training</th><th class="px-5 py-4">Progress</th><th class="px-5 py-4">Action</th></tr></thead>
+                    <tbody id="enrollmentTable" class="divide-y divide-[#e7ebf5] text-[#26375f]">
+                        <tr><td class="px-5 py-5" colspan="7">Loading enrollments...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
     </section>
 @endsection
 
 @push('scripts')
 <script>
-    const tpSearch = document.getElementById('tpSearch');
-    tpSearch?.addEventListener('input', () => {
-        const query = tpSearch.value.toLowerCase();
-        document.querySelectorAll('.tp-row').forEach(row => row.classList.toggle('hidden', !row.dataset.name.includes(query)));
+    const token = localStorage.getItem('ofc_auth_token');
+    const enrollmentStats = document.getElementById('enrollmentStats');
+    const enrollmentTable = document.getElementById('enrollmentTable');
+    const enrollmentSearch = document.getElementById('enrollmentSearch');
+    const trainingFilter = document.getElementById('trainingFilter');
+    let enrollments = [];
+
+    if (!token) window.location.href = '/training-partner/login';
+
+    function escapeHtml(value) { return String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]); }
+    function formatDate(value) { return value ? new Date(value).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'; }
+    function statusText(value) { return String(value || '-').replaceAll('_', ' '); }
+    function badgeClass(type, status) {
+        if (status === 'paid' || status === 'completed' || status === 'enrolled') return 'bg-[#e2f9ea] text-[#05843e]';
+        if (status === 'in_progress') return 'bg-[#eaf2ff] text-[#075fe4]';
+        if (status === 'pending' || status === 'not_started') return 'bg-[#fff0de] text-[#d06d00]';
+        return 'bg-[#fff4f4] text-[#b42318]';
+    }
+    function studentName(enrollment) { return enrollment.fresher_profile?.user?.name || 'Fresher #' + (enrollment.fresher_profile?.id || enrollment.id); }
+    function studentEmail(enrollment) { return enrollment.fresher_profile?.user?.email || enrollment.fresher_profile?.phone || '-'; }
+    function progressPercent(enrollment) { return enrollment.training_progress?.progress_percentage ?? (enrollment.training_status === 'completed' ? 100 : 0); }
+    function statCard(label, value, icon) {
+        return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">${icon}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`;
+    }
+    function filteredEnrollments() {
+        const query = enrollmentSearch.value.trim().toLowerCase();
+        const training = trainingFilter.value;
+        return enrollments.filter((enrollment) => {
+            const text = [studentName(enrollment), studentEmail(enrollment), enrollment.course?.course_name, enrollment.enrollment_status, enrollment.payment_status, enrollment.training_status].join(' ').toLowerCase();
+            return (!query || text.includes(query)) && (training === 'all' || enrollment.training_status === training);
+        });
+    }
+    function renderStats() {
+        enrollmentStats.innerHTML = [
+            statCard('Total Enrollments', enrollments.length, 'TE'),
+            statCard('In Progress', enrollments.filter((item) => item.training_status === 'in_progress').length, 'IP'),
+            statCard('Completed', enrollments.filter((item) => item.training_status === 'completed').length, 'CP'),
+            statCard('Not Started', enrollments.filter((item) => item.training_status === 'not_started').length, 'NS'),
+        ].join('');
+    }
+    function renderEnrollments() {
+        const visible = filteredEnrollments();
+        renderStats();
+        if (!visible.length) {
+            enrollmentTable.innerHTML = '<tr><td class="px-5 py-5 text-[#526287]" colspan="7">No enrollments found.</td></tr>';
+            return;
+        }
+        enrollmentTable.innerHTML = visible.map((enrollment) => {
+            const progress = progressPercent(enrollment);
+            return `
+                <tr>
+                    <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(studentName(enrollment))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(studentEmail(enrollment))}</span></td>
+                    <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(enrollment.course?.course_name || '-')}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(enrollment.course?.training_mode || '')}</span></td>
+                    <td class="px-5 py-4"><span class="rounded-md ${badgeClass('enrollment', enrollment.enrollment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.enrollment_status))}</span><span class="mt-2 block text-xs text-[#526287]">${formatDate(enrollment.enrollment_date)}</span></td>
+                    <td class="px-5 py-4"><span class="rounded-md ${badgeClass('payment', enrollment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.payment_status))}</span></td>
+                    <td class="px-5 py-4"><span class="rounded-md ${badgeClass('training', enrollment.training_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.training_status))}</span></td>
+                    <td class="px-5 py-4"><div class="mb-1 flex justify-between text-xs font-bold"><span>${progress}%</span></div><div class="h-2 w-28 overflow-hidden rounded-full bg-[#f0eaff]"><div class="h-full rounded-full bg-[#6a2df0]" style="width:${progress}%"></div></div></td>
+                    <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-enrollment rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${enrollment.id}">View</button><button class="progress-enrollment rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" type="button" data-id="${enrollment.id}">Progress</button></div></td>
+                </tr>
+            `;
+        }).join('');
+    }
+    async function loadEnrollments() {
+        try {
+            const response = await fetch('/api/training-partner/enrollments', { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
+            if (response.status === 401) { window.location.href = '/training-partner/login'; return; }
+            const payload = await response.json();
+            if (response.status === 403) { window.location.href = '/training-partner/approval/pending'; return; }
+            if (!response.ok || !payload.success) throw new Error(payload.message || 'Enrollments load nahi ho paaye.');
+            enrollments = payload.data?.enrollments || [];
+            renderEnrollments();
+        } catch (error) {
+            enrollmentTable.innerHTML = '<tr><td class="px-5 py-5 text-[#b42318]" colspan="7">' + escapeHtml(error.message || 'Enrollments load nahi ho paaye.') + '</td></tr>';
+        }
+    }
+    enrollmentSearch.addEventListener('input', renderEnrollments);
+    trainingFilter.addEventListener('change', renderEnrollments);
+    enrollmentTable.addEventListener('click', (event) => {
+        const view = event.target.closest('.view-enrollment');
+        const progress = event.target.closest('.progress-enrollment');
+        const id = view?.dataset.id || progress?.dataset.id;
+        if (!id) return;
+        localStorage.setItem('ofc_selected_training_enrollment_id', id);
+        window.location.href = view ? '/training-partner/enrollments/show' : '/training-partner/progress/edit';
     });
+    loadEnrollments();
 </script>
 @endpush

@@ -35,13 +35,7 @@
             </div>
 
             <div class="flex min-h-[260px] items-center justify-center lg:min-h-[320px]">
-                @if (file_exists(public_path('student.svg')))
-                    <img src="{{ asset('student.svg') }}" alt="Students" class="block h-auto max-h-[320px] w-full max-w-[560px] object-contain">
-                @else
-                    <div class="flex h-[260px] w-full max-w-[560px] items-center justify-center rounded-lg border border-[#dce7f8] bg-white text-5xl font-bold text-[#075fe4] shadow-[0_18px_40px_rgba(6,25,66,0.06)] lg:h-[320px]">
-                        OF
-                    </div>
-                @endif
+                <img src="/student.png" alt="Students" class="block h-auto max-h-[320px] w-full max-w-[560px] object-contain" onerror="this.onerror=null;this.src='/student.svg';">
             </div>
         </div>
     </section>
