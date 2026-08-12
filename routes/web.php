@@ -33,6 +33,15 @@ Route::view('/direct-mode/offers', 'direct-mode.offers');
 Route::view('/direct-mode/activity', 'direct-mode.activity');
 Route::view('/direct-mode/settings', 'direct-mode.settings');
 Route::view('/direct-mode/logout', 'direct-mode.logout');
+Route::redirect('/fresher/dashboard', '/direct-mode/dashboard');
+Route::redirect('/fresher/profile', '/direct-mode/profile');
+Route::redirect('/fresher/assessments', '/direct-mode/assessments');
+Route::redirect('/fresher/jobs', '/direct-mode/jobs');
+Route::redirect('/fresher/applications', '/direct-mode/applications');
+Route::redirect('/fresher/interviews', '/direct-mode/interviews');
+Route::redirect('/fresher/offers', '/direct-mode/offers');
+Route::redirect('/fresher/activity', '/direct-mode/activity');
+Route::redirect('/fresher/settings', '/direct-mode/settings');
 Route::view('/fast-track/dashboard', 'fresher.fast-track.index');
 Route::view('/fast-track/profile', 'fresher.profile.show');
 Route::view('/fast-track/courses', 'fresher.fast-track.courses');
@@ -51,8 +60,6 @@ Route::view('/courses/show', 'public.courses.show');
 Route::view('/certificates/verify', 'public.certificates.verify');
 
 
-Route::view('/company/login', 'company.login');
-Route::view('/company/register', 'company.register');
 Route::get('/company/dashboard-preview', CompanyDashboardPageController::class);
 Route::get('/company/dashboard', CompanyDashboardPageController::class);
 Route::view('/company/profile', 'company.profile.show');
@@ -62,8 +69,6 @@ Route::view('/company/applications', 'company.applications.index');
 Route::view('/company/shortlisted', 'company.applications.shortlisted');
 Route::view('/company/interviews', 'company.interviews.index');
 Route::view('/company/hired', 'company.hired.index');
-Route::view('/company/billing', 'company.billing.index');
-Route::view('/company/messages', 'company.messages.index');
 Route::view('/company/notifications', 'company.notifications.index');
 Route::view('/company/settings', 'company.settings.index');
 Route::view('/company/profile/edit', 'company.profile.edit');
@@ -135,9 +140,6 @@ Route::view('/training-partner/progress/show', 'training-partner.progress.show')
 Route::view('/training-partner/progress/edit', 'training-partner.progress.edit');
 Route::view('/training-partner/students', 'training-partner.students.index');
 Route::view('/training-partner/students/show', 'training-partner.students.show');
-
-
-
 
 
 

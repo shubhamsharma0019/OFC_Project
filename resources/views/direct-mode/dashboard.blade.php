@@ -35,7 +35,7 @@
 
 @push('styles')
 <style>
-    .dashboard{padding:20px 24px 28px}.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}.card{background:#fff;border:1px solid #dce7f8;border-radius:12px;box-shadow:0 10px 24px rgba(6,25,66,.04)}.stat-card{min-height:112px;padding:18px 26px;display:grid;grid-template-columns:52px minmax(0,1fr);gap:24px;align-items:center}.stat-icon,.dash-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center}.stat-icon svg,.dash-icon svg{width:27px;height:27px;fill:none!important;stroke:currentColor!important;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.stat-card>div{min-width:0;display:grid;align-content:center}.blue-soft{background:#eaf2ff;color:#075fe4}.green-soft{background:#e1f8ec;color:#17a85d}.purple-soft{background:#efe7ff;color:#6d42e8}.orange-soft{background:#fff0dc;color:#f59b18}.stat-card h2{margin:0 0 8px;font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat-card strong{display:block;font-size:28px;line-height:.95;margin:0 0 9px}.stat-card small{display:block;color:#07883f;font-size:12px;line-height:1.2;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.middle{display:grid;grid-template-columns:1.15fr 1fr 1.08fr;gap:14px;margin-bottom:16px}.section{padding:22px}.section h2{margin:0 0 18px;font-size:16px}.profile-box{display:grid;grid-template-columns:155px 1fr;gap:24px;align-items:center}.ring{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(#075fe4 0 var(--value,0%),#e8edf6 var(--value,0%))}.ring.score{width:104px;height:104px}.ring:before{content:"";position:absolute;inset:17px;background:#fff;border-radius:50%}.ring span{position:relative;font-size:29px}.ring.score span{font-size:20px}.check-list{display:grid;gap:12px}.check-row{display:flex;align-items:center;gap:10px;color:#44577e;font-size:12px}.check{width:16px;height:16px;border-radius:50%;border:1px solid #9cafcd;display:grid;place-items:center;font-size:11px}.check.done{border:0;background:#19a85e;color:#fff}.score-wrap{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:18px}.skill-row{display:grid;grid-template-columns:95px 1fr 36px;gap:10px;align-items:center;margin:13px 0;font-size:12px;font-weight:700}.bar{height:7px;border-radius:20px;background:#e8edf6;overflow:hidden}.bar span{display:block;height:100%;background:#075fe4}.notif-list{display:grid;gap:16px}.notif{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center}.notif .dash-icon{width:38px;height:38px;border-radius:10px}.notif h3{margin:0 0 5px;font-size:13px}.notif p,.notif time{margin:0;color:#44577e;font-size:12px}.view{float:right;color:#075fe4;font-size:12px;font-weight:800}.bottom{display:grid;grid-template-columns:1.45fr .75fr;gap:14px}.job-list{display:grid}.job-row{display:grid;grid-template-columns:52px 1fr auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid #e6eef8}.job-row:last-child{border-bottom:0}.logo{width:48px;height:48px;border-radius:7px;background:#06356f;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}.job-row h3{margin:0 0 5px;font-size:14px}.job-row p{margin:0 0 10px;color:#44577e;font-size:12px}.meta{display:flex;gap:18px;flex-wrap:wrap;color:#44577e;font-size:12px}.status{display:inline-flex;padding:8px 12px;border-radius:7px;font-size:12px;font-weight:800;background:#eaf2ff;color:#075fe4}.status.purple{background:#efe7ff;color:#6d42e8}.status.orange{background:#fff0dc;color:#f04b20}.job-side{text-align:right;color:#44577e;font-size:12px}.jobs-footer{text-align:center;padding-top:12px}.jobs-footer a{color:#075fe4;font-weight:800;font-size:13px}.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.quick{height:78px;border:1px solid #dce7f8;border-radius:9px;background:#fff;display:grid;place-items:center;text-align:center;color:#075fe4;font-size:11px;font-weight:800;padding:8px}.boost-panel{margin-top:14px;min-height:150px;border-radius:10px;background:#eaf2ff;display:flex;align-items:center;justify-content:space-between;padding:24px;overflow:hidden}.boost-panel h3{margin:0 0 8px;color:#075fe4;font-size:17px;line-height:1.4}.boost-panel p{margin:0 0 16px;font-size:12px;color:#44577e}.rocket-mark{width:72px;height:72px;background:linear-gradient(135deg,#0d67ff,#163ade);clip-path:polygon(50% 0,82% 23%,68% 68%,100% 82%,65% 88%,50% 100%,35% 88%,0 82%,32% 68%,18% 23%);transform:rotate(35deg);flex:0 0 auto}.empty{padding:18px 0;color:#44577e;font-size:12px}.dashboard-error{display:none;margin-bottom:14px;border:1px solid #ffd0d7;background:#fff1f2;color:#c8102e;border-radius:9px;padding:12px 14px;font-size:13px;font-weight:700}@media(max-width:1200px){.middle,.bottom{grid-template-columns:1fr}.dash-stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:720px){.dashboard{padding:14px}.dash-stats{grid-template-columns:1fr}.profile-box,.score-wrap{grid-template-columns:1fr}.quick-grid{grid-template-columns:repeat(2,1fr)}.job-row{grid-template-columns:1fr}.job-side{text-align:left}}
+    .dashboard{padding:20px 24px 28px}.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}.card{background:#fff;border:1px solid #dce7f8;border-radius:12px;box-shadow:0 10px 24px rgba(6,25,66,.04)}.stat-card{min-height:112px;padding:18px 26px;display:grid;grid-template-columns:52px minmax(0,1fr);gap:24px;align-items:center}.stat-icon,.dash-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center}.stat-icon svg,.dash-icon svg{width:27px;height:27px;fill:none!important;stroke:currentColor!important;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.stat-card>div{min-width:0;display:grid;align-content:center}.blue-soft{background:#eaf2ff;color:#075fe4}.green-soft{background:#e1f8ec;color:#17a85d}.purple-soft{background:#efe7ff;color:#6d42e8}.orange-soft{background:#fff0dc;color:#f59b18}.stat-card h2{margin:0 0 8px;font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat-card strong{display:block;font-size:28px;line-height:.95;margin:0 0 9px}.stat-card small{display:block;color:#07883f;font-size:12px;line-height:1.2;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.middle{display:grid;grid-template-columns:1.15fr 1fr 1.08fr;gap:14px;margin-bottom:16px}.section{padding:22px}.section h2{margin:0 0 18px;font-size:16px}.profile-box{display:grid;grid-template-columns:155px 1fr;gap:24px;align-items:center}.ring{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(#075fe4 0 var(--value,0%),#e8edf6 var(--value,0%))}.ring.score{width:104px;height:104px}.ring:before{content:"";position:absolute;inset:17px;background:#fff;border-radius:50%}.ring span{position:relative;font-size:29px}.ring.score span{font-size:20px}.check-list{display:grid;gap:12px}.check-row{display:flex;align-items:center;gap:10px;color:#44577e;font-size:12px}.check{width:16px;height:16px;border-radius:50%;border:1px solid #9cafcd;display:grid;place-items:center;font-size:11px}.check.done{border:0;background:#19a85e;color:#fff}.score-wrap{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:18px}.skill-row{display:grid;grid-template-columns:95px 1fr 36px;gap:10px;align-items:center;margin:13px 0;font-size:12px;font-weight:700}.bar{height:7px;border-radius:20px;background:#e8edf6;overflow:hidden}.bar span{display:block;height:100%;background:#075fe4}.notif-list{display:grid;gap:16px}.notif{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center}.notif .dash-icon{width:38px;height:38px;border-radius:10px}.notif h3{margin:0 0 5px;font-size:13px}.notif p,.notif time{margin:0;color:#44577e;font-size:12px}.view{float:right;color:#075fe4;font-size:12px;font-weight:800}.bottom{display:grid;grid-template-columns:1.45fr .75fr;gap:14px;margin-bottom:18px}.job-list{display:grid}.job-row{display:grid;grid-template-columns:52px 1fr auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid #e6eef8}.job-row:last-child{border-bottom:0}.logo{width:48px;height:48px;border-radius:7px;background:#06356f;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}.job-row h3{margin:0 0 5px;font-size:14px}.job-row p{margin:0 0 10px;color:#44577e;font-size:12px}.meta{display:flex;gap:18px;flex-wrap:wrap;color:#44577e;font-size:12px}.status{display:inline-flex;padding:8px 12px;border-radius:7px;font-size:12px;font-weight:800;background:#eaf2ff;color:#075fe4}.status.purple{background:#efe7ff;color:#6d42e8}.status.orange{background:#fff0dc;color:#f04b20}.job-side{text-align:right;color:#44577e;font-size:12px}.jobs-footer{text-align:center;padding-top:12px}.jobs-footer a{color:#075fe4;font-weight:800;font-size:13px}.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.quick{height:78px;border:1px solid #dce7f8;border-radius:9px;background:#fff;display:grid;place-items:center;text-align:center;color:#075fe4;font-size:11px;font-weight:800;padding:8px}.boost-panel{margin-top:18px;min-height:150px;border-radius:10px;background:#eaf2ff;display:flex;align-items:center;justify-content:space-between;padding:24px;overflow:hidden}.boost-panel h3{margin:0 0 8px;color:#075fe4;font-size:17px;line-height:1.4}.boost-panel p{margin:0 0 16px;font-size:12px;color:#44577e}.rocket-mark{width:72px;height:72px;background:linear-gradient(135deg,#0d67ff,#163ade);clip-path:polygon(50% 0,82% 23%,68% 68%,100% 82%,65% 88%,50% 100%,35% 88%,0 82%,32% 68%,18% 23%);transform:rotate(35deg);flex:0 0 auto}.empty{padding:18px 0;color:#44577e;font-size:12px}.dashboard-error{display:none;margin-bottom:14px;border:1px solid #ffd0d7;background:#fff1f2;color:#c8102e;border-radius:9px;padding:12px 14px;font-size:13px;font-weight:700}@media(max-width:1200px){.middle,.bottom{grid-template-columns:1fr}.dash-stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:720px){.dashboard{padding:14px}.dash-stats{grid-template-columns:1fr}.profile-box,.score-wrap{grid-template-columns:1fr}.quick-grid{grid-template-columns:repeat(2,1fr)}.job-row{grid-template-columns:1fr}.job-side{text-align:left}}
 </style>
 @endpush
 
@@ -70,7 +70,7 @@
             <div class="jobs-footer"><a href="/direct-mode/applications">View All Applications</a></div>
         </article>
         <aside>
-            <article class="card section"><h2>Quick Actions</h2><div class="quick-grid">@foreach ($actions as $item)<a class="quick" href="{{ $item['url'] }}"><span data-icon="{{ $item['icon'] }}"></span><span>{{ $item['title'] }}</span></a>@endforeach</div></article>
+            <article class="card section"><h2>Quick Actions</h2><div class="quick-grid" data-quick-actions>@foreach ($actions as $item)<a class="quick" href="{{ $item['url'] }}"><span data-icon="{{ $item['icon'] }}"></span><span>{{ $item['title'] }}</span></a>@endforeach</div></article>
             <article class="boost-panel"><div><h3 data-boost-title>Boost your profile &<br>get hired faster!</h3><p data-boost-text>Complete your profile and increase your chances.</p><a class="primary" href="/direct-mode/profile" style="display:inline-flex;align-items:center" data-boost-action>Complete Profile</a></div><span class="rocket-mark"></span></article>
         </aside>
     </div>
@@ -124,6 +124,21 @@
         text(textSelector, `${score}%`);
     };
 
+    const numberFrom = (...values) => {
+        for (const value of values) {
+            if (value !== undefined && value !== null && value !== '') return Number(value) || 0;
+        }
+        return 0;
+    };
+
+    const listFrom = value => {
+        if (Array.isArray(value)) return value;
+        if (Array.isArray(value?.data)) return value.data;
+        if (Array.isArray(value?.notifications)) return value.notifications;
+        if (Array.isArray(value?.notifications?.data)) return value.notifications.data;
+        return [];
+    };
+
     const setTopUser = (user, unreadCount) => {
         const name = user?.name || storedUser?.name || 'Fresher';
         const topName = qs('.top-user strong');
@@ -167,14 +182,16 @@
 
     const renderAssessment = assessment => {
         const result = assessment?.result || {};
-        const total = clamp(result.percentage ?? result.score_percentage ?? result.overall_score ?? result.total_score ?? 0);
+        const total = clamp(numberFrom(result.percentage, result.score_percentage, result.overall_score, result.total_score));
+        const status = String(assessment?.status || '').toLowerCase();
+        const isSubmitted = status === 'submitted' || Boolean(result.id || result.overall_score);
         setRing('[data-score-ring]', '[data-score-percent]', total);
-        text('[data-score-title]', total ? (total >= 70 ? 'Good job!' : 'Keep improving!') : 'Assessment pending');
-        text('[data-score-note]', total ? 'Keep improving.' : 'Take your assessment to unlock better matches.');
+        text('[data-score-title]', isSubmitted ? (total >= 70 ? 'Good job!' : 'Keep improving!') : (status === 'in_progress' ? 'Assessment in progress' : 'Assessment pending'));
+        text('[data-score-note]', isSubmitted ? 'Your latest assessment score is updated.' : (status === 'in_progress' ? 'Continue your assessment to complete the score.' : 'Take your assessment to unlock better matches.'));
         const values = {
-            technical: result.technical_score ?? result.technical_skills ?? total,
-            aptitude: result.aptitude_score ?? total,
-            communication: result.communication_score ?? total,
+            technical: numberFrom(result.technical_score, result.technical_skills, isSubmitted ? total : 0),
+            aptitude: numberFrom(result.aptitude_score, isSubmitted ? total : 0),
+            communication: numberFrom(result.communication_score, isSubmitted ? total : 0),
         };
         qsa('[data-skill]').forEach(row => {
             const value = clamp(values[row.dataset.skill]);
@@ -200,19 +217,40 @@
         }).join('');
     };
 
+    const renderQuickActions = dashboard => {
+        const box = qs('[data-quick-actions]');
+        if (!box) return;
+        const stats = dashboard?.statistics || {};
+        const profile = dashboard?.profile || {};
+        const assessment = dashboard?.initial_assessment || null;
+        const profileDone = clamp(profile.profile_completion) >= 80;
+        const assessmentDone = assessment?.status === 'submitted' || assessment?.result;
+        const items = [
+            { title: profileDone ? 'View Profile' : 'Complete Profile', icon: 'user', url: '/direct-mode/profile' },
+            { title: assessmentDone ? 'View Result' : (assessment ? 'Continue Assessment' : 'Take Assessment'), icon: 'clipboard', url: '/direct-mode/assessments' },
+            { title: Number(stats.total_applications || 0) ? 'Browse More Jobs' : 'Browse Jobs', icon: 'briefcase', url: '/direct-mode/jobs' },
+            { title: `My Applications${stats.total_applications ? ` (${stats.total_applications})` : ''}`, icon: 'file', url: '/direct-mode/applications' },
+            { title: `Interview Schedule${stats.scheduled_interviews ? ` (${stats.scheduled_interviews})` : ''}`, icon: 'calendar', url: '/direct-mode/interviews' },
+            { title: `Offers${stats.hired_applications ? ` (${stats.hired_applications})` : ''}`, icon: 'trophy', url: '/direct-mode/offers' },
+        ];
+        box.innerHTML = items.map(item => `<a class="quick" href="${esc(item.url)}"><span data-icon="${esc(item.icon)}"></span><span>${esc(item.title)}</span></a>`).join('');
+        box.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = window.directModeIcons[el.dataset.icon] || el.innerHTML; });
+    };
+
     const renderNotifications = notifications => {
         const box = qs('[data-notifications]');
         if (!box) return;
-        if (!notifications?.length) {
+        const items = listFrom(notifications);
+        if (!items.length) {
             box.innerHTML = '<div class="empty">No notifications yet.</div>';
             return;
         }
         const iconByType = { job: 'briefcase', interview: 'calendar', assessment: 'file', application: 'bell' };
         const toneByType = { job: 'green-soft', interview: 'purple-soft', assessment: 'orange-soft', application: 'blue-soft' };
-        box.innerHTML = notifications.slice(0, 4).map(item => {
+        box.innerHTML = items.slice(0, 4).map(item => {
             const icon = iconByType[item.type] || 'bell';
             const tone = toneByType[item.type] || 'blue-soft';
-            return `<div class="notif"><span class="dash-icon ${tone}" data-icon="${icon}"></span><div><h3>${esc(item.title)}</h3><p>${esc(item.message)}</p></div><time>${esc(timeAgo(item.created_at))}</time></div>`;
+            return `<div class="notif"><span class="dash-icon ${tone}" data-icon="${icon}"></span><div><h3>${esc(item.title || 'Notification')}</h3><p>${esc(item.message || item.body || item.description || '')}</p></div><time>${esc(timeAgo(item.created_at || item.updated_at))}</time></div>`;
         }).join('');
         qsa('[data-notifications] [data-icon]').forEach(el => { el.innerHTML = window.directModeIcons[el.dataset.icon] || el.innerHTML; });
     };
@@ -238,24 +276,28 @@
             return;
         }
         try {
-            const [dashboard, notificationData, unreadData] = await Promise.all([
+            const [dashboard, applicationData, notificationData, unreadData] = await Promise.all([
                 getJson('/api/fresher/dashboard'),
+                getJson('/api/fresher/applications').catch(() => ({ applications: [] })),
                 getJson('/api/notifications?per_page=4').catch(() => ({ notifications: { data: [] } })),
                 getJson('/api/notifications/unread-count').catch(() => ({ unread_count: 0 })),
             ]);
             const stats = dashboard.statistics || {};
             const assessment = dashboard.initial_assessment;
-            const applications = dashboard.recent_applications || [];
-            const notifications = notificationData.notifications?.data || [];
-            const assessmentDone = assessment ? 1 : 0;
+            const applications = (applicationData.applications || dashboard.recent_applications || []).slice(0, 5);
+            const notifications = listFrom(notificationData.notifications || notificationData);
+            const assessmentSubmitted = assessment?.status === 'submitted' || assessment?.result;
+            const assessmentInProgress = assessment && !assessmentSubmitted;
+            const assessmentDone = assessmentSubmitted ? 1 : 0;
             setTopUser(dashboard.user, unreadData.unread_count);
             setStat('applications', stats.total_applications, `${stats.under_review_applications || 0} under review`);
-            setStat('assessments', assessmentDone, assessment ? '1 Completed' : 'Not Started');
+            setStat('assessments', assessmentDone, assessmentSubmitted ? '1 Completed' : (assessmentInProgress ? 'In Progress' : 'Not Started'));
             setStat('interviews', stats.scheduled_interviews, 'Upcoming');
             setStat('offers', stats.hired_applications, stats.hired_applications ? 'Congratulations!' : 'Keep applying');
             renderProfile(dashboard.profile);
             renderAssessment(assessment);
             renderApplications(applications);
+            renderQuickActions(dashboard);
             renderNotifications(notifications);
         } catch (error) {
             showError(error.message);

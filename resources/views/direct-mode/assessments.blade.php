@@ -19,6 +19,7 @@
 </style>
 <style>
     .tabs{min-height:46px!important;height:auto!important}.tab{min-width:0!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;padding:0 10px!important;white-space:nowrap!important}.tab b{min-width:20px;height:20px;border-radius:999px;background:#eef4ff;color:#064cff;display:none;place-items:center;font-size:11px;line-height:20px}.tab.has-count b{display:grid}.tab span{overflow:hidden;text-overflow:ellipsis}.tab.active b{background:#064cff;color:#fff}
+    .content-grid{grid-template-columns:1fr!important}.side{display:none!important}.stat{min-width:0!important;grid-template-columns:58px minmax(0,1fr)!important;gap:16px!important;overflow:hidden!important}.stat-icon{width:50px!important;height:50px!important;align-self:center!important;justify-self:center!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;line-height:0!important}.stat-icon svg{width:22px!important;height:22px!important;display:block!important;flex:0 0 auto!important;margin:0!important;position:static!important;transform:none!important}.stat div{min-width:0!important;overflow:hidden!important}.stat h3{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.stat strong{font-size:clamp(24px,1.9vw,30px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important}.stat span{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.2!important}
 </style>
 @endpush
 
@@ -69,11 +70,6 @@
                     <h2>Recommended for You</h2>
                     <div class="recommend"><span class="medal" data-icon="award"></span><div><h3 data-track-title>Initial Assessment</h3><p data-track-text>Complete your assessment to unlock recommendations.</p><button class="outline" type="button" data-track-action>Start Assessment</button></div></div>
                 </article>
-                <article class="card side-card">
-                    <h2>Tips to Improve Score</h2>
-                    <div class="tips" data-tips></div>
-                    <div class="center"><button class="outline" type="button" data-refresh-tips>View All Tips</button></div>
-                </article>
             </aside>
         </div>
     </div>
@@ -104,6 +100,8 @@
     let dashboard = null;
     let currentAttempt = null;
     let questions = [];
+    let runnerCategory = 'technical';
+    let answersByQuestion = {};
     const qs = s => document.querySelector(s);
     const qsa = s => [...document.querySelectorAll(s)];
     const esc = v => String(v ?? '').replace(/[&<>"']/g, c => {
@@ -123,19 +121,6 @@
     const postJson = async (url, payload = {}) => { const r = await fetch(url, { method:'POST', headers:{...headers,'Content-Type':'application/json'}, body:JSON.stringify(payload) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.message || 'Request failed.'); return j.data; };
     const setSkill = (key, value) => { const row = qs(`[data-skill="${key}"]`); const score = clamp(value); row.querySelector('.bar span').style.width = `${score}%`; row.querySelector('strong').textContent = `${score}%`; };
     const scoreLabel = score => score >= 80 ? 'Excellent!' : score >= 60 ? 'Good!' : score > 0 ? 'Keep improving!' : 'Pending';
-    const tipsFor = result => {
-        const scores = { technical: result?.technical_score || 0, aptitude: result?.aptitude_score || 0, communication: result?.communication_score || 0 };
-        return [
-            { show: scores.technical < 70, title:'Practice Technical MCQs', text:'Solve more coding and web basics daily.', icon:'target', tone:'green' },
-            { show: scores.aptitude < 70, title:'Improve Aptitude', text:'Focus on speed, accuracy, and logic.', icon:'book', tone:'purple' },
-            { show: scores.communication < 70, title:'Work on Communication', text:'Practice verbal and written responses.', icon:'message', tone:'orange' },
-        ].filter(t => t.show).slice(0, 3);
-    };
-    const renderTips = result => {
-        const tips = tipsFor(result);
-        qs('[data-tips]').innerHTML = tips.length ? tips.map(t => `<div class="tip"><span class="tip-icon ${t.tone}" data-icon="${t.icon}"></span><div><h3>${t.title}</h3><p>${t.text}</p></div></div>`).join('') : '<div class="empty">Your score looks good. Keep practicing to stay sharp.</div>';
-        qsa('[data-tips] [data-icon]').forEach(el => { el.innerHTML = window.directModeIcons[el.dataset.icon] || el.innerHTML; });
-    };
     const renderOverview = data => {
         const result = data?.initial_assessment?.result;
         const scoreByFilter = {
@@ -169,7 +154,6 @@
         qs('[data-track-title]').textContent = result?.recommended_track || 'Initial Assessment';
         qs('[data-track-text]').textContent = result ? 'Follow this track to improve your weakest skill area.' : 'Complete your assessment to unlock recommendations.';
         qs('[data-track-action]').textContent = result ? 'Explore Career Track' : 'Start Assessment';
-        renderTips(result);
     };
     const renderTabCounts = () => {
         const rows = recentRows();
@@ -227,8 +211,24 @@
         qs('[data-runner]').classList.add('active');
         qs('[data-runner]').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
+    const categoryLabels = { technical: 'Technical Skills', aptitude: 'Aptitude', communication: 'Communication' };
+    const categoryOrder = ['technical', 'aptitude', 'communication'];
+    const categoryQuestions = category => questions.filter(q => q.category === category);
+    const answeredCount = category => categoryQuestions(category).filter(q => answersByQuestion[q.id]).length;
     const renderQuestions = () => {
-        qs('[data-questions]').innerHTML = questions.map((q, index) => `<div class="question"><h3>${index + 1}. ${esc(q.question)}</h3><div class="options">${['A','B','C','D'].map(opt => `<label class="option"><input type="radio" name="q_${q.id}" value="${opt}"><span>${opt}. ${esc(q['option_' + opt.toLowerCase()])}</span></label>`).join('')}</div></div>`).join('');
+        const currentQuestions = categoryQuestions(runnerCategory);
+        const nav = categoryOrder.map(category => {
+            const total = categoryQuestions(category).length;
+            const done = answeredCount(category);
+            return `<button class="tab ${runnerCategory === category ? 'active' : ''} ${done ? 'has-count' : ''}" type="button" data-runner-category="${category}"><span>${categoryLabels[category]}</span><b>${done}/${total}</b></button>`;
+        }).join('');
+        qs('[data-runner-title]').textContent = `${categoryLabels[runnerCategory]} Assessment`;
+        qs('[data-questions]').innerHTML = `<div class="tabs" style="width:100%;margin-bottom:14px">${nav}</div>${currentQuestions.length ? currentQuestions.map((q, index) => `<div class="question"><h3>${index + 1}. ${esc(q.question)}</h3><div class="options">${['A','B','C','D'].map(opt => `<label class="option"><input type="radio" name="q_${q.id}" value="${opt}" ${answersByQuestion[q.id] === opt ? 'checked' : ''}><span>${opt}. ${esc(q['option_' + opt.toLowerCase()])}</span></label>`).join('')}</div></div>`).join('') : '<div class="empty">No questions found for this category.</div>'}`;
+        qsa('[data-runner-category]').forEach(btn => btn.addEventListener('click', () => { runnerCategory = btn.dataset.runnerCategory; renderQuestions(); }));
+        qsa('[data-questions] input[type="radio"]').forEach(input => input.addEventListener('change', () => {
+            answersByQuestion[input.name.replace('q_', '')] = input.value;
+            renderQuestions();
+        }));
     };
     const startAssessment = async () => {
         alert('');
@@ -243,6 +243,8 @@
             currentAttempt = start.attempt;
             const questionData = await getJson(`/api/fresher/assessment/${currentAttempt.id}/questions`);
             questions = questionData.questions || [];
+            answersByQuestion = {};
+            runnerCategory = categoryOrder.includes(activeFilter) ? activeFilter : 'technical';
             if (!questions.length) {
                 alert('No active questions are available right now.');
                 return;
@@ -250,7 +252,6 @@
             renderQuestions();
             qs('[data-submit-assessment]').style.display = '';
             qs('[data-runner]').classList.add('active');
-            qs('[data-runner-title]').textContent = `Initial Assessment (${questions.length} Questions)`;
             qs('[data-runner]').scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (e) {
             alert(e.message);
@@ -263,8 +264,13 @@
         }
     };
     const submitAssessment = async () => {
-        const answers = questions.map(q => ({ question_id: q.id, selected_option: qs(`input[name="q_${q.id}"]:checked`)?.value })).filter(a => a.selected_option);
-        if (answers.length !== questions.length) return alert('Please answer all questions before submitting.');
+        const answers = questions.map(q => ({ question_id: q.id, selected_option: answersByQuestion[q.id] })).filter(a => a.selected_option);
+        if (answers.length !== questions.length) {
+            const pendingCategory = categoryOrder.find(category => answeredCount(category) < categoryQuestions(category).length);
+            if (pendingCategory) runnerCategory = pendingCategory;
+            renderQuestions();
+            return alert('Please answer all category questions before submitting.');
+        }
         try {
             qs('[data-submit-assessment]').disabled = true;
             qs('[data-submit-assessment]').textContent = 'Submitting...';
@@ -287,7 +293,6 @@
         }
         if (!token) {
             alert('Please login again to load assessment data.');
-            renderTips(null);
             renderRecent();
             return;
         }
@@ -299,7 +304,6 @@
             renderRecent();
         } catch (e) {
             alert(e.message);
-            renderTips(null);
             renderRecent();
         }
     };
@@ -317,10 +321,6 @@
     qs('[data-close-runner]').addEventListener('click', () => {
         qs('[data-runner]').classList.remove('active');
         qs('[data-submit-assessment]').style.display = '';
-    });
-    qs('[data-refresh-tips]').addEventListener('click', () => {
-        renderTips(dashboard?.initial_assessment?.result || null);
-        alert('Tips updated according to your latest score.', 'success');
     });
     qs('[data-view-all]').addEventListener('click', e => { e.preventDefault(); activeFilter = 'all'; qsa('[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all')); renderOverview(dashboard); renderRecent(); });
     load();

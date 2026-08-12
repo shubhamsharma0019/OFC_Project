@@ -124,8 +124,8 @@ document.addEventListener('DOMContentLoaded', function () {
     */
 
     const token =
-        localStorage.getItem('ofc_auth_token') ||
-        localStorage.getItem('onlyfreshers_company_token');
+        localStorage.getItem('onlyfreshers_company_token') ||
+        localStorage.getItem('ofc_auth_token');
 
     const statsGrid = document.getElementById('statsGrid');
     const recentActivities = document.getElementById('recentActivities');

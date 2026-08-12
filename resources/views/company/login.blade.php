@@ -156,6 +156,16 @@
                     throw new Error('Please login with a company account.');
                 }
 
+                [
+                    'ofc_auth_token',
+                    'ofc_auth_user',
+                    'ofc_company_profile',
+                    'onlyfreshers_company_token',
+                    'onlyfreshers_company_user',
+                    'onlyfreshers_token',
+                    'onlyfreshers_user'
+                ].forEach(key => localStorage.removeItem(key));
+
                 localStorage.setItem('onlyfreshers_company_token', result.data.token);
                 localStorage.setItem('onlyfreshers_company_user', JSON.stringify(result.data.user));
                 window.location.href = '/company/dashboard';

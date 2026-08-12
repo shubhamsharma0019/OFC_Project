@@ -41,7 +41,7 @@ class CompanyDashboardPageController extends Controller
             return $user->companyProfile;
         }
 
-        return CompanyProfile::query()->with('user')->latest()->first();
+        return null;
     }
 
     private function stats(CompanyProfile $companyProfile): array
@@ -211,12 +211,12 @@ class CompanyDashboardPageController extends Controller
     private function fallbackData(): array
     {
         return [
-            'companyName' => 'TechNova Solutions',
-            'todayMessage' => "Here's what's happening today.",
+            'companyName' => 'Company',
+            'todayMessage' => 'Loading dashboard...',
             'stats' => [
                 [
                     'label' => 'Jobs Posted',
-                    'value' => '31',
+                    'value' => '0',
                     'link' => 'View all',
                     'href' => '/company/jobs',
                     'icon' => 'briefcase',
@@ -224,7 +224,7 @@ class CompanyDashboardPageController extends Controller
                 ],
                 [
                     'label' => 'Applications',
-                    'value' => '56',
+                    'value' => '0',
                     'link' => 'View all',
                     'href' => '/company/applications',
                     'icon' => 'users',
@@ -232,7 +232,7 @@ class CompanyDashboardPageController extends Controller
                 ],
                 [
                     'label' => 'Shortlisted',
-                    'value' => '12',
+                    'value' => '0',
                     'link' => 'View all',
                     'href' => '/company/shortlisted',
                     'icon' => 'star',
@@ -240,7 +240,7 @@ class CompanyDashboardPageController extends Controller
                 ],
                 [
                     'label' => 'Interviews',
-                    'value' => '5',
+                    'value' => '0',
                     'link' => 'View all',
                     'href' => '/company/interviews',
                     'icon' => 'calendar',
@@ -248,7 +248,7 @@ class CompanyDashboardPageController extends Controller
                 ],
                 [
                     'label' => 'Hired',
-                    'value' => '3',
+                    'value' => '0',
                     'link' => 'View all',
                     'href' => '/company/hired',
                     'icon' => 'user-check',

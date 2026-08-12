@@ -21,7 +21,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Direct Mode - OnlyFreshers')</title>
     <style>
-        *{box-sizing:border-box}body{margin:0;height:100vh;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#06123f;background:#f7fbff;font-weight:500}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}.shell{height:100vh;overflow:hidden;display:grid;grid-template-columns:250px minmax(0,1fr);background:linear-gradient(135deg,#fbfdff,#f1f7ff)}.sidebar{position:sticky;top:0;height:100vh;min-width:0;overflow:hidden;background:#fff;border-right:1px solid #d8e4f7;display:flex;flex-direction:column;justify-content:space-between}.brand{height:82px;display:flex;align-items:center;padding:0 34px;border-bottom:1px solid #d8e4f7}.brand img{display:block;width:200px;max-width:100%;height:auto;object-fit:contain;object-position:left center}.menu{max-height:calc(100vh - 300px);overflow-y:auto;padding:24px 18px 12px;display:grid;gap:8px}.menu-item{min-height:46px;border-radius:8px;display:flex;align-items:center;gap:15px;padding:0 18px;font-size:14px;font-weight:700;position:relative;color:#06123f;white-space:nowrap}.menu-item.active{background:#eaf2ff;color:#064cff}.menu-item.active:before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;background:#064cff;border-radius:6px}.icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.boost{margin:18px;padding:18px;border-radius:9px;background:#eef5ff;text-align:center}.rocket{height:96px;position:relative}.rocket:before{content:"";position:absolute;left:50%;top:13px;width:66px;height:66px;background:linear-gradient(135deg,#0d67ff,#163ade);clip-path:polygon(50% 0,82% 23%,68% 68%,100% 82%,65% 88%,50% 100%,35% 88%,0 82%,32% 68%,18% 23%);transform:translateX(-50%) rotate(35deg)}.rocket:after{content:"";position:absolute;left:34px;right:34px;bottom:5px;height:18px;border-radius:50%;background:#dce8ff}.boost h3{margin:0 0 10px;font-size:15px;line-height:1.25}.boost p{margin:0 0 16px;font-size:13px;line-height:1.35;color:#26375e}.primary{height:36px;border:1px solid #064cff;border-radius:6px;background:#064cff;color:#fff;font-size:13px;font-weight:800;padding:0 20px;cursor:pointer}.main{height:100vh;min-width:0;overflow-y:auto;display:grid;grid-template-rows:82px minmax(0,max-content)}.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #d8e4f7;display:grid;grid-template-columns:1fr minmax(320px,603px) 1fr;align-items:center;gap:26px;padding:0 38px}.hamb{font-size:25px;line-height:1;color:#06123f}.search-wrap{position:relative;min-width:0}.search-top{height:46px;border:1px solid #cbd8ee;border-radius:7px;background:#fbfdff;display:flex;align-items:center;gap:14px;padding:0 16px;color:#26375e}.search-top input{border:0;outline:0;background:transparent;width:100%;min-width:0;color:#26375e}.search-panel{display:none;position:absolute;left:0;right:0;top:54px;z-index:50;border:1px solid #d8e4f7;border-radius:10px;background:#fff;box-shadow:0 18px 34px rgba(6,25,66,.12);overflow:hidden}.search-panel.show{display:block}.search-state{padding:15px 16px;color:#526287;font-size:13px}.search-result{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid #eef3fb}.search-result:first-child{border-top:0}.search-result:hover{background:#f7fbff}.search-result-icon{width:38px;height:38px;border-radius:9px;background:#eaf2ff;color:#064cff;display:grid;place-items:center}.search-result-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.search-result h3{margin:0 0 5px;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-result p{margin:0;color:#526287;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-badge{border:1px solid #d8e4f7;border-radius:999px;padding:5px 9px;color:#064cff;font-size:11px;font-weight:800}.top-user{justify-self:end;display:flex;align-items:center;gap:14px;min-width:0}.top-bell{position:relative;border:0;background:transparent;color:#06123f;padding:0;cursor:pointer}.top-bell b{position:absolute;right:-8px;top:-11px;background:#064cff;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center}.top-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:50%;border:5px solid #e6eefb;background:center top/cover no-repeat}.top-user strong{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page{min-width:0;padding:24px 28px 26px}.welcome{margin:0 0 18px 4px}.welcome small{font-size:13px;color:#526287}.welcome h1{margin:4px 0 0;font-size:22px;line-height:1.2}.footer{min-height:58px;border-top:1px solid #d8e4f7;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 32px;font-size:13px;color:#26375e}.footer nav{display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px}.footer i{height:16px;width:1px;background:#7d8aaa}@media(max-width:1240px){.shell{grid-template-columns:1fr}.sidebar{display:none}.topbar{grid-template-columns:32px minmax(0,1fr) auto}.top-user strong{display:none}}@media(max-width:760px){.main{grid-template-rows:auto minmax(0,1fr) auto}.topbar{grid-template-columns:1fr auto;gap:14px;padding:14px}.hamb{display:none}.search-wrap{grid-column:1/-1;grid-row:2}.search-top{width:100%}.top-user{grid-column:2;grid-row:1}.page{padding:16px}.footer,.footer nav{height:auto;flex-direction:column;align-items:flex-start}.footer{padding:16px}.footer i{display:none}}
+        *{box-sizing:border-box}body{margin:0;height:100vh;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#06123f;background:#f7fbff;font-weight:500}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}.shell{height:100vh;overflow:hidden;display:grid;grid-template-columns:250px minmax(0,1fr);background:linear-gradient(135deg,#fbfdff,#f1f7ff)}.sidebar{position:sticky;top:0;height:100vh;min-width:0;overflow:hidden;background:#fff;border-right:1px solid #d8e4f7;display:flex;flex-direction:column}.brand{height:82px;display:flex;align-items:center;padding:0 34px;border-bottom:1px solid #d8e4f7}.brand img{display:block;width:200px;max-width:100%;height:auto;object-fit:contain;object-position:left center}.menu{flex:1;min-height:0;overflow:hidden;padding:24px 18px 12px;display:grid;align-content:start;gap:8px}.menu-item{min-height:46px;border-radius:8px;display:flex;align-items:center;gap:15px;padding:0 18px;font-size:14px;font-weight:700;position:relative;color:#06123f;white-space:nowrap}.menu-item.active{background:#eaf2ff;color:#064cff}.menu-item.active:before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;background:#064cff;border-radius:6px}.icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.boost{margin:18px;padding:18px;border-radius:9px;background:#eef5ff;text-align:center}.rocket{height:96px;position:relative}.rocket:before{content:"";position:absolute;left:50%;top:13px;width:66px;height:66px;background:linear-gradient(135deg,#0d67ff,#163ade);clip-path:polygon(50% 0,82% 23%,68% 68%,100% 82%,65% 88%,50% 100%,35% 88%,0 82%,32% 68%,18% 23%);transform:translateX(-50%) rotate(35deg)}.rocket:after{content:"";position:absolute;left:34px;right:34px;bottom:5px;height:18px;border-radius:50%;background:#dce8ff}.boost h3{margin:0 0 10px;font-size:15px;line-height:1.25}.boost p{margin:0 0 16px;font-size:13px;line-height:1.35;color:#26375e}.primary{height:36px;border:1px solid #064cff;border-radius:6px;background:#064cff;color:#fff;font-size:13px;font-weight:800;padding:0 20px;cursor:pointer}.main{height:100vh;min-width:0;overflow-y:auto;display:grid;grid-template-rows:82px minmax(0,max-content)}.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #d8e4f7;display:grid;grid-template-columns:1fr minmax(320px,603px) 1fr;align-items:center;gap:26px;padding:0 38px}.hamb{font-size:25px;line-height:1;color:#06123f}.search-wrap{position:relative;min-width:0}.search-top{height:46px;border:1px solid #cbd8ee;border-radius:7px;background:#fbfdff;display:flex;align-items:center;gap:14px;padding:0 16px;color:#26375e}.search-top input{border:0;outline:0;background:transparent;width:100%;min-width:0;color:#26375e}.search-panel{display:none;position:absolute;left:0;right:0;top:54px;z-index:50;border:1px solid #d8e4f7;border-radius:10px;background:#fff;box-shadow:0 18px 34px rgba(6,25,66,.12);overflow:hidden}.search-panel.show{display:block}.search-state{padding:15px 16px;color:#526287;font-size:13px}.search-result{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid #eef3fb}.search-result:first-child{border-top:0}.search-result:hover{background:#f7fbff}.search-result-icon{width:38px;height:38px;border-radius:9px;background:#eaf2ff;color:#064cff;display:grid;place-items:center}.search-result-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.search-result h3{margin:0 0 5px;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-result p{margin:0;color:#526287;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-badge{border:1px solid #d8e4f7;border-radius:999px;padding:5px 9px;color:#064cff;font-size:11px;font-weight:800}.top-user{justify-self:end;display:flex;align-items:center;gap:14px;min-width:0}.top-bell{position:relative;border:0;background:transparent;color:#06123f;padding:0;cursor:pointer}.top-bell b{position:absolute;right:-8px;top:-11px;background:#064cff;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center}.top-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:50%;border:5px solid #e6eefb;background:center top/cover no-repeat}.top-user strong{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page{min-width:0;padding:24px 28px 26px}.welcome{margin:0 0 18px 4px}.welcome small{font-size:13px;color:#526287}.welcome h1{margin:4px 0 0;font-size:22px;line-height:1.2}.footer{min-height:58px;border-top:1px solid #d8e4f7;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 32px;font-size:13px;color:#26375e}.footer nav{display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px}.footer i{height:16px;width:1px;background:#7d8aaa}@media(max-width:1240px){.shell{grid-template-columns:1fr}.sidebar{display:none}.topbar{grid-template-columns:32px minmax(0,1fr) auto}.top-user strong{display:none}}@media(max-width:760px){.main{grid-template-rows:auto minmax(0,1fr) auto}.topbar{grid-template-columns:1fr auto;gap:14px;padding:14px}.hamb{display:none}.search-wrap{grid-column:1/-1;grid-row:2}.search-top{width:100%}.top-user{grid-column:2;grid-row:1}.page{padding:16px}.footer,.footer nav{height:auto;flex-direction:column;align-items:flex-start}.footer{padding:16px}.footer i{display:none}}
     </style>
     @stack('styles')
     <style>
@@ -38,8 +38,18 @@
         .top-user-head small{margin-top:4px;color:#526287;font-size:12px}
         .top-user-menu a,.top-user-menu button{width:100%;height:42px;border:0;background:#fff;display:flex;align-items:center;gap:10px;padding:0 14px;color:#06123f;font-size:13px;font-weight:800;cursor:pointer;text-align:left}
         .top-user-menu a:hover,.top-user-menu button:hover{background:#f7fbff;color:#064cff}
+        .shell{height:100vh!important;min-height:0!important;overflow:hidden!important;grid-template-columns:250px minmax(0,1fr)!important}
+        .shell>.sidebar{position:sticky!important;top:0!important;height:100vh!important;min-width:0!important;overflow:hidden!important;background:#fff!important;border-right:1px solid #d8e4f7!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important}
+        .shell>.sidebar .brand{height:82px!important;display:flex!important;align-items:center!important;padding:0 34px!important;border-bottom:1px solid #d8e4f7!important}
+        .shell>.sidebar .brand img{display:block!important;width:200px!important;max-width:100%!important;height:auto!important;object-fit:contain!important;object-position:left center!important}
+        .shell>.sidebar .menu{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow:hidden!important;padding:24px 18px 12px!important;display:grid!important;align-content:start!important;gap:8px!important}
+        .shell>.sidebar .menu-item{min-height:46px!important;height:auto!important;border-radius:8px!important;display:flex!important;align-items:center!important;gap:15px!important;padding:0 18px!important;font-size:14px!important;font-weight:700!important;position:relative!important;color:#06123f!important;white-space:nowrap!important}
+        .shell>.sidebar .menu-item.active{background:#eaf2ff!important;color:#064cff!important}
+        .shell>.sidebar .menu-item.active:before{content:""!important;position:absolute!important;left:0!important;top:11px!important;bottom:11px!important;width:3px!important;background:#064cff!important;border-radius:6px!important}
         @media(max-width:900px){
             html,body{width:100%;overflow-x:hidden}
+            .shell{grid-template-columns:1fr!important}
+            .shell>.sidebar{display:none!important}
             .shell,.main,.topbar{width:100%!important;max-width:100%!important;min-width:0!important}
             .topbar{grid-template-columns:1fr auto!important;gap:14px!important;padding:14px!important}
             .search-top{width:100%!important;max-width:100%!important;min-width:0!important}
@@ -72,12 +82,6 @@
                         </a>
                     @endforeach
                 </nav>
-            </div>
-            <div class="boost">
-                <div class="rocket"></div>
-                <h3>Complete your profile<br>get better matches!</h3>
-                <p>A complete profile gets you 3x more job opportunities.</p>
-                <button class="primary" type="button">Improve Profile</button>
             </div>
         </aside>
         <main class="main">
@@ -158,7 +162,14 @@
                 };
             };
 
-            const setTopUser = user => {
+            const profilePhotoUrl = profile => {
+                const photo = profile?.profile_photo || profile?.profilePhoto || '';
+                if (!photo) return '/student.svg';
+                if (/^(https?:)?\/\//.test(photo) || photo.startsWith('data:') || photo.startsWith('/')) return photo;
+                return `/storage/${photo}`;
+            };
+
+            const setTopUser = (user, profile = null) => {
                 const activeUser = user || storedUser;
                 if (!activeUser) return;
                 const name = activeUser.name || 'Direct Mode Fresher';
@@ -166,7 +177,7 @@
                 if (menuUserName) menuUserName.textContent = name;
                 if (menuUserEmail) menuUserEmail.textContent = activeUser.email || activeUser.role || 'Fresher account';
                 if (avatar) {
-                    avatar.style.backgroundImage = "url('/student.svg')";
+                    avatar.style.backgroundImage = `url('${profilePhotoUrl(profile)}')`;
                     avatar.title = name;
                 }
             };
@@ -182,11 +193,12 @@
                 setTopUser(storedUser);
                 if (!token) return;
                 try {
-                    const [profile, unread] = await Promise.all([
+                    const [authProfile, fresherProfile, unread] = await Promise.all([
                         getJson('/api/auth/profile').catch(() => null),
+                        getJson('/api/fresher/profile').catch(() => null),
                         getJson('/api/notifications/unread-count').catch(() => ({ unread_count: 0 })),
                     ]);
-                    setTopUser(profile?.user);
+                    setTopUser(authProfile?.user || fresherProfile?.user, fresherProfile?.profile);
                     if (unreadBadge) unreadBadge.textContent = unread?.unread_count ?? 0;
                 } catch (error) {
                     setTopUser(storedUser);
@@ -295,5 +307,3 @@
     </script>
 </body>
 </html>
-
-

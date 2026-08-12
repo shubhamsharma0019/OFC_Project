@@ -31,7 +31,7 @@
         @media(max-width:1240px){.job{grid-template-columns:74px minmax(190px,1fr) 92px minmax(260px,auto)}}
         @media(max-width:980px){.job{grid-template-columns:74px minmax(0,1fr);align-items:start}.job .tag,.job-actions{grid-column:2;justify-self:start;justify-items:start}.action-row{justify-content:flex-start;flex-wrap:wrap}.posted{justify-self:start}}
         @media(max-width:760px){.job .outline,.job .primary{width:max-content;max-width:100%}.job .tag,.job-actions{grid-column:auto}}
-body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!important;min-height:0!important;overflow:hidden!important;grid-template-columns:250px minmax(0,1fr)!important}.sidebar{position:sticky!important;top:0!important;height:100vh!important;overflow:hidden!important;justify-content:space-between!important}.menu{max-height:calc(100vh - 300px)!important;overflow-y:auto!important}.main{height:100vh!important;overflow-y:auto!important;grid-template-rows:82px minmax(0,max-content)!important}.topbar{position:sticky!important;top:0!important;z-index:20!important;height:82px!important;grid-template-columns:1fr minmax(320px,603px) 1fr!important;padding:0 38px!important}.footer{display:none!important}.page{min-width:0;padding:24px 24px 30px!important}.layout{align-items:start}.jobs-panel,.side-card{max-width:100%;overflow:hidden}.filters-row{grid-template-columns:minmax(220px,1fr) repeat(3,minmax(96px,120px)) minmax(92px,100px)}.job{grid-template-columns:74px minmax(180px,1fr) 92px minmax(250px,auto)!important}.job-actions{min-width:0}.action-row{flex-wrap:wrap}.job-meta .icon{vertical-align:middle;margin-right:4px}.select select,.sort select{border:0;outline:0;background:transparent;width:100%;color:#06123f;font-weight:700;appearance:none}.select{position:relative}.select .icon{position:absolute;right:10px;pointer-events:none}.alert{display:none;margin:0 0 14px;padding:11px 13px;border-radius:8px;border:1px solid #bcd3ff;background:#eef5ff;color:#06123f;font-size:13px;font-weight:700}.alert.show{display:block}.empty{border:1px dashed #cbd8ee;border-radius:10px;background:#fbfdff;padding:26px;text-align:center;color:#43517b}.primary[disabled],.outline[disabled]{opacity:.65;cursor:not-allowed}.save.saved{background:#eaf2ff;color:#064cff}.job.applied{border-color:#bde6ce}.job.applied .tag{background:#e8f8ef;color:#008a35}.logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}.logo.generated{background:#102d68}.top-filter{min-width:0}.top-filter option{font-weight:500}.saved-row{cursor:pointer}.saved-row.empty-saved{grid-template-columns:1fr;color:#657197}.insight-icon svg{stroke:#064cff!important;fill:none!important}@media(max-width:1240px){.layout{grid-template-columns:1fr!important}.filters-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}.job{grid-template-columns:74px minmax(0,1fr)!important}.job .tag,.job-actions{grid-column:2;justify-self:start;justify-items:start}.action-row{justify-content:flex-start}}@media(max-width:760px){.filters-row{grid-template-columns:1fr!important}.job .tag,.job-actions{grid-column:auto}.job{grid-template-columns:1fr!important}.logo{width:58px;height:58px}.action-row{gap:8px}}</style>
+body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!important;min-height:0!important;overflow:hidden!important;grid-template-columns:250px minmax(0,1fr)!important}.sidebar{position:sticky!important;top:0!important;height:100vh!important;overflow:hidden!important;justify-content:space-between!important}.menu{max-height:calc(100vh - 300px)!important;overflow-y:auto!important}.main{height:100vh!important;overflow-y:auto!important;grid-template-rows:82px minmax(0,max-content)!important}.topbar{position:sticky!important;top:0!important;z-index:20!important;height:82px!important;grid-template-columns:1fr minmax(320px,603px) 1fr!important;padding:0 38px!important}.footer{display:none!important}.page{min-width:0;padding:24px 24px 30px!important}.layout{align-items:start}.jobs-panel,.side-card{max-width:100%;overflow:hidden}.filters-row{grid-template-columns:minmax(280px,1fr) repeat(3,minmax(128px,150px)) minmax(116px,128px)!important;gap:12px!important}.input,.select{height:42px!important;min-width:0!important}.input input{width:100%!important;min-width:0!important;border:0!important;outline:0!important;background:transparent!important;color:#06123f!important;font-weight:600!important}.input input:focus{outline:0!important;box-shadow:none!important}.job{grid-template-columns:74px minmax(180px,1fr) 92px minmax(250px,auto)!important}.job-actions{min-width:0}.action-row{flex-wrap:wrap}.job-meta .icon{vertical-align:middle;margin-right:4px}.select select,.sort select{border:0;outline:0;background:transparent;width:100%;min-width:0;height:100%;color:#06123f;font-weight:700;appearance:none;cursor:pointer;padding:0 28px 0 0}.select select:focus,.sort select:focus{outline:0!important;box-shadow:none!important}.select select option,.sort select option{background:#fff!important;color:#06123f!important;font-weight:600!important;padding:8px 10px!important}.select{position:relative;overflow:visible!important;background:#fff!important}.select .icon{position:absolute;right:10px;pointer-events:none}.meta-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:16px!important}.sort{display:grid!important;grid-template-columns:auto minmax(150px,190px) 18px!important;align-items:center!important}.alert{display:none;margin:0 0 14px;padding:11px 13px;border-radius:8px;border:1px solid #bcd3ff;background:#eef5ff;color:#06123f;font-size:13px;font-weight:700}.alert.show{display:block}.empty{border:1px dashed #cbd8ee;border-radius:10px;background:#fbfdff;padding:26px;text-align:center;color:#43517b}.primary[disabled],.outline[disabled]{opacity:.65;cursor:not-allowed}.save.saved{background:#eaf2ff;color:#064cff}.job.applied{border-color:#bde6ce}.job.applied .tag{background:#e8f8ef;color:#008a35}.logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}.logo.generated{background:#102d68}.top-filter{min-width:0}.top-filter option{font-weight:600}.saved-row{cursor:pointer}.saved-row.empty-saved{grid-template-columns:1fr;color:#657197}.insight-icon svg{stroke:#064cff!important;fill:none!important}@media(max-width:1240px){.layout{grid-template-columns:1fr!important}.filters-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}.job{grid-template-columns:74px minmax(0,1fr)!important}.job .tag,.job-actions{grid-column:2;justify-self:start;justify-items:start}.action-row{justify-content:flex-start}}@media(max-width:760px){.filters-row,.meta-row{grid-template-columns:1fr!important}.sort{grid-template-columns:auto minmax(0,1fr) 18px!important}.job .tag,.job-actions{grid-column:auto}.job{grid-template-columns:1fr!important}.logo{width:58px;height:58px}.action-row{gap:8px}}</style>
 @endpush
 
 @section('content')
@@ -187,10 +187,26 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         function buildFilters() {
             const locations = [...new Set(state.jobs.map(job => job.location).filter(Boolean))].sort();
             const roles = [...new Set(state.jobs.map(job => job.title).filter(Boolean))].sort();
+            const experienceValues = [...new Set(state.jobs.map(job => jobType(job)).filter(Boolean))].sort();
             populateSelect($('[data-top-location]'), locations, 'Location');
             populateSelect($('[data-location-filter]'), locations, 'All Locations');
             populateSelect($('[data-top-role]'), roles, 'Job Role');
             populateSelect($('[data-role-filter]'), roles, 'All Roles');
+            populateSelect($('[data-top-experience]'), experienceValues, 'Experience');
+            populateSelect($('[data-experience-filter]'), experienceValues, 'All Experience');
+            renderJobTypeChecks(experienceValues);
+        }
+
+        function renderJobTypeChecks(values) {
+            const wrap = document.querySelector('.checks');
+            if (!wrap) return;
+            const normalized = values.length ? values : ['Full Time'];
+            const activeValues = $$('[data-job-type]:checked').map(input => input.value);
+            wrap.innerHTML = normalized.map((value, index) => {
+                const checked = activeValues.length ? activeValues.includes(value) : index === 0;
+                return `<label><input data-job-type value="${escapeAttr(value)}" type="checkbox" ${checked ? 'checked' : ''}>${escapeHtml(value)}</label>`;
+            }).join('');
+            $$('[data-job-type]').forEach(input => input.addEventListener('change', () => applyFilters()));
         }
 
         function activeFilters() {
@@ -214,7 +230,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             }
             if (filters.role) jobs = jobs.filter(job => normalize(job.title) === normalize(filters.role));
             if (filters.location) jobs = jobs.filter(job => normalize(job.location).includes(normalize(filters.location)));
-            if (filters.experience) jobs = jobs.filter(job => normalize(jobType(job)).includes(normalize(filters.experience)) || normalize(job.qualification).includes(normalize(filters.experience)));
+            if (filters.experience) jobs = jobs.filter(job => normalize(jobType(job)) === normalize(filters.experience) || normalize(job.qualification).includes(normalize(filters.experience)));
             if (filters.salary) {
                 jobs = jobs.filter(job => {
                     const salary = salaryNumber(job);
@@ -224,7 +240,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     return salary >= 10;
                 });
             }
-            if (filters.jobTypes.length) jobs = jobs.filter(job => filters.jobTypes.some(type => normalize(jobType(job)).includes(type)));
+            if (filters.jobTypes.length) jobs = jobs.filter(job => filters.jobTypes.some(type => normalize(jobType(job)) === normalize(type)));
 
             const sorters = {
                 newest: (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0),
@@ -527,6 +543,3 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         Promise.all([loadProfileKeywords(), loadApplications()]).then(loadJobs);
     </script>
 @endpush
-
-
-

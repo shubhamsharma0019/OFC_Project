@@ -45,9 +45,8 @@ class FresherDashboardController extends Controller
         $initialAssessment = AssessmentAttempt::query()
             ->where('fresher_profile_id', $fresherProfile->id)
             ->where('assessment_type', 'initial')
-            ->where('status', 'submitted')
             ->with('result')
-            ->latest('submitted_at')
+            ->latest('updated_at')
             ->first();
 
         $latestEnrollment = CourseEnrollment::query()
@@ -187,6 +186,8 @@ class FresherDashboardController extends Controller
                                 $fresherProfile->id
                             )
                             ->count(),
+
+                    'profile_views' => 0,
                 ],
 
                 'initial_assessment' => $initialAssessment
