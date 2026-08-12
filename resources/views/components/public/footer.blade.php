@@ -2,9 +2,9 @@
     <div class="mx-auto w-full max-w-7xl px-5 py-10 sm:px-6 lg:px-8 lg:py-12">
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.25fr_repeat(4,minmax(0,1fr))]">
             <div class="min-w-0">
-                <a href="/" class="mb-4 inline-flex items-center gap-3 text-white">
+                <a href="/" class="mb-4 inline-flex items-center gap-3 rounded-lg bg-white px-3 py-2 text-white">
                     @if (file_exists(public_path('ofclogo1.svg')))
-                        <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block max-h-12 w-[205px] object-contain object-left">
+                        <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block h-[54px] w-[240px] object-contain object-left">
                     @else
                         <span class="flex items-center gap-2 text-[#075fe4]">
                             <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#075fe4] text-base font-bold text-white">OF</span>

@@ -16,15 +16,12 @@
 @endphp
 
 <div>
-    <a href="/" class="mb-5 flex h-14 items-center">
-        @if (file_exists(public_path('ofclogo1.svg')))
-            <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block max-h-12 w-[205px] object-contain object-left">
-        @else
-            <span class="flex items-center gap-2 text-[#075fe4]">
-                <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#075fe4] text-base font-bold text-white">OF</span>
-                <span class="text-[22px] font-bold leading-none">OnlyFreshers</span>
-            </span>
-        @endif
+    <a href="/" class="mb-5 flex h-14 items-center gap-2.5 overflow-hidden" aria-label="OnlyFreshers">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#075fe4] text-base font-bold text-white">OF</span>
+        <span class="min-w-0">
+            <span class="block truncate text-[21px] font-extrabold leading-none text-[#061942]">Only<span class="text-[#075fe4]">Freshers</span></span>
+            <span class="mt-1 block truncate text-[10px] font-bold uppercase tracking-[1px] text-[#52607a]">Jobs Training Hiring</span>
+        </span>
     </a>
 
     <nav class="grid gap-1">
@@ -41,7 +38,7 @@
                 <span>{{ $item['title'] }}</span>
 
                 @if (isset($item['badge']))
-                    <span class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ff3045] px-1 text-xs font-bold text-white">
+                    <span data-company-notification-count class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ff3045] px-1 text-xs font-bold text-white">
                         {{ $item['badge'] }}
                     </span>
                 @endif
@@ -50,18 +47,23 @@
     </nav>
 </div>
 
-<div class="flex items-center gap-2.5 rounded-lg border border-[#dce7f8] bg-white p-2.5 shadow-[0_8px_22px_rgba(6,25,66,.04)]">
-    <div class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-[#075fe4] font-bold text-white">
-        T
-    </div>
+<div class="relative">
+    <button id="company-account-menu-button" type="button" class="flex w-full items-center gap-2.5 rounded-lg border border-[#dce7f8] bg-white p-2.5 text-left shadow-[0_8px_22px_rgba(6,25,66,.04)]" aria-label="Open account menu" aria-expanded="false">
+        <span data-company-initial class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-[#075fe4] font-bold text-white">
+            C
+        </span>
 
-    <div class="min-w-0">
-        <h3 class="mb-1 truncate text-sm font-bold text-[#061942]">TechNova Solutions</h3>
-        <p class="text-xs text-[#075fe4]">Premium Plan</p>
-    </div>
+        <span class="min-w-0">
+            <span data-company-name class="mb-1 block truncate text-sm font-bold text-[#061942]">Company</span>
+            <span class="block text-xs text-[#075fe4]">Company Account</span>
+        </span>
 
-    <button type="button" class="ml-auto text-lg text-[#061942]" aria-label="Open account menu">&#8964;</button>
+        <span class="ml-auto text-lg text-[#061942]">&#8964;</span>
+    </button>
+
+    <div id="company-account-menu" class="absolute bottom-[calc(100%+8px)] left-0 right-0 z-[1200] hidden overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_12px_28px_rgba(6,25,66,.14)]">
+        <a href="/company/profile" class="block px-4 py-3 text-sm font-bold text-[#061942] hover:bg-[#f5f9ff]">My Profile</a>
+        <a href="/company/settings" class="block px-4 py-3 text-sm font-bold text-[#061942] hover:bg-[#f5f9ff]">Settings</a>
+        <button id="company-sidebar-logout" type="button" class="block w-full px-4 py-3 text-left text-sm font-bold text-[#b42318] hover:bg-[#fff4f4]">Logout</button>
+    </div>
 </div>
-
-
-

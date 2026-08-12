@@ -1,128 +1,690 @@
+<?php
+$pageTitle = $pageTitle ?? 'Company Dashboard';
+$pageSubtitle = $pageSubtitle ?? '';
+$title = $title ?? 'Company Dashboard - OnlyFreshers';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Company Dashboard - OnlyFreshers')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @stack('styles')
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        <?= htmlspecialchars($title) ?>
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/build/assets/app.css"
+    >
+
+    <script
+        type="module"
+        src="/build/assets/app.js"
+    ></script>
 </head>
 
-<body class="h-screen overflow-hidden bg-[#f4f8ff] font-sans font-medium text-[#061942] antialiased">
-    <div id="company-layout" class="h-screen lg:grid lg:grid-cols-[250px_minmax(0,1fr)]">
-        <aside id="company-sidebar"
-            class="fixed inset-y-0 left-0 z-[1000] flex h-screen w-[280px] max-w-[86vw] -translate-x-[105%] flex-col justify-between overflow-hidden border-r border-[#dce7f8] bg-white px-[18px] pb-7 shadow-[18px_0_36px_rgba(6,25,66,.16)] transition-transform duration-200 ease-out lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none">
-            @include('components.company.sidebar')
-        </aside>
+<body
+    class="h-screen overflow-hidden bg-[#f4f8ff] font-sans font-medium text-[#061942] antialiased"
+>
 
-        <button id="company-sidebar-backdrop" class="fixed inset-0 z-[900] hidden bg-[#06194259]" type="button"
-            onclick="toggleCompanySidebar()" aria-label="Close menu"></button>
+<div
+    id="company-layout"
+    class="h-screen lg:grid lg:grid-cols-[250px_minmax(0,1fr)]"
+>
 
-        <main class="h-screen min-w-0 overflow-y-auto px-3 pb-6 sm:px-[18px] sm:pb-[30px] lg:px-[38px] lg:pb-[38px]">
-            <header
-                class="mb-[22px] grid min-h-[78px] grid-cols-[auto_minmax(0,1fr)] items-start gap-3 pt-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-[14px] sm:pt-0 lg:mb-7 lg:flex lg:min-h-[100px] lg:items-center lg:justify-between lg:gap-6">
-                <button
-                    class="inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-lg border border-[#dce7f8] bg-white text-[#061942] lg:hidden"
-                    type="button" onclick="toggleCompanySidebar()" aria-label="Open menu">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 7h16"></path>
-                        <path d="M4 12h16"></path>
-                        <path d="M4 17h16"></path>
+    <aside
+        id="company-sidebar"
+        class="fixed inset-y-0 left-0 z-[1000] flex h-screen w-[280px] max-w-[86vw] -translate-x-[105%] flex-col justify-between overflow-hidden border-r border-[#dce7f8] bg-white px-[18px] pb-7 shadow-[18px_0_36px_rgba(6,25,66,.16)] transition-transform duration-200 ease-out lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none"
+    >
+
+        <?php
+        $sidebarPath =
+            __DIR__ .
+            '/../components/company/sidebar.php';
+
+        if (file_exists($sidebarPath)) {
+            include $sidebarPath;
+        }
+        ?>
+
+    </aside>
+
+
+    <button
+        id="company-sidebar-backdrop"
+        class="fixed inset-0 z-[900] hidden bg-[#06194259]"
+        type="button"
+        onclick="toggleCompanySidebar()"
+        aria-label="Close menu"
+    ></button>
+
+
+    <main
+        class="h-screen min-w-0 overflow-y-auto px-3 pb-6 sm:px-[18px] sm:pb-[30px] lg:px-[38px] lg:pb-[38px]"
+    >
+
+        <header
+            class="mb-[22px] grid min-h-[78px] grid-cols-[auto_minmax(0,1fr)] items-start gap-3 pt-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-[14px] sm:pt-0 lg:mb-7 lg:flex lg:min-h-[100px] lg:items-center lg:justify-between lg:gap-6"
+        >
+
+            <button
+                class="inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-lg border border-[#dce7f8] bg-white text-[#061942] lg:hidden"
+                type="button"
+                onclick="toggleCompanySidebar()"
+                aria-label="Open menu"
+            >
+
+                <svg
+                    class="h-[22px] w-[22px]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M4 7h16"></path>
+                    <path d="M4 12h16"></path>
+                    <path d="M4 17h16"></path>
+                </svg>
+
+            </button>
+
+
+            <div class="min-w-0">
+
+                <h1
+                    class="mb-1 text-[22px] font-bold leading-tight text-[#061942] sm:text-2xl lg:mb-2.5 lg:text-[26px]"
+                >
+                    <?= htmlspecialchars($pageTitle) ?>
+                </h1>
+
+
+                <?php if (!empty($pageSubtitle)): ?>
+
+                    <p
+                        class="text-[13px] leading-relaxed text-[#24344f] lg:text-sm"
+                    >
+                        <?= htmlspecialchars($pageSubtitle) ?>
+                    </p>
+
+                <?php endif; ?>
+
+            </div>
+
+
+            <div
+                class="col-span-2 flex w-full items-center justify-between gap-2 sm:col-auto sm:w-auto sm:justify-end lg:gap-[18px]"
+            >
+
+                <a
+                    href="/company/notifications"
+                    class="relative inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-white text-[#061942] shadow-[0_8px_18px_rgba(6,25,66,.05)] lg:h-[42px] lg:w-[42px]"
+                    aria-label="Notifications"
+                >
+
+                    <svg
+                        class="h-[23px] w-[23px]"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+
+                        <path
+                            d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+                        ></path>
+
+                        <path d="M10 21h4"></path>
+
                     </svg>
-                </button>
 
-                <div class="min-w-0">
-                    <h1
-                        class="mb-1 text-[22px] font-bold leading-tight text-[#061942] sm:text-2xl lg:mb-2.5 lg:text-[26px]">
-                        @yield('pageTitle')</h1>
-                    @hasSection('pageSubtitle')
-                        <p class="text-[13px] leading-relaxed text-[#24344f] lg:text-sm">@yield('pageSubtitle')</p>
-                    @endif
-                </div>
+
+                    <span
+                        data-company-notification-count
+                        class="absolute right-[5px] top-1 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-[#ff3045] text-[11px] font-bold text-white"
+                    >
+                        0
+                    </span>
+
+                </a>
+
 
                 <div
-                    class="col-span-2 flex w-full items-center justify-between gap-2 sm:col-auto sm:w-auto sm:justify-end lg:gap-[18px]">
-                    @yield('topbarExtra')
-
-                    <button
-                        class="relative inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-white text-[#061942] shadow-[0_8px_18px_rgba(6,25,66,.05)] lg:h-[42px] lg:w-[42px]"
-                        type="button" aria-label="Notifications">
-                        <svg class="h-[23px] w-[23px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-                            <path d="M10 21h4"></path>
-                        </svg>
-                        <span
-                            class="absolute right-[5px] top-1 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-[#ff3045] text-[11px] font-bold text-white">3</span>
-                    </button>
+                    class="relative flex items-center gap-2.5 sm:border-l sm:border-[#dce7f8] sm:pl-3 lg:gap-[14px] lg:pl-[22px]"
+                >
 
                     <div
-                        class="flex items-center gap-2.5 sm:border-l sm:border-[#dce7f8] sm:pl-3 lg:gap-[14px] lg:pl-[22px]">
-                        <div
-                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#075fe4] text-[17px] font-bold text-white lg:h-[46px] lg:w-[46px] lg:text-xl">
-                            T</div>
-                        <div class="min-w-0">
-                            <h3 data-company-topbar-name
-                                class="max-w-[128px] truncate text-sm font-bold text-[#061942] sm:max-w-[180px] lg:max-w-[150px]">
-                                TechNova Solutions</h3>
-                            <p class="hidden text-xs text-[#52607a] sm:block">Company</p>
-                        </div>
-                        <button class="text-xl" type="button" aria-label="User menu"></button>
+                        id="company-topbar-initial"
+                        data-company-initial
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#075fe4] text-[17px] font-bold text-white lg:h-[46px] lg:w-[46px] lg:text-xl"
+                    >
+                        C
                     </div>
+
+
+                    <div class="min-w-0">
+
+                        <h3
+                            id="company-topbar-name"
+                            data-company-name
+                            class="max-w-[128px] truncate text-sm font-bold text-[#061942] sm:max-w-[180px] lg:max-w-[150px]"
+                        >
+                            Company
+                        </h3>
+
+                        <p
+                            class="hidden text-xs text-[#52607a] sm:block"
+                        >
+                            Company
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="company-account-menu-button"
+                        type="button"
+                        class="text-xl"
+                        aria-label="User menu"
+                        aria-expanded="false"
+                    >
+                        ⋮
+                    </button>
+
+
+                    <div
+                        id="company-account-menu"
+                        class="absolute right-0 top-[calc(100%+12px)] z-[1200] hidden min-w-[180px] overflow-hidden rounded-lg border border-[#dce7f8] bg-white py-2 shadow-[0_12px_30px_rgba(6,25,66,.12)]"
+                    >
+
+                        <a
+                            href="/company/profile"
+                            class="block px-4 py-2.5 text-sm font-bold text-[#24344f] hover:bg-[#f5f9ff]"
+                        >
+                            Profile
+                        </a>
+
+
+                        <a
+                            href="/company/settings"
+                            class="block px-4 py-2.5 text-sm font-bold text-[#24344f] hover:bg-[#f5f9ff]"
+                        >
+                            Settings
+                        </a>
+
+
+                        <button
+                            id="company-topbar-logout"
+                            type="button"
+                            class="block w-full px-4 py-2.5 text-left text-sm font-bold text-[#ff3045] hover:bg-[#fff5f6]"
+                        >
+                            Logout
+                        </button>
+
+                    </div>
+
                 </div>
-            </header>
 
-            @yield('content')
-        </main>
-    </div>
+            </div>
 
-    <script>
-        function toggleCompanySidebar() {
-            const sidebar = document.getElementById('company-sidebar');
-            const backdrop = document.getElementById('company-sidebar-backdrop');
+        </header>
 
-            if (!sidebar || !backdrop) {
+
+        <?php
+        if (isset($content)) {
+            echo $content;
+        }
+        ?>
+
+    </main>
+
+</div>
+
+
+<script>
+
+function toggleCompanySidebar() {
+
+    const sidebar =
+        document.getElementById(
+            'company-sidebar'
+        );
+
+    const backdrop =
+        document.getElementById(
+            'company-sidebar-backdrop'
+        );
+
+
+    if (!sidebar || !backdrop) {
+        return;
+    }
+
+
+    sidebar.classList.toggle(
+        '-translate-x-[105%]'
+    );
+
+    sidebar.classList.toggle(
+        'translate-x-0'
+    );
+
+    backdrop.classList.toggle(
+        'hidden'
+    );
+}
+
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        function getCompanyToken() {
+
+            return (
+                localStorage.getItem(
+                    'ofc_auth_token'
+                ) ||
+
+                localStorage.getItem(
+                    'onlyfreshers_company_token'
+                ) ||
+
+                localStorage.getItem(
+                    'onlyfreshers_token'
+                )
+            );
+        }
+
+
+        function parseLocalStorage(key) {
+
+            try {
+
+                return JSON.parse(
+                    localStorage.getItem(
+                        key
+                    ) || 'null'
+                );
+
+            } catch (error) {
+
+                return null;
+            }
+        }
+
+
+        function syncCompanyChrome(
+            profile = null
+        ) {
+
+            const storedUser =
+                parseLocalStorage(
+                    'ofc_auth_user'
+                ) ||
+
+                parseLocalStorage(
+                    'onlyfreshers_company_user'
+                ) ||
+
+                parseLocalStorage(
+                    'onlyfreshers_user'
+                );
+
+
+            const storedProfile =
+                profile ||
+
+                parseLocalStorage(
+                    'ofc_company_profile'
+                );
+
+
+            const name =
+                storedProfile?.company_name ||
+                storedUser?.name ||
+                'Company';
+
+
+            const initial =
+                String(name)
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase() ||
+                'C';
+
+
+            document
+                .querySelectorAll(
+                    '[data-company-name]'
+                )
+                .forEach(
+                    item => {
+                        item.textContent = name;
+                    }
+                );
+
+
+            document
+                .querySelectorAll(
+                    '[data-company-initial]'
+                )
+                .forEach(
+                    item => {
+                        item.textContent = initial;
+                    }
+                );
+        }
+
+
+        async function refreshCompanyProfile() {
+
+            const token =
+                getCompanyToken();
+
+
+            if (!token) {
                 return;
             }
 
-            sidebar.classList.toggle('-translate-x-[105%]');
-            sidebar.classList.toggle('translate-x-0');
-            backdrop.classList.toggle('hidden');
+
+            try {
+
+                const response =
+                    await fetch(
+                        '/api/company/profile',
+                        {
+                            headers: {
+
+                                Accept:
+                                    'application/json',
+
+                                Authorization:
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    return;
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                const profile =
+                    result?.data?.profile ||
+                    result?.data?.company_profile ||
+                    result?.profile ||
+                    null;
+
+
+                if (!profile) {
+                    return;
+                }
+
+
+                localStorage.setItem(
+                    'ofc_company_profile',
+                    JSON.stringify(profile)
+                );
+
+
+                syncCompanyChrome(profile);
+
+
+            } catch (error) {
+
+                console.warn(
+                    'Unable to refresh company profile:',
+                    error
+                );
+            }
         }
 
-        (function hydrateCompanyTopbar() {
-            const token = localStorage.getItem('onlyfreshers_company_token');
-            const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_company_user') || 'null');
-            const nameEl = document.querySelector('[data-company-topbar-name]');
-            const avatarEl = nameEl?.closest('.flex')?.querySelector('.rounded-full');
 
-            function setCompanyName(name) {
-                const companyName = name || storedUser?.name || 'Company';
-                if (nameEl) nameEl.textContent = companyName;
-                if (avatarEl) avatarEl.textContent = companyName.trim().charAt(0).toUpperCase() || 'C';
+        async function syncCompanyNotificationCount() {
+
+            const token =
+                getCompanyToken();
+
+
+            if (!token) {
+                return;
             }
 
-            setCompanyName(storedUser?.name);
 
-            if (!token) return;
+            try {
 
-            fetch('/api/company/profile', {
-                headers: {
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(response => response.json())
-                .then(result => {
-                    const profile = result.data?.profile;
-                    setCompanyName(profile?.company_name || storedUser?.name);
-                })
-                .catch(() => setCompanyName(storedUser?.name));
-        })();
-    </script>
-    @stack('scripts')
+                const response =
+                    await fetch(
+                        '/api/notifications/unread-count',
+                        {
+                            headers: {
+
+                                Accept:
+                                    'application/json',
+
+                                Authorization:
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    return;
+                }
+
+
+                const payload =
+                    await response.json();
+
+
+                const count =
+                    Number(
+                        payload?.data?.unread_count ||
+                        0
+                    );
+
+
+                document
+                    .querySelectorAll(
+                        '[data-company-notification-count]'
+                    )
+                    .forEach(
+                        badge => {
+
+                            badge.textContent =
+                                count;
+
+
+                            badge.classList.toggle(
+                                'hidden',
+                                count === 0
+                            );
+                        }
+                    );
+
+
+            } catch (error) {
+
+                console.warn(
+                    'Unable to load notifications:',
+                    error
+                );
+            }
+        }
+
+
+        async function logoutCompany() {
+
+            const token =
+                getCompanyToken();
+
+
+            if (token) {
+
+                try {
+
+                    await fetch(
+                        '/api/auth/logout',
+                        {
+                            method:
+                                'POST',
+
+                            headers: {
+
+                                Accept:
+                                    'application/json',
+
+                                Authorization:
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+                } catch (error) {
+
+                }
+            }
+
+
+            [
+                'ofc_auth_token',
+                'ofc_auth_user',
+                'ofc_company_profile',
+                'onlyfreshers_company_token',
+                'onlyfreshers_company_user',
+                'onlyfreshers_token',
+                'onlyfreshers_user'
+            ]
+            .forEach(
+                key =>
+                    localStorage.removeItem(
+                        key
+                    )
+            );
+
+
+            window.location.href =
+                '/company/login';
+        }
+
+
+        const menuButton =
+            document.getElementById(
+                'company-account-menu-button'
+            );
+
+
+        const menu =
+            document.getElementById(
+                'company-account-menu'
+            );
+
+
+        menuButton?.addEventListener(
+            'click',
+            function (event) {
+
+                event.stopPropagation();
+
+                menu?.classList.toggle(
+                    'hidden'
+                );
+            }
+        );
+
+
+        document.addEventListener(
+            'click',
+            function (event) {
+
+                if (
+                    !menu ||
+                    menu.classList.contains(
+                        'hidden'
+                    )
+                ) {
+                    return;
+                }
+
+
+                if (
+                    menu.contains(
+                        event.target
+                    ) ||
+                    menuButton?.contains(
+                        event.target
+                    )
+                ) {
+                    return;
+                }
+
+
+                menu.classList.add(
+                    'hidden'
+                );
+            }
+        );
+
+
+        document
+            .getElementById(
+                'company-topbar-logout'
+            )
+            ?.addEventListener(
+                'click',
+                logoutCompany
+            );
+
+
+        document
+            .getElementById(
+                'company-sidebar-logout'
+            )
+            ?.addEventListener(
+                'click',
+                logoutCompany
+            );
+
+
+        document.addEventListener(
+            'company-profile-loaded',
+            function (event) {
+
+                syncCompanyChrome(
+                    event.detail
+                );
+            }
+        );
+
+
+        syncCompanyChrome();
+
+        refreshCompanyProfile();
+
+        syncCompanyNotificationCount();
+
+    }
+);
+
+</script>
+
 </body>
 
 </html>

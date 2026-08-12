@@ -13,7 +13,7 @@
     <div class="mx-auto flex h-[74px] w-full max-w-7xl items-center gap-5 px-5 sm:px-6 lg:px-8">
         <a href="/" class="inline-flex shrink-0 items-center gap-3 text-[#075fe4]">
             @if (file_exists(public_path('ofclogo1.svg')))
-                <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block max-h-12 w-[205px] object-contain object-left">
+                <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block h-[54px] w-[230px] object-contain object-left sm:w-[250px]">
             @else
                 <span class="flex items-center gap-2 text-[#075fe4]">
                     <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#075fe4] text-base font-bold text-white">OF</span>
@@ -62,4 +62,3 @@
         </div>
     </div>
 </div>
-

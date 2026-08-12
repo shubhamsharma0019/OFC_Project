@@ -28,11 +28,14 @@ use App\Http\Controllers\Api\PublicCertificateController;
 use App\Http\Controllers\Api\PublicCourseController;
 use App\Http\Controllers\Api\PublicJobController;
 use App\Http\Controllers\Api\PublicTrainingPartnerController;
+use App\Http\Controllers\Api\TrainingPartnerAssessmentController;
 use App\Http\Controllers\Api\TrainingPartnerCertificateController;
 use App\Http\Controllers\Api\TrainingPartnerCourseController;
 use App\Http\Controllers\Api\TrainingPartnerDashboardController;
+use App\Http\Controllers\Api\TrainingPartnerPayoutController;
 use App\Http\Controllers\Api\TrainingPartnerProfileController;
 use App\Http\Controllers\Api\TrainingPartnerProgressController;
+use App\Http\Controllers\Api\TrainingPartnerReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -463,6 +466,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch(
         '/training-partner/enrollments/{courseEnrollment}/progress',
         [TrainingPartnerProgressController::class, 'update']
+    );
+
+    Route::get(
+        '/training-partner/assessments',
+        [TrainingPartnerAssessmentController::class, 'index']
+    );
+
+    Route::get(
+        '/training-partner/reports',
+        [TrainingPartnerReportController::class, 'index']
+    );
+
+    Route::get(
+        '/training-partner/payouts',
+        [TrainingPartnerPayoutController::class, 'index']
     );
 
     /*

@@ -18,6 +18,10 @@ Route::view('/fast-track/login', 'fast-track.login');
 Route::redirect('/direct-mode', '/direct-mode/login');
 Route::view('/direct-mode/login', 'direct-mode.login');
 Route::view('/direct-mode/register', 'direct-mode.register');
+Route::view('/company/login', 'direct-mode.login');
+Route::view('/company/register', 'direct-mode.register');
+Route::view('/training-partner/login', 'direct-mode.login');
+Route::view('/training-partner/register', 'direct-mode.register');
 Route::view('/direct-mode/dashboard', 'direct-mode.dashboard');
 Route::view('/direct-mode/profile', 'direct-mode.profile');
 Route::view('/direct-mode/assessments', 'direct-mode.assessments');
@@ -131,8 +135,6 @@ Route::view('/training-partner/progress/show', 'training-partner.progress.show')
 Route::view('/training-partner/progress/edit', 'training-partner.progress.edit');
 Route::view('/training-partner/students', 'training-partner.students.index');
 Route::view('/training-partner/students/show', 'training-partner.students.show');
-
-
 
 
 

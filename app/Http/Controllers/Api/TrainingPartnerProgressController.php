@@ -44,7 +44,7 @@ class TrainingPartnerProgressController extends Controller
             ])
             ->with([
                 'course',
-                'fresherProfile',
+                'fresherProfile.user',
                 'trainingProgress',
             ])
             ->latest('enrollment_date')
@@ -79,7 +79,7 @@ class TrainingPartnerProgressController extends Controller
 
         $courseEnrollment->load([
             'course',
-            'fresherProfile',
+            'fresherProfile.user',
             'trainingProgress',
         ]);
 
