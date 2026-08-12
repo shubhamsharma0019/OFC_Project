@@ -50,6 +50,22 @@
     </div>
 
     <script>
+        (function guardFastTrackSession() {
+            const token = localStorage.getItem('ofc_auth_token') || localStorage.getItem('onlyfreshers_token');
+            let user = null;
+
+            try {
+                user = JSON.parse(localStorage.getItem('ofc_auth_user') || localStorage.getItem('onlyfreshers_user') || 'null');
+            } catch (error) {
+                user = null;
+            }
+
+            if (!token || user?.role !== 'fresher') {
+                ['ofc_auth_token', 'ofc_auth_user', 'onlyfreshers_token', 'onlyfreshers_user', 'fast_track_course_id'].forEach((key) => localStorage.removeItem(key));
+                window.location.href = '/fast-track/login';
+            }
+        })();
+
         function toggleFastTrackSidebar() {
             const sidebar = document.getElementById('fastTrackSidebar');
             const backdrop = document.getElementById('fastTrackBackdrop');

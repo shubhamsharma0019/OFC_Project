@@ -1,38 +1,9 @@
-﻿@extends('layouts.fast-track')
+@extends('layouts.fast-track')
 
 @section('title', 'Final Assessment')
 
 @php
     $activePage = 'final';
-    $student = ['name' => 'Ananya Gupta', 'notifications' => 3];
-
-    $summary = [
-        'title' => 'Ready for Final Assessment?',
-        'text' => 'You have completed the required training. Attempt the final assessment and get certified.',
-        'stats' => [
-            ['label' => 'Lessons Completed', 'value' => '28/74', 'icon' => 'LC'],
-            ['label' => 'Courses Enrolled', 'value' => '4', 'icon' => 'CE'],
-            ['label' => 'Total Study Time', 'value' => '12h 45m', 'icon' => 'ST'],
-        ],
-    ];
-
-    $overview = [
-        ['label' => 'Total Questions', 'value' => '60', 'icon' => 'TQ'],
-        ['label' => 'Passing Marks', 'value' => '60%', 'icon' => 'PM'],
-        ['label' => 'Time Duration', 'value' => '90 Minutes', 'icon' => 'TD'],
-        ['label' => 'Total Attempts Allowed', 'value' => '3', 'icon' => 'TA'],
-        ['label' => 'Current Attempts Used', 'value' => '0', 'icon' => 'CU'],
-    ];
-
-    $tips = [
-        'Go through all the course materials thoroughly.',
-        'Practice all quizzes and assignments.',
-        'Focus on weak topics and improve your understanding.',
-        'Manage your time effectively during the assessment.',
-        'Ensure a stable internet connection before starting the test.',
-    ];
-
-    $attempts = [];
 @endphp
 
 @section('content')
@@ -42,37 +13,17 @@
             <p class="mt-2 text-sm font-medium text-[#334b83]">Take the final assessment to test your knowledge and earn your certificate.</p>
         </div>
 
-        <article id="finalAssessmentRunner" class="hidden rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]"></article>
-
-        <article class="grid gap-6 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:grid-cols-[165px_minmax(0,1fr)] xl:grid-cols-[165px_minmax(0,1fr)_repeat(3,170px)] xl:items-center">
-            <div class="hidden h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-white text-[42px] font-black text-[#075fe4] sm:flex">FA</div>
-
-            <div>
-                <h2 class="mb-3 text-lg font-bold text-[#061942]">{{ $summary['title'] }}</h2>
-                <p class="mb-5 max-w-xl text-sm leading-7 text-[#334b83]">{{ $summary['text'] }}</p>
-                <a href="/fast-track/final-assessment/questions" class="inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,.18)] transition hover:bg-[#064fc0]">Start Final Assessment</a>
-            </div>
-
-            @foreach ($summary['stats'] as $item)
-                <div class="flex min-h-[118px] flex-col justify-center border-t border-[#dce7f8] pt-4 xl:border-l xl:border-t-0 xl:pl-7 xl:pt-0">
-                    <span class="mb-3 grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">{{ $item['icon'] }}</span>
-                    <strong class="text-[22px] font-bold text-[#061942]">{{ $item['value'] }}</strong>
-                    <span class="mt-2 text-sm font-medium text-[#334b83]">{{ $item['label'] }}</span>
-                </div>
-            @endforeach
+        <article id="finalSummary" class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+            <p class="text-sm text-[#334b83]">Loading final assessment eligibility...</p>
         </article>
+
+        <article id="finalAssessmentRunner" class="hidden rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]"></article>
 
         <div class="grid gap-5 xl:grid-cols-[1fr_1.28fr]">
             <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                 <h2 class="mb-5 text-lg font-bold text-[#061942]">Assessment Overview</h2>
-                <div class="grid gap-4">
-                    @foreach ($overview as $item)
-                        <div class="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-4 text-sm">
-                            <span class="grid h-[34px] w-[34px] place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">{{ $item['icon'] }}</span>
-                            <span class="font-semibold text-[#334b83]">{{ $item['label'] }}</span>
-                            <strong class="text-right font-bold text-[#061942]">{{ $item['value'] }}</strong>
-                        </div>
-                    @endforeach
+                <div id="assessmentOverview" class="grid gap-4">
+                    <p class="text-sm text-[#334b83]">Loading overview...</p>
                 </div>
             </article>
 
@@ -80,9 +31,9 @@
                 <div>
                     <h2 class="mb-5 text-lg font-bold text-[#061942]">Preparation Tips</h2>
                     <div class="grid gap-4">
-                        @foreach ($tips as $tip)
+                        @foreach (['Go through all course materials thoroughly.', 'Practice quizzes and assignments.', 'Focus on weak topics before starting.', 'Keep a stable internet connection ready.', 'Submit only after answering every question.'] as $tip)
                             <div class="flex items-start gap-3 text-sm leading-6 text-[#334b83]">
-                                <span class="mt-1 grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-[#16a35a] text-[11px] font-black text-white">✓</span>
+                                <span class="mt-1 grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-[#16a35a] text-[11px] font-black text-white">OK</span>
                                 <span>{{ $tip }}</span>
                             </div>
                         @endforeach
@@ -94,34 +45,17 @@
 
         <article class="overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,.04)]">
             <div class="p-5">
-                <h2 class="text-lg font-bold text-[#061942]">Assessment Attempts</h2>
+                <h2 class="text-lg font-bold text-[#061942]">Eligible Trainings</h2>
             </div>
-
             <div class="overflow-x-auto">
-                <div class="grid min-w-[760px] grid-cols-[1.2fr_2fr_1.5fr_1.5fr_1.5fr] border-y border-[#e6eef8] px-4 py-3 text-xs font-bold text-[#061942]">
-                    <span>Attempt No.</span>
-                    <span>Date & Time</span>
-                    <span>Score</span>
-                    <span>Status</span>
-                    <span>Certificate</span>
-                </div>
-
-                @forelse ($attempts as $attempt)
-                    <div class="grid min-w-[760px] grid-cols-[1.2fr_2fr_1.5fr_1.5fr_1.5fr] border-b border-[#e6eef8] px-4 py-4 text-sm text-[#334b83] last:border-b-0">
-                        <span>{{ $attempt['no'] }}</span>
-                        <span>{{ $attempt['date'] }}</span>
-                        <span>{{ $attempt['score'] }}</span>
-                        <span>{{ $attempt['status'] }}</span>
-                        <span>{{ $attempt['certificate'] }}</span>
-                    </div>
-                @empty
-                    <div class="px-5 py-10 text-center">
-                        <div class="mx-auto mb-3 grid h-[86px] w-[86px] place-items-center rounded-full bg-[#eaf2ff] text-2xl font-black text-[#075fe4]">NA</div>
-                        <h3 class="mb-2 text-base font-bold text-[#061942]">No attempts yet!</h3>
-                        <p class="mb-5 text-sm text-[#334b83]">Start your final assessment to evaluate your learning.</p>
-                        <a href="/fast-track/final-assessment/questions" class="inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white">Start Now</a>
-                    </div>
-                @endforelse
+                <table class="w-full min-w-[820px] border-collapse text-sm">
+                    <thead class="bg-[#fbfdff] text-xs font-bold text-[#24344f]">
+                        <tr><th class="px-4 py-3 text-left">Course</th><th class="px-4 py-3 text-left">Progress</th><th class="px-4 py-3 text-left">Payment</th><th class="px-4 py-3 text-left">Training</th><th class="px-4 py-3 text-left">Action</th></tr>
+                    </thead>
+                    <tbody id="eligibleRows" class="divide-y divide-[#edf2fb] text-[#1b315b]">
+                        <tr><td class="px-4 py-5" colspan="5">Loading trainings...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </article>
     </section>
@@ -129,39 +63,85 @@
 
 @push('scripts')
 <script>
+    const finalSummary = document.getElementById('finalSummary');
     const finalAssessmentRunner = document.getElementById('finalAssessmentRunner');
+    const assessmentOverview = document.getElementById('assessmentOverview');
+    const eligibleRows = document.getElementById('eligibleRows');
     let finalEnrollment = null;
     let finalAttemptId = null;
     let finalQuestions = [];
+    let finalEnrollments = [];
 
-    function renderFinalLock(enrollments) {
-        const completed = enrollments.find(function (item) {
-            return (item.training_status === 'completed' || item.enrollment_status === 'completed') && (item.payment_status === 'paid' || item.payment_status === 'success');
-        });
-        finalEnrollment = completed;
-        if (!finalAssessmentRunner) return;
-        finalAssessmentRunner.classList.remove('hidden');
-        if (!completed) {
-            finalAssessmentRunner.innerHTML = `<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 class="text-lg font-bold text-[#061942]">Final Assessment Locked</h2><p class="mt-2 text-sm text-[#334b83]">Complete paid training first. Training partner progress must reach 100% before final assessment opens.</p></div><a class="h-10 rounded-md bg-[#075fe4] px-5 py-2.5 text-sm font-bold text-white" href="/fast-track/training-progress">View Progress</a></div>`;
+    function isCompletedEnrollment(item) {
+        return item.payment_status === 'paid'
+            && item.training_status === 'completed'
+            && item.enrollment_status === 'completed';
+    }
+    function overviewItem(icon, label, value) {
+        return `<div class="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-4 text-sm"><span class="grid h-[34px] w-[34px] place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">${icon}</span><span class="font-semibold text-[#334b83]">${FastTrack.esc(label)}</span><strong class="text-right font-bold text-[#061942]">${FastTrack.esc(value)}</strong></div>`;
+    }
+    function statusBadge(text, ok) {
+        return `<span class="inline-flex rounded-md ${ok ? 'bg-[#e6fff0] text-[#05843e]' : 'bg-[#fff4df] text-[#b86500]'} px-3 py-1.5 text-xs font-bold">${FastTrack.esc(text)}</span>`;
+    }
+    function renderOverview(enrollments) {
+        const completed = enrollments.filter(isCompletedEnrollment).length;
+        const paid = enrollments.filter((item) => item.payment_status === 'paid').length;
+        assessmentOverview.innerHTML = [
+            overviewItem('TQ', 'Total Questions', 'Dynamic'),
+            overviewItem('PM', 'Passing Marks', '60%'),
+            overviewItem('TA', 'Total Attempts Allowed', '3'),
+            overviewItem('PE', 'Paid Enrollments', paid),
+            overviewItem('ET', 'Eligible Trainings', completed),
+        ].join('');
+    }
+    function renderRows(enrollments) {
+        if (!enrollments.length) {
+            eligibleRows.innerHTML = '<tr><td class="px-4 py-8 text-center text-sm text-[#334b83]" colspan="5">No enrollments found.</td></tr>';
             return;
         }
-        finalAssessmentRunner.innerHTML = `<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 class="text-lg font-bold text-[#061942]">Ready: ${FastTrack.esc(FastTrack.courseName(FastTrack.course(completed)))}</h2><p class="mt-2 text-sm text-[#334b83]">Training is complete. Start the real final assessment to generate certificate eligibility.</p></div><button id="startFinalAssessmentBtn" class="h-10 rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white" type="button">Start Final Assessment</button></div>`;
-        document.getElementById('startFinalAssessmentBtn').addEventListener('click', startFinalAssessment);
+        eligibleRows.innerHTML = enrollments.map(function (enrollment) {
+            const course = FastTrack.course(enrollment);
+            const progress = FastTrack.progress(enrollment);
+            const eligible = isCompletedEnrollment(enrollment);
+            return `<tr>
+                <td class="px-4 py-4"><strong class="block text-[#061942]">${FastTrack.esc(FastTrack.courseName(course))}</strong><span class="text-xs text-[#536484]">${FastTrack.esc(FastTrack.partnerName(course))}</span></td>
+                <td class="px-4 py-4"><div class="mb-1 h-2 min-w-[120px] overflow-hidden rounded-full bg-[#e9edf5]"><span class="block h-full rounded-full bg-[#075fe4]" style="width:${progress}%;"></span></div><span class="text-xs font-bold text-[#334b83]">${progress}%</span></td>
+                <td class="px-4 py-4">${statusBadge(FastTrack.statusText(enrollment.payment_status), enrollment.payment_status === 'paid')}</td>
+                <td class="px-4 py-4">${statusBadge(FastTrack.statusText(enrollment.training_status), enrollment.training_status === 'completed')}</td>
+                <td class="px-4 py-4"><button class="start-final h-9 rounded-md ${eligible ? 'bg-[#075fe4] text-white' : 'border border-[#dce7f8] bg-white text-[#536484]'} px-4 text-xs font-bold" type="button" data-id="${enrollment.id}" ${eligible ? '' : 'disabled'}>${eligible ? 'Start' : 'Locked'}</button></td>
+            </tr>`;
+        }).join('');
     }
-
+    function renderSummary(enrollments) {
+        const eligible = enrollments.filter(isCompletedEnrollment);
+        finalEnrollment = eligible[0] || null;
+        if (!finalEnrollment) {
+            finalSummary.innerHTML = `<div class="grid gap-6 lg:grid-cols-[165px_minmax(0,1fr)] lg:items-center"><div class="hidden h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-white text-[42px] font-black text-[#075fe4] sm:flex">FA</div><div><h2 class="mb-3 text-lg font-bold text-[#061942]">Final Assessment Locked</h2><p class="mb-5 max-w-xl text-sm leading-7 text-[#334b83]">Complete paid training first. Training partner progress must mark enrollment as completed before final assessment opens.</p><a href="/fast-track/training-progress" class="inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white">View Progress</a></div></div>`;
+            return;
+        }
+        const course = FastTrack.course(finalEnrollment);
+        finalSummary.innerHTML = `<div class="grid gap-6 lg:grid-cols-[165px_minmax(0,1fr)_repeat(3,170px)] lg:items-center"><div class="hidden h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-white text-[42px] font-black text-[#075fe4] sm:flex">FA</div><div><h2 class="mb-3 text-lg font-bold text-[#061942]">Ready for Final Assessment</h2><p class="mb-5 max-w-xl text-sm leading-7 text-[#334b83]">${FastTrack.esc(FastTrack.courseName(course))} training is complete. Attempt final assessment and get certificate eligibility.</p><button id="summaryStartFinal" class="inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white" type="button">Start Final Assessment</button></div>${[
+            ['LC', FastTrack.progress(finalEnrollment) + '%', 'Training Progress'],
+            ['CE', finalEnrollments.length, 'Courses Enrolled'],
+            ['PM', '60%', 'Passing Marks'],
+        ].map((item) => `<div class="flex min-h-[118px] flex-col justify-center border-t border-[#dce7f8] pt-4 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0"><span class="mb-3 grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">${item[0]}</span><strong class="text-[22px] font-bold text-[#061942]">${FastTrack.esc(item[1])}</strong><span class="mt-2 text-sm font-medium text-[#334b83]">${FastTrack.esc(item[2])}</span></div>`).join('')}</div>`;
+        document.getElementById('summaryStartFinal')?.addEventListener('click', () => startFinalAssessment(finalEnrollment.id));
+    }
     function renderFinalQuestions() {
-        finalAssessmentRunner.innerHTML = `<form id="finalAssessmentForm" class="space-y-5">${finalQuestions.map(function (question, index) {
-            const options = question.options || [question.option_a, question.option_b, question.option_c, question.option_d].filter(Boolean);
-            return `<fieldset class="rounded-lg border border-[#e6eef8] p-4"><legend class="mb-3 text-sm font-bold text-[#061942]">${index + 1}. ${FastTrack.esc(question.question || question.title)}</legend>${options.map(function (option, optionIndex) { return `<label class="mb-2 flex gap-3 text-sm text-[#334b83]"><input class="mt-1" type="radio" name="fq_${question.id}" value="${optionIndex + 1}" required><span>${FastTrack.esc(option.text || option)}</span></label>`; }).join('')}</fieldset>`;
+        finalAssessmentRunner.classList.remove('hidden');
+        finalSummary.classList.add('hidden');
+        finalAssessmentRunner.innerHTML = `<form id="finalAssessmentForm" class="space-y-5"><div><h2 class="text-lg font-bold text-[#061942]">Final Assessment Questions</h2><p class="mt-2 text-sm text-[#334b83]">Select one option for every question.</p></div>${finalQuestions.map(function (question, index) {
+            const options = [['A', question.option_a], ['B', question.option_b], ['C', question.option_c], ['D', question.option_d]].filter((item) => item[1]);
+            return `<fieldset class="rounded-lg border border-[#e6eef8] p-4"><legend class="mb-3 text-sm font-bold text-[#061942]">${index + 1}. ${FastTrack.esc(question.question)}</legend>${options.map((option) => `<label class="mb-2 flex gap-3 text-sm text-[#334b83]"><input class="mt-1" type="radio" name="fq_${question.id}" value="${option[0]}" required><span><b>${option[0]}.</b> ${FastTrack.esc(option[1])}</span></label>`).join('')}</fieldset>`;
         }).join('')}<button class="h-10 rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white" type="submit">Submit Final Assessment</button></form>`;
         document.getElementById('finalAssessmentForm').addEventListener('submit', submitFinalAssessment);
     }
-
-    function startFinalAssessment() {
+    function startFinalAssessment(enrollmentId) {
+        finalAssessmentRunner.classList.remove('hidden');
         finalAssessmentRunner.innerHTML = '<p class="text-sm font-semibold text-[#334b83]">Starting final assessment...</p>';
-        FastTrack.postJson('/api/fresher/enrollments/' + finalEnrollment.id + '/final-assessment/start')
+        FastTrack.postJson('/api/fresher/enrollments/' + enrollmentId + '/final-assessment/start')
             .then(function (result) {
-                const attempt = FastTrack.apiData(result, 'attempt') || FastTrack.apiData(result);
+                const attempt = FastTrack.apiData(result, 'attempt') || {};
                 finalAttemptId = attempt.id;
                 return FastTrack.getJson('/api/fresher/final-assessment/' + finalAttemptId + '/questions');
             })
@@ -173,22 +153,36 @@
                 finalAssessmentRunner.innerHTML = `<p class="text-sm font-semibold text-[#8a5200]">${FastTrack.esc(error.message || 'Final assessment could not start.')}</p>`;
             });
     }
-
     function submitFinalAssessment(event) {
         event.preventDefault();
         const answers = finalQuestions.map(function (question) {
             const checked = event.target.querySelector('[name="fq_' + question.id + '"]:checked');
             return { question_id: question.id, selected_option: checked ? checked.value : null };
         });
-        FastTrack.postJson('/api/fresher/final-assessment/' + finalAttemptId + '/submit', { answers: answers })
-            .then(function () { return FastTrack.getJson('/api/fresher/final-assessment/' + finalAttemptId + '/result'); })
+        FastTrack.postJson('/api/fresher/final-assessment/' + finalAttemptId + '/submit', { answers })
             .then(function (result) {
-                const data = FastTrack.apiData(result, 'result') || FastTrack.apiData(result);
-                finalAssessmentRunner.innerHTML = `<div><h2 class="text-lg font-bold text-[#061942]">Final Assessment Submitted</h2><p class="mt-2 text-sm text-[#334b83]">Score: <strong class="text-[#061942]">${FastTrack.esc(data.score_percentage || data.score || 0)}%</strong>. Certificate status will update automatically after passing.</p><a class="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white" href="/fast-track/certificate">View Certificate</a></div>`;
+                const data = FastTrack.apiData(result) || {};
+                const resultData = data.result || {};
+                finalAssessmentRunner.innerHTML = `<div class="grid gap-5 md:grid-cols-[1fr_150px] md:items-center"><div><h2 class="text-lg font-bold text-[#061942]">Final Assessment Submitted</h2><p class="mt-2 text-sm text-[#334b83]">Score: <strong class="text-[#061942]">${FastTrack.esc(resultData.overall_score || 0)}%</strong>. Result: <strong class="text-[#061942]">${FastTrack.esc(resultData.result || '-')}</strong></p><a class="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white" href="/fast-track/certificate">View Certificate</a></div><div class="mx-auto flex h-[120px] w-[120px] items-center justify-center rounded-full" style="background:conic-gradient(#075fe4 0 ${Number(resultData.overall_score || 0)}%, #e9edf5 ${Number(resultData.overall_score || 0)}% 100%);"><span class="flex h-[86px] w-[86px] items-center justify-center rounded-full bg-white text-xl font-black">${FastTrack.esc(resultData.overall_score || 0)}%</span></div></div>`;
             })
             .catch(function (error) { alert(error.message || 'Submit failed'); });
     }
-
-    FastTrack.enrollments().then(renderFinalLock).catch(function () {});
+    eligibleRows.addEventListener('click', function (event) {
+        const button = event.target.closest('.start-final');
+        if (!button?.dataset.id) return;
+        startFinalAssessment(button.dataset.id);
+    });
+    FastTrack.enrollments()
+        .then(function (enrollments) {
+            finalEnrollments = enrollments || [];
+            renderOverview(finalEnrollments);
+            renderRows(finalEnrollments);
+            renderSummary(finalEnrollments);
+        })
+        .catch(function (error) {
+            finalSummary.innerHTML = '<p class="text-sm font-bold text-[#b42318]">' + FastTrack.esc(error.message || 'Final assessment data load nahi ho paaya.') + '</p>';
+            assessmentOverview.innerHTML = '<p class="text-sm text-[#b42318]">Overview load nahi ho paaya.</p>';
+            eligibleRows.innerHTML = '<tr><td class="px-4 py-5 text-[#b42318]" colspan="5">Trainings load nahi ho paaye.</td></tr>';
+        });
 </script>
 @endpush

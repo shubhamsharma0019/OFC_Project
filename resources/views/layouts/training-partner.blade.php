@@ -99,6 +99,26 @@
     </div>
 
     <script>
+        (function guardTrainingPartnerSession() {
+            if (window.location.pathname === '/training-partner/login' || window.location.pathname === '/training-partner/register') return;
+
+            const token = localStorage.getItem('ofc_auth_token');
+            let user = null;
+
+            try {
+                user = JSON.parse(localStorage.getItem('ofc_auth_user') || 'null');
+            } catch (error) {
+                user = null;
+            }
+
+            if (!token || user?.role !== 'training_partner') {
+                localStorage.removeItem('ofc_auth_token');
+                localStorage.removeItem('ofc_auth_user');
+                localStorage.removeItem('ofc_training_partner_profile');
+                window.location.href = '/training-partner/login';
+            }
+        })();
+
         function toggleTrainingSidebar() {
             document.querySelector('.layout').classList.toggle('sidebar-open');
         }

@@ -1,26 +1,9 @@
-﻿@extends('layouts.fast-track')
+@extends('layouts.fast-track')
 
 @section('title', 'My Training')
 
 @php
     $activePage = 'training';
-    $student = ['name' => 'Ananya Gupta', 'notifications' => 3];
-
-    $courses = [
-        ['title' => 'Full Stack Development', 'text' => 'Build modern web applications', 'status' => 'In Progress', 'progress' => 45, 'color' => '#24249c'],
-        ['title' => 'Data Science & Analytics', 'text' => 'Analyze data and build solutions', 'status' => 'In Progress', 'progress' => 30, 'color' => '#6041db'],
-        ['title' => 'Digital Marketing', 'text' => 'Master online marketing skills', 'status' => 'Not Started', 'progress' => 0, 'color' => '#44bda9'],
-        ['title' => 'Backend Development', 'text' => 'Learn server-side development', 'status' => 'Not Started', 'progress' => 0, 'color' => '#ffad34'],
-    ];
-
-    $activity = [
-        ['title' => 'Completed lesson "HTML Forms and Inputs"', 'course' => 'Full Stack Development', 'time' => '2 hours ago', 'icon' => 'OK'],
-        ['title' => 'Started lesson "Data Cleaning Basics"', 'course' => 'Data Science & Analytics', 'time' => '1 day ago', 'icon' => 'ST'],
-        ['title' => 'Enrolled in "Digital Marketing"', 'course' => '', 'time' => '3 days ago', 'icon' => 'EN'],
-        ['title' => 'Completed lesson "Introduction to React"', 'course' => 'Full Stack Development', 'time' => '5 days ago', 'icon' => 'OK'],
-    ];
-
-    $overall = 38;
 @endphp
 
 @section('content')
@@ -36,66 +19,22 @@
         <div class="flex gap-8 overflow-x-auto border-b border-[#dce7f8]">
             <button class="training-tab shrink-0 border-b-[3px] border-[#075fe4] pb-3 text-sm font-bold text-[#075fe4]" type="button" data-filter="all">Enrolled Courses</button>
             <button class="training-tab shrink-0 border-b-[3px] border-transparent pb-3 text-sm font-bold text-[#334b83]" type="button" data-filter="progress">Learning Progress</button>
+            <button class="training-tab shrink-0 border-b-[3px] border-transparent pb-3 text-sm font-bold text-[#334b83]" type="button" data-filter="pending">Payment Pending</button>
         </div>
 
         <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4" id="trainingGrid">
-            @foreach ($courses as $course)
-                @php
-                    $initials = collect(explode(' ', $course['title']))->map(fn ($word) => strtoupper(substr($word, 0, 1)))->take(2)->implode('');
-                @endphp
-                <article class="training-card overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,.04)]" data-progress="{{ $course['progress'] }}">
-                    <div class="relative h-[135px] p-4" style="background: linear-gradient(135deg, {{ $course['color'] }}, #dff5ff);">
-                        <span class="inline-flex rounded-lg {{ $course['progress'] > 0 ? 'bg-[#e6fff0] text-[#05843e]' : 'bg-white/90 text-[#334b83]' }} px-3 py-1.5 text-xs font-bold">{{ $course['status'] }}</span>
-                        <span class="float-right rounded-full bg-white px-2.5 py-2 text-xs font-black text-[#075fe4]">{{ $course['progress'] }}%</span>
-                        <h4 class="absolute bottom-7 left-5 text-4xl font-black text-white">{{ $initials }}</h4>
-                    </div>
-                    <div class="p-5">
-                        <h3 class="mb-2 text-base font-bold text-[#061942]">{{ $course['title'] }}</h3>
-                        <p class="mb-5 text-sm leading-6 text-[#334b83]">{{ $course['text'] }}</p>
-                        <div class="mb-3 h-2 overflow-hidden rounded-full bg-[#e9edf5]">
-                            <span class="block h-full rounded-full bg-[#075fe4]" style="width: {{ $course['progress'] }}%;"></span>
-                        </div>
-                        <small class="text-xs font-medium text-[#334b83]">{{ $course['progress'] }}% Completed</small>
-                        <div class="mt-5 grid grid-cols-[1fr_44px] gap-3">
-                            <a class="inline-flex h-[38px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold {{ $loop->first ? 'bg-[#075fe4] text-white' : 'bg-white text-[#075fe4] hover:bg-[#eff5ff]' }}" href="/fast-track/course-details">{{ $course['progress'] ? 'Continue Learning' : 'Start Learning' }}</a>
-                            <button class="h-[38px] rounded-lg border border-[#dce7f8] bg-white text-xs font-black text-[#061942] hover:bg-[#f5f8ff]" type="button">BM</button>
-                        </div>
-                    </div>
-                </article>
-            @endforeach
+            <article class="rounded-lg border border-[#dce7f8] bg-white p-8 text-center text-sm text-[#334b83] shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:col-span-2 xl:col-span-4">Loading training...</article>
         </div>
 
         <div class="grid gap-5 xl:grid-cols-[1.05fr_1fr]">
             <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                 <h2 class="mb-6 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">OP</span> Overall Progress</h2>
-                <div class="grid items-center gap-7 md:grid-cols-[180px_minmax(0,1fr)]">
-                    <div class="flex h-[150px] w-[150px] items-center justify-center rounded-full" style="background: conic-gradient(#075fe4 0 {{ $overall }}%, #e9edf5 {{ $overall }}% 100%);">
-                        <span class="flex h-[110px] w-[110px] flex-col items-center justify-center rounded-full bg-white text-center text-[26px] font-black leading-tight text-[#061942]">{{ $overall }}%<small class="text-xs font-bold text-[#536484]">Overall</small></span>
-                    </div>
-                    <div class="grid gap-4">
-                        <p class="text-sm font-medium text-[#334b83]">Keep going! You are doing great.</p>
-                        <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Courses Enrolled</span><strong>4</strong></div>
-                        <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Courses Completed</span><strong>0</strong></div>
-                        <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Total Lessons Completed</span><strong>28/74</strong></div>
-                        <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Total Study Time</span><strong>12h 45m</strong></div>
-                    </div>
-                </div>
+                <div id="overallTrainingProgress" class="text-sm text-[#334b83]">Loading overall progress...</div>
             </article>
 
             <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                <h2 class="mb-5 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">RA</span> Recent Activity <a class="ml-auto text-xs font-bold text-[#075fe4]" href="#">View All</a></h2>
-                <div>
-                    @foreach ($activity as $item)
-                        <div class="grid grid-cols-[38px_minmax(0,1fr)] items-center gap-4 border-b border-[#e6eef8] py-3 last:border-b-0 sm:grid-cols-[38px_minmax(0,1fr)_auto]">
-                            <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">{{ $item['icon'] }}</span>
-                            <div>
-                                <h3 class="mb-1 text-sm font-bold text-[#061942]">{{ $item['title'] }}</h3>
-                                <p class="text-xs text-[#536484]">{{ $item['course'] }}</p>
-                            </div>
-                            <time class="col-start-2 text-xs text-[#536484] sm:col-start-auto">{{ $item['time'] }}</time>
-                        </div>
-                    @endforeach
-                </div>
+                <h2 class="mb-5 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">RA</span> Recent Activity <a class="ml-auto text-xs font-bold text-[#075fe4]" href="/fast-track/training-progress">View All</a></h2>
+                <div id="trainingActivity"><p class="text-sm text-[#334b83]">Loading activity...</p></div>
             </article>
         </div>
     </section>
@@ -103,29 +42,32 @@
 
 @push('scripts')
 <script>
-    document.querySelectorAll('.training-tab').forEach(function (tab) {
-        tab.addEventListener('click', function () {
-            document.querySelectorAll('.training-tab').forEach(function (item) {
-                item.classList.remove('border-[#075fe4]', 'text-[#075fe4]');
-                item.classList.add('border-transparent', 'text-[#334b83]');
-            });
-
-            tab.classList.add('border-[#075fe4]', 'text-[#075fe4]');
-            tab.classList.remove('border-transparent', 'text-[#334b83]');
-
-            document.querySelectorAll('.training-card').forEach(function (card) {
-                const progress = Number(card.dataset.progress || 0);
-                card.classList.toggle('hidden', tab.dataset.filter === 'progress' && progress <= 0);
-            });
-        });
-    });
-
     const trainingGrid = document.getElementById('trainingGrid');
+    const overallTrainingProgress = document.getElementById('overallTrainingProgress');
+    const trainingActivity = document.getElementById('trainingActivity');
+    let currentFilter = 'all';
+    let trainingEnrollments = [];
 
-    function renderTraining(enrollments) {
-        if (!trainingGrid) return;
+    function isPaid(enrollment) {
+        return enrollment.payment_status === 'paid' || enrollment.enrollment_status === 'enrolled' || enrollment.enrollment_status === 'completed';
+    }
+    function badgeClass(enrollment, progress) {
+        if (!isPaid(enrollment)) return 'bg-[#fff4df] text-[#b86500]';
+        if (progress >= 100 || enrollment.training_status === 'completed') return 'bg-[#e6fff0] text-[#05843e]';
+        return 'bg-[#eaf2ff] text-[#075fe4]';
+    }
+    function filteredEnrollments() {
+        return trainingEnrollments.filter(function (enrollment) {
+            const progress = FastTrack.progress(enrollment);
+            if (currentFilter === 'progress') return progress > 0 || enrollment.training_status === 'in_progress';
+            if (currentFilter === 'pending') return !isPaid(enrollment);
+            return true;
+        });
+    }
+    function renderCards() {
+        const enrollments = filteredEnrollments();
         if (!enrollments.length) {
-            trainingGrid.innerHTML = '<div class="sm:col-span-2 xl:col-span-4">' + FastTrack.emptyState('No training enrolled yet', 'Enroll in a Fast Track course to unlock training progress.', '/fast-track/courses', 'Browse Courses') + '</div>';
+            trainingGrid.innerHTML = '<div class="sm:col-span-2 xl:col-span-4">' + FastTrack.emptyState(currentFilter === 'pending' ? 'No pending payments' : 'No training enrolled yet', currentFilter === 'pending' ? 'All visible enrollments are paid.' : 'Enroll in a Fast Track course to unlock training progress.', '/fast-track/courses', 'Browse Courses') + '</div>';
             return;
         }
 
@@ -133,30 +75,89 @@
             const course = FastTrack.course(enrollment);
             const title = FastTrack.courseName(course);
             const progress = FastTrack.progress(enrollment);
-            const paid = enrollment.payment_status === 'paid' || enrollment.enrollment_status === 'enrolled' || enrollment.enrollment_status === 'completed';
+            const paid = isPaid(enrollment);
             return `
-                <article class="training-card overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,.04)]" data-progress="${progress}">
-                    <div class="relative h-[135px] p-4" style="background:linear-gradient(135deg, ${index % 2 ? '#6041db' : '#24249c'}, #dff5ff);">
-                        <span class="inline-flex rounded-lg ${progress > 0 ? 'bg-[#e6fff0] text-[#05843e]' : 'bg-white/90 text-[#334b83]'} px-3 py-1.5 text-xs font-bold">${FastTrack.esc(FastTrack.statusText(enrollment.training_status || enrollment.enrollment_status))}</span>
+                <article class="training-card overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,.04)]" data-progress="${progress}" data-paid="${paid ? 'yes' : 'no'}">
+                    <div class="relative h-[135px] p-4" style="background:linear-gradient(135deg, ${index % 3 === 0 ? '#24249c' : index % 3 === 1 ? '#6041db' : '#0a8f9d'}, #dff5ff);">
+                        <span class="inline-flex rounded-lg ${badgeClass(enrollment, progress)} px-3 py-1.5 text-xs font-bold">${paid ? FastTrack.statusText(enrollment.training_status || 'not_started') : 'Payment Pending'}</span>
                         <span class="float-right rounded-full bg-white px-2.5 py-2 text-xs font-black text-[#075fe4]">${progress}%</span>
                         <h4 class="absolute bottom-7 left-5 text-4xl font-black text-white">${FastTrack.initials(title)}</h4>
                     </div>
                     <div class="p-5">
                         <h3 class="mb-2 text-base font-bold text-[#061942]">${FastTrack.esc(title)}</h3>
-                        <p class="mb-5 text-sm leading-6 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
+                        <p class="mb-5 line-clamp-3 text-sm leading-6 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
                         <div class="mb-3 h-2 overflow-hidden rounded-full bg-[#e9edf5]"><span class="block h-full rounded-full bg-[#075fe4]" style="width:${progress}%;"></span></div>
                         <small class="text-xs font-medium text-[#334b83]">${progress}% Completed</small>
                         <div class="mt-5 grid grid-cols-[1fr_44px] gap-3">
-                            <a class="inline-flex h-[38px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold ${paid ? 'bg-[#075fe4] text-white' : 'bg-white text-[#075fe4]'}" href="/fast-track/training-progress">${paid ? 'Continue Learning' : 'Payment Pending'}</a>
+                            <a class="inline-flex h-[38px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold ${paid ? 'bg-[#075fe4] text-white' : 'bg-white text-[#075fe4]'}" href="${paid ? '/fast-track/training-progress' : '/fast-track/course-details?course=' + encodeURIComponent(course.id || '')}">${paid ? 'Continue Learning' : 'Pay Now'}</a>
                             <a class="grid h-[38px] place-items-center rounded-lg border border-[#dce7f8] bg-white text-xs font-black text-[#061942] hover:bg-[#f5f8ff]" href="/fast-track/course-details?course=${encodeURIComponent(course.id || '')}">DT</a>
                         </div>
                     </div>
                 </article>`;
         }).join('');
     }
+    function renderOverall() {
+        const total = trainingEnrollments.length;
+        const completed = trainingEnrollments.filter((item) => item.training_status === 'completed' || FastTrack.progress(item) >= 100).length;
+        const inProgress = trainingEnrollments.filter((item) => FastTrack.progress(item) > 0 && FastTrack.progress(item) < 100).length;
+        const paid = trainingEnrollments.filter(isPaid).length;
+        const avg = total ? Math.round(trainingEnrollments.reduce((sum, item) => sum + FastTrack.progress(item), 0) / total) : 0;
 
-    FastTrack.enrollments().then(renderTraining).catch(function () {
-        if (trainingGrid) trainingGrid.insertAdjacentHTML('afterbegin', '<div class="sm:col-span-2 xl:col-span-4 rounded-lg border border-[#ffd6a8] bg-[#fff8ef] p-4 text-sm font-semibold text-[#8a5200]">Live training data nahi aa pa raha. Static preview retained hai.</div>');
+        overallTrainingProgress.innerHTML = `<div class="grid items-center gap-7 md:grid-cols-[180px_minmax(0,1fr)]">
+            <div class="flex h-[150px] w-[150px] items-center justify-center rounded-full" style="background:conic-gradient(#075fe4 0 ${avg}%, #e9edf5 ${avg}% 100%);">
+                <span class="flex h-[110px] w-[110px] flex-col items-center justify-center rounded-full bg-white text-center text-[26px] font-black leading-tight text-[#061942]">${avg}%<small class="text-xs font-bold text-[#536484]">Overall</small></span>
+            </div>
+            <div class="grid gap-4">
+                <p class="text-sm font-medium text-[#334b83]">${total ? 'Keep going! Your training progress is updating from partner records.' : 'Enroll in a course to start your training journey.'}</p>
+                <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Courses Enrolled</span><strong>${total}</strong></div>
+                <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Paid Enrollments</span><strong>${paid}</strong></div>
+                <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>In Progress</span><strong>${inProgress}</strong></div>
+                <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Courses Completed</span><strong>${completed}</strong></div>
+            </div>
+        </div>`;
+    }
+    function renderActivity() {
+        if (!trainingEnrollments.length) {
+            trainingActivity.innerHTML = '<p class="text-sm text-[#334b83]">No training activity yet.</p>';
+            return;
+        }
+        trainingActivity.innerHTML = trainingEnrollments.slice(0, 5).map(function (enrollment) {
+            const course = FastTrack.course(enrollment);
+            const progress = FastTrack.progress(enrollment);
+            const title = progress >= 100 ? 'Training completed' : (progress > 0 ? 'Training progress updated' : 'Course enrollment created');
+            return `<div class="grid grid-cols-[38px_minmax(0,1fr)] items-center gap-4 border-b border-[#e6eef8] py-3 last:border-b-0 sm:grid-cols-[38px_minmax(0,1fr)_auto]">
+                <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">${progress >= 100 ? 'OK' : 'TR'}</span>
+                <div><h3 class="mb-1 text-sm font-bold text-[#061942]">${FastTrack.esc(title)}</h3><p class="text-xs text-[#536484]">${FastTrack.esc(FastTrack.courseName(course))}</p></div>
+                <time class="col-start-2 text-xs text-[#536484] sm:col-start-auto">${FastTrack.date(enrollment.updated_at || enrollment.enrollment_date)}</time>
+            </div>`;
+        }).join('');
+    }
+    function renderTraining() {
+        renderCards();
+        renderOverall();
+        renderActivity();
+    }
+    document.querySelectorAll('.training-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('.training-tab').forEach(function (item) {
+                item.classList.remove('border-[#075fe4]', 'text-[#075fe4]');
+                item.classList.add('border-transparent', 'text-[#334b83]');
+            });
+            tab.classList.add('border-[#075fe4]', 'text-[#075fe4]');
+            tab.classList.remove('border-transparent', 'text-[#334b83]');
+            currentFilter = tab.dataset.filter;
+            renderCards();
+        });
     });
+    FastTrack.enrollments()
+        .then(function (enrollments) {
+            trainingEnrollments = enrollments || [];
+            renderTraining();
+        })
+        .catch(function (error) {
+            trainingGrid.innerHTML = '<div class="sm:col-span-2 xl:col-span-4">' + FastTrack.emptyState('Training load nahi ho paayi', error.message || 'Please retry after login.', '/fast-track/courses', 'Browse Courses') + '</div>';
+            overallTrainingProgress.innerHTML = '<p class="text-sm text-[#b42318]">Training summary load nahi ho paayi.</p>';
+            trainingActivity.innerHTML = '<p class="text-sm text-[#b42318]">Training activity load nahi ho paayi.</p>';
+        });
 </script>
 @endpush
