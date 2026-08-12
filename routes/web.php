@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyDashboardPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,8 +47,10 @@ Route::view('/courses/show', 'public.courses.show');
 Route::view('/certificates/verify', 'public.certificates.verify');
 
 
-Route::view('/company/dashboard-preview', 'company.dashboard');
-Route::view('/company/dashboard', 'company.dashboard');
+Route::view('/company/login', 'company.login');
+Route::view('/company/register', 'company.register');
+Route::get('/company/dashboard-preview', CompanyDashboardPageController::class);
+Route::get('/company/dashboard', CompanyDashboardPageController::class);
 Route::view('/company/profile', 'company.profile.show');
 Route::view('/company/post-job', 'company.jobs.create');
 Route::view('/company/jobs', 'company.jobs.index');

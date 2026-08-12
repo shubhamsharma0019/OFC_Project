@@ -64,7 +64,7 @@
                             class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#075fe4] text-[17px] font-bold text-white lg:h-[46px] lg:w-[46px] lg:text-xl">
                             T</div>
                         <div class="min-w-0">
-                            <h3
+                            <h3 data-company-topbar-name
                                 class="max-w-[128px] truncate text-sm font-bold text-[#061942] sm:max-w-[180px] lg:max-w-[150px]">
                                 TechNova Solutions</h3>
                             <p class="hidden text-xs text-[#52607a] sm:block">Company</p>
@@ -91,6 +91,36 @@
             sidebar.classList.toggle('translate-x-0');
             backdrop.classList.toggle('hidden');
         }
+
+        (function hydrateCompanyTopbar() {
+            const token = localStorage.getItem('onlyfreshers_company_token');
+            const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_company_user') || 'null');
+            const nameEl = document.querySelector('[data-company-topbar-name]');
+            const avatarEl = nameEl?.closest('.flex')?.querySelector('.rounded-full');
+
+            function setCompanyName(name) {
+                const companyName = name || storedUser?.name || 'Company';
+                if (nameEl) nameEl.textContent = companyName;
+                if (avatarEl) avatarEl.textContent = companyName.trim().charAt(0).toUpperCase() || 'C';
+            }
+
+            setCompanyName(storedUser?.name);
+
+            if (!token) return;
+
+            fetch('/api/company/profile', {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then(response => response.json())
+                .then(result => {
+                    const profile = result.data?.profile;
+                    setCompanyName(profile?.company_name || storedUser?.name);
+                })
+                .catch(() => setCompanyName(storedUser?.name));
+        })();
     </script>
     @stack('scripts')
 </body>

@@ -20,10 +20,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Direct Mode - OnlyFreshers')</title>
     <style>
-        *{box-sizing:border-box}body{margin:0;height:100vh;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#06123f;background:#f7fbff;font-weight:500}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}.shell{height:100vh;overflow:hidden;display:grid;grid-template-columns:250px minmax(0,1fr);background:linear-gradient(135deg,#fbfdff,#f1f7ff)}.sidebar{position:sticky;top:0;height:100vh;min-width:0;overflow:hidden;background:#fff;border-right:1px solid #d8e4f7;display:flex;flex-direction:column;justify-content:space-between}.brand{height:82px;display:flex;align-items:center;padding:0 34px;border-bottom:1px solid #d8e4f7}.brand img{display:block;width:200px;max-width:100%;height:auto;object-fit:contain;object-position:left center}.menu{max-height:calc(100vh - 300px);overflow-y:auto;padding:24px 18px 12px;display:grid;gap:8px}.menu-item{min-height:46px;border-radius:8px;display:flex;align-items:center;gap:15px;padding:0 18px;font-size:14px;font-weight:700;position:relative;color:#06123f;white-space:nowrap}.menu-item.active{background:#eaf2ff;color:#064cff}.menu-item.active:before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;background:#064cff;border-radius:6px}.icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.boost{margin:18px;padding:18px;border-radius:9px;background:#eef5ff;text-align:center}.rocket{height:96px;position:relative}.rocket:before{content:"";position:absolute;left:50%;top:13px;width:66px;height:66px;background:linear-gradient(135deg,#0d67ff,#163ade);clip-path:polygon(50% 0,82% 23%,68% 68%,100% 82%,65% 88%,50% 100%,35% 88%,0 82%,32% 68%,18% 23%);transform:translateX(-50%) rotate(35deg)}.rocket:after{content:"";position:absolute;left:34px;right:34px;bottom:5px;height:18px;border-radius:50%;background:#dce8ff}.boost h3{margin:0 0 10px;font-size:15px;line-height:1.25}.boost p{margin:0 0 16px;font-size:13px;line-height:1.35;color:#26375e}.primary{height:36px;border:1px solid #064cff;border-radius:6px;background:#064cff;color:#fff;font-size:13px;font-weight:800;padding:0 20px;cursor:pointer}.main{height:100vh;min-width:0;overflow-y:auto;display:grid;grid-template-rows:82px minmax(0,max-content)}.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #d8e4f7;display:grid;grid-template-columns:1fr minmax(320px,603px) 1fr;align-items:center;gap:26px;padding:0 38px}.hamb{font-size:25px;line-height:1;color:#06123f}.search-top{height:46px;border:1px solid #cbd8ee;border-radius:7px;background:#fbfdff;display:flex;align-items:center;gap:14px;padding:0 16px;color:#26375e}.search-top input{border:0;outline:0;background:transparent;width:100%;min-width:0;color:#26375e}.top-user{justify-self:end;display:flex;align-items:center;gap:14px;min-width:0}.top-bell{position:relative;border:0;background:transparent;color:#06123f;padding:0;cursor:pointer}.top-bell b{position:absolute;right:-8px;top:-11px;background:#064cff;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center}.top-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:50%;border:5px solid #e6eefb;background:center top/cover no-repeat}.top-user strong{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page{min-width:0;padding:24px 28px 26px}.welcome{margin:0 0 18px 4px}.welcome small{font-size:13px;color:#526287}.welcome h1{margin:4px 0 0;font-size:22px;line-height:1.2}.footer{min-height:58px;border-top:1px solid #d8e4f7;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 32px;font-size:13px;color:#26375e}.footer nav{display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px}.footer i{height:16px;width:1px;background:#7d8aaa}@media(max-width:1240px){.shell{grid-template-columns:1fr}.sidebar{display:none}.topbar{grid-template-columns:32px minmax(0,1fr) auto}.top-user strong{display:none}}@media(max-width:760px){.main{grid-template-rows:auto minmax(0,1fr) auto}.topbar{grid-template-columns:1fr auto;gap:14px;padding:14px}.hamb{display:none}.search-top{grid-column:1/-1;grid-row:2}.top-user{grid-column:2;grid-row:1}.page{padding:16px}.footer,.footer nav{height:auto;flex-direction:column;align-items:flex-start}.footer{padding:16px}.footer i{display:none}}
+        *{box-sizing:border-box}body{margin:0;height:100vh;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#06123f;background:#f7fbff;font-weight:500}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}.shell{height:100vh;overflow:hidden;display:grid;grid-template-columns:250px minmax(0,1fr);background:linear-gradient(135deg,#fbfdff,#f1f7ff)}.sidebar{position:sticky;top:0;height:100vh;min-width:0;overflow:hidden;background:#fff;border-right:1px solid #d8e4f7;display:flex;flex-direction:column;justify-content:space-between}.brand{height:82px;display:flex;align-items:center;padding:0 34px;border-bottom:1px solid #d8e4f7}.brand img{display:block;width:200px;max-width:100%;height:auto;object-fit:contain;object-position:left center}.menu{max-height:calc(100vh - 300px);overflow-y:auto;padding:24px 18px 12px;display:grid;gap:8px}.menu-item{min-height:46px;border-radius:8px;display:flex;align-items:center;gap:15px;padding:0 18px;font-size:14px;font-weight:700;position:relative;color:#06123f;white-space:nowrap}.menu-item.active{background:#eaf2ff;color:#064cff}.menu-item.active:before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;background:#064cff;border-radius:6px}.icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.boost{margin:18px;padding:18px;border-radius:9px;background:#eef5ff;text-align:center}.rocket{height:96px;position:relative}.rocket:before{content:"";position:absolute;left:50%;top:13px;width:66px;height:66px;background:linear-gradient(135deg,#0d67ff,#163ade);clip-path:polygon(50% 0,82% 23%,68% 68%,100% 82%,65% 88%,50% 100%,35% 88%,0 82%,32% 68%,18% 23%);transform:translateX(-50%) rotate(35deg)}.rocket:after{content:"";position:absolute;left:34px;right:34px;bottom:5px;height:18px;border-radius:50%;background:#dce8ff}.boost h3{margin:0 0 10px;font-size:15px;line-height:1.25}.boost p{margin:0 0 16px;font-size:13px;line-height:1.35;color:#26375e}.primary{height:36px;border:1px solid #064cff;border-radius:6px;background:#064cff;color:#fff;font-size:13px;font-weight:800;padding:0 20px;cursor:pointer}.main{height:100vh;min-width:0;overflow-y:auto;display:grid;grid-template-rows:82px minmax(0,max-content)}.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #d8e4f7;display:grid;grid-template-columns:1fr minmax(320px,603px) 1fr;align-items:center;gap:26px;padding:0 38px}.hamb{font-size:25px;line-height:1;color:#06123f}.search-wrap{position:relative;min-width:0}.search-top{height:46px;border:1px solid #cbd8ee;border-radius:7px;background:#fbfdff;display:flex;align-items:center;gap:14px;padding:0 16px;color:#26375e}.search-top input{border:0;outline:0;background:transparent;width:100%;min-width:0;color:#26375e}.search-panel{display:none;position:absolute;left:0;right:0;top:54px;z-index:50;border:1px solid #d8e4f7;border-radius:10px;background:#fff;box-shadow:0 18px 34px rgba(6,25,66,.12);overflow:hidden}.search-panel.show{display:block}.search-state{padding:15px 16px;color:#526287;font-size:13px}.search-result{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid #eef3fb}.search-result:first-child{border-top:0}.search-result:hover{background:#f7fbff}.search-result-icon{width:38px;height:38px;border-radius:9px;background:#eaf2ff;color:#064cff;display:grid;place-items:center}.search-result-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.search-result h3{margin:0 0 5px;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-result p{margin:0;color:#526287;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-badge{border:1px solid #d8e4f7;border-radius:999px;padding:5px 9px;color:#064cff;font-size:11px;font-weight:800}.top-user{justify-self:end;display:flex;align-items:center;gap:14px;min-width:0}.top-bell{position:relative;border:0;background:transparent;color:#06123f;padding:0;cursor:pointer}.top-bell b{position:absolute;right:-8px;top:-11px;background:#064cff;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center}.top-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:50%;border:5px solid #e6eefb;background:center top/cover no-repeat}.top-user strong{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page{min-width:0;padding:24px 28px 26px}.welcome{margin:0 0 18px 4px}.welcome small{font-size:13px;color:#526287}.welcome h1{margin:4px 0 0;font-size:22px;line-height:1.2}.footer{min-height:58px;border-top:1px solid #d8e4f7;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 32px;font-size:13px;color:#26375e}.footer nav{display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px}.footer i{height:16px;width:1px;background:#7d8aaa}@media(max-width:1240px){.shell{grid-template-columns:1fr}.sidebar{display:none}.topbar{grid-template-columns:32px minmax(0,1fr) auto}.top-user strong{display:none}}@media(max-width:760px){.main{grid-template-rows:auto minmax(0,1fr) auto}.topbar{grid-template-columns:1fr auto;gap:14px;padding:14px}.hamb{display:none}.search-wrap{grid-column:1/-1;grid-row:2}.search-top{width:100%}.top-user{grid-column:2;grid-row:1}.page{padding:16px}.footer,.footer nav{height:auto;flex-direction:column;align-items:flex-start}.footer{padding:16px}.footer i{display:none}}
     </style>
     @stack('styles')
     <style>
+        .topbar{grid-template-columns:40px minmax(360px,760px) minmax(260px,1fr)!important;gap:22px!important}
+        .topbar>div:first-child{width:40px!important}
+        .search-wrap{justify-self:start!important;width:min(760px,100%)!important}
+        .top-user{gap:20px!important}
+        .top-bell{margin-right:8px!important}
+        .top-user{position:relative!important}
+        .top-user-menu{display:none;position:absolute;right:0;top:62px;z-index:60;width:230px;border:1px solid #d8e4f7;border-radius:10px;background:#fff;box-shadow:0 18px 34px rgba(6,25,66,.12);overflow:hidden}
+        .top-user-menu.show{display:block}
+        .top-user-menu strong,.top-user-menu small{display:block;max-width:none!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .top-user-head{padding:13px 14px;border-bottom:1px solid #eef3fb}
+        .top-user-head small{margin-top:4px;color:#526287;font-size:12px}
+        .top-user-menu a,.top-user-menu button{width:100%;height:42px;border:0;background:#fff;display:flex;align-items:center;gap:10px;padding:0 14px;color:#06123f;font-size:13px;font-weight:800;cursor:pointer;text-align:left}
+        .top-user-menu a:hover,.top-user-menu button:hover{background:#f7fbff;color:#064cff}
         @media(max-width:900px){
             html,body{width:100%;overflow-x:hidden}
             .shell,.main,.topbar{width:100%!important;max-width:100%!important;min-width:0!important}
@@ -69,8 +82,25 @@
         <main class="main">
             <header class="topbar">
                 <div></div>
-                <label class="search-top"><span class="icon" data-icon="search"></span><input type="search" placeholder="Search jobs, companies, skills..."></label>
-                <div class="top-user"><button class="top-bell" type="button" aria-label="Notifications"><b>{{ $user['notifications'] }}</b><span class="icon" data-icon="bell"></span></button><div class="top-avatar" style="background-image:url('{{ $user['avatar'] }}')"></div><strong>{{ $user['name'] }}</strong><span class="icon" data-icon="chevron"></span></div>
+                <div class="search-wrap" data-direct-search>
+                    <label class="search-top"><span class="icon" data-icon="search"></span><input type="search" placeholder="Search jobs, companies, skills..." data-global-search autocomplete="off"></label>
+                    <div class="search-panel" data-search-results></div>
+                </div>
+                <div class="top-user">
+                    <button class="top-bell" type="button" aria-label="Notifications"><b>{{ $user['notifications'] }}</b><span class="icon" data-icon="bell"></span></button>
+                    <div class="top-avatar" style="background-image:url('{{ $user['avatar'] }}')"></div>
+                    <strong data-top-user-name>{{ $user['name'] }}</strong>
+                    <button class="icon" type="button" data-user-menu-toggle aria-label="Open user menu" style="border:0;background:transparent;color:inherit;cursor:pointer"><span data-icon="chevron"></span></button>
+                    <div class="top-user-menu" data-user-menu>
+                        <div class="top-user-head">
+                            <strong data-menu-user-name>{{ $user['name'] }}</strong>
+                            <small data-menu-user-email>Loading account...</small>
+                        </div>
+                        <a href="/direct-mode/profile"><span class="icon" data-icon="user"></span>My Profile</a>
+                        <a href="/direct-mode/activity"><span class="icon" data-icon="bell"></span>Notifications</a>
+                        <button type="button" data-direct-logout><span class="icon" data-icon="logout"></span>Logout</button>
+                    </div>
+                </div>
             </header>
             @yield('content')
             
@@ -103,6 +133,166 @@
             if (icon) el.innerHTML = icon;
         });
     </script>
+    <script>
+        (() => {
+            const token = localStorage.getItem('onlyfreshers_token') || '';
+            const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || 'null');
+            const headers = { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+            const searchInput = document.querySelector('[data-global-search]');
+            const searchPanel = document.querySelector('[data-search-results]');
+            const userName = document.querySelector('[data-top-user-name]');
+            const menuUserName = document.querySelector('[data-menu-user-name]');
+            const menuUserEmail = document.querySelector('[data-menu-user-email]');
+            const avatar = document.querySelector('.top-avatar');
+            const unreadBadge = document.querySelector('.top-bell b');
+            const userMenu = document.querySelector('[data-user-menu]');
+            const userMenuToggle = document.querySelector('[data-user-menu-toggle]');
+            const icon = name => window.directModeIcons?.[name] || '';
+            const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+            const debounce = (fn, wait = 250) => {
+                let timer;
+                return (...args) => {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => fn(...args), wait);
+                };
+            };
+
+            const setTopUser = user => {
+                const activeUser = user || storedUser;
+                if (!activeUser) return;
+                const name = activeUser.name || 'Direct Mode Fresher';
+                if (userName) userName.textContent = name;
+                if (menuUserName) menuUserName.textContent = name;
+                if (menuUserEmail) menuUserEmail.textContent = activeUser.email || activeUser.role || 'Fresher account';
+                if (avatar) {
+                    avatar.style.backgroundImage = "url('/student.svg')";
+                    avatar.title = name;
+                }
+            };
+
+            const getJson = async url => {
+                const response = await fetch(url, { headers });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data.message || 'Unable to load data.');
+                return data.data;
+            };
+
+            const loadTopbar = async () => {
+                setTopUser(storedUser);
+                if (!token) return;
+                try {
+                    const [profile, unread] = await Promise.all([
+                        getJson('/api/auth/profile').catch(() => null),
+                        getJson('/api/notifications/unread-count').catch(() => ({ unread_count: 0 })),
+                    ]);
+                    setTopUser(profile?.user);
+                    if (unreadBadge) unreadBadge.textContent = unread?.unread_count ?? 0;
+                } catch (error) {
+                    setTopUser(storedUser);
+                }
+            };
+
+            const renderSearchState = message => {
+                if (!searchPanel) return;
+                searchPanel.innerHTML = `<div class="search-state">${esc(message)}</div>`;
+                searchPanel.classList.add('show');
+            };
+
+            const renderSearchResults = (jobs, term) => {
+                if (!searchPanel) return;
+                if (!term) {
+                    searchPanel.classList.remove('show');
+                    searchPanel.innerHTML = '';
+                    return;
+                }
+                if (!jobs.length) {
+                    renderSearchState('No matching jobs, companies or skills found.');
+                    return;
+                }
+                searchPanel.innerHTML = jobs.slice(0, 6).map(job => {
+                    const company = job.company_profile || job.companyProfile || {};
+                    const companyName = company.company_name || 'Company';
+                    const meta = [companyName, job.location, job.required_skills].filter(Boolean).join(' - ');
+                    return `<a class="search-result" href="/direct-mode/jobs?search=${encodeURIComponent(term)}" data-search-result>
+                        <span class="search-result-icon">${icon('briefcase')}</span>
+                        <span><h3>${esc(job.title || 'Job role')}</h3><p>${esc(meta || 'Direct Mode opportunity')}</p></span>
+                        <span class="search-badge">${esc((job.hiring_mode || 'direct').replace('_', ' '))}</span>
+                    </a>`;
+                }).join('');
+                searchPanel.classList.add('show');
+            };
+
+            const runSearch = debounce(async () => {
+                const term = searchInput?.value.trim() || '';
+                if (!term) {
+                    searchPanel?.classList.remove('show');
+                    return;
+                }
+                renderSearchState('Searching...');
+                try {
+                    const data = await getJson(`/api/jobs?search=${encodeURIComponent(term)}`);
+                    const jobs = (data.jobs || []).filter(job => String(job.hiring_mode || 'direct').toLowerCase().includes('direct'));
+                    renderSearchResults(jobs, term);
+                } catch (error) {
+                    renderSearchState(error.message);
+                }
+            }, 250);
+
+            if (searchInput) {
+                searchInput.addEventListener('input', runSearch);
+                searchInput.addEventListener('keydown', event => {
+                    const term = searchInput.value.trim();
+                    if (event.key === 'Enter' && term) {
+                        event.preventDefault();
+                        window.location.href = `/direct-mode/jobs?search=${encodeURIComponent(term)}`;
+                    }
+                    if (event.key === 'Escape') {
+                        searchPanel?.classList.remove('show');
+                    }
+                });
+                document.addEventListener('click', event => {
+                    if (!event.target.closest('[data-direct-search]')) {
+                        searchPanel?.classList.remove('show');
+                    }
+                });
+            }
+
+            document.querySelector('.top-bell')?.addEventListener('click', () => {
+                window.location.href = '/direct-mode/activity';
+            });
+
+            userMenuToggle?.addEventListener('click', event => {
+                event.stopPropagation();
+                userMenu?.classList.toggle('show');
+            });
+
+            document.addEventListener('click', event => {
+                if (!event.target.closest('.top-user')) {
+                    userMenu?.classList.remove('show');
+                }
+            });
+
+            document.querySelector('[data-direct-logout]')?.addEventListener('click', async () => {
+                try {
+                    if (token) {
+                        await fetch('/api/auth/logout', {
+                            method: 'POST',
+                            headers: { ...headers, 'Content-Type': 'application/json' },
+                            body: '{}',
+                        });
+                    }
+                } catch (error) {
+                    // Local logout should still continue when the token has already expired.
+                }
+                localStorage.removeItem('onlyfreshers_token');
+                localStorage.removeItem('onlyfreshers_user');
+                window.location.href = '/direct-mode/login';
+            });
+
+            loadTopbar();
+        })();
+    </script>
 </body>
 </html>
+
 

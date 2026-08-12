@@ -11,104 +11,11 @@
 
 @php
     $activePage = 'dashboard';
-
-    $stats = [
-        [
-            'label' => 'Jobs Posted',
-            'value' => '31',
-            'link' => 'View all',
-            'icon' => 'briefcase',
-            'iconClasses' => 'bg-[#eaf2ff] text-[#075fe4]',
-        ],
-        [
-            'label' => 'Applications',
-            'value' => '56',
-            'link' => 'View all',
-            'icon' => 'users',
-            'iconClasses' => 'bg-[#e8fbf3] text-[#00ad6f]',
-        ],
-        [
-            'label' => 'Shortlisted',
-            'value' => '12',
-            'link' => 'View all',
-            'icon' => 'star',
-            'iconClasses' => 'bg-[#fff5e6] text-[#ff9c22]',
-        ],
-        [
-            'label' => 'Interviews',
-            'value' => '5',
-            'link' => 'View all',
-            'icon' => 'calendar',
-            'iconClasses' => 'bg-[#f0edff] text-[#6c50ff]',
-        ],
-        [
-            'label' => 'Hired',
-            'value' => '3',
-            'link' => 'View all',
-            'icon' => 'user-check',
-            'iconClasses' => 'bg-[#e8fbf3] text-[#00ad6f]',
-        ],
-    ];
-
-    $activities = [
-        [
-            'title' => 'New application received for UI/UX Designer',
-            'time' => '2 min ago',
-            'icon' => 'briefcase',
-            'iconClasses' => 'bg-[#eaf2ff] text-[#075fe4]',
-        ],
-        [
-            'title' => '3 candidates shortlisted for React Developer',
-            'time' => '1 hour ago',
-            'icon' => 'user',
-            'iconClasses' => 'bg-[#e8fbf3] text-[#00ad6f]',
-        ],
-        [
-            'title' => 'Interview scheduled with Rohit Kumar',
-            'time' => '3 hours ago',
-            'icon' => 'calendar',
-            'iconClasses' => 'bg-[#f0edff] text-[#6c50ff]',
-        ],
-        [
-            'title' => 'Anjali Verma hired for UI/UX Designer',
-            'time' => '1 day ago',
-            'icon' => 'user-check',
-            'iconClasses' => 'bg-[#fff5e6] text-[#ff9c22]',
-        ],
-        [
-            'title' => 'Invoice generated for Premium Plan',
-            'time' => '2 days ago',
-            'icon' => 'file',
-            'iconClasses' => 'bg-[#fff0f5] text-[#ef3061]',
-        ],
-    ];
-
-    $quickActions = [
-        [
-            'title' => 'Post a New Job',
-            'text' => 'Find the best talent for your company',
-            'icon' => 'briefcase',
-            'iconClasses' => 'bg-[#eaf2ff] text-[#075fe4]',
-        ],
-        [
-            'title' => 'View Applications',
-            'text' => 'Review candidates who applied',
-            'icon' => 'users',
-            'iconClasses' => 'bg-[#e8fbf3] text-[#00ad6f]',
-        ],
-        [
-            'title' => 'Shortlist Candidates',
-            'text' => 'Pick the best matches',
-            'icon' => 'star',
-            'iconClasses' => 'bg-[#f0edff] text-[#6c50ff]',
-        ],
-        [
-            'title' => 'Schedule Interview',
-            'text' => 'Connect with candidates',
-            'icon' => 'calendar',
-            'iconClasses' => 'bg-[#fff5e6] text-[#ff9c22]',
-        ],
-    ];
+    $companyName = $companyName ?? 'TechNova Solutions';
+    $todayMessage = $todayMessage ?? "Here's what's happening today.";
+    $stats = $stats ?? [];
+    $activities = $activities ?? [];
+    $quickActions = $quickActions ?? [];
 @endphp
 
 @section('content')
@@ -124,12 +31,12 @@
             Welcome back,
 
             <strong class="block text-[27px] font-bold sm:text-[28px]">
-                TechNova Solutions 👋
+                <span data-company-dashboard-name>{{ $companyName }}</span>
             </strong>
         </h2>
 
         <p class="text-sm text-[#34445e]">
-            Here's what's happening today.
+            {{ $todayMessage }}
         </p>
     </section>
 
@@ -141,6 +48,7 @@
     >
         @foreach ($stats as $stat)
             <article
+                data-company-stat="{{ $stat['label'] }}"
                 class="flex min-h-[142px] min-w-0 items-center justify-center gap-[18px]
                        rounded-lg border border-[#dce7f8] bg-white p-[22px]
                        shadow-[0_10px_24px_rgba(6,25,66,0.04)]"
@@ -174,7 +82,7 @@
                     </p>
 
                     <a
-                        href="{{ match($stat['label']) { 'Jobs Posted' => '/company/jobs', 'Applications' => '/company/applications', 'Shortlisted' => '/company/shortlisted', 'Interviews' => '/company/interviews', 'Hired' => '/company/hired', default => '/company/dashboard' } }}" class="text-xs font-bold text-[#075fe4]
+                        href="{{ $stat['href'] ?? '/company/dashboard' }}" class="text-xs font-bold text-[#075fe4]
                                hover:underline"
                     >
                         {{ $stat['link'] }}
@@ -254,7 +162,7 @@
             <div class="grid gap-3">
                 @foreach ($quickActions as $action)
                     <a
-                        href="{{ match($action['title']) { 'Post a New Job' => '/company/post-job', 'View Applications' => '/company/applications', 'Shortlist Candidates' => '/company/shortlisted', 'Schedule Interview' => '/company/interviews/create', default => '/company/dashboard' } }}" class="grid min-h-[76px]
+                        href="{{ $action['href'] ?? '/company/dashboard' }}" class="grid min-h-[76px]
                                grid-cols-[52px_minmax(0,1fr)_auto]
                                items-center gap-4 rounded-lg
                                border border-[#dce7f8] bg-white
@@ -304,3 +212,52 @@
     </section>
 
 @endsection
+
+@push('scripts')
+<script>
+    (function hydrateCompanyDashboard() {
+        const token = localStorage.getItem('onlyfreshers_company_token');
+        const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_company_user') || 'null');
+
+        function setCompanyName(name) {
+            const el = document.querySelector('[data-company-dashboard-name]');
+            if (el) el.textContent = name || storedUser?.name || 'Company';
+        }
+
+        function setStat(label, value, note) {
+            const card = document.querySelector(`[data-company-stat="${label}"]`);
+            if (!card) return;
+            const valueEl = card.querySelector('h3');
+            const noteEl = card.querySelector('p');
+            if (valueEl) valueEl.textContent = value ?? 0;
+            if (note && noteEl) noteEl.textContent = note;
+        }
+
+        setCompanyName(storedUser?.name);
+
+        if (!token) return;
+
+        fetch('/api/company/dashboard', {
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(response => response.json())
+            .then(result => {
+                const data = result.data || {};
+                const profile = data.company_profile || {};
+                const stats = data.statistics || {};
+                setCompanyName(profile.company_name || storedUser?.name);
+                setStat('Jobs Posted', stats.total_jobs);
+                setStat('Applications', stats.total_applications);
+                setStat('Shortlisted', stats.shortlisted_applications);
+                setStat('Interviews', stats.scheduled_interviews);
+                setStat('Hired', stats.hired_applications);
+            })
+            .catch(() => setCompanyName(storedUser?.name));
+    })();
+</script>
+@endpush
+
+

@@ -48,7 +48,7 @@
 
     <section class="bg-white py-[45px]">
         <div class="mx-auto grid w-full max-w-7xl gap-6 px-5 sm:px-6 lg:grid-cols-2 lg:px-8">
-            <article class="flex flex-col items-center gap-6 rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_12px_26px_rgba(6,25,66,0.04)] sm:flex-row sm:items-start">
+            <a href="/direct-mode/login" class="flex flex-col items-center gap-6 rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_12px_26px_rgba(6,25,66,0.04)] transition hover:-translate-y-0.5 hover:border-[#bfd4f5] hover:shadow-[0_16px_32px_rgba(6,25,66,0.08)] focus:outline-none focus:ring-2 focus:ring-[#075fe4] focus:ring-offset-2 sm:flex-row sm:items-start">
                 <div class="flex h-[105px] w-[105px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#f1f6ff] text-4xl font-bold text-[#075fe4]">
                     @if (file_exists(public_path('direct.svg')))
                         <img src="{{ asset('direct.svg') }}" alt="Direct Mode" class="h-full w-full rounded-full object-contain">
@@ -64,7 +64,7 @@
                         @endforeach
                     </ul>
                 </div>
-            </article>
+            </a>
 
             <article class="flex flex-col items-center gap-6 rounded-lg border border-[#f5d4ba] bg-[#fffaf5] p-6 shadow-[0_12px_26px_rgba(6,25,66,0.04)] sm:flex-row sm:items-start">
                 <div class="flex h-[105px] w-[105px] shrink-0 items-center justify-center rounded-full bg-[#fff0e2] text-[#f37a22] [&>svg]:h-12 [&>svg]:w-12">@include('components.public.icon', ['name' => 'rocket'])</div>

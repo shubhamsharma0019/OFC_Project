@@ -167,7 +167,7 @@
 
     const renderAssessment = assessment => {
         const result = assessment?.result || {};
-        const total = clamp(result.percentage ?? result.score_percentage ?? result.total_score ?? 0);
+        const total = clamp(result.percentage ?? result.score_percentage ?? result.overall_score ?? result.total_score ?? 0);
         setRing('[data-score-ring]', '[data-score-percent]', total);
         text('[data-score-title]', total ? (total >= 70 ? 'Good job!' : 'Keep improving!') : 'Assessment pending');
         text('[data-score-note]', total ? 'Keep improving.' : 'Take your assessment to unlock better matches.');

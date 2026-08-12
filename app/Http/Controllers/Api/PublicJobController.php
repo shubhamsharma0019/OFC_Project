@@ -25,7 +25,13 @@ class PublicJobController extends Controller
                     $query->where(function ($jobQuery) use ($search) {
                         $jobQuery
                             ->where('title', 'like', "%{$search}%")
-                            ->orWhere('required_skills', 'like', "%{$search}%");
+                            ->orWhere('required_skills', 'like', "%{$search}%")
+                            ->orWhere('qualification', 'like', "%{$search}%")
+                            ->orWhereHas('companyProfile', function ($companyQuery) use ($search) {
+                                $companyQuery
+                                    ->where('company_name', 'like', "%{$search}%")
+                                    ->orWhere('industry', 'like', "%{$search}%");
+                            });
                     });
                 }
             )

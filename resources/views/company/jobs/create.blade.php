@@ -20,6 +20,8 @@
             </button>
         </div>
 
+        <div id="postJobAlert" class="mb-4 hidden rounded-lg border px-4 py-3 text-sm font-bold"></div>
+
         <form id="postJobForm" class="grid grid-cols-1 gap-x-7 gap-y-6 md:grid-cols-2">
             <div>
                 <label for="jobTitle" class="mb-2 block text-[13px] font-bold text-[#061942]">
@@ -137,7 +139,63 @@
         return skills;
     }
 
-    function saveCompanyJob(status) {
+    function showPostJobAlert(message, type = 'error') {
+        const alert = document.getElementById('postJobAlert');
+        alert.textContent = message;
+        alert.className = 'mb-4 rounded-lg border px-4 py-3 text-sm font-bold ' + (
+            type === 'success'
+                ? 'border-[#baf0ce] bg-[#ecfdf3] text-[#087443]'
+                : 'border-[#ffc9d2] bg-[#fff1f3] text-[#c8102e]'
+        );
+    }
+
+    async function saveCompanyJob(status) {
+        const token = localStorage.getItem('onlyfreshers_company_token');
+
+        if (!token) {
+            showPostJobAlert('Please login as company first.');
+            window.setTimeout(() => window.location.href = '/company/login', 900);
+            return;
+        }
+
+        const payload = {
+            title: document.getElementById('jobTitle').value || 'Untitled Job',
+            description: document.getElementById('description').value || 'Job description not added.',
+            required_skills: getSkills().join(', '),
+            qualification: document.getElementById('experience').value || 'Fresher',
+            location: document.getElementById('location').value || 'Not added',
+            salary: 'Not disclosed',
+            job_type: document.getElementById('employmentType').value || 'Full Time',
+            openings: 1,
+            hiring_mode: 'direct',
+            application_last_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+            status: status === 'Active' ? 'active' : 'draft',
+        };
+
+        try {
+            const response = await fetch('/api/company/jobs', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+            const result = await response.json();
+
+            if (!response.ok || result.success === false) {
+                throw new Error(result.message || 'Job save nahi ho payi.');
+            }
+
+            showPostJobAlert(result.message || 'Job saved successfully.', 'success');
+            window.setTimeout(() => window.location.href = '/company/jobs', 700);
+        } catch (error) {
+            showPostJobAlert(error.message);
+        }
+    }
+
+    function saveCompanyJobLocal(status) {
         const jobs = JSON.parse(localStorage.getItem('companyJobs') || '[]');
         const today = new Date();
         const dateText = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });

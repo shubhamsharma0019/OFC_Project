@@ -440,6 +440,12 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 const payload = await response.json();
                 state.jobs = payload.data?.jobs || [];
                 buildFilters();
+                const initialSearch = new URLSearchParams(window.location.search).get('search') || '';
+                if (initialSearch) {
+                    $('[data-search]').value = initialSearch;
+                    const headerSearch = document.querySelector('[data-global-search]') || document.querySelector('.search-top input');
+                    if (headerSearch) headerSearch.value = initialSearch;
+                }
                 applyFilters();
             } catch (error) {
                 $('[data-job-list]').innerHTML = '<div class="empty">Jobs load nahi ho pa rahe. Backend API check karein.</div>';
