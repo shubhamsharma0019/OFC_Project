@@ -1,3 +1,4 @@
+
 @php
     $user = $user ?? ['name' => 'Ananya Gupta', 'avatar' => '/student.svg', 'notifications' => 3];
     $menuItems = $menuItems ?? [
