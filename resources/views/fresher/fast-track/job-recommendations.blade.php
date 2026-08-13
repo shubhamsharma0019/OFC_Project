@@ -48,11 +48,11 @@
                 </article>
 
                 <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                    <span class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">JR</span>
+                    <span class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]"><svg viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-3 3 2 5-7"></path></svg></span>
                     <h2 class="mb-2 text-base font-bold text-[#061942]">Recommendation Match</h2>
                     <p id="recommendationText" class="mb-5 text-sm leading-6 text-[#334b83]">Recommendations are based on your assessment track, course skills and active Fast Track jobs.</p>
                     <div class="grid gap-3 text-sm font-medium text-[#061942]">
-                        <div class="flex items-center justify-between"><span>Fast Track Jobs</span><strong id="fastTrackCount">0</strong></div>
+                        <div class="flex items-center justify-between"><span id="jobsCountLabel">Fast Track Jobs</span><strong id="fastTrackCount">0</strong></div>
                         <div class="flex items-center justify-between"><span>Applied</span><strong id="appliedCount">0</strong></div>
                         <div class="flex items-center justify-between"><span>Saved</span><strong id="savedCount">0</strong></div>
                     </div>
@@ -74,6 +74,7 @@
     const savedJobsList = document.getElementById('savedJobsList');
     const savedViewButton = document.getElementById('savedViewButton');
     const recommendationText = document.getElementById('recommendationText');
+    const jobsCountLabel = document.getElementById('jobsCountLabel');
     const fastTrackCount = document.getElementById('fastTrackCount');
     const appliedCount = document.getElementById('appliedCount');
     const savedCount = document.getElementById('savedCount');
@@ -83,8 +84,13 @@
     let applications = [];
     let profileSkills = [];
     let recommendedTrack = '';
+    let hasCertificate = false;
+    let usedAllJobsFallback = false;
     let activeTab = 'recommended';
     let savedJobIds = new Set(readSavedJobIds());
+    const jobIcons = {
+        company: '<svg viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-3"></path><path d="M9 9h.01M9 13h.01M9 17h.01M15 13h.01M15 17h.01"></path></svg>',
+    };
 
     function readSavedJobIds() {
         try {
@@ -186,7 +192,7 @@
     function tabEmptyState() {
         if (activeTab === 'saved') return FastTrack.emptyState('No saved jobs yet', 'Save jobs from recommendations to review them later.', '', '');
         if (activeTab === 'applied') return FastTrack.emptyState('No applications yet', 'Apply to a Fast Track job to track it here.', '', '');
-        return FastTrack.emptyState('No Fast Track jobs found', 'Fast Track eligible jobs will appear here after companies publish them.', '/fast-track/courses', 'Explore Courses');
+        return FastTrack.emptyState('No jobs found', hasCertificate ? 'No active jobs are available right now. Please check again after companies publish openings.' : 'Complete your certificate to unlock broader job recommendations.', hasCertificate ? '' : '/fast-track/certificate', hasCertificate ? '' : 'View Certificate');
     }
 
     function renderTabs() {
@@ -212,7 +218,7 @@
         const description = job.description || job.qualification || 'Fast Track role for freshers.';
 
         return `<article class="job-card grid gap-4 rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:grid-cols-[82px_minmax(0,1fr)_auto_38px] lg:items-center">
-            <span class="grid h-[76px] w-[76px] place-items-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-sm font-black text-[#075fe4]">${FastTrack.initials(companyName(job))}</span>
+            <span class="grid h-[76px] w-[76px] shrink-0 place-items-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-[#075fe4] [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${jobIcons.company}</span>
             <div class="min-w-0">
                 <h2 class="mb-2 text-base font-bold text-[#061942]">${FastTrack.esc(job.title || 'Fast Track Role')}</h2>
                 <p class="mb-2 text-sm font-medium text-[#334b83]">${FastTrack.esc(companyName(job))} <strong class="text-[#075fe4]">Verified</strong></p>
@@ -241,7 +247,7 @@
     function renderSavedSidebar() {
         const savedJobs = jobs.filter((job) => savedJobIds.has(String(job.id))).slice(0, 4);
         savedJobsList.innerHTML = savedJobs.length ? savedJobs.map((job) => `<div class="grid grid-cols-[54px_minmax(0,1fr)_34px] items-center gap-3">
-            <span class="grid h-[54px] w-[54px] place-items-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-[11px] font-black text-[#075fe4]">${FastTrack.initials(companyName(job))}</span>
+            <span class="grid h-[54px] w-[54px] shrink-0 place-items-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-[#075fe4] [&>svg]:h-6 [&>svg]:w-6 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${jobIcons.company}</span>
             <div class="min-w-0">
                 <h3 class="mb-1 truncate text-sm font-bold text-[#061942]">${FastTrack.esc(job.title || 'Fast Track Role')}</h3>
                 <p class="text-xs leading-5 text-[#334b83]">${FastTrack.esc(companyName(job))}<br>${FastTrack.esc(job.location || '')}</p>
@@ -251,11 +257,14 @@
     }
 
     function renderCounts() {
+        jobsCountLabel.textContent = usedAllJobsFallback ? 'Active Jobs' : 'Fast Track Jobs';
         fastTrackCount.textContent = jobs.length;
         appliedCount.textContent = applications.length;
         savedCount.textContent = savedJobIds.size;
         const skillsText = profileSkills.length ? profileSkills.slice(0, 4).join(', ') : 'your profile skills';
-        recommendationText.textContent = recommendedTrack
+        recommendationText.textContent = usedAllJobsFallback
+            ? `Certificate completed. Showing active jobs sorted using ${skillsText}.`
+            : recommendedTrack
             ? `Recommended track: ${recommendedTrack}. Jobs are sorted using ${skillsText}.`
             : `Jobs are sorted using ${skillsText}, applications and active Fast Track openings.`;
     }
@@ -303,10 +312,17 @@
     function loadData() {
         Promise.all([
             FastTrack.getJson('/api/jobs?hiring_mode=fast_track'),
+            FastTrack.getJson('/api/jobs').catch(() => ({ data: { jobs: [] } })),
             FastTrack.getJson('/api/fresher/applications').catch(() => ({ data: { applications: [] } })),
             FastTrack.getJson('/api/fresher/dashboard').catch(() => ({ data: {} })),
-        ]).then(function ([jobsResult, applicationsResult, dashboardResult]) {
-            jobs = FastTrack.apiData(jobsResult, 'jobs') || [];
+            FastTrack.getJson('/api/fresher/certificates').catch(() => ({ data: { certificates: [] } })),
+        ]).then(function ([fastTrackJobsResult, allJobsResult, applicationsResult, dashboardResult, certificatesResult]) {
+            const fastTrackJobs = FastTrack.apiData(fastTrackJobsResult, 'jobs') || [];
+            const allJobs = FastTrack.apiData(allJobsResult, 'jobs') || [];
+            const certificates = FastTrack.apiData(certificatesResult, 'certificates') || [];
+            hasCertificate = certificates.length > 0;
+            usedAllJobsFallback = hasCertificate && fastTrackJobs.length === 0 && allJobs.length > 0;
+            jobs = usedAllJobsFallback ? allJobs : fastTrackJobs;
             applications = FastTrack.apiData(applicationsResult, 'applications') || [];
             const dashboard = FastTrack.apiData(dashboardResult) || {};
             const profile = dashboard.profile || {};
