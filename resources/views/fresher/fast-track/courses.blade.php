@@ -5,10 +5,16 @@
 @php
     $activePage = 'courses';
     $benefits = [
-        ['title' => 'Job Ready Faster', 'text' => 'Industry-focused curriculum designed to get you job-ready quickly.', 'icon' => 'JR'],
-        ['title' => 'Industry Certified', 'text' => 'Earn recognized certificates that boost your career opportunities.', 'icon' => 'IC'],
-        ['title' => 'Expert Mentors', 'text' => 'Learn from industry experts and get guidance at every step.', 'icon' => 'EM'],
-        ['title' => 'Career Support', 'text' => 'Get placement assistance and interview preparation support.', 'icon' => 'CS'],
+        ['title' => 'Job Ready Faster', 'text' => 'Industry-focused curriculum designed to get you job-ready quickly.', 'icon' => 'briefcase'],
+        ['title' => 'Industry Certified', 'text' => 'Earn recognized certificates that boost your career opportunities.', 'icon' => 'certificate'],
+        ['title' => 'Expert Mentors', 'text' => 'Learn from industry experts and get guidance at every step.', 'icon' => 'mentor'],
+        ['title' => 'Career Support', 'text' => 'Get placement assistance and interview preparation support.', 'icon' => 'support'],
+    ];
+    $benefitIcons = [
+        'briefcase' => '<svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="2"></rect><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path><path d="M4 13h16"></path></svg>',
+        'certificate' => '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-3-6 3Z"></path><path d="M9 8h6M9 12h6"></path></svg>',
+        'mentor' => '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3 19c0-3 2.5-5 6-5"></path><path d="M16 11l2 2 3-4"></path><path d="M14 19h7"></path></svg>',
+        'support' => '<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 16 0"></path><path d="M4 12v4a2 2 0 0 0 2 2h1v-7H6a2 2 0 0 0-2 2Z"></path><path d="M20 12v4a2 2 0 0 1-2 2h-1v-7h1a2 2 0 0 1 2 2Z"></path><path d="M13 20h3a4 4 0 0 0 4-4"></path></svg>',
     ];
 @endphp
 
@@ -47,7 +53,7 @@
             <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
                 @foreach ($benefits as $benefit)
                     <div class="grid grid-cols-[54px_minmax(0,1fr)] items-center gap-4 xl:border-r xl:border-[#dce7f8] xl:pr-5 xl:last:border-r-0">
-                        <span class="grid h-[52px] w-[52px] place-items-center rounded-full bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">{{ $benefit['icon'] }}</span>
+                        <span class="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-6 [&>svg]:w-6 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">{!! $benefitIcons[$benefit['icon']] !!}</span>
                         <div>
                             <h3 class="mb-2 text-sm font-bold text-[#061942]">{{ $benefit['title'] }}</h3>
                             <p class="text-xs leading-5 text-[#536484]">{{ $benefit['text'] }}</p>

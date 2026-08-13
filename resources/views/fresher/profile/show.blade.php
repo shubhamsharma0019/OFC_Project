@@ -90,11 +90,25 @@
     }
     function asset(path) { return path ? '/storage/' + String(path).replace(/^\/?storage\//, '') : ''; }
     function splitSkills(value) { return String(value || '').split(/,|\n/).map((item) => item.trim()).filter(Boolean); }
+    const profileIcons = {
+        education: '<svg viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5Z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path></svg>',
+        skills: '<svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 7.5 8 8 4.5-.5 8-3 8-8V7l-8-4Z"></path><path d="m9 12 2 2 4-5"></path></svg>',
+        resume: '<svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"></path><path d="M14 3v6h6"></path><path d="M8 13h8M8 17h5"></path></svg>',
+        completion: '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>',
+        summary: '<svg viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-3 3 2 5-7"></path></svg>',
+        applications: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 5V3h8v2"></path><path d="M8 11h8M8 15h5"></path></svg>',
+        shortlisted: '<svg viewBox="0 0 24 24"><path d="m9 11 2 2 4-5"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>',
+        training: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m10 9 5 3-5 3Z"></path></svg>',
+        certificate: '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-3-6 3Z"></path><path d="M9 8h6M9 12h6"></path></svg>',
+    };
+    function profileIcon(name, size = 'h-9 w-9') {
+        return `<span class="grid ${size} shrink-0 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-5 [&>svg]:w-5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${profileIcons[name] || profileIcons.summary}</span>`;
+    }
     function infoRow(label, value) {
         return `<div class="grid gap-1 border-b border-[#e5edf8] pb-3 last:border-b-0 sm:grid-cols-[110px_minmax(0,1fr)]"><span class="text-xs font-bold uppercase tracking-wide text-[#536484]">${FastTrack.esc(label)}</span><b class="min-w-0 break-words text-sm font-bold text-[#061942]">${FastTrack.esc(value || '-')}</b></div>`;
     }
     function summaryItem(icon, label, value) {
-        return `<div class="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-3 text-sm"><span class="grid h-[34px] w-[34px] place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">${icon}</span><span class="font-semibold text-[#24344f]">${FastTrack.esc(label)}</span><strong class="font-bold text-[#061942]">${FastTrack.esc(value)}</strong></div>`;
+        return `<div class="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-3 text-sm">${profileIcon(icon, 'h-[34px] w-[34px]')}<span class="font-semibold text-[#24344f]">${FastTrack.esc(label)}</span><strong class="font-bold text-[#061942]">${FastTrack.esc(value)}</strong></div>`;
     }
     function fillForm() {
         profileForm.elements.phone.value = currentProfile.phone || currentUser.mobile || '';
@@ -132,32 +146,32 @@
         profileView.innerHTML = `
             <div class="grid gap-6 lg:grid-cols-2">
                 <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:col-span-2">
-                    <div class="mb-4 flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">ED</span><h3 class="text-lg font-bold text-[#061942]">Education</h3></div>
+                    <div class="mb-4 flex items-center gap-3">${profileIcon('education')}<h3 class="text-lg font-bold text-[#061942]">Education</h3></div>
                     <p class="text-sm leading-7 text-[#24344f]">${FastTrack.esc([currentProfile.qualification, currentProfile.college_name, currentProfile.passing_year].filter(Boolean).join(' - ') || 'Education details not added yet.')}</p>
                 </article>
                 <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                    <div class="mb-4 flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">SK</span><h3 class="text-lg font-bold text-[#061942]">Skills</h3></div>
+                    <div class="mb-4 flex items-center gap-3">${profileIcon('skills')}<h3 class="text-lg font-bold text-[#061942]">Skills</h3></div>
                     <div class="flex flex-wrap gap-3">${skills.length ? skills.map((skill) => `<span class="rounded-lg bg-[#f0f4ff] px-4 py-2.5 text-sm font-semibold text-[#075fe4]">${FastTrack.esc(skill)}</span>`).join('') : '<p class="text-sm text-[#455a82]">No skills added yet.</p>'}</div>
                 </article>
                 <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                    <div class="mb-4 flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">RS</span><h3 class="text-lg font-bold text-[#061942]">Resume</h3></div>
+                    <div class="mb-4 flex items-center gap-3">${profileIcon('resume')}<h3 class="text-lg font-bold text-[#061942]">Resume</h3></div>
                     ${resume ? `<a class="inline-flex h-[42px] w-full items-center justify-center rounded-lg border border-[#075fe4] bg-white text-sm font-bold text-[#075fe4] transition hover:bg-[#eff5ff]" href="${FastTrack.esc(resume)}" target="_blank" rel="noopener">View / Download Resume</a>` : '<p class="text-sm text-[#455a82]">Resume not uploaded yet.</p>'}
                 </article>
             </div>
             <div class="mt-6 grid gap-6 lg:grid-cols-[1.25fr_1fr]">
                 <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                    <div class="mb-5 flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">${completion}</span><h3 class="text-lg font-bold text-[#061942]">Profile Completion</h3></div>
+                    <div class="mb-5 flex items-center gap-3">${profileIcon('completion')}<h3 class="text-lg font-bold text-[#061942]">Profile Completion</h3></div>
                     <div class="mb-3 text-[34px] font-bold leading-none text-[#061942]">${completion}%</div>
                     <div class="mb-4 h-3 overflow-hidden rounded-full bg-[#e9edf5]"><span class="block h-full rounded-full bg-[#19a85b]" style="width:${completion}%;"></span></div>
                     <p class="text-sm leading-6 text-[#455a82]">Complete your profile to increase your chances of getting hired.</p>
                 </article>
                 <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                    <div class="mb-5 flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">SM</span><h3 class="text-lg font-bold text-[#061942]">Profile Summary</h3></div>
+                    <div class="mb-5 flex items-center gap-3">${profileIcon('summary')}<h3 class="text-lg font-bold text-[#061942]">Profile Summary</h3></div>
                     <div class="grid gap-4">
-                        ${summaryItem('AP', 'Applications', dashboardStats.total_applications || 0)}
-                        ${summaryItem('SH', 'Shortlisted', dashboardStats.shortlisted_applications || 0)}
-                        ${summaryItem('TE', 'Training Enrolled', dashboardStats.total_course_enrollments || 0)}
-                        ${summaryItem('CE', 'Certificates', dashboardStats.total_certificates || 0)}
+                        ${summaryItem('applications', 'Applications', dashboardStats.total_applications || 0)}
+                        ${summaryItem('shortlisted', 'Shortlisted', dashboardStats.shortlisted_applications || 0)}
+                        ${summaryItem('training', 'Training Enrolled', dashboardStats.total_course_enrollments || 0)}
+                        ${summaryItem('certificate', 'Certificates', dashboardStats.total_certificates || 0)}
                     </div>
                 </article>
             </div>`;

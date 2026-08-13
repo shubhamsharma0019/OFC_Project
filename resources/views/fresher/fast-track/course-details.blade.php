@@ -62,6 +62,17 @@
     const selectedCourseId = FastTrack.selectedCourseId();
     let currentCourse = null;
     let currentEnrollment = null;
+    const detailIcons = {
+        course: '<svg viewBox="0 0 24 24"><path d="M4 5h7a3 3 0 0 1 3 3v12a3 3 0 0 0-3-3H4Z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v12a3 3 0 0 1 3-3h7Z"></path></svg>',
+        institute: '<svg viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M5 21V8l7-4 7 4v13"></path><path d="M9 21v-6h6v6"></path><path d="M9 10h.01M12 10h.01M15 10h.01"></path></svg>',
+        mode: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M8 21h8"></path><path d="M12 17v4"></path></svg>',
+        support: '<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 16 0"></path><path d="M4 12v4a2 2 0 0 0 2 2h1v-7H6a2 2 0 0 0-2 2Z"></path><path d="M20 12v4a2 2 0 0 1-2 2h-1v-7h1a2 2 0 0 1 2 2Z"></path><path d="M13 20h3a4 4 0 0 0 4-4"></path></svg>',
+        certificate: '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-3-6 3Z"></path><path d="M9 8h6M9 12h6"></path></svg>',
+    };
+
+    function detailIcon(name, size = 'h-10 w-10') {
+        return `<span class="grid ${size} shrink-0 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-5 [&>svg]:w-5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${detailIcons[name] || detailIcons.course}</span>`;
+    }
 
     document.querySelectorAll('.course-tab').forEach(function (tab) {
         tab.addEventListener('click', function () {
@@ -109,17 +120,17 @@
         document.querySelector('[data-panel="faqs"]').innerHTML = '<h3 class="mb-3 text-base font-bold text-[#061942]">FAQs</h3><p class="text-sm leading-7 text-[#061942]">Enroll in the course, complete payment, track training progress, then unlock final assessment and certificate.</p>';
 
         courseHighlights.innerHTML = [
-            ['IM', 'Approved Training Partner', FastTrack.partnerName(course)],
-            ['LS', 'Learning Mode', FastTrack.courseMode(course)],
-            ['PA', 'Career Support', 'Fast Track job-ready training'],
-            ['IC', 'Certificate Path', 'Training + final assessment'],
-        ].map((item) => `<div class="grid grid-cols-[40px_minmax(0,1fr)] gap-4 border-b border-[#e6eef8] py-4 last:border-b-0"><span class="grid h-10 w-10 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">${item[0]}</span><div><h3 class="mb-1.5 text-sm font-bold text-[#061942]">${FastTrack.esc(item[1])}</h3><p class="text-xs leading-5 text-[#536484]">${FastTrack.esc(item[2])}</p></div></div>`).join('');
+            ['institute', 'Approved Training Partner', FastTrack.partnerName(course)],
+            ['mode', 'Learning Mode', FastTrack.courseMode(course)],
+            ['support', 'Career Support', 'Fast Track job-ready training'],
+            ['certificate', 'Certificate Path', 'Training + final assessment'],
+        ].map((item) => `<div class="grid grid-cols-[40px_minmax(0,1fr)] gap-4 border-b border-[#e6eef8] py-4 last:border-b-0">${detailIcon(item[0])}<div><h3 class="mb-1.5 text-sm font-bold text-[#061942]">${FastTrack.esc(item[1])}</h3><p class="text-xs leading-5 text-[#536484]">${FastTrack.esc(item[2])}</p></div></div>`).join('');
     }
     function renderHero(course) {
         const title = FastTrack.courseName(course);
         const status = enrollmentStatus();
         courseDetailsHero.innerHTML = `
-            <div class="grid h-[126px] w-[126px] place-items-center rounded-lg bg-[#071743] text-3xl font-black text-white">${FastTrack.initials(title)}</div>
+            <div class="grid h-[126px] w-[126px] place-items-center rounded-lg bg-[#071743] text-white [&>svg]:h-16 [&>svg]:w-16 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${detailIcons.course}</div>
             <div class="min-w-0">
                 <h2 class="mb-3 flex flex-wrap items-center gap-2 text-xl font-bold text-[#061942]">
                     <span>${FastTrack.esc(title)}</span>

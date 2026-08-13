@@ -28,12 +28,12 @@
 
         <div class="grid gap-5 xl:grid-cols-[1.05fr_1fr]">
             <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                <h2 class="mb-6 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">OP</span> Overall Progress</h2>
+                <h2 class="mb-6 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]"><svg viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-3 3 2 5-7"></path></svg></span> Overall Progress</h2>
                 <div id="overallTrainingProgress" class="text-sm text-[#334b83]">Loading overall progress...</div>
             </article>
 
             <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                <h2 class="mb-5 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">RA</span> Recent Activity <a class="ml-auto text-xs font-bold text-[#075fe4]" href="/fast-track/training-progress">View All</a></h2>
+                <h2 class="mb-5 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"></path><circle cx="12" cy="12" r="9"></circle></svg></span> Recent Activity <a class="ml-auto text-xs font-bold text-[#075fe4]" href="/fast-track/training-progress">View All</a></h2>
                 <div id="trainingActivity"><p class="text-sm text-[#334b83]">Loading activity...</p></div>
             </article>
         </div>
@@ -47,6 +47,16 @@
     const trainingActivity = document.getElementById('trainingActivity');
     let currentFilter = 'all';
     let trainingEnrollments = [];
+    const trainingIcons = {
+        course: '<svg viewBox="0 0 24 24"><path d="M4 5h7a3 3 0 0 1 3 3v12a3 3 0 0 0-3-3H4Z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v12a3 3 0 0 1 3-3h7Z"></path></svg>',
+        details: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>',
+        training: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m10 9 5 3-5 3Z"></path></svg>',
+        complete: '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>',
+    };
+
+    function trainingIcon(name, size = 'h-8 w-8') {
+        return `<span class="grid ${size} shrink-0 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${trainingIcons[name] || trainingIcons.training}</span>`;
+    }
 
     function isPaid(enrollment) {
         return enrollment.payment_status === 'paid' || enrollment.enrollment_status === 'enrolled' || enrollment.enrollment_status === 'completed';
@@ -81,7 +91,7 @@
                     <div class="relative h-[135px] p-4" style="background:linear-gradient(135deg, ${index % 3 === 0 ? '#24249c' : index % 3 === 1 ? '#6041db' : '#0a8f9d'}, #dff5ff);">
                         <span class="inline-flex rounded-lg ${badgeClass(enrollment, progress)} px-3 py-1.5 text-xs font-bold">${paid ? FastTrack.statusText(enrollment.training_status || 'not_started') : 'Payment Pending'}</span>
                         <span class="float-right rounded-full bg-white px-2.5 py-2 text-xs font-black text-[#075fe4]">${progress}%</span>
-                        <h4 class="absolute bottom-7 left-5 text-4xl font-black text-white">${FastTrack.initials(title)}</h4>
+                        <div class="absolute bottom-6 left-5 grid h-14 w-14 place-items-center rounded-xl bg-white/15 text-white backdrop-blur-sm [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${trainingIcons.course}</div>
                     </div>
                     <div class="p-5">
                         <h3 class="mb-2 text-base font-bold text-[#061942]">${FastTrack.esc(title)}</h3>
@@ -90,7 +100,7 @@
                         <small class="text-xs font-medium text-[#334b83]">${progress}% Completed</small>
                         <div class="mt-5 grid grid-cols-[1fr_44px] gap-3">
                             <a class="inline-flex h-[38px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold ${paid ? 'bg-[#075fe4] text-white' : 'bg-white text-[#075fe4]'}" href="${paid ? '/fast-track/training-progress' : '/fast-track/course-details?course=' + encodeURIComponent(course.id || '')}">${paid ? 'Continue Learning' : 'Pay Now'}</a>
-                            <a class="grid h-[38px] place-items-center rounded-lg border border-[#dce7f8] bg-white text-xs font-black text-[#061942] hover:bg-[#f5f8ff]" href="/fast-track/course-details?course=${encodeURIComponent(course.id || '')}">DT</a>
+                            <a class="grid h-[38px] place-items-center rounded-lg border border-[#dce7f8] bg-white text-[#061942] hover:bg-[#f5f8ff] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]" href="/fast-track/course-details?course=${encodeURIComponent(course.id || '')}" aria-label="Course details">${trainingIcons.details}</a>
                         </div>
                     </div>
                 </article>`;
@@ -126,7 +136,7 @@
             const progress = FastTrack.progress(enrollment);
             const title = progress >= 100 ? 'Training completed' : (progress > 0 ? 'Training progress updated' : 'Course enrollment created');
             return `<div class="grid grid-cols-[38px_minmax(0,1fr)] items-center gap-4 border-b border-[#e6eef8] py-3 last:border-b-0 sm:grid-cols-[38px_minmax(0,1fr)_auto]">
-                <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">${progress >= 100 ? 'OK' : 'TR'}</span>
+                ${trainingIcon(progress >= 100 ? 'complete' : 'training')}
                 <div><h3 class="mb-1 text-sm font-bold text-[#061942]">${FastTrack.esc(title)}</h3><p class="text-xs text-[#536484]">${FastTrack.esc(FastTrack.courseName(course))}</p></div>
                 <time class="col-start-2 text-xs text-[#536484] sm:col-start-auto">${FastTrack.date(enrollment.updated_at || enrollment.enrollment_date)}</time>
             </div>`;

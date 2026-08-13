@@ -31,7 +31,7 @@
 
         <article class="flex flex-col gap-5 rounded-lg border border-[#cfe0ff] bg-[#eaf2ff] p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-center gap-5">
-                <span class="grid h-[62px] w-[62px] shrink-0 place-items-center rounded-xl bg-white text-xl font-black text-[#075fe4]">CT</span>
+                <span class="grid h-[62px] w-[62px] shrink-0 place-items-center rounded-xl bg-white text-[#075fe4] [&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-3-6 3Z"></path><path d="M9 8h6M9 12h6"></path></svg></span>
                 <div>
                     <h3 class="mb-2 text-lg font-bold text-[#061942]">Complete more courses to earn more certificates!</h3>
                     <p class="text-sm text-[#334b83]">Enhance your skills and boost your career opportunities.</p>
@@ -51,6 +51,20 @@
     let certificateRows = [];
     let enrollmentRows = [];
     let activeFilter = 'earned';
+    const certificateIcons = {
+        certificate: '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-3-6 3Z"></path><path d="M9 8h6M9 12h6"></path></svg>',
+        completed: '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>',
+        latest: '<svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"></path><circle cx="12" cy="12" r="9"></circle></svg>',
+        progress: '<svg viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-3 3 2 5-7"></path></svg>',
+        date: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M8 2v4M16 2v4M3 10h18"></path></svg>',
+        id: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M8 10h8M8 14h5"></path></svg>',
+        score: '<svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 7.5 8 8 4.5-.5 8-3 8-8V7l-8-4Z"></path><path d="m9 12 2 2 4-5"></path></svg>',
+        seal: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"></circle><path d="M8.5 13 7 22l5-3 5 3-1.5-9"></path></svg>',
+    };
+
+    function certificateIcon(name, size = 'h-[54px] w-[54px]') {
+        return `<span class="grid ${size} shrink-0 place-items-center rounded-xl bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-5 [&>svg]:w-5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${certificateIcons[name] || certificateIcons.certificate}</span>`;
+    }
 
     function certificateCourse(certificate) {
         return certificate.course || certificate.course_enrollment?.course || certificate.enrollment?.course || {};
@@ -62,7 +76,7 @@
 
     function renderStatCard(icon, label, value, hint) {
         return `<article class="grid grid-cols-[60px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-            <span class="grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">${FastTrack.esc(icon)}</span>
+            ${certificateIcon(icon)}
             <div class="min-w-0">
                 <h2 class="mb-1 text-2xl font-bold text-[#061942]">${FastTrack.esc(value)}</h2>
                 <p class="mb-1 text-sm font-medium text-[#334b83]">${FastTrack.esc(label)}</p>
@@ -79,10 +93,10 @@
         const latestCertificate = certificateRows[0] ? FastTrack.date(certificateRows[0].issued_at || certificateRows[0].created_at) : '-';
 
         certificateStats.innerHTML = [
-            renderStatCard('CE', 'Certificates Earned', certificateRows.length, 'Generated after final assessment'),
-            renderStatCard('CC', 'Courses Completed', completedEnrollments, 'Fast Track completions'),
-            renderStatCard('LC', 'Latest Certificate', latestCertificate, 'Most recent issue date'),
-            renderStatCard('OP', 'Overall Progress', progressAverage + '%', 'Across enrolled courses'),
+            renderStatCard('certificate', 'Certificates Earned', certificateRows.length, 'Generated after final assessment'),
+            renderStatCard('completed', 'Courses Completed', completedEnrollments, 'Fast Track completions'),
+            renderStatCard('latest', 'Latest Certificate', latestCertificate, 'Most recent issue date'),
+            renderStatCard('progress', 'Overall Progress', progressAverage + '%', 'Across enrolled courses'),
         ].join('');
     }
 
@@ -114,7 +128,7 @@
                 <p class="text-sm text-[#334b83]">has successfully completed the course</p>
                 <div class="my-3 text-lg font-black text-[#061942]">${FastTrack.esc(courseName)}</div>
                 <p class="text-sm text-[#334b83]">and has demonstrated the required skills and knowledge.</p>
-                <div class="mx-auto mt-5 grid h-[62px] w-[62px] place-items-center rounded-full bg-[#d7a63b] text-lg font-black text-white">OF</div>
+                <div class="mx-auto mt-5 grid h-[62px] w-[62px] place-items-center rounded-full bg-[#d7a63b] text-white [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${certificateIcons.seal}</div>
                 <div class="mt-7 flex justify-around gap-4 text-xs text-[#334b83]"><span>${FastTrack.date(issueDate)}<br>Date</span><span>Authorized Signatory<br>OnlyFreshers</span></div>
             </div>
             <div class="p-5">
@@ -122,10 +136,10 @@
                 <h2 class="mt-5 text-[22px] font-bold text-[#061942]">${FastTrack.esc(courseName)}</h2>
                 <p class="mt-2 max-w-xl text-sm leading-7 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
                 <div class="my-6 grid gap-4">
-                    ${infoRow('DE', 'Date Earned', FastTrack.date(issueDate))}
-                    ${infoRow('CI', 'Certificate ID', certificate.certificate_number || certificate.id)}
-                    ${infoRow('SC', 'Final Score', score === '-' ? '-' : score + '%')}
-                    ${infoRow('PR', 'Training Progress', (progress.progress_percentage || 100) + '%')}
+                    ${infoRow('date', 'Date Earned', FastTrack.date(issueDate))}
+                    ${infoRow('id', 'Certificate ID', certificate.certificate_number || certificate.id)}
+                    ${infoRow('score', 'Final Score', score === '-' ? '-' : score + '%')}
+                    ${infoRow('progress', 'Training Progress', (progress.progress_percentage || 100) + '%')}
                 </div>
                 <div class="grid gap-3 sm:grid-cols-2">
                     <button class="download-certificate h-[42px] rounded-md bg-[#075fe4] px-5 text-sm font-bold text-white hover:bg-[#064fc0]" type="button" data-certificate-id="${FastTrack.esc(certificate.id)}">Download</button>
@@ -137,7 +151,7 @@
 
     function infoRow(icon, label, value) {
         return `<div class="grid grid-cols-[28px_150px_minmax(0,1fr)] items-center gap-3 text-sm text-[#334b83] max-sm:grid-cols-[28px_minmax(0,1fr)]">
-            <span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">${FastTrack.esc(icon)}</span>
+            ${certificateIcon(icon, 'h-7 w-7 rounded-lg')}
             <span>${FastTrack.esc(label)}</span>
             <strong class="break-words font-semibold text-[#061942] max-sm:col-start-2">${FastTrack.esc(value || '-')}</strong>
         </div>`;

@@ -37,10 +37,10 @@
                 @endif
             </a>
 
-            <nav class="grid min-h-0 shrink gap-1 overflow-hidden px-3.5 py-2 content-start">
+            <nav class="grid min-h-0 shrink gap-2 overflow-hidden px-3.5 py-3 content-start">
                 @foreach($menuItems as $item)
-                    <a class="relative flex min-h-[33px] items-center gap-[11px] rounded-lg px-[11px] py-1 text-[13px] font-bold leading-[1.18] {{ $activePage === $item['key'] ? 'bg-[#f2eaff] text-[#5b20e6]' : 'text-[#26375f] hover:bg-[#f8f4ff] hover:text-[#5b20e6]' }}" href="{{ $item['url'] }}">
-                        <span class="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-lg bg-[#f3ecff] text-[9px] font-black text-[#5b20e6] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">
+                    <a class="relative flex min-h-[42px] items-center gap-3 rounded-lg px-3 py-1.5 text-[13px] font-bold leading-[1.18] {{ $activePage === $item['key'] ? 'bg-[#f2eaff] text-[#5b20e6]' : 'text-[#26375f] hover:bg-[#f8f4ff] hover:text-[#5b20e6]' }}" href="{{ $item['url'] }}">
+                        <span class="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-lg bg-[#f3ecff] text-[10px] font-black text-[#5b20e6] [&>svg]:h-[18px] [&>svg]:w-[18px] [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">
                             <svg viewBox="0 0 24 24" aria-hidden="true">{!! $item['icon'] !!}</svg>
                         </span>
                         <span class="min-w-0 truncate">{{ $item['title'] }}</span>
@@ -51,17 +51,11 @@
                 @endforeach
             </nav>
 
-            <div class="mt-auto shrink-0 px-3.5 pb-2.5 pt-1">
-                @hasSection('sidebarExtra')
+            @hasSection('sidebarExtra')
+                <div class="mt-auto shrink-0 px-3.5 pb-2.5 pt-1">
                     @yield('sidebarExtra')
-                @else
-                    <div class="overflow-hidden rounded-lg border border-[#eadfff] bg-[linear-gradient(145deg,#fff,#f7f1ff)] px-3 py-2.5">
-                        <h3 class="mb-1.5 text-sm font-medium leading-tight text-[#5b20e6]">Upgrade Your Institute</h3>
-                        <p class="text-xs leading-snug text-[#26375f]">Add more courses and reach thousands of freshers.</p>
-                        <div class="mt-[7px] flex h-[38px] items-center justify-center rounded-lg bg-[linear-gradient(160deg,#efe4ff,#fff)] text-2xl text-[#5b20e6]">TP</div>
-                    </div>
-                @endif
-            </div>
+                </div>
+            @endif
         </aside>
 
         <button class="fixed inset-0 z-[900] hidden border-0 bg-[#07154459] group-[.sidebar-open]:block md:!hidden" type="button" onclick="toggleTrainingSidebar()" aria-label="Close menu"></button>
@@ -102,11 +96,11 @@
         (function guardTrainingPartnerSession() {
             if (window.location.pathname === '/training-partner/login' || window.location.pathname === '/training-partner/register') return;
 
-            const token = localStorage.getItem('ofc_auth_token');
+            const token = localStorage.getItem('ofc_training_partner_token') || localStorage.getItem('ofc_auth_token');
             let user = null;
 
             try {
-                user = JSON.parse(localStorage.getItem('ofc_auth_user') || 'null');
+                user = JSON.parse(localStorage.getItem('ofc_training_partner_user') || localStorage.getItem('ofc_auth_user') || 'null');
             } catch (error) {
                 user = null;
             }
@@ -117,6 +111,9 @@
                 localStorage.removeItem('ofc_training_partner_profile');
                 window.location.href = '/training-partner/login';
             }
+
+            localStorage.setItem('ofc_auth_token', token);
+            localStorage.setItem('ofc_auth_user', JSON.stringify(user));
         })();
 
         function toggleTrainingSidebar() {
@@ -131,7 +128,7 @@
         }
 
         function syncTrainingPartnerChrome(profile = null) {
-            const storedUser = JSON.parse(localStorage.getItem('ofc_auth_user') || 'null');
+            const storedUser = JSON.parse(localStorage.getItem('ofc_training_partner_user') || localStorage.getItem('ofc_auth_user') || 'null');
             const storedProfile = profile || JSON.parse(localStorage.getItem('ofc_training_partner_profile') || 'null');
             const name = storedProfile?.institute_name || storedUser?.name || 'Training Partner';
             const initial = name.split(/\s+/).map((word) => word[0]).join('').slice(0, 2).toUpperCase();
@@ -141,7 +138,7 @@
         }
 
         document.getElementById('trainingPartnerLogout')?.addEventListener('click', async () => {
-            const token = localStorage.getItem('ofc_auth_token');
+            const token = localStorage.getItem('ofc_training_partner_token') || localStorage.getItem('ofc_auth_token');
             if (token) {
                 try {
                     await fetch('/api/auth/logout', {
@@ -155,6 +152,8 @@
             }
             localStorage.removeItem('ofc_auth_token');
             localStorage.removeItem('ofc_auth_user');
+            localStorage.removeItem('ofc_training_partner_token');
+            localStorage.removeItem('ofc_training_partner_user');
             localStorage.removeItem('ofc_training_partner_profile');
             window.location.href = '/training-partner/login';
         });

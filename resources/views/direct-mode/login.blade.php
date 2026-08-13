@@ -1465,32 +1465,10 @@ document.addEventListener(
                     |--------------------------------------------------------------------------
                     */
 
-                    localStorage.setItem(
-                        'ofc_auth_token',
-                        token
-                    );
-
-
-                    localStorage.setItem(
-                        'ofc_auth_user',
-                        JSON.stringify(user)
-                    );
-
-
-                    /*
-                    | Compatibility with old project code
-                    */
-
-                    localStorage.setItem(
-                        'onlyfreshers_token',
-                        token
-                    );
-
-
-                    localStorage.setItem(
-                        'onlyfreshers_user',
-                        JSON.stringify(user)
-                    );
+                    const saveSharedAuth = () => {
+                        localStorage.setItem('ofc_auth_token', token);
+                        localStorage.setItem('ofc_auth_user', JSON.stringify(user));
+                    };
 
 
                     /*
@@ -1503,6 +1481,16 @@ document.addEventListener(
                     ) {
 
                         localStorage.setItem(
+                            'ofc_company_token',
+                            token
+                        );
+
+                        localStorage.setItem(
+                            'ofc_company_user',
+                            JSON.stringify(user)
+                        );
+
+                        localStorage.setItem(
                             'onlyfreshers_company_token',
                             token
                         );
@@ -1512,6 +1500,64 @@ document.addEventListener(
                             'onlyfreshers_company_user',
                             JSON.stringify(user)
                         );
+
+                        saveSharedAuth();
+                    }
+
+
+                    /*
+                    | Fresher-specific compatibility
+                    */
+
+                    if (
+                        user.role ===
+                        'fresher'
+                    ) {
+
+                        localStorage.setItem(
+                            'ofc_fresher_token',
+                            token
+                        );
+
+                        localStorage.setItem(
+                            'ofc_fresher_user',
+                            JSON.stringify(user)
+                        );
+
+                        localStorage.setItem(
+                            'onlyfreshers_token',
+                            token
+                        );
+
+                        localStorage.setItem(
+                            'onlyfreshers_user',
+                            JSON.stringify(user)
+                        );
+
+                        saveSharedAuth();
+                    }
+
+
+                    /*
+                    | Training-partner-specific compatibility
+                    */
+
+                    if (
+                        user.role ===
+                        'training_partner'
+                    ) {
+
+                        localStorage.setItem(
+                            'ofc_training_partner_token',
+                            token
+                        );
+
+                        localStorage.setItem(
+                            'ofc_training_partner_user',
+                            JSON.stringify(user)
+                        );
+
+                        saveSharedAuth();
                     }
 
 

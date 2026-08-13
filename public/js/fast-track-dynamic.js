@@ -1,6 +1,6 @@
 (function () {
-    const tokenKeys = ['ofc_auth_token', 'onlyfreshers_token', 'auth_token', 'token'];
-    const userKeys = ['ofc_auth_user', 'onlyfreshers_user', 'auth_user', 'user'];
+    const tokenKeys = ['onlyfreshers_token', 'ofc_fresher_token', 'ofc_auth_token', 'auth_token', 'token'];
+    const userKeys = ['onlyfreshers_user', 'ofc_fresher_user', 'ofc_auth_user', 'auth_user', 'user'];
 
     function token() {
         for (const key of tokenKeys) {
@@ -74,6 +74,39 @@
         return String(value || 'FT').split(/\s+/).filter(Boolean).map((word) => word[0]).join('').slice(0, 2).toUpperCase() || 'FT';
     }
 
+    function profilePhotoUrl(profile) {
+        const photo = profile && (profile.profile_photo || profile.profilePhoto || profile.photo || profile.avatar);
+        if (!photo) return '';
+        if (/^(https?:)?\/\//.test(photo) || String(photo).startsWith('data:') || String(photo).startsWith('/')) return photo;
+        return '/storage/' + photo;
+    }
+
+    function setAvatar(profile, currentUser) {
+        const avatar = document.getElementById('fastTrackAvatar');
+        if (!avatar) return;
+
+        const name = (currentUser && (currentUser.name || currentUser.full_name || currentUser.email)) || 'Fresher';
+        const photo = profilePhotoUrl(profile);
+        avatar.textContent = initials(name);
+        avatar.title = name;
+
+        if (!photo) {
+            avatar.style.backgroundImage = '';
+            return;
+        }
+
+        const image = new Image();
+        image.onload = function () {
+            avatar.textContent = '';
+            avatar.style.backgroundImage = `url("${photo.replace(/"/g, '\\"')}")`;
+        };
+        image.onerror = function () {
+            avatar.style.backgroundImage = '';
+            avatar.textContent = initials(name);
+        };
+        image.src = photo;
+    }
+
     function course(enrollment) {
         return enrollment && (enrollment.course || enrollment.course_details || enrollment);
     }
@@ -139,6 +172,15 @@
         const name = currentUser.name || currentUser.full_name || currentUser.email;
         const nameEl = document.getElementById('fastTrackStudentName');
         if (name && nameEl) nameEl.textContent = name;
+        setAvatar(null, currentUser);
+
+        getJson('/api/fresher/profile').then((result) => {
+            const data = apiData(result) || {};
+            const freshUser = data.user || currentUser;
+            const freshName = freshUser.name || freshUser.full_name || freshUser.email;
+            if (freshName && nameEl) nameEl.textContent = freshName;
+            setAvatar(data.profile, freshUser);
+        }).catch(() => {});
 
         getJson('/api/notifications/unread-count').then((result) => {
             const count = apiData(result, 'unread_count') ?? apiData(result, 'count') ?? 0;
@@ -164,7 +206,7 @@
     window.FastTrack = {
         token, user, getJson, postJson, esc, money, date, initials, course, courseName, courseText,
         courseDuration, courseMode, partnerName, progress, statusText, selectedCourseId, rememberCourse,
-        emptyState, apiData, enrollments,
+        emptyState, apiData, enrollments, profilePhotoUrl,
     };
 
     setChrome();

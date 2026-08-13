@@ -61,6 +61,16 @@
     const applicationModeFilter = document.getElementById('applicationModeFilter');
     const applicationStatusFilter = document.getElementById('applicationStatusFilter');
     let applicationRows = [];
+    const applicationIcons = {
+        total: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 5V3h8v2"></path><path d="M8 11h8M8 15h5"></path></svg>',
+        applied: '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>',
+        interview: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="12" rx="2"></rect><path d="m17 10 4-2v8l-4-2"></path></svg>',
+        shortlisted: '<svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 7.5 8 8 4.5-.5 8-3 8-8V7l-8-4Z"></path><path d="m9 12 2 2 4-5"></path></svg>',
+    };
+
+    function applicationIcon(name) {
+        return `<span class="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-xl bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-5 [&>svg]:w-5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${applicationIcons[name] || applicationIcons.total}</span>`;
+    }
 
     function companyName(application) {
         const job = application.job || {};
@@ -101,7 +111,7 @@
 
     function statCard(icon, label, value, hint) {
         return `<article class="grid grid-cols-[58px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-            <span class="grid h-[52px] w-[52px] place-items-center rounded-xl bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">${FastTrack.esc(icon)}</span>
+            ${applicationIcon(icon)}
             <div class="min-w-0">
                 <h2 class="mb-1 text-2xl font-bold text-[#061942]">${FastTrack.esc(value)}</h2>
                 <p class="mb-1 text-sm font-medium text-[#334b83]">${FastTrack.esc(label)}</p>
@@ -113,10 +123,10 @@
     function renderStats() {
         const statuses = applicationRows.map(applicationStatus);
         applicationStats.innerHTML = [
-            statCard('TA', 'Total Applications', applicationRows.length, 'All submitted jobs'),
-            statCard('AP', 'Applied', statuses.filter((status) => status === 'applied').length, 'Waiting for review'),
-            statCard('IN', 'Interviews', statuses.filter((status) => String(status).includes('interview')).length, 'Interview stage'),
-            statCard('SH', 'Shortlisted', statuses.filter((status) => String(status).includes('shortlist')).length, 'Company shortlisted'),
+            statCard('total', 'Total Applications', applicationRows.length, 'All submitted jobs'),
+            statCard('applied', 'Applied', statuses.filter((status) => status === 'applied').length, 'Waiting for review'),
+            statCard('interview', 'Interviews', statuses.filter((status) => String(status).includes('interview')).length, 'Interview stage'),
+            statCard('shortlisted', 'Shortlisted', statuses.filter((status) => String(status).includes('shortlist')).length, 'Company shortlisted'),
         ].join('');
     }
 

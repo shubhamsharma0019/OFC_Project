@@ -29,7 +29,7 @@
                     </button>
 
                     <div class="relative flex items-center gap-3">
-                        <div class="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-[#1769ff] to-[#17a6a8]"></div>
+                        <div id="fastTrackAvatar" class="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-[#1769ff] to-[#17a6a8] bg-cover bg-center text-sm font-black text-white"></div>
                         <h3 id="fastTrackStudentName" class="hidden max-w-[160px] truncate text-sm font-bold text-[#061942] sm:block">{{ $student['name'] }}</h3>
                         <button id="fastTrackUserMenuBtn" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#455a82] hover:bg-[#eff5ff]" type="button" aria-label="Open account menu">
                             <svg class="h-5 w-5 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
@@ -51,11 +51,11 @@
 
     <script>
         (function guardFastTrackSession() {
-            const token = localStorage.getItem('ofc_auth_token') || localStorage.getItem('onlyfreshers_token');
+            const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token');
             let user = null;
 
             try {
-                user = JSON.parse(localStorage.getItem('ofc_auth_user') || localStorage.getItem('onlyfreshers_user') || 'null');
+                user = JSON.parse(localStorage.getItem('onlyfreshers_user') || localStorage.getItem('ofc_fresher_user') || localStorage.getItem('ofc_auth_user') || 'null');
             } catch (error) {
                 user = null;
             }

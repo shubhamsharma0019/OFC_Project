@@ -62,6 +62,19 @@
     const overallProgress = document.getElementById('overallProgress');
     const skillProgress = document.getElementById('skillProgress');
     const progressTableBody = document.getElementById('progressTableBody');
+    const progressIcons = {
+        enrolled: '<svg viewBox="0 0 24 24"><path d="M4 5h7a3 3 0 0 1 3 3v12a3 3 0 0 0-3-3H4Z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v12a3 3 0 0 1 3-3h7Z"></path></svg>',
+        completed: '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>',
+        paid: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path><path d="M7 15h3"></path></svg>',
+        progress: '<svg viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-3 3 2 5-7"></path></svg>',
+        inProgress: '<svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"></path><circle cx="12" cy="12" r="9"></circle></svg>',
+        notStarted: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>',
+        course: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m10 9 5 3-5 3Z"></path></svg>',
+    };
+
+    function progressIcon(name, size = 'h-[54px] w-[54px]') {
+        return `<span class="grid ${size} shrink-0 place-items-center rounded-xl bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-5 [&>svg]:w-5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${progressIcons[name] || progressIcons.progress}</span>`;
+    }
 
     function isCompleted(item) {
         return item.training_status === 'completed' || item.enrollment_status === 'completed' || FastTrack.progress(item) >= 100;
@@ -72,7 +85,7 @@
     }
     function statCard(icon, label, value, href) {
         return `<article class="grid grid-cols-[62px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-            <span class="grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[11px] font-black text-[#075fe4]">${icon}</span>
+            ${progressIcon(icon)}
             <div class="min-w-0"><h2 class="mb-1 text-2xl font-bold text-[#061942]">${FastTrack.esc(value)}</h2><p class="mb-2 text-sm font-medium text-[#334b83]">${FastTrack.esc(label)}</p><a class="text-xs font-bold text-[#075fe4]" href="${href}">View -></a></div>
         </article>`;
     }
@@ -87,10 +100,10 @@
         const avg = enrollments.length ? Math.round(enrollments.reduce((sum, item) => sum + FastTrack.progress(item), 0) / enrollments.length) : 0;
         const paid = enrollments.filter((item) => item.payment_status === 'paid').length;
         progressStats.innerHTML = [
-            statCard('EC', 'Enrolled Courses', enrollments.length, '/fast-track/training'),
-            statCard('CC', 'Courses Completed', completed, '/fast-track/certificate'),
-            statCard('PE', 'Paid Enrollments', paid, '/fast-track/training'),
-            statCard('OP', 'Overall Progress', avg + '%', '#'),
+            statCard('enrolled', 'Enrolled Courses', enrollments.length, '/fast-track/training'),
+            statCard('completed', 'Courses Completed', completed, '/fast-track/certificate'),
+            statCard('paid', 'Paid Enrollments', paid, '/fast-track/training'),
+            statCard('progress', 'Overall Progress', avg + '%', '#'),
         ].join('');
     }
     function renderOverall(enrollments) {
@@ -104,10 +117,10 @@
                 <div class="flex h-[118px] w-[118px] flex-col items-center justify-center rounded-full bg-white text-center"><strong class="text-[26px] font-black leading-none text-[#061942]">${avg}%</strong><small class="mt-2 text-sm font-medium text-[#334b83]">Overall</small></div>
             </div>
             <div class="grid gap-4 border-[#dce7f8] lg:border-l lg:pl-6">
-                <div class="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 text-sm"><span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">CC</span><span class="font-medium text-[#334b83]">Completed</span><strong class="font-bold text-[#061942]">${completed}</strong></div>
-                <div class="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 text-sm"><span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">IP</span><span class="font-medium text-[#334b83]">In Progress</span><strong class="font-bold text-[#061942]">${inProgress}</strong></div>
-                <div class="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 text-sm"><span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">NS</span><span class="font-medium text-[#334b83]">Not Started</span><strong class="font-bold text-[#061942]">${notStarted}</strong></div>
-                <div class="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 text-sm"><span class="grid h-7 w-7 place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">TE</span><span class="font-medium text-[#334b83]">Total Enrollments</span><strong class="font-bold text-[#061942]">${total}</strong></div>
+                <div class="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 text-sm">${progressIcon('completed', 'h-7 w-7 rounded-lg')}<span class="font-medium text-[#334b83]">Completed</span><strong class="font-bold text-[#061942]">${completed}</strong></div>
+                <div class="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 text-sm">${progressIcon('inProgress', 'h-7 w-7 rounded-lg')}<span class="font-medium text-[#334b83]">In Progress</span><strong class="font-bold text-[#061942]">${inProgress}</strong></div>
+                <div class="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 text-sm">${progressIcon('notStarted', 'h-7 w-7 rounded-lg')}<span class="font-medium text-[#334b83]">Not Started</span><strong class="font-bold text-[#061942]">${notStarted}</strong></div>
+                <div class="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 text-sm">${progressIcon('enrolled', 'h-7 w-7 rounded-lg')}<span class="font-medium text-[#334b83]">Total Enrollments</span><strong class="font-bold text-[#061942]">${total}</strong></div>
             </div>
         </div><div class="mt-5 rounded-lg bg-[#eef5ff] p-4 text-sm font-medium text-[#334b83]">${total ? 'Progress updates are synced from training partner records.' : 'Enroll in a course to begin progress tracking.'}</div>`;
     }
@@ -140,7 +153,7 @@
             const course = FastTrack.course(enrollment);
             const progress = FastTrack.progress(enrollment);
             return `<tr>
-                <td class="border-t border-[#e6eef8] px-3 py-3"><div class="flex items-center gap-4"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#061942] text-[10px] font-black text-white">${FastTrack.initials(FastTrack.courseName(course))}</span><div><strong class="font-bold text-[#061942]">${FastTrack.esc(FastTrack.courseName(course))}</strong><br><span class="text-xs text-[#536484]">${FastTrack.esc(FastTrack.courseDuration(course))}</span></div></div></td>
+                <td class="border-t border-[#e6eef8] px-3 py-3"><div class="flex items-center gap-4"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#061942] text-white [&>svg]:h-5 [&>svg]:w-5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${progressIcons.course}</span><div><strong class="font-bold text-[#061942]">${FastTrack.esc(FastTrack.courseName(course))}</strong><br><span class="text-xs text-[#536484]">${FastTrack.esc(FastTrack.courseDuration(course))}</span></div></div></td>
                 <td class="border-t border-[#e6eef8] px-3 py-3"><div class="h-2 min-w-[130px] overflow-hidden rounded-full bg-[#e9edf5]"><span class="block h-full rounded-full bg-[#075fe4]" style="width:${progress}%;"></span></div></td>
                 <td class="border-t border-[#e6eef8] px-3 py-3 font-bold text-[#061942]">${progress}%</td>
                 <td class="border-t border-[#e6eef8] px-3 py-3">${statusBadge(enrollment)}</td>

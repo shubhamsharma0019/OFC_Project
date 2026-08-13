@@ -33,13 +33,13 @@
                     <div class="grid gap-4">
                         @foreach (['Go through all course materials thoroughly.', 'Practice quizzes and assignments.', 'Focus on weak topics before starting.', 'Keep a stable internet connection ready.', 'Submit only after answering every question.'] as $tip)
                             <div class="flex items-start gap-3 text-sm leading-6 text-[#334b83]">
-                                <span class="mt-1 grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-[#16a35a] text-[11px] font-black text-white">OK</span>
+                                <span class="mt-1 grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-[#16a35a] text-white [&>svg]:h-3 [&>svg]:w-3 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-[3] [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg></span>
                                 <span>{{ $tip }}</span>
                             </div>
                         @endforeach
                     </div>
                 </div>
-                <div class="hidden h-[150px] items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-[#fff4df] text-[44px] font-black text-[#075fe4] lg:flex">BK</div>
+                <div class="hidden h-[150px] items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-[#fff4df] text-[#075fe4] lg:flex [&>svg]:h-20 [&>svg]:w-20 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]"><svg viewBox="0 0 24 24"><path d="M4 5h7a3 3 0 0 1 3 3v12a3 3 0 0 0-3-3H4Z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v12a3 3 0 0 1 3-3h7Z"></path></svg></div>
             </article>
         </div>
 
@@ -71,6 +71,20 @@
     let finalAttemptId = null;
     let finalQuestions = [];
     let finalEnrollments = [];
+    const finalIcons = {
+        assessment: '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 8h6M9 13h6M9 17h3"></path></svg>',
+        questions: '<svg viewBox="0 0 24 24"><path d="M9.1 9a3 3 0 1 1 5.8 1c-.8 1.2-2.9 1.6-2.9 3"></path><path d="M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>',
+        passing: '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>',
+        attempts: '<svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 3v6h-6"></path></svg>',
+        paid: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path><path d="M7 15h3"></path></svg>',
+        eligible: '<svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 7.5 8 8 4.5-.5 8-3 8-8V7l-8-4Z"></path><path d="m9 12 2 2 4-5"></path></svg>',
+        progress: '<svg viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-3 3 2 5-7"></path></svg>',
+        course: '<svg viewBox="0 0 24 24"><path d="M4 5h7a3 3 0 0 1 3 3v12a3 3 0 0 0-3-3H4Z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v12a3 3 0 0 1 3-3h7Z"></path></svg>',
+    };
+
+    function finalIcon(name, size = 'h-[34px] w-[34px]') {
+        return `<span class="grid ${size} shrink-0 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-5 [&>svg]:w-5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${finalIcons[name] || finalIcons.assessment}</span>`;
+    }
 
     function isCompletedEnrollment(item) {
         return item.payment_status === 'paid'
@@ -78,7 +92,7 @@
             && item.enrollment_status === 'completed';
     }
     function overviewItem(icon, label, value) {
-        return `<div class="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-4 text-sm"><span class="grid h-[34px] w-[34px] place-items-center rounded-lg bg-[#f0f5ff] text-[9px] font-black text-[#075fe4]">${icon}</span><span class="font-semibold text-[#334b83]">${FastTrack.esc(label)}</span><strong class="text-right font-bold text-[#061942]">${FastTrack.esc(value)}</strong></div>`;
+        return `<div class="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-4 text-sm">${finalIcon(icon)}<span class="font-semibold text-[#334b83]">${FastTrack.esc(label)}</span><strong class="text-right font-bold text-[#061942]">${FastTrack.esc(value)}</strong></div>`;
     }
     function statusBadge(text, ok) {
         return `<span class="inline-flex rounded-md ${ok ? 'bg-[#e6fff0] text-[#05843e]' : 'bg-[#fff4df] text-[#b86500]'} px-3 py-1.5 text-xs font-bold">${FastTrack.esc(text)}</span>`;
@@ -87,11 +101,11 @@
         const completed = enrollments.filter(isCompletedEnrollment).length;
         const paid = enrollments.filter((item) => item.payment_status === 'paid').length;
         assessmentOverview.innerHTML = [
-            overviewItem('TQ', 'Total Questions', 'Dynamic'),
-            overviewItem('PM', 'Passing Marks', '60%'),
-            overviewItem('TA', 'Total Attempts Allowed', '3'),
-            overviewItem('PE', 'Paid Enrollments', paid),
-            overviewItem('ET', 'Eligible Trainings', completed),
+            overviewItem('questions', 'Total Questions', 'Dynamic'),
+            overviewItem('passing', 'Passing Marks', '60%'),
+            overviewItem('attempts', 'Total Attempts Allowed', '3'),
+            overviewItem('paid', 'Paid Enrollments', paid),
+            overviewItem('eligible', 'Eligible Trainings', completed),
         ].join('');
     }
     function renderRows(enrollments) {
@@ -116,15 +130,15 @@
         const eligible = enrollments.filter(isCompletedEnrollment);
         finalEnrollment = eligible[0] || null;
         if (!finalEnrollment) {
-            finalSummary.innerHTML = `<div class="grid gap-6 lg:grid-cols-[165px_minmax(0,1fr)] lg:items-center"><div class="hidden h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-white text-[42px] font-black text-[#075fe4] sm:flex">FA</div><div><h2 class="mb-3 text-lg font-bold text-[#061942]">Final Assessment Locked</h2><p class="mb-5 max-w-xl text-sm leading-7 text-[#334b83]">Complete paid training first. Training partner progress must mark enrollment as completed before final assessment opens.</p><a href="/fast-track/training-progress" class="inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white">View Progress</a></div></div>`;
+            finalSummary.innerHTML = `<div class="grid gap-6 lg:grid-cols-[165px_minmax(0,1fr)] lg:items-center"><div class="hidden h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-white text-[#075fe4] sm:grid [&>svg]:h-16 [&>svg]:w-16 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${finalIcons.assessment}</div><div><h2 class="mb-3 text-lg font-bold text-[#061942]">Final Assessment Locked</h2><p class="mb-5 max-w-xl text-sm leading-7 text-[#334b83]">Complete paid training first. Training partner progress must mark enrollment as completed before final assessment opens.</p><a href="/fast-track/training-progress" class="inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white">View Progress</a></div></div>`;
             return;
         }
         const course = FastTrack.course(finalEnrollment);
-        finalSummary.innerHTML = `<div class="grid gap-6 lg:grid-cols-[165px_minmax(0,1fr)_repeat(3,170px)] lg:items-center"><div class="hidden h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-white text-[42px] font-black text-[#075fe4] sm:flex">FA</div><div><h2 class="mb-3 text-lg font-bold text-[#061942]">Ready for Final Assessment</h2><p class="mb-5 max-w-xl text-sm leading-7 text-[#334b83]">${FastTrack.esc(FastTrack.courseName(course))} training is complete. Attempt final assessment and get certificate eligibility.</p><button id="summaryStartFinal" class="inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white" type="button">Start Final Assessment</button></div>${[
-            ['LC', FastTrack.progress(finalEnrollment) + '%', 'Training Progress'],
-            ['CE', finalEnrollments.length, 'Courses Enrolled'],
-            ['PM', '60%', 'Passing Marks'],
-        ].map((item) => `<div class="flex min-h-[118px] flex-col justify-center border-t border-[#dce7f8] pt-4 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0"><span class="mb-3 grid h-[54px] w-[54px] place-items-center rounded-xl bg-[#f0f5ff] text-[10px] font-black text-[#075fe4]">${item[0]}</span><strong class="text-[22px] font-bold text-[#061942]">${FastTrack.esc(item[1])}</strong><span class="mt-2 text-sm font-medium text-[#334b83]">${FastTrack.esc(item[2])}</span></div>`).join('')}</div>`;
+        finalSummary.innerHTML = `<div class="grid gap-6 lg:grid-cols-[165px_minmax(0,1fr)_repeat(3,170px)] lg:items-center"><div class="hidden h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[#eef5ff] to-white text-[#075fe4] sm:grid [&>svg]:h-16 [&>svg]:w-16 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${finalIcons.assessment}</div><div><h2 class="mb-3 text-lg font-bold text-[#061942]">Ready for Final Assessment</h2><p class="mb-5 max-w-xl text-sm leading-7 text-[#334b83]">${FastTrack.esc(FastTrack.courseName(course))} training is complete. Attempt final assessment and get certificate eligibility.</p><button id="summaryStartFinal" class="inline-flex h-10 items-center justify-center rounded-md bg-[#075fe4] px-6 text-sm font-bold text-white" type="button">Start Final Assessment</button></div>${[
+            ['progress', FastTrack.progress(finalEnrollment) + '%', 'Training Progress'],
+            ['course', finalEnrollments.length, 'Courses Enrolled'],
+            ['passing', '60%', 'Passing Marks'],
+        ].map((item) => `<div class="flex min-h-[118px] flex-col justify-center border-t border-[#dce7f8] pt-4 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">${finalIcon(item[0], 'mb-3 h-[54px] w-[54px] rounded-xl')}<strong class="text-[22px] font-bold text-[#061942]">${FastTrack.esc(item[1])}</strong><span class="mt-2 text-sm font-medium text-[#334b83]">${FastTrack.esc(item[2])}</span></div>`).join('')}</div>`;
         document.getElementById('summaryStartFinal')?.addEventListener('click', () => startFinalAssessment(finalEnrollment.id));
     }
     function renderFinalQuestions() {

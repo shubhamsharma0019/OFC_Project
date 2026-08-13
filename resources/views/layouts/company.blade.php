@@ -130,7 +130,8 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             function getCompanyToken() {
-                return localStorage.getItem('onlyfreshers_company_token') ||
+                return localStorage.getItem('ofc_company_token') ||
+                    localStorage.getItem('onlyfreshers_company_token') ||
                     localStorage.getItem('ofc_auth_token');
             }
 
@@ -144,6 +145,7 @@
 
             function syncCompanyChrome(profile = null) {
                 const storedUser = parseLocalStorage('onlyfreshers_company_user') ||
+                    parseLocalStorage('ofc_company_user') ||
                     parseLocalStorage('ofc_auth_user');
 
                 const storedProfile = profile || parseLocalStorage('ofc_company_profile');
@@ -164,6 +166,12 @@
 
                 if (!token) {
                     return;
+                }
+
+                localStorage.setItem('ofc_auth_token', token);
+                const companyUser = parseLocalStorage('ofc_company_user') || parseLocalStorage('onlyfreshers_company_user');
+                if (companyUser) {
+                    localStorage.setItem('ofc_auth_user', JSON.stringify(companyUser));
                 }
 
                 try {
@@ -242,11 +250,11 @@
                 [
                     'ofc_auth_token',
                     'ofc_auth_user',
+                    'ofc_company_token',
+                    'ofc_company_user',
                     'ofc_company_profile',
                     'onlyfreshers_company_token',
-                    'onlyfreshers_company_user',
-                    'onlyfreshers_token',
-                    'onlyfreshers_user'
+                    'onlyfreshers_company_user'
                 ].forEach(key => localStorage.removeItem(key));
 
                 window.location.href = '/company/login';
