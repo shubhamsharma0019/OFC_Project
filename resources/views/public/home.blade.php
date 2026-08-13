@@ -30,7 +30,7 @@
             </div>
 
             <div class="flex min-h-[260px] items-center justify-center lg:min-h-[320px]">
-                <img src="/student.png" alt="Students" class="block h-auto max-h-[320px] w-full max-w-[560px] object-contain" onerror="this.onerror=null;this.src='/student.svg';">
+                <img src="/build/assets/student.png" alt="Students" class="block h-auto max-h-[320px] w-full max-w-[560px] object-contain" onerror="this.onerror=null;this.src='/student.svg';">
             </div>
         </div>
     </section>

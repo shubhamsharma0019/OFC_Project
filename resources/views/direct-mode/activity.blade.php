@@ -50,10 +50,10 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 <script>
         const icons={home:'<svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg>',user:'<svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle></svg>',clipboard:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 7h6M9 12h6"></path></svg>',briefcase:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>',file:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path></svg>',clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>',chart:'<svg viewBox="0 0 24 24"><path d="M3 17 9 11l4 4 8-8"></path><path d="M14 7h7v7"></path></svg>',activity:'<svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>',settings:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4 1.7 1.7 0 0 0 14 21h-4a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3 14v-4a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3h4a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9 1.7 1.7 0 0 0 21 10v4a1.7 1.7 0 0 0-1.6 1Z"></path></svg>',logout:'<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5M21 12H9"></path></svg>',search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>',chevron:'<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>',calendar:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>',send:'<svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7Z"></path><path d="M22 2 11 13"></path></svg>',star:'<svg viewBox="0 0 24 24"><path d="m12 2 3 7 7 .6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.6 9 9l3-7Z"></path></svg>',x:'<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>',trophy:'<svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M5 5H3v3a4 4 0 0 0 4 4M19 5h2v3a4 4 0 0 1-4 4"></path></svg>'};
         const $ = (selector) => document.querySelector(selector);
-        const token = localStorage.getItem('onlyfreshers_token') || '';
+        const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_auth_token') || '';
         let authUser = {};
-        try { authUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || '{}'); } catch (error) { authUser = {}; }
-        const state = { dashboard: {}, applications: [], notifications: [], activities: [] };
+        try { authUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || localStorage.getItem('ofc_auth_user') || '{}'); } catch (error) { authUser = {}; }
+        const state = { dashboard: {}, applications: [], notifications: [], activities: [], certificates: [], unreadCount: 0, dateMode: 'today' };
 
         function hydrateIcons(root = document) {
             root.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icons[el.dataset.icon] || ''; });
@@ -136,7 +136,23 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 icon: 'bell',
                 tone: note.is_read ? 'blue-soft' : 'orange-soft',
             }));
-            state.activities = [...applicationActivities, ...notificationActivities]
+            const interviewActivities = (state.dashboard.upcoming_interviews || []).map(interview => ({
+                title: 'Interview Scheduled',
+                text: `${interviewJob(interview).title || 'Interview'} at ${interviewCompanyName(interview)} on ${formatDate(interview.interview_date)}`,
+                time: timeAgo(interview.created_at || interview.updated_at || interview.interview_date),
+                raw: interview.created_at || interview.updated_at || interview.interview_date,
+                icon: 'calendar',
+                tone: 'purple-soft',
+            }));
+            const certificateActivities = state.certificates.map(certificate => ({
+                title: 'Certificate Earned',
+                text: certificate.course_enrollment?.course?.course_name || 'Fast Track certificate generated',
+                time: timeAgo(certificate.created_at),
+                raw: certificate.created_at,
+                icon: 'trophy',
+                tone: 'green-soft',
+            }));
+            state.activities = [...applicationActivities, ...notificationActivities, ...interviewActivities, ...certificateActivities]
                 .sort((a, b) => new Date(b.raw || 0) - new Date(a.raw || 0));
         }
 
@@ -155,9 +171,9 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const interviews = state.dashboard.upcoming_interviews || [];
             const items = [
                 [state.activities.length, 'Total Activities', 'from your latest updates', 'chart', 'blue'],
-                [state.applications.length || stats.total_applications || 0, 'Applications Updated', 'live application status', 'briefcase', 'green'],
-                [interviews.length || stats.scheduled_interviews || 0, 'Interviews This Week', 'scheduled interviews', 'calendar', 'purple'],
-                [state.notifications.filter(note => !note.is_read).length, 'New Notifications', 'unread notifications', 'bell', 'orange'],
+                [stats.total_applications ?? state.applications.length, 'Applications Updated', 'live application status', 'briefcase', 'green'],
+                [interviewsThisWeek(interviews), 'Interviews This Week', 'scheduled interviews', 'calendar', 'purple'],
+                [state.unreadCount || state.notifications.filter(note => !note.is_read).length, 'New Notifications', 'unread notifications', 'bell', 'orange'],
             ];
             $('[data-stats]').innerHTML = items.map(([value, label, note, icon, tone]) => `<div class="stat"><span class="stat-icon ${tone}" data-icon="${icon}"></span><div><strong>${value}</strong><span>${label}</span><small>${note}</small></div></div>`).join('');
             hydrateIcons($('[data-stats]'));
@@ -196,7 +212,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 
         function renderUpcomingInterviews() {
             const wrap = $('[data-upcoming-interviews]');
-            const interviews = (state.dashboard.upcoming_interviews || []).slice(0, 3);
+            const interviews = (state.dashboard.upcoming_interviews || []).slice().sort((a, b) => interviewDateValue(a) - interviewDateValue(b)).slice(0, 3);
             if (!interviews.length) {
                 wrap.innerHTML = '<div class="empty">No upcoming interviews.</div>';
                 return;
@@ -222,9 +238,24 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 
         function renderAchievement() {
             const profile = state.dashboard.profile || {};
-            const name = authUser.name || state.dashboard.user?.name || 'Fresher';
-            $('[data-achievement]').innerHTML = `<div class="badge-art"><span class="icon" data-icon="trophy"></span></div><h3>Great going, ${escapeHtml(name.split(' ')[0] || 'Fresher')}!</h3><p>Your profile is ${Number(profile.profile_completion || 0)}% complete. Keep applying and tracking your progress.</p><a class="outline" href="/direct-mode/profile" style="width:100%;color:#064cff;border-color:#064cff">View Achievements</a>`;
+            $('[data-achievement]').innerHTML = `<div class="badge-art"><span class="icon" data-icon="trophy"></span></div><h3>${achievementTitle(profile)}</h3><p>${achievementText(profile)}</p><a class="outline" href="/direct-mode/profile" style="width:100%;color:#064cff;border-color:#064cff">View Achievements</a>`;
             hydrateIcons($('[data-achievement]'));
+        }
+
+        function achievementTitle(profile) {
+            const firstName = (authUser.name || state.dashboard.user?.name || 'Fresher').split(' ')[0] || 'Fresher';
+            const stats = state.dashboard.statistics || {};
+            if ((stats.hired_applications || 0) > 0) return `Offer unlocked, ${escapeHtml(firstName)}!`;
+            if ((stats.interview_scheduled_applications || 0) > 0) return `Interview ready, ${escapeHtml(firstName)}!`;
+            if (Number(profile.profile_completion || 0) >= 80) return `Profile strong, ${escapeHtml(firstName)}!`;
+            return `Great going, ${escapeHtml(firstName)}!`;
+        }
+
+        function achievementText(profile) {
+            const stats = state.dashboard.statistics || {};
+            if ((stats.hired_applications || 0) > 0) return 'You have an offer update. Review your offers and next steps.';
+            if ((stats.interview_scheduled_applications || 0) > 0) return 'You have interview activity. Prepare and track interview updates.';
+            return `Your profile is ${Number(profile.profile_completion || 0)}% complete. Keep applying and tracking your progress.`;
         }
 
         function logoHtml(name, logo) {
@@ -241,13 +272,17 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const requests = [
                 fetch('/api/fresher/dashboard', { headers: headers() }).then(response => response.json()).catch(() => ({})),
                 fetch('/api/fresher/applications', { headers: headers() }).then(response => response.json()).catch(() => ({})),
-                fetch('/api/notifications?per_page=8', { headers: headers() }).then(response => response.json()).catch(() => ({})),
+                fetch('/api/notifications?per_page=12', { headers: headers() }).then(response => response.json()).catch(() => ({})),
+                fetch('/api/notifications/unread-count', { headers: headers() }).then(response => response.json()).catch(() => ({})),
+                fetch('/api/fresher/certificates', { headers: headers() }).then(response => response.json()).catch(() => ({})),
             ];
-            const [dashboard, applications, notifications] = await Promise.all(requests);
+            const [dashboard, applications, notifications, unread, certificates] = await Promise.all(requests);
             state.dashboard = dashboard.data || {};
             state.applications = applications.data?.applications || state.dashboard.recent_applications || [];
             const paginated = notifications.data?.notifications;
             state.notifications = paginated?.data || notifications.data?.notifications || [];
+            state.unreadCount = unread.data?.unread_count || 0;
+            state.certificates = certificates.data?.certificates || state.dashboard.recent_certificates || [];
             render();
         }
 
@@ -255,6 +290,11 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             $('[data-view-all-activity]').addEventListener('click', event => { event.preventDefault(); renderTimeline(state.activities.length); });
             $('[data-view-notifications]').addEventListener('click', event => { event.preventDefault(); renderNotifications(state.notifications.length); });
             $('[data-all-notifications]').addEventListener('click', event => { event.preventDefault(); renderNotifications(state.notifications.length); });
+            $('[data-date-filter]').addEventListener('click', () => {
+                state.dateMode = state.dateMode === 'today' ? 'week' : 'today';
+                $('[data-today-label]').textContent = state.dateMode === 'today' ? new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'This Week';
+                renderTimeline(state.dateMode === 'today' ? 6 : state.activities.length);
+            });
             const headerSearch = document.querySelector('.search-top input');
             if (headerSearch) {
                 headerSearch.addEventListener('keydown', event => {
@@ -281,14 +321,26 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             return escapeHtml(value).replace(/`/g, '&#096;');
         }
 
+        function interviewDateValue(interview) {
+            return new Date(`${interview.interview_date || ''}T${interview.interview_time || '00:00'}`).getTime() || 0;
+        }
+
+        function interviewsThisWeek(interviews) {
+            const now = new Date();
+            const start = new Date(now);
+            start.setDate(now.getDate() - now.getDay());
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(start);
+            end.setDate(start.getDate() + 7);
+            return interviews.filter(interview => {
+                const value = interviewDateValue(interview);
+                return value >= start.getTime() && value < end.getTime();
+            }).length;
+        }
+
         hydrateIcons();
         updateUserChrome();
         wireControls();
         loadData();
     </script>
 @endpush
-
-
-
-
-
