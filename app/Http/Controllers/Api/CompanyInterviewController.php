@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Interview;
 use App\Models\JobApplication;
+use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -90,6 +91,8 @@ class CompanyInterviewController extends Controller
 
         $jobApplication->load([
             'job',
+            'job.companyProfile',
+            'fresherProfile.user',
             'interview',
         ]);
 
@@ -150,10 +153,15 @@ class CompanyInterviewController extends Controller
                 'nullable',
                 'url',
                 'max:500',
+                'regex:/^https?:\/\/meet\.google\.com\/[a-z0-9-]+(?:[\/?#].*)?$/i',
                 Rule::requiredIf(
                     $request->input('interview_mode') === 'online'
                 ),
             ],
+        ], [
+            'meeting_link.required' => 'Online interview ke liye Google Meet link required hai.',
+            'meeting_link.url' => 'Please paste a valid Google Meet link.',
+            'meeting_link.regex' => 'Meeting link Google Meet ka hona chahiye, for example https://meet.google.com/abc-defg-hij.',
         ]);
 
         if ($validatedData['interview_mode'] === 'online') {
@@ -173,6 +181,22 @@ class CompanyInterviewController extends Controller
         $jobApplication->update([
             'application_status' => 'interview_scheduled',
         ]);
+
+        if ($jobApplication->fresherProfile?->user_id) {
+            $companyName = $jobApplication->job?->companyProfile?->company_name
+                ?? 'Company';
+            $jobTitle = $jobApplication->job?->title ?? 'your applied role';
+            $scheduledFor = $interview->interview_date->format('d M Y')
+                . ' at '
+                . date('h:i A', strtotime($interview->interview_time));
+
+            Notification::create([
+                'user_id' => $jobApplication->fresherProfile->user_id,
+                'type' => 'interview',
+                'title' => 'Interview Scheduled',
+                'message' => "{$companyName} scheduled your interview for {$jobTitle} on {$scheduledFor}. Join from your Interviews page.",
+            ]);
+        }
 
         return response()->json([
             'success' => true,

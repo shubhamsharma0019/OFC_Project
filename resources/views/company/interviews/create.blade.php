@@ -29,8 +29,9 @@
             <input id="interviewTime" type="time" class="h-12 w-full rounded-lg border border-[#dce7f8] px-4 text-sm" required>
         </label>
         <label id="meetingLinkWrap">
-            <span class="mb-2 block text-xs font-bold text-[#061942]">Meeting Link</span>
-            <input id="meetingLink" type="text" placeholder="https://meet.example.com/room" class="h-12 w-full rounded-lg border border-[#dce7f8] px-4 text-sm">
+            <span class="mb-2 block text-xs font-bold text-[#061942]">Google Meet Link</span>
+            <input id="meetingLink" type="url" placeholder="https://meet.google.com/abc-defg-hij" class="h-12 w-full rounded-lg border border-[#dce7f8] px-4 text-sm">
+            <span class="mt-2 block text-xs font-semibold text-[#52607a]">Create the meeting in Google Meet, paste that link here, then schedule.</span>
         </label>
         <label id="locationWrap" class="hidden md:col-span-2">
             <span class="mb-2 block text-xs font-bold text-[#061942]">Interview Location</span>
@@ -63,6 +64,8 @@
         const trimmed = value.trim();
         return trimmed && !/^https?:\/\//i.test(trimmed) ? `https://${trimmed}` : trimmed;
     };
+
+    const isGoogleMeetLink = (value) => /^https?:\/\/meet\.google\.com\/[a-z0-9-]+(?:[\/?#].*)?$/i.test(value);
 
     async function guardCompanyFlow() {
         if (!token) {
@@ -140,6 +143,10 @@
                 meeting_link: mode.value === 'online' ? normalizeUrl(document.getElementById('meetingLink').value) : null,
                 interview_location: mode.value === 'offline' ? document.getElementById('interviewLocation').value.trim() : null,
             };
+
+            if (payload.interview_mode === 'online' && !isGoogleMeetLink(payload.meeting_link || '')) {
+                throw new Error('Please paste a valid Google Meet link, for example https://meet.google.com/abc-defg-hij.');
+            }
 
             const response = await fetch(`/api/company/applications/${applicationId}/interview`, {
                 method: 'POST',

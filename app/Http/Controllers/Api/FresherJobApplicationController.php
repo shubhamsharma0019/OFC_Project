@@ -38,6 +38,7 @@ class FresherJobApplicationController extends Controller
             ->with([
                 'job:id,company_profile_id,title,location,salary,job_type,hiring_mode,status',
                 'job.companyProfile:id,company_name,company_logo',
+                'interview',
             ])
             ->latest('applied_at')
             ->get();
