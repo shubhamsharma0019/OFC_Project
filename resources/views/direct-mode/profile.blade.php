@@ -52,6 +52,12 @@
     .stats .stat span{font-size:13px;line-height:1.15;text-align:left;overflow-wrap:anywhere}
     .stats .stat-icon{position:relative!important;display:block!important}
     .stats .stat-icon svg{position:absolute!important;left:50%!important;top:50%!important;width:23px!important;height:23px!important;transform:translate(-50%,-50%)!important}
+    .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .stats .stat{height:auto!important;min-height:80px!important;display:grid!important;grid-template-columns:52px minmax(0,1fr)!important;gap:10px!important;align-items:center!important;justify-items:stretch!important;padding:12px!important;overflow:hidden!important}
+    .stats .stat-icon{width:48px!important;height:48px!important;justify-self:center!important;align-self:center!important;display:grid!important;place-items:center!important}
+    .stats .stat div{width:auto!important;min-width:0!important;display:grid!important;gap:2px!important;align-content:center!important;text-align:left!important}
+    .stats .stat strong{font-size:24px!important;line-height:1!important;margin:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;text-align:left!important}
+    .stats .stat span{display:block!important;max-width:100%!important;font-size:12px!important;line-height:1.15!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;text-align:left!important}
 </style>
 @endpush
 
@@ -198,6 +204,12 @@
             mark.innerHTML = isDone ? '&#10003;' : '';
         });
     };
+    const isProfileReadyForAssessment = profile => Boolean(
+        profile?.phone &&
+        profile?.qualification &&
+        profile?.skills &&
+        profile?.resume
+    );
     const setResume = (profile, extras) => {
         const resume = resumeRemoved ? null : (selectedResume?.name || extras.resume_name || profile?.resume);
         setText('[data-resume-name]', resume ? String(resume).split('/').pop() : 'No resume uploaded');
@@ -269,7 +281,11 @@
                 if (el) el.textContent = Number(val || 0);
             });
             const bell = qs('.top-bell b');
-            if (bell) bell.textContent = unreadData.unread_count || 0;
+            if (bell) {
+                const unread = Number(unreadData.unread_count || 0);
+                bell.textContent = unread;
+                bell.style.display = unread > 0 ? 'grid' : 'none';
+            }
         } catch (error) {
             showAlert(error.message);
             applyProfile({ user: storedUser || {}, profile: {} });
@@ -321,6 +337,10 @@
             resumeRemoved = false;
             showAlert('Profile updated successfully.', 'success');
             await load();
+            const updatedProfile = json.data?.profile || {};
+            if (isProfileReadyForAssessment(updatedProfile)) {
+                window.location.href = '/direct-mode/assessments';
+            }
         } catch (error) {
             showAlert(error.message);
         } finally {

@@ -21,6 +21,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Training Partner')</title>
+    @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-auto min-h-screen overflow-x-hidden bg-[#f8faff] font-sans font-medium text-[#071544] md:h-screen md:overflow-hidden">

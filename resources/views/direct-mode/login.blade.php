@@ -41,6 +41,8 @@
 
     <title>{{ $pageTitle }} - OnlyFreshers</title>
 
+    @include('components.common.auth-storage')
+
     <style>
 
         * {
@@ -793,6 +795,218 @@
             }
         }
 
+        .topbar,
+        .footer,
+        .role-badge,
+        .divider,
+        .social-grid,
+        .safe-note {
+            display: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: 1fr;
+            background: radial-gradient(circle at 34% 58%, rgba(7, 95, 228, .08) 0 260px, transparent 261px), linear-gradient(130deg, #ffffff, #dfeeff);
+        }
+
+        .main-wrap {
+            max-width: none;
+            padding: 18px 46px;
+            display: flex;
+            align-items: center;
+        }
+
+        .auth-card {
+            width: 100%;
+            min-height: calc(100vh - 36px);
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            grid-template-columns: 1fr 1.08fr;
+            gap: 34px;
+            overflow: visible;
+        }
+
+        .intro {
+            min-height: 540px;
+            padding: 28px 0 0;
+            background: transparent;
+        }
+
+        .intro::before,
+        .intro::after {
+            display: none;
+        }
+
+        .intro-content::before {
+            content: "";
+            display: block;
+            width: 245px;
+            height: 70px;
+            margin-bottom: 62px;
+            background: url('/ofclogo1.svg') left center / contain no-repeat;
+        }
+
+        .intro h1 {
+            max-width: 520px;
+            margin-bottom: 16px;
+            color: #061942;
+            font-size: 46px;
+            line-height: 1.12;
+            font-weight: 600;
+        }
+
+        .intro h1 span {
+            color: #075fe4;
+        }
+
+        .intro p {
+            max-width: 610px;
+            color: #34445e;
+            font-size: 20px;
+            line-height: 1.45;
+        }
+
+        .intro p::after {
+            content: "";
+            display: block;
+            width: 58px;
+            height: 3px;
+            margin-top: 22px;
+            border-radius: 999px;
+            background: #075fe4;
+        }
+
+        .illustration {
+            left: 0;
+            right: 0;
+            bottom: 18px;
+            height: 270px;
+            justify-content: flex-start;
+        }
+
+        .illustration img {
+            width: 430px;
+            max-width: 82%;
+        }
+
+        .form-side {
+            padding: 0;
+            justify-content: center;
+        }
+
+        .form-shell {
+            max-width: 486px;
+            min-height: 450px;
+            padding: 26px 34px 34px;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 22px 45px rgba(6, 25, 66, .08);
+        }
+
+        .form-shell h2 {
+            margin: 0;
+            text-align: center;
+            color: #061942;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .form-shell h2::after {
+            content: "";
+            display: block;
+            width: 58px;
+            height: 3px;
+            margin: 10px auto 12px;
+            border-radius: 999px;
+            background: #075fe4;
+        }
+
+        .form-shell > p {
+            margin: 0 0 24px;
+            text-align: center;
+            color: #52607a;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: none;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        label {
+            margin-bottom: 7px;
+            color: #061942;
+            font-size: 13px;
+        }
+
+        .control,
+        .control.password {
+            height: 46px;
+            border-color: #bcd2f2;
+            border-radius: 12px;
+        }
+
+        .input-icon {
+            border-right: 1px solid #dce7f8;
+        }
+
+        .primary {
+            height: 46px;
+            border-radius: 11px;
+            font-size: 15px;
+            box-shadow: 0 8px 18px rgba(7, 95, 228, .24);
+        }
+
+        .switch {
+            margin: 16px 0 0;
+            text-align: center;
+            color: #52607a;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .switch a {
+            color: #075fe4;
+            font-weight: 800;
+        }
+
+        @media (max-width: 1050px) {
+            .main-wrap {
+                padding: 18px;
+            }
+
+            .auth-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .intro-content::before {
+                width: 220px;
+                margin-bottom: 34px;
+            }
+
+            .intro h1 {
+                font-size: 38px;
+            }
+
+            .intro p {
+                font-size: 17px;
+            }
+
+            .form-shell {
+                padding: 28px 22px;
+            }
+        }
+
     </style>
 
 </head>
@@ -1026,52 +1240,10 @@
                             Login
                         </button>
 
-
-                        {{-- Divider --}}
-                        <div class="divider">
-                            or continue with
-                        </div>
-
-
-                        {{-- Social Buttons --}}
-                        <div class="social-grid">
-
-                            <button
-                                class="social google"
-                                type="button"
-                            >
-                                <span>G</span>
-                                Google
-                            </button>
-
-
-                            <button
-                                class="social linkedin"
-                                type="button"
-                            >
-                                <span>in</span>
-                                LinkedIn
-                            </button>
-
-
-                            <button
-                                class="social facebook"
-                                type="button"
-                            >
-                                <span>f</span>
-                                Facebook
-                            </button>
-
-                        </div>
-
-
-                        {{-- Security --}}
-                        <div class="safe-note">
-
-                            Your data is safe with us.
-                            We never share your information.
-
-                        </div>
+                        <p class="switch">
+                            Don't have an account?
+                            <a href="{{ $registerUrl }}">Register</a>
+                        </p>
 
                     </form>
 
@@ -1679,8 +1851,114 @@ document.addEventListener(
                     |--------------------------------------------------------------------------
                     */
 
+                    const dashboardResponse =
+                        await fetch(
+                            '/api/fresher/dashboard',
+                            {
+                                headers: {
+                                    Accept:
+                                        'application/json',
+
+                                    Authorization:
+                                        `Bearer ${token}`
+                                }
+                            }
+                        );
+
+
+                    const dashboardPayload =
+                        await dashboardResponse
+                            .json()
+                            .catch(
+                                function () {
+                                    return {};
+                                }
+                            );
+
+
+                    const assessment =
+                        dashboardPayload
+                            ?.data
+                            ?.initial_assessment;
+
+
+                    if (
+                        !dashboardResponse.ok
+                    ) {
+
+                        window.location.href =
+                            '/direct-mode/assessments';
+
+                        return;
+                    }
+
+
+                    if (
+                        !assessment ||
+                        assessment.status !==
+                            'submitted'
+                    ) {
+
+                        localStorage.removeItem(
+                            'onlyfreshers_selected_mode'
+                        );
+
+                        window.location.href =
+                            '/direct-mode/assessments';
+
+                        return;
+                    }
+
+
+                    const selectedMode =
+                        localStorage.getItem(
+                            'onlyfreshers_selected_mode'
+                        );
+
+
+                    if (
+                        assessment.recommended_mode ===
+                        'fast_track'
+                    ) {
+
+                        localStorage.setItem(
+                            'onlyfreshers_selected_mode',
+                            'fast_track'
+                        );
+
+
+                        window.location.href =
+                            '/fast-track/dashboard';
+
+                        return;
+                    }
+
+
+                    if (
+                        selectedMode ===
+                        'fast_track'
+                    ) {
+
+                        window.location.href =
+                            '/fast-track/dashboard';
+
+                        return;
+                    }
+
+
+                    if (
+                        selectedMode !==
+                        'direct'
+                    ) {
+
+                        window.location.href =
+                            '/direct-mode/assessments';
+
+                        return;
+                    }
+
+
                     window.location.href =
-                        result?.data?.dashboard ||
                         '/direct-mode/dashboard';
 
 

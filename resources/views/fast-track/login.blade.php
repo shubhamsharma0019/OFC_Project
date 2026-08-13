@@ -4,34 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fast Track Login - OnlyFreshers</title>
+    @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-white font-sans text-[#071743] antialiased">
-    <main class="grid min-h-screen lg:grid-cols-[40%_60%]">
-        <section class="relative min-h-[380px] overflow-hidden bg-[radial-gradient(circle_at_82%_45%,#1046b6_0,#062a78_34%,#061c56_72%)] px-6 py-7 text-white sm:px-9 lg:min-h-screen lg:px-10 lg:pt-8">
-            <div class="absolute inset-0 opacity-40 [background-image:radial-gradient(circle,rgba(255,255,255,.18)_1px,transparent_2px)] [background-size:68px_68px]"></div>
+<body class="min-h-screen bg-[#eaf3ff] font-sans font-medium text-[#061942] antialiased">
+    <main class="grid min-h-screen grid-cols-1 items-center gap-[30px] bg-[radial-gradient(circle_at_34%_58%,rgba(7,95,228,0.08)_0_260px,transparent_261px),linear-gradient(130deg,#ffffff,#dfeeff)] px-[18px] py-[18px] lg:grid-cols-[1fr_1.08fr] lg:gap-[34px] lg:px-[46px] lg:py-4">
+        <section class="relative min-h-[520px] overflow-hidden lg:min-h-[540px]">
 
-            <div class="relative z-10 flex min-h-[330px] flex-col lg:min-h-screen">
-                <img class="h-auto w-[250px] max-w-full brightness-0 invert" src="/ofclogo1.svg" alt="OnlyFreshers">
+            <div class="relative z-10 flex min-h-[330px] flex-col lg:min-h-[540px]">
+                <img class="h-auto w-[230px] max-w-full lg:w-[245px]" src="/ofclogo1.svg" alt="OnlyFreshers">
 
-                <div class="mt-12 max-w-[300px] lg:mt-20">
-                    <h1 class="mb-3 text-[32px] font-bold leading-tight lg:text-[30px]">Welcome Back!</h1>
-                    <p class="text-lg leading-7 font-normal">Login to continue your career journey.</p>
+                <div class="mt-[55px] max-w-[520px] lg:mt-[62px]">
+                    <h1 class="mb-4 text-[40px] font-semibold leading-[1.12] text-[#061942] lg:text-[46px]">Welcome to <span class="text-[#075fe4]">OnlyFreshers</span></h1>
+                    <p class="m-0 max-w-[610px] text-lg leading-[1.45] text-[#34445e] lg:text-xl">Login to continue your career journey.</p>
+                    <div class="my-[22px] h-[3px] w-[58px] rounded-full bg-[#075fe4]"></div>
                 </div>
             </div>
 
-            <span class="absolute bottom-[37%] right-[70px] z-[1] hidden h-[60px] w-[60px] items-center justify-center rounded-full border border-white/10 bg-white/15 text-[22px] sm:flex">&gt;</span>
-            <span class="absolute bottom-[24%] right-[60px] z-[1] hidden h-[60px] w-[60px] items-center justify-center rounded-full border border-white/10 bg-white/15 text-[22px] sm:flex">^</span>
-            <span class="absolute bottom-[30%] left-[46px] z-[1] hidden h-[60px] w-[60px] items-center justify-center rounded-full border border-white/10 bg-white/15 text-[22px] sm:flex">!</span>
-
             @if (file_exists(public_path('student.svg')))
-                <img class="absolute bottom-7 left-1/2 z-[1] hidden h-[230px] w-[360px] -translate-x-1/2 object-contain object-bottom sm:block lg:bottom-8 lg:h-[330px] lg:w-[min(410px,82%)]" src="{{ asset('student.svg') }}" alt="Student learning">
+                <img class="absolute bottom-7 left-0 z-[1] hidden h-[230px] w-[430px] object-contain object-bottom sm:block lg:bottom-8 lg:h-[300px]" src="{{ asset('student.svg') }}" alt="Student learning">
             @endif
         </section>
 
-        <section class="flex min-h-screen items-center justify-center px-3 py-5 sm:px-6 lg:px-8">
-            <form class="w-full max-w-[500px] rounded-[14px] border border-[#dce7f8] bg-white px-5 py-7 shadow-[0_12px_34px_rgba(6,25,66,.08)] sm:px-10 sm:py-8" id="fastTrackLoginForm">
-                <h2 class="mb-6 text-center text-[22px] font-bold leading-tight text-[#071743]">Login to Your Account</h2>
+        <section class="flex w-full items-center justify-center">
+            <form class="w-full max-w-[486px] rounded-[22px] bg-white px-5 py-7 shadow-[0_22px_45px_rgba(6,25,66,.08)] sm:px-10 sm:py-8" id="fastTrackLoginForm">
+                <h2 class="m-0 text-center text-[28px] font-semibold leading-tight text-[#061942]">Fast Track Login</h2>
+                <div class="mx-auto mb-4 mt-2.5 h-[3px] w-[58px] rounded-full bg-[#075fe4]"></div>
+                <p class="mb-6 text-center text-sm font-semibold text-[#52607a]">Fill in your details to continue</p>
 
                 <label class="mb-2 block text-sm font-medium text-[#071743]" for="email">Email Address</label>
                 <div class="mb-5 grid min-h-[46px] grid-cols-[44px_minmax(0,1fr)] items-center overflow-hidden rounded-lg border border-[#cddbf0]">
@@ -58,10 +57,6 @@
                 </div>
 
                 <button class="h-12 w-full rounded-lg bg-[#075fe4] text-base font-bold text-white shadow-[0_9px_18px_rgba(7,95,228,.2)] transition hover:bg-[#064fc0]" type="submit">Login</button>
-
-                <div class="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-5 text-xs uppercase text-[#52668e] before:h-px before:bg-[#dce7f8] after:h-px after:bg-[#dce7f8]">or</div>
-
-                <button class="flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-[#dce7f8] bg-white text-sm font-semibold text-[#071743] transition hover:bg-[#f6f9ff]" type="button"><span class="text-[17px] font-black text-[#075fe4]">G</span> Continue with Google</button>
 
                 <p class="mt-6 text-center text-sm text-[#071743]">Don't have an account? <a class="font-bold text-[#075fe4]" href="/fast-track/register">Register</a></p>
             </form>
@@ -113,7 +108,28 @@
                     localStorage.setItem('ofc_auth_user', JSON.stringify(user || {}));
                     localStorage.setItem('onlyfreshers_token', result.data.token);
                     localStorage.setItem('onlyfreshers_user', JSON.stringify(user || {}));
-                    window.location.href = '/fast-track/dashboard';
+
+                    const dashboardResponse = await fetch('/api/fresher/dashboard', {
+                        headers: {
+                            Accept: 'application/json',
+                            Authorization: `Bearer ${result.data.token}`,
+                        },
+                    });
+                    const dashboardPayload = await dashboardResponse.json().catch(() => ({}));
+                    const profile = dashboardPayload.data?.profile || {};
+                    const assessment = dashboardPayload.data?.initial_assessment;
+
+                    if (!dashboardResponse.ok || !profile.resume_uploaded || !profile.qualification || !profile.skills) {
+                        window.location.href = '/direct-mode/profile';
+                        return;
+                    }
+
+                    if (!assessment || assessment.status !== 'submitted') {
+                        window.location.href = '/direct-mode/assessments';
+                        return;
+                    }
+
+                    window.location.href = '/fast-track/courses';
                 } catch (error) {
                     alert(error.message || 'Login failed.');
                     submitButton.disabled = false;

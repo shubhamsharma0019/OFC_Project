@@ -16,7 +16,20 @@ class PublicJobController extends Controller
     {
         $jobs = Job::query()
             ->with('companyProfile:id,company_name,company_logo,industry')
+            ->withCount([
+                'applications as hired_applications_count' => function ($query) {
+                    $query->where('application_status', 'hired');
+                },
+            ])
             ->where('status', 'active')
+            ->whereRaw(
+                "openings IS NULL OR openings > (
+                    SELECT COUNT(*)
+                    FROM job_applications
+                    WHERE job_applications.job_id = jobs.id
+                    AND job_applications.application_status = 'hired'
+                )"
+            )
             ->when(
                 $request->filled('search'),
                 function ($query) use ($request) {
@@ -81,6 +94,21 @@ class PublicJobController extends Controller
         $job->load(
             'companyProfile:id,company_name,company_logo,industry,website,address,description'
         );
+        $job->loadCount([
+            'applications as hired_applications_count' => function ($query) {
+                $query->where('application_status', 'hired');
+            },
+        ]);
+
+        if (
+            $job->openings !== null &&
+            $job->hired_applications_count >= $job->openings
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Is job ki hiring complete ho chuki hai.',
+            ], 404);
+        }
 
         return response()->json([
             'success' => true,

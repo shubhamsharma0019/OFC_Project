@@ -16,9 +16,11 @@ Route::view('/fast-track', 'public.fast-track.index');
 Route::view('/fast-track/how-it-works', 'public.fast-track.how-it-works');
 Route::view('/fast-track/login', 'fast-track.login');
 Route::view('/fast-track/register', 'fast-track.register');
-Route::redirect('/direct-mode', '/direct-mode/login');
+Route::view('/direct-mode', 'public.direct-mode.index');
 Route::view('/direct-mode/login', 'direct-mode.login');
 Route::view('/direct-mode/register', 'direct-mode.register');
+Route::view('/fresher/login', 'direct-mode.login');
+Route::view('/fresher/register', 'direct-mode.register');
 Route::view('/company/login', 'direct-mode.login');
 Route::view('/company/register', 'direct-mode.register');
 Route::view('/training-partner/login', 'direct-mode.login');
@@ -46,7 +48,7 @@ Route::redirect('/fresher/settings', '/direct-mode/settings');
 Route::view('/fast-track/dashboard', 'fresher.fast-track.index');
 Route::view('/fast-track/profile', 'fresher.profile.show');
 Route::view('/fast-track/courses', 'fresher.fast-track.courses');
-Route::view('/fast-track/assessment', 'fresher.fast-track.assessment');
+Route::redirect('/fast-track/assessment', '/fast-track/dashboard');
 Route::view('/fast-track/final-assessment', 'fresher.final-assessment.index');
 Route::view('/fast-track/course-details', 'fresher.fast-track.course-details');
 Route::view('/fast-track/training', 'fresher.fast-track.training');
@@ -141,9 +143,6 @@ Route::view('/training-partner/progress/show', 'training-partner.progress.show')
 Route::view('/training-partner/progress/edit', 'training-partner.progress.edit');
 Route::view('/training-partner/students', 'training-partner.students.index');
 Route::view('/training-partner/students/show', 'training-partner.students.show');
-
-
-
 
 
 

@@ -106,6 +106,8 @@
 
     <title>{{ $pageTitle }} - OnlyFreshers</title>
 
+    @include('components.common.auth-storage')
+
     <style>
 
         * {
@@ -905,6 +907,223 @@
             }
         }
 
+        .topbar,
+        .role-badge,
+        .feature-bar,
+        .copyright,
+        .divider,
+        .google {
+            display: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: 1fr;
+            gap: 0;
+            padding: 18px 46px;
+            background: radial-gradient(circle at 34% 58%, rgba(7, 95, 228, .08) 0 260px, transparent 261px), linear-gradient(130deg, #ffffff, #dfeeff);
+        }
+
+        .auth-card {
+            max-width: none;
+            min-height: calc(100vh - 36px);
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            grid-template-columns: 1fr 1.08fr;
+            gap: 34px;
+            overflow: visible;
+        }
+
+        .intro {
+            min-height: 540px;
+            padding: 28px 0 0;
+            justify-content: flex-start;
+            background: transparent;
+        }
+
+        .intro::before {
+            content: "";
+            display: block;
+            width: 245px;
+            height: 70px;
+            margin-bottom: 62px;
+            background: url('/ofclogo1.svg') left center / contain no-repeat;
+        }
+
+        .intro h1 {
+            max-width: 520px;
+            margin-bottom: 16px;
+            color: #061942;
+            font-size: 46px;
+            line-height: 1.12;
+            font-weight: 600;
+        }
+
+        .intro h1 span {
+            display: block;
+            color: #075fe4;
+        }
+
+        .intro p {
+            max-width: 610px;
+            color: #34445e;
+            font-size: 20px;
+            line-height: 1.45;
+        }
+
+        .intro p::after {
+            content: "";
+            display: block;
+            width: 58px;
+            height: 3px;
+            margin-top: 22px;
+            border-radius: 999px;
+            background: #075fe4;
+        }
+
+        .illustration {
+            margin-top: 38px;
+            justify-content: flex-start;
+        }
+
+        .illustration img {
+            width: 430px;
+            max-width: 82%;
+            height: 240px;
+        }
+
+        .form-wrap {
+            padding: 0;
+            justify-content: center;
+        }
+
+        .form-panel {
+            max-width: 540px;
+            padding: 26px 34px 30px;
+            border: 0;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 22px 45px rgba(6, 25, 66, .08);
+        }
+
+        .tabs {
+            display: none;
+        }
+
+        .form-panel::before {
+            content: "{{ $pageTitle }}";
+            display: block;
+            text-align: center;
+            color: #061942;
+            font-size: 28px;
+            line-height: 1.1;
+            font-weight: 600;
+        }
+
+        .form-panel::after {
+            content: "";
+            display: block;
+            width: 58px;
+            height: 3px;
+            margin: 10px auto 18px;
+            border-radius: 999px;
+            background: #075fe4;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #061942;
+            font-size: 12px;
+        }
+
+        .grid {
+            gap: 14px 16px;
+        }
+
+        .control,
+        .control.password,
+        .control.select-control {
+            height: 44px;
+            border-color: #bcd2f2;
+            border-radius: 11px;
+        }
+
+        .control {
+            grid-template-columns: 46px 1fr;
+        }
+
+        .control.password {
+            grid-template-columns: 46px 1fr 46px;
+        }
+
+        .control.select-control {
+            grid-template-columns: 1fr 46px;
+        }
+
+        input,
+        select {
+            padding: 0 14px;
+        }
+
+        .input-icon {
+            border-right: 1px solid #dce7f8;
+        }
+
+        .primary {
+            margin-top: 6px;
+            height: 46px;
+            border-radius: 11px;
+            font-size: 15px;
+            box-shadow: 0 8px 18px rgba(7, 95, 228, .24);
+        }
+
+        .switch {
+            margin-top: 14px;
+            font-size: 13px;
+        }
+
+        .terms {
+            margin-top: 14px;
+            margin-bottom: 8px;
+        }
+
+        .field-error {
+            margin-top: 6px;
+        }
+
+        @media (max-width: 1120px) {
+            .page {
+                display: block;
+                padding: 18px;
+            }
+
+            .auth-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .intro::before {
+                width: 220px;
+                margin-bottom: 34px;
+            }
+
+            .intro h1 {
+                font-size: 38px;
+            }
+
+            .intro p {
+                font-size: 17px;
+            }
+
+            .form-panel {
+                padding: 28px 18px;
+            }
+        }
+
     </style>
 
 </head>
@@ -1349,22 +1568,6 @@
                         id="registerButton"
                     >
                         Create Account
-                    </button>
-
-
-                    {{-- Divider --}}
-                    <div class="divider">
-                        OR
-                    </div>
-
-
-                    {{-- Google --}}
-                    <button
-                        class="google"
-                        type="button"
-                    >
-                        <span>G</span>
-                        Sign up with Google
                     </button>
 
 
@@ -2081,6 +2284,37 @@ document.addEventListener(
                             JSON.stringify(user)
                         );
 
+                        const companyProfileResponse =
+                            await postJson(
+                                '/api/company/profile',
+                                {
+                                    company_name:
+                                        payload.name.trim(),
+
+                                    email:
+                                        payload.email.trim(),
+
+                                    phone:
+                                        payload.phone.trim(),
+
+                                    industry:
+                                        payload
+                                            .secondary_field
+                                            .trim()
+                                },
+                                token
+                            );
+
+
+                        localStorage.setItem(
+                            'ofc_company_profile',
+                            JSON.stringify(
+                                companyProfileResponse
+                                    ?.data
+                                    ?.profile || null
+                            )
+                        );
+
 
                         setAlert(
                             'Company account created successfully. Redirecting...',
@@ -2106,6 +2340,33 @@ document.addEventListener(
                         'training_partner'
                     ) {
 
+                        const trainingProfileResponse =
+                            await postJson(
+                                '/api/training-partner/profile',
+                                {
+                                    institute_name:
+                                        payload.name.trim(),
+
+                                    email:
+                                        payload.email.trim(),
+
+                                    phone:
+                                        payload.phone.trim()
+                                },
+                                token
+                            );
+
+
+                        localStorage.setItem(
+                            'ofc_training_partner_profile',
+                            JSON.stringify(
+                                trainingProfileResponse
+                                    ?.data
+                                    ?.profile || null
+                            )
+                        );
+
+
                         setAlert(
                             'Training partner account created successfully. Redirecting...',
                             'success'
@@ -2129,6 +2390,9 @@ document.addEventListener(
                         'onlyfreshers_mode',
                         'direct'
                     );
+                    localStorage.removeItem(
+                        'onlyfreshers_selected_mode'
+                    );
 
 
                     await postJson(
@@ -2150,13 +2414,13 @@ document.addEventListener(
 
 
                     setAlert(
-                        'Account created successfully. Redirecting...',
+                        'Account created successfully. Starting initial assessment...',
                         'success'
                     );
 
 
                     window.location.href =
-                        '/direct-mode/dashboard';
+                        '/direct-mode/assessments';
 
 
                 } catch (error) {

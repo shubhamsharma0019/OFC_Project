@@ -31,6 +31,7 @@ class CompanyProfileController extends Controller
                 ? 'Company profile fetched successfully.'
                 : 'Company profile abhi complete nahi hai.',
             'data' => [
+                'user' => $user,
                 'profile' => $profile,
             ],
         ]);

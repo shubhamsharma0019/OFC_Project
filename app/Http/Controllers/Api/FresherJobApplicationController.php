@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssessmentAttempt;
 use App\Models\Job;
 use App\Models\JobApplication;
 use Illuminate\Http\JsonResponse;
@@ -74,6 +75,31 @@ class FresherJobApplicationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Pehle fresher profile complete karein.',
+            ], 422);
+        }
+
+        if (
+            empty($fresherProfile->phone) ||
+            empty($fresherProfile->qualification) ||
+            empty($fresherProfile->skills) ||
+            empty($fresherProfile->resume)
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Job apply karne se pehle profile details, skills aur resume complete karein.',
+            ], 422);
+        }
+
+        $assessmentSubmitted = AssessmentAttempt::query()
+            ->where('fresher_profile_id', $fresherProfile->id)
+            ->where('assessment_type', 'initial')
+            ->where('status', 'submitted')
+            ->exists();
+
+        if (! $assessmentSubmitted) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Job apply karne se pehle initial assessment complete karein.',
             ], 422);
         }
 

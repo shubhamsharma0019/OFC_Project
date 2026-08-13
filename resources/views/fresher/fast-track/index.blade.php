@@ -77,9 +77,6 @@
         const user = data.user || FastTrack.user() || {};
         const profile = data.profile || {};
         const stats = data.statistics || {};
-        const assessment = data.initial_assessment || null;
-        const result = assessment?.result || {};
-        const score = result.overall_score || result.score_percentage || result.score || 0;
         const latestEnrollment = data.latest_course_enrollment || null;
 
         welcomeName.textContent = (user.name || user.email || 'Fresher') + '!';
@@ -87,21 +84,20 @@
 
         dashboardStatsGrid.innerHTML = [
             circleCard('Profile Completion', profile.profile_completion || 0, '#19a85b'),
-            circleCard('Assessment Score', score, '#7744eb'),
+            smallCard('CE', 'Course Enrollments', stats.total_course_enrollments || 0),
             smallCard('TR', 'Current Training', stats.active_trainings || stats.total_course_enrollments || 0),
             smallCard('NT', 'Notifications', unread || 0),
         ].join('');
 
         quickActions.innerHTML = [
             actionCard('CP', 'Complete Profile', '/fast-track/profile', Number(profile.profile_completion || 0) >= 100),
-            actionCard('GA', 'Initial Assessment', '/fast-track/assessment', !!assessment),
             actionCard('EF', 'Explore Fast Track', '/fast-track/courses', !!latestEnrollment),
             actionCard('VT', 'View Training', '/fast-track/training', Number(stats.total_course_enrollments || 0) > 0),
+            actionCard('FA', 'Final Assessment', '/fast-track/final-assessment', false),
         ].join('');
 
         const activities = [];
         if (profile.profile_id) activities.push(['PR', 'Profile loaded successfully', profile.qualification || profile.city || 'Profile active']);
-        if (assessment) activities.push(['AS', 'Initial assessment completed', FastTrack.date(assessment.submitted_at)]);
         (data.recent_applications || []).forEach((item) => activities.push(['AP', 'Applied for ' + FastTrack.courseName(item.job || { course_name: item.job?.title || 'Job' }), FastTrack.date(item.applied_at)]));
         (data.recent_certificates || []).forEach((item) => activities.push(['CE', 'Certificate earned', FastTrack.date(item.created_at)]));
         if (latestEnrollment) activities.push(['EN', 'Enrolled in ' + FastTrack.courseName(latestEnrollment.course), FastTrack.date(latestEnrollment.enrollment_date)]);
@@ -115,15 +111,15 @@
     function renderProfileMissing() {
         dashboardStatsGrid.innerHTML = [
             circleCard('Profile Completion', 0, '#19a85b'),
-            circleCard('Assessment Score', 0, '#7744eb'),
+            smallCard('CE', 'Course Enrollments', 0),
             smallCard('TR', 'Current Training', 0),
             smallCard('NT', 'Notifications', 0),
         ].join('');
         quickActions.innerHTML = [
             actionCard('CP', 'Complete Profile', '/fast-track/profile', false),
-            actionCard('GA', 'Initial Assessment', '/fast-track/assessment', false),
             actionCard('EF', 'Explore Fast Track', '/fast-track/courses', false),
             actionCard('VT', 'View Training', '/fast-track/training', false),
+            actionCard('FA', 'Final Assessment', '/fast-track/final-assessment', false),
         ].join('');
         recentActivity.innerHTML = '<p class="text-sm text-[#334b83]">Complete your profile to unlock dashboard activity.</p>';
     }

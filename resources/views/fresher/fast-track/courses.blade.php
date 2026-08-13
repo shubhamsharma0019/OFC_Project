@@ -59,10 +59,10 @@
 
         <article class="flex flex-col gap-5 rounded-lg border border-[#dce7f8] bg-[#eaf2ff] p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:px-9 lg:flex-row lg:items-center lg:justify-between">
             <div>
-                <h3 class="mb-2 text-base font-bold text-[#061942]">Not sure which course is right for you?</h3>
-                <p class="text-xs leading-5 text-[#536484]">Take the initial assessment and get personalized track recommendations.</p>
+                <h3 class="mb-2 text-base font-bold text-[#061942]">Choose a Fast Track course</h3>
+                <p class="text-xs leading-5 text-[#536484]">Explore approved courses, enroll, complete training, then unlock your final assessment.</p>
             </div>
-            <a class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-6 text-sm font-bold text-white transition hover:bg-[#064fc0]" href="/fast-track/assessment">Take Assessment</a>
+            <a class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-6 text-sm font-bold text-white transition hover:bg-[#064fc0]" href="/fast-track/training">My Training</a>
         </article>
     </section>
 @endsection
@@ -110,7 +110,7 @@
         const courses = filteredCourses();
         renderStats(fastTrackCourses);
         if (!courses.length) {
-            courseGrid.innerHTML = '<div class="sm:col-span-2 xl:col-span-4">' + FastTrack.emptyState('No courses available', 'Approved Fast Track courses will appear here according to your filters.', '/fast-track/assessment', 'Take Assessment') + '</div>';
+            courseGrid.innerHTML = '<div class="sm:col-span-2 xl:col-span-4">' + FastTrack.emptyState('No courses available', 'Approved Fast Track courses will appear here according to your filters.', '/fast-track/dashboard', 'Back to Dashboard') + '</div>';
             return;
         }
 

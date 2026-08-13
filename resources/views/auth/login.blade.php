@@ -37,6 +37,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $pageTitle }}</title>
+    @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-[#eaf3ff] font-sans font-medium text-[#061942]">
@@ -134,16 +135,6 @@
 
                 <button type="submit" id="loginButton" class="h-[46px] w-full rounded-[11px] bg-[#075fe4] text-lg font-semibold text-white shadow-[0_8px_18px_rgba(7,95,228,0.24)] transition hover:bg-[#003f9e]">Login</button>
             </form>
-
-            <div class="mx-2.5 my-4 flex items-center gap-[22px] text-sm text-[#52607a]">
-                <span class="h-px flex-1 bg-[#cddbf0]"></span>
-                <p>or</p>
-                <span class="h-px flex-1 bg-[#cddbf0]"></span>
-            </div>
-
-            <button class="h-11 w-full rounded-[11px] border border-[#cddbf0] bg-white text-base font-semibold text-[#061942] lg:text-sm" type="button">
-                <span class="mr-3.5 align-middle text-[22px] text-[#075fe4]">G</span>Continue with Google
-            </button>
 
             <p class="mt-4 text-center text-sm font-medium text-[#52607a]"><span class="mr-2.5 font-bold text-[#075fe4]">SH</span>Protected by enterprise-grade authentication</p>
         </section>
