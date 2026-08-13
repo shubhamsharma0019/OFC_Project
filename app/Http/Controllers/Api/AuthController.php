@@ -63,6 +63,13 @@ class AuthController extends Controller
             'status' => 'active',
         ]);
 
+        if ($user->role === 'fresher') {
+            $user->fresherProfile()->create([
+                'phone' => $validatedData['mobile'] ?? null,
+                'profile_completion' => filled($validatedData['mobile'] ?? null) ? 13 : 0,
+            ]);
+        }
+
         $token = $user
             ->createToken('onlyfreshers-auth-token')
             ->plainTextToken;

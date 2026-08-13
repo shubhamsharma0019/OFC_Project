@@ -35,7 +35,6 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     <aside class="side">
                         <article class="card side-card"><h2>Quick Actions</h2><div class="quick-list" data-quick-actions></div></article>
                         <article class="card side-card"><div class="completion-head"><h2>Profile Completion</h2><b data-completion-text>0% Completed</b></div><div class="progress"><span data-completion-bar></span></div><p class="complete-text" data-completion-copy>Complete your profile to get better job recommendations.</p><button class="outline" data-complete-now type="button" style="width:100%">Complete Now</button></article>
-                        <article class="card side-card"><h2>Account Security</h2><div class="security-list" data-security-list></div><button class="outline" data-security-button type="button" style="width:100%;margin-top:10px">Manage Security</button></article>
                     </aside>
                 </div>
             </section>
@@ -59,8 +58,6 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         const tabs = [
             ['account', 'Account Settings', 'user'],
             ['notifications', 'Notifications', 'bell'],
-            ['privacy', 'Privacy Settings', 'lock'],
-            ['email', 'Email Preferences', 'mail'],
             ['password', 'Change Password', 'key'],
             ['linked', 'Linked Accounts', 'link'],
             ['deactivate', 'Deactivate Account', 'trash'],
@@ -102,8 +99,6 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const titles = {
                 account: ['Account Settings', 'Update your personal information and account details'],
                 notifications: ['Notifications', 'Manage alerts for jobs, applications and interviews'],
-                privacy: ['Privacy Settings', 'Control profile visibility and data preferences'],
-                email: ['Email Preferences', 'Choose what emails you receive from OnlyFreshers'],
                 password: ['Change Password', 'Update your account password'],
                 linked: ['Linked Accounts', 'Connect or manage external accounts'],
                 deactivate: ['Deactivate Account', 'Temporarily disable or close your account'],
@@ -111,7 +106,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             $('[data-panel-title]').textContent = titles[state.active][0];
             $('[data-panel-copy]').textContent = titles[state.active][1];
             $('[data-edit-profile]').style.display = state.active === 'account' ? 'inline-flex' : 'none';
-            const renderers = { account: renderAccount, notifications: renderNotifications, privacy: renderPrivacy, email: renderEmail, password: renderPassword, linked: renderLinked, deactivate: renderDeactivate };
+            const renderers = { account: renderAccount, notifications: renderNotifications, password: renderPassword, linked: renderLinked, deactivate: renderDeactivate };
             renderers[state.active]();
             renderSide();
             hydrateIcons();
@@ -121,18 +116,19 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const readonly = state.editing ? '' : 'readonly';
             const disabled = state.editing ? '' : 'disabled';
             const p = state.profile;
+            const resumeText = p.resume ? 'Uploaded' : 'Not uploaded';
             $('[data-panel-root]').innerHTML = `
                 <div class="profile-form">
                     <div class="photo"><label>Profile Photo</label><div class="photo-img">${profilePhotoUrl(p) ? `<img src="${escapeAttr(profilePhotoUrl(p))}" alt="Profile photo">` : ''}</div><small>JPG, PNG or GIF. Max size 2MB.</small></div>
-                    ${field('Full Name', 'name', state.user.name || '', readonly)}
+                    ${field('Full Name', 'name', state.user.name || '', 'readonly')}
                     ${field('Phone Number', 'phone', p.phone || '', readonly, '+91')}
                     ${field('Email Address', 'email', state.user.email || '', 'readonly')}
-                    ${selectField('Location', 'city', p.city || '', ['Bangalore, Karnataka', 'Noida', 'Hyderabad, Telangana', 'Pune, Maharashtra', 'Remote'], disabled)}
-                    ${field('Date of Birth', 'dob', state.prefs.dob || '', readonly, '', 'calendar')}
-                    ${selectField('Current Position', 'position', state.prefs.position || 'Student', ['Student', 'Fresher', 'Intern', 'Working Professional'], disabled)}
-                    ${selectField('Gender', 'gender', state.prefs.gender || '', ['Female', 'Male', 'Other', 'Prefer not to say'], disabled)}
+                    ${field('Location', 'city', p.city || '', readonly)}
                     ${selectField('Highest Education', 'qualification', p.qualification || '', ['B.Tech / BE', 'BCA', 'MCA', 'B.Sc', 'Diploma', 'Other'], disabled)}
-                    <div class="about"><label>About Me</label><textarea data-input="about" ${readonly}>${escapeHtml(state.prefs.about || 'Passionate about technology and solving real-world problems. Looking for opportunities to learn and grow.')}</textarea></div>
+                    ${field('College Name', 'college_name', p.college_name || '', readonly)}
+                    ${field('Passing Year', 'passing_year', p.passing_year || '', readonly)}
+                    ${field('Resume Status', 'resume_status', resumeText, 'readonly')}
+                    <div class="about"><label>Skills</label><textarea data-input="skills" ${readonly}>${escapeHtml(p.skills || '')}</textarea></div>
                     <div class="save-row"><button class="primary" data-save-profile type="button" ${state.editing ? '' : 'disabled'}>Save Changes</button></div>
                 </div>`;
             $('[data-save-profile]')?.addEventListener('click', saveProfile);
@@ -152,22 +148,6 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 ['application_updates', 'Application Updates', 'Status changes for applied jobs', true],
                 ['interview_reminders', 'Interview Reminders', 'Upcoming interview reminders', true],
                 ['offer_updates', 'Offer Updates', 'Offer and onboarding updates', true],
-            ]);
-        }
-
-        function renderPrivacy() {
-            panelToggles([
-                ['profile_visible', 'Profile Visible to Companies', 'Allow verified companies to view your fresher profile', true],
-                ['resume_visible', 'Resume Visible', 'Share uploaded resume with companies you apply to', true],
-                ['activity_tracking', 'Activity Tracking', 'Use activity to personalize recommendations', true],
-            ]);
-        }
-
-        function renderEmail() {
-            panelToggles([
-                ['weekly_digest', 'Weekly Digest', 'Receive weekly job and application summary', true],
-                ['marketing_email', 'Career Tips Emails', 'Receive fresher career resources and tips', false],
-                ['security_email', 'Security Emails', 'Receive login and security notifications', true],
             ]);
         }
 
@@ -205,27 +185,24 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         }
 
         function renderSide() {
-            const completion = Number(state.dashboard.profile?.profile_completion || state.profile.profile_completion || 0);
+            const completion = Math.max(0, Math.min(100, Number(state.dashboard.profile?.profile_completion || state.profile.profile_completion || 0)));
+            const stats = state.dashboard.statistics || {};
+            const assessment = state.dashboard.initial_assessment || {};
+            const recommendedMode = assessment.recommended_mode || localStorage.getItem('onlyfreshers_selected_mode') || 'direct';
+            const jobsUrl = recommendedMode === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/jobs';
             $('[data-completion-text]').textContent = `${completion}% Completed`;
             $('[data-completion-bar]').style.width = `${completion}%`;
-            $('[data-completion-copy]').textContent = completion >= 80 ? 'Great job! Complete your profile to get better job recommendations.' : 'Complete your profile to unlock better job matches.';
+            $('[data-completion-copy]').textContent = completion >= 100 ? 'Your profile is complete and ready for applications.' : 'Complete your profile to unlock better job matches.';
             $('[data-quick-actions]').innerHTML = [
-                ['Update Resume', 'Upload your latest resume', 'file', '/direct-mode/profile'],
-                ['Download My Data', 'Download your account data', 'download', '#'],
-                ['Manage Devices', 'View and manage logged in devices', 'monitor', '#'],
-                ['Communication Settings', 'Manage how we contact you', 'message', '#'],
+                ['Update Resume', state.profile.resume ? 'Resume uploaded' : 'Upload your latest resume', 'file', '/direct-mode/profile'],
+                ['Browse Jobs', recommendedMode === 'fast_track' ? 'Continue Fast Track journey' : 'Explore Direct Mode jobs', 'briefcase', jobsUrl],
+                ['My Applications', `${Number(stats.total_applications || 0)} applications submitted`, 'file', '/direct-mode/applications'],
+                ['Interviews', `${Number(stats.scheduled_interviews || 0)} scheduled interviews`, 'calendar', '/direct-mode/interviews'],
             ].map(([title, text, icon, url]) => `<a class="quick" href="${url}"><span class="action-icon" data-icon="${icon}"></span><div><h3>${title}</h3><p>${text}</p></div><span class="icon" data-icon="chevron-right"></span></a>`).join('');
-            $('[data-security-list]').innerHTML = [
-                ['Email Verified', state.user.email || 'Email not available', 'shield', true],
-                ['Phone Verified', state.profile.phone || 'Phone not added', 'phone', Boolean(state.profile.phone)],
-                ['Two-Factor Authentication', state.prefs.two_factor ? 'Enabled' : 'Not enabled', 'lock', Boolean(state.prefs.two_factor)],
-            ].map(([title, text, icon, ok]) => `<div class="security-row"><span class="action-icon ${ok ? 'green-soft' : ''}" data-icon="${icon}"></span><div><h3>${title}</h3><p>${escapeHtml(text)}</p></div><span class="icon verified" data-icon="${ok ? 'check' : 'x'}"></span></div>`).join('');
         }
 
         async function saveProfile() {
             const data = readInputs();
-            state.prefs = { ...state.prefs, dob: data.dob, position: data.position, gender: data.gender, about: data.about };
-            localStorage.setItem('onlyfreshers_settings_prefs', JSON.stringify(state.prefs));
             if (!token) {
                 showAlert('Profile save karne ke liye login required hai.', 'error');
                 return;
@@ -234,11 +211,17 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 const response = await fetch('/api/fresher/profile', {
                     method: 'POST',
                     headers: headers(true),
-                    body: JSON.stringify({ phone: data.phone, city: data.city, qualification: data.qualification }),
+                    body: JSON.stringify({
+                        phone: data.phone,
+                        city: data.city,
+                        qualification: data.qualification,
+                        college_name: data.college_name,
+                        passing_year: data.passing_year || null,
+                        skills: data.skills,
+                    }),
                 });
                 const payload = await response.json();
                 if (!response.ok || payload.success === false) throw new Error(payload.message || 'Profile save nahi hua.');
-                state.user.name = data.name || state.user.name;
                 localStorage.setItem('onlyfreshers_user', JSON.stringify(state.user));
                 state.editing = false;
                 showAlert('Settings save ho gayi.');
@@ -274,7 +257,6 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 render();
             });
             $('[data-complete-now]').addEventListener('click', () => window.location.href = '/direct-mode/profile');
-            $('[data-security-button]').addEventListener('click', () => { state.active = 'privacy'; render(); });
             const headerSearch = document.querySelector('.search-top input');
             if (headerSearch) {
                 headerSearch.addEventListener('keydown', event => {

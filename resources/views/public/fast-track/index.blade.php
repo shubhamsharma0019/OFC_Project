@@ -91,7 +91,7 @@
                     @endforeach
                 </div>
 
-                <a href="/direct-mode/register" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#0554cc]">
+                <a href="/fast-track/register" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#0554cc]">
                     Start Your Fast Track Journey ->
                 </a>
             </div>

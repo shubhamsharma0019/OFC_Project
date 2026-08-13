@@ -350,9 +350,11 @@
     qs('[data-track-action]').addEventListener('click', () => {
         if (dashboard?.initial_assessment) {
             const recommended = dashboard.initial_assessment.recommended_mode || 'direct';
-            localStorage.setItem('onlyfreshers_selected_mode', recommended);
+            const intended = localStorage.getItem('onlyfreshers_intended_mode');
+            const selected = intended === 'fast_track' ? 'fast_track' : recommended;
+            localStorage.setItem('onlyfreshers_selected_mode', selected);
             alert('Opening your recommended mode.', 'success');
-            window.location.href = recommended === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/dashboard';
+            window.location.href = selected === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/dashboard';
             return;
         }
         startAssessment();

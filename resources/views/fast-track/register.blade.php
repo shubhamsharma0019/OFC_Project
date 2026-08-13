@@ -89,7 +89,9 @@
                 localStorage.setItem('ofc_auth_user', JSON.stringify(user));
                 localStorage.setItem('onlyfreshers_token', result.data.token);
                 localStorage.setItem('onlyfreshers_user', JSON.stringify(user));
-                window.location.href = '/direct-mode/profile';
+                localStorage.setItem('onlyfreshers_intended_mode', 'fast_track');
+                localStorage.removeItem('onlyfreshers_selected_mode');
+                window.location.href = '/direct-mode/assessments';
             } catch (error) {
                 showError(error.message || 'Register failed.');
                 submitButton.disabled = false;

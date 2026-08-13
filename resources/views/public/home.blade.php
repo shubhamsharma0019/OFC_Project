@@ -56,7 +56,7 @@
                 </div>
             </a>
 
-            <article class="flex flex-col items-center gap-6 rounded-lg border border-[#f5d4ba] bg-[#fffaf5] p-6 shadow-[0_12px_26px_rgba(6,25,66,0.04)] sm:flex-row sm:items-start">
+            <a href="/fast-track" class="flex flex-col items-center gap-6 rounded-lg border border-[#f5d4ba] bg-[#fffaf5] p-6 shadow-[0_12px_26px_rgba(6,25,66,0.04)] transition hover:-translate-y-0.5 hover:border-[#f2b17e] hover:shadow-[0_16px_32px_rgba(6,25,66,0.08)] focus:outline-none focus:ring-2 focus:ring-[#f37a22] focus:ring-offset-2 sm:flex-row sm:items-start">
                 <div class="flex h-[105px] w-[105px] shrink-0 items-center justify-center rounded-full bg-[#fff0e2] text-[#f37a22] [&>svg]:h-12 [&>svg]:w-12">@include('components.public.icon', ['name' => 'rocket'])</div>
                 <div class="min-w-0 flex-1">
                     <h2 class="mb-[15px] text-center text-xl font-semibold text-[#061942] sm:text-left">Fast Track Mode</h2>
@@ -67,7 +67,7 @@
                         <li class="flex gap-2 before:font-extrabold before:text-[#f37a22] before:content-['•']">Earn certificate</li>
                     </ul>
                 </div>
-            </article>
+            </a>
         </div>
     </section>
 

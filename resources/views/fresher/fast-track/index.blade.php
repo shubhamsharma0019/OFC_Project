@@ -210,7 +210,11 @@
         const profile = data.profile || {};
         const stats = data.statistics || {};
         const latestEnrollment = data.latest_course_enrollment || null;
+        const assessment = data.initial_assessment || {};
+        const result = assessment.result || {};
+        const recommendedTrack = result.recommended_track || '';
 
+<<<<<<< HEAD
         const assessment =
             data.initial_assessment ||
             data.latest_assessment ||
@@ -242,6 +246,11 @@
             'ofc_auth_user',
             JSON.stringify(user)
         );
+=======
+        welcomeName.textContent = (user.name || user.email || 'Fresher') + '!';
+        localStorage.setItem('ofc_auth_user', JSON.stringify(user));
+        localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+>>>>>>> 49ce049 (ritik changes)
 
         dashboardStatsGrid.innerHTML = [
             circleCard(
@@ -381,6 +390,7 @@
 
         if (latestEnrollment?.course) {
             const progress = FastTrack.progress(latestEnrollment);
+<<<<<<< HEAD
 
             latestTrainingCard.innerHTML = `
                 <div class="relative z-10 w-full max-w-[420px]">
@@ -427,6 +437,11 @@
                     </div>
                 </div>
             `;
+=======
+            latestTrainingCard.innerHTML = `<div class="relative z-10 w-full max-w-[420px]"><h3 class="mb-3 text-[22px] font-bold text-[#061942]">${FastTrack.esc(FastTrack.courseName(latestEnrollment.course))}</h3><p class="mb-4 text-[15px] leading-6 text-[#24344f]">${FastTrack.esc(FastTrack.partnerName(latestEnrollment.course))}</p><div class="mb-5 h-3 overflow-hidden rounded-full bg-[#dce7f8]"><div class="h-full rounded-full bg-[#075fe4]" style="width:${progress}%"></div></div><div class="flex flex-wrap gap-3"><a href="/fast-track/training-progress" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-6 text-sm font-bold text-white">View Progress</a><a href="/fast-track/course-details?course=${encodeURIComponent(latestEnrollment.course.id)}" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#075fe4] bg-white px-6 text-sm font-bold text-[#075fe4]">Course Details</a></div></div>`;
+        } else if (recommendedTrack) {
+            latestTrainingCard.innerHTML = `<div class="relative z-10 w-full max-w-[460px]"><h3 class="mb-3 text-[22px] font-bold text-[#061942]">${FastTrack.esc(recommendedTrack)}</h3><p class="mb-2 text-[15px] leading-6 text-[#24344f]">Recommended from your initial assessment score.</p><p class="mb-5 text-sm font-bold text-[#075fe4]">Score: ${FastTrack.esc(result.overall_score || 0)}%</p><a href="/fast-track/courses?track=${encodeURIComponent(recommendedTrack)}" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,.18)] transition hover:bg-[#064fc0]">View Recommended Courses</a></div><div class="absolute bottom-7 right-12 hidden h-[155px] w-[155px] rotate-[-28deg] items-center justify-center rounded-full bg-[#e1edff] text-[42px] font-black text-[#075fe4] sm:flex">RT</div>`;
+>>>>>>> 49ce049 (ritik changes)
         }
     }
 
@@ -514,9 +529,10 @@
             ) || 0;
 
         if (dashboardResponse.error) {
-            renderProfileMissing();
+            window.location.href = '/fast-track/profile';
             return;
         }
+<<<<<<< HEAD
 
         renderDashboard(
             FastTrack.apiData(dashboardResponse) || {},
@@ -524,5 +540,16 @@
         );
     })
     .catch(renderProfileMissing);
+=======
+        const dashboard = FastTrack.apiData(dashboardResponse) || {};
+        if (!dashboard.initial_assessment || dashboard.initial_assessment.status !== 'submitted') {
+            localStorage.setItem('onlyfreshers_intended_mode', 'fast_track');
+            localStorage.removeItem('onlyfreshers_selected_mode');
+            window.location.href = '/direct-mode/assessments';
+            return;
+        }
+        renderDashboard(dashboard, unread);
+    }).catch(renderProfileMissing);
+>>>>>>> 49ce049 (ritik changes)
 </script>
 @endpush

@@ -108,6 +108,7 @@
                     localStorage.setItem('ofc_auth_user', JSON.stringify(user || {}));
                     localStorage.setItem('onlyfreshers_token', result.data.token);
                     localStorage.setItem('onlyfreshers_user', JSON.stringify(user || {}));
+                    localStorage.setItem('onlyfreshers_intended_mode', 'fast_track');
 
                     const dashboardResponse = await fetch('/api/fresher/dashboard', {
                         headers: {
@@ -116,20 +117,21 @@
                         },
                     });
                     const dashboardPayload = await dashboardResponse.json().catch(() => ({}));
-                    const profile = dashboardPayload.data?.profile || {};
                     const assessment = dashboardPayload.data?.initial_assessment;
 
-                    if (!dashboardResponse.ok || !profile.resume_uploaded || !profile.qualification || !profile.skills) {
+                    if (!dashboardResponse.ok) {
                         window.location.href = '/direct-mode/profile';
                         return;
                     }
 
                     if (!assessment || assessment.status !== 'submitted') {
+                        localStorage.removeItem('onlyfreshers_selected_mode');
                         window.location.href = '/direct-mode/assessments';
                         return;
                     }
 
-                    window.location.href = '/fast-track/courses';
+                    localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+                    window.location.href = '/fast-track/dashboard';
                 } catch (error) {
                     alert(error.message || 'Login failed.');
                     submitButton.disabled = false;
