@@ -282,6 +282,20 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const paginated = notifications.data?.notifications;
             state.notifications = paginated?.data || notifications.data?.notifications || [];
             state.unreadCount = unread.data?.unread_count || 0;
+            if (state.unreadCount > 0) {
+                fetch('/api/notifications/read-all', {
+                    method: 'PATCH',
+                    headers: { ...headers(), 'Content-Type': 'application/json' },
+                    body: '{}',
+                }).catch(() => {});
+                state.notifications = state.notifications.map(note => ({ ...note, is_read: true }));
+                state.unreadCount = 0;
+                const bell = document.querySelector('.top-bell b');
+                if (bell) {
+                    bell.textContent = '0';
+                    bell.style.display = 'none';
+                }
+            }
             state.certificates = certificates.data?.certificates || state.dashboard.recent_certificates || [];
             render();
         }

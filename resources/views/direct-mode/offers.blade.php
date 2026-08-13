@@ -15,6 +15,13 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 .empty{border:1px dashed #cbd8ee;border-radius:10px;background:#fbfdff;padding:26px;text-align:center;color:#43517b}.alert{display:none;margin:0 0 14px;padding:11px 13px;border-radius:8px;border:1px solid #bcd3ff;background:#eef5ff;color:#06123f;font-size:13px;font-weight:700}.alert.show{display:block}.logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}.tab{cursor:pointer}.tab-count{font-size:11px;color:#657197;margin-left:4px}.pill.orange{border:1px solid #ffd4a1;background:#fff2df;color:#f07800}.pill.red{border:1px solid #ffb8bd;background:#fff0f1;color:#e01e37}.primary[disabled],.outline[disabled]{opacity:.65;cursor:not-allowed}
 .metric-icon,.side-icon{display:flex!important;align-items:center!important;justify-content:center!important;line-height:0!important;padding:0!important}
 .metric-icon svg,.side-icon svg{display:block!important;width:21px!important;height:21px!important;margin:0!important;flex:0 0 auto!important}
+.metrics{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.metric{height:auto!important;min-height:92px!important;grid-template-columns:48px minmax(0,1fr)!important;gap:12px!important;overflow:hidden!important}
+.metric div,.summary-row div,.doc div,.next-row div{min-width:0!important}
+.metric strong,.metric b{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.1!important}
+.metric span,.summary-row span,.doc p,.next-row p{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;line-height:1.2!important}
+.summary-row{height:auto!important;min-height:68px!important;grid-template-columns:48px minmax(0,1fr) 18px!important;overflow:hidden!important}
+.doc{height:auto!important;min-height:52px!important;grid-template-columns:34px minmax(0,1fr) 22px!important;overflow:hidden!important}
 </style>
 @endpush
 

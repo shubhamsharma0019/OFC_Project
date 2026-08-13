@@ -258,8 +258,7 @@ class FresherAssessmentController extends Controller
         }
 
         $activeQuestionsCount = AssessmentQuestion::query()
-            ->where('assessment_type', 'initial')
-            ->where('is_active', true)
+            ->whereIn('id', $this->activeInitialQuestions()->pluck('id'))
             ->count();
 
         if ($activeQuestionsCount === 0) {
@@ -322,12 +321,10 @@ class FresherAssessmentController extends Controller
             ], 422);
         }
 
-        $questions = AssessmentQuestion::query()
-            ->where('assessment_type', 'initial')
-            ->where('is_active', true)
-            ->select(['id', 'category', 'question', 'option_a', 'option_b', 'option_c', 'option_d'])
-            ->orderBy('id')
-            ->get();
+        $questions = $this->activeInitialQuestions()
+            ->map
+            ->only(['id', 'category', 'question', 'option_a', 'option_b', 'option_c', 'option_d'])
+            ->values();
 
         return response()->json([
             'success' => true,
@@ -361,11 +358,7 @@ class FresherAssessmentController extends Controller
             'answers.*.selected_option' => ['required', 'string', Rule::in(['A', 'B', 'C', 'D'])],
         ]);
 
-        $activeQuestions = AssessmentQuestion::query()
-            ->where('assessment_type', 'initial')
-            ->where('is_active', true)
-            ->orderBy('id')
-            ->get();
+        $activeQuestions = $this->activeInitialQuestions();
 
         $activeQuestionIds = $activeQuestions->pluck('id')->sort()->values();
         $submittedQuestionIds = collect($validated['answers'])->pluck('question_id')->sort()->values();
@@ -510,5 +503,152 @@ class FresherAssessmentController extends Controller
             $aptitude => 'Aptitude Booster',
             default => 'Communication Skills',
         };
+    }
+
+    private function activeInitialQuestions()
+    {
+        $this->ensureDefaultInitialQuestions();
+
+        $questions = AssessmentQuestion::query()
+            ->where('assessment_type', 'initial')
+            ->where('is_active', true)
+            ->orderBy('category')
+            ->orderBy('id')
+            ->get();
+
+        $duplicateTexts = $questions
+            ->groupBy(fn ($question) => $this->normalizeQuestionText($question->question))
+            ->filter(fn ($group) => $group->pluck('category')->unique()->count() > 1)
+            ->keys();
+
+        if ($duplicateTexts->isEmpty()) {
+            return $questions;
+        }
+
+        return $questions
+            ->reject(fn ($question) => $duplicateTexts->contains($this->normalizeQuestionText($question->question)))
+            ->values();
+    }
+
+    private function normalizeQuestionText(string $question): string
+    {
+        return trim(preg_replace('/\s+/', ' ', strtolower($question)));
+    }
+
+    private function ensureDefaultInitialQuestions(): void
+    {
+        foreach ($this->defaultInitialQuestions() as $category => $questions) {
+            $activeCount = AssessmentQuestion::query()
+                ->where('assessment_type', 'initial')
+                ->where('category', $category)
+                ->where('is_active', true)
+                ->count();
+
+            if ($activeCount >= 3) {
+                continue;
+            }
+
+            foreach ($questions as $question) {
+                AssessmentQuestion::firstOrCreate(
+                    [
+                        'assessment_type' => 'initial',
+                        'category' => $category,
+                        'question' => $question['question'],
+                    ],
+                    [
+                        'option_a' => $question['option_a'],
+                        'option_b' => $question['option_b'],
+                        'option_c' => $question['option_c'],
+                        'option_d' => $question['option_d'],
+                        'correct_option' => $question['correct_option'],
+                        'is_active' => true,
+                    ]
+                );
+            }
+        }
+    }
+
+    private function defaultInitialQuestions(): array
+    {
+        return [
+            'technical' => [
+                [
+                    'question' => 'Which HTML tag is used to create a hyperlink?',
+                    'option_a' => '<a>',
+                    'option_b' => '<link>',
+                    'option_c' => '<href>',
+                    'option_d' => '<url>',
+                    'correct_option' => 'A',
+                ],
+                [
+                    'question' => 'Which SQL command is used to fetch records from a table?',
+                    'option_a' => 'INSERT',
+                    'option_b' => 'SELECT',
+                    'option_c' => 'UPDATE',
+                    'option_d' => 'DELETE',
+                    'correct_option' => 'B',
+                ],
+                [
+                    'question' => 'What does CSS mainly control on a web page?',
+                    'option_a' => 'Database queries',
+                    'option_b' => 'Server routing',
+                    'option_c' => 'Visual styling',
+                    'option_d' => 'Password hashing',
+                    'correct_option' => 'C',
+                ],
+            ],
+            'aptitude' => [
+                [
+                    'question' => 'If 5 workers finish a task in 10 days, how many worker-days are needed?',
+                    'option_a' => '15',
+                    'option_b' => '25',
+                    'option_c' => '50',
+                    'option_d' => '100',
+                    'correct_option' => 'C',
+                ],
+                [
+                    'question' => 'Find the next number in the series: 2, 4, 8, 16, ?',
+                    'option_a' => '20',
+                    'option_b' => '24',
+                    'option_c' => '30',
+                    'option_d' => '32',
+                    'correct_option' => 'D',
+                ],
+                [
+                    'question' => 'A product marked at 1000 is sold at 10% discount. What is the selling price?',
+                    'option_a' => '800',
+                    'option_b' => '850',
+                    'option_c' => '900',
+                    'option_d' => '950',
+                    'correct_option' => 'C',
+                ],
+            ],
+            'communication' => [
+                [
+                    'question' => 'Choose the correctly written sentence.',
+                    'option_a' => 'She go to office daily.',
+                    'option_b' => 'She goes to office daily.',
+                    'option_c' => 'She going office daily.',
+                    'option_d' => 'She gone to office daily.',
+                    'correct_option' => 'B',
+                ],
+                [
+                    'question' => 'Which phrase is best for a polite professional email closing?',
+                    'option_a' => 'Reply fast',
+                    'option_b' => 'Do it now',
+                    'option_c' => 'Thanks and regards',
+                    'option_d' => 'Whatever',
+                    'correct_option' => 'C',
+                ],
+                [
+                    'question' => 'What is the main purpose of active listening?',
+                    'option_a' => 'To interrupt quickly',
+                    'option_b' => 'To understand the speaker clearly',
+                    'option_c' => 'To avoid responding',
+                    'option_d' => 'To change the topic',
+                    'correct_option' => 'B',
+                ],
+            ],
+        ];
     }
 }

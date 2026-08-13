@@ -21,22 +21,10 @@
     <p id="authMessage" class="mb-5 hidden rounded-lg border px-4 py-3 text-sm font-bold"></p>
 
     <form id="companyProfileForm" class="grid gap-4 sm:gap-5 md:grid-cols-2">
-        <label class="block">
-            <span class="mb-2 block text-xs font-bold text-[#061942]">Company Name <span class="text-[#ff3045]">*</span></span>
-            <input name="company_name" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]" required>
-        </label>
-        <label class="block">
-            <span class="mb-2 block text-xs font-bold text-[#061942]">Industry</span>
-            <input name="industry" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
-        </label>
-        <label class="block">
-            <span class="mb-2 block text-xs font-bold text-[#061942]">Email</span>
-            <input name="email" type="email" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
-        </label>
-        <label class="block">
-            <span class="mb-2 block text-xs font-bold text-[#061942]">Phone</span>
-            <input name="phone" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
-        </label>
+        <input name="company_name" type="hidden">
+        <input name="industry" type="hidden">
+        <input name="email" type="hidden">
+        <input name="phone" type="hidden">
         <label class="block">
             <span class="mb-2 block text-xs font-bold text-[#061942]">Website</span>
             <input name="website" type="text" placeholder="https://example.com" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
@@ -69,15 +57,26 @@
         message.className = `mb-5 rounded-lg border px-4 py-3 text-sm font-bold ${type === 'success' ? 'border-[#b9e7c9] bg-[#f1fff5] text-[#138a43]' : 'border-[#ffd1d7] bg-[#fff5f6] text-[#ff3045]'}`;
     };
 
-    const fillForm = (profile) => {
-        if (!profile) return;
+    const fillForm = (profile, user = {}) => {
+        const fallbackUser = JSON.parse(localStorage.getItem('ofc_auth_user') || '{}');
+        const account = { ...fallbackUser, ...user };
+        const values = {
+            company_name: profile?.company_name || account.name || '',
+            industry: profile?.industry || '',
+            email: profile?.email || account.email || '',
+            phone: profile?.phone || account.mobile || '',
+            website: profile?.website || '',
+            address: profile?.address || '',
+            description: profile?.description || '',
+        };
+
         for (const field of ['company_name', 'industry', 'email', 'phone', 'website', 'address', 'description']) {
-            form[field].value = profile[field] || '';
+            form[field].value = values[field] || '';
         }
-        const name = profile.company_name || 'Company';
+        const name = values.company_name || 'Company';
         document.getElementById('companyInitial').textContent = name.charAt(0).toUpperCase();
         document.getElementById('formTitle').textContent = name;
-        document.getElementById('formSubtitle').textContent = `Approval status: ${profile.approval_status || 'pending'}`;
+        document.getElementById('formSubtitle').textContent = `Approval status: ${profile?.approval_status || 'pending'}`;
     };
 
     async function loadProfile() {
@@ -100,7 +99,10 @@
         }
 
         const result = await response.json();
-        fillForm(result.data?.profile);
+        if (result.data?.user) {
+            localStorage.setItem('ofc_auth_user', JSON.stringify(result.data.user));
+        }
+        fillForm(result.data?.profile, result.data?.user);
     }
 
     form.addEventListener('submit', async (event) => {

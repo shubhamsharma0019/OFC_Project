@@ -77,6 +77,7 @@
         "'": '&#039;',
         '"': '&quot;'
     }[char]));
+    const escapeAttr = (value) => escapeHtml(value).replace(/`/g, '&#096;');
     const formatStatus = (status) => String(status || '').replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
     const formatDate = (value) => value ? new Date(value).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
     const initials = (name) => String(name || 'C').split(' ').map((part) => part.charAt(0)).join('').slice(0, 2).toUpperCase();
@@ -155,6 +156,9 @@
             const user = app.fresher_profile?.user || {};
             const job = app.job || {};
             const place = interview.interview_mode === 'online' ? interview.meeting_link : interview.interview_location;
+            const joinButton = interview.interview_mode === 'online' && interview.meeting_link
+                ? `<a href="${escapeAttr(interview.meeting_link)}" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg border border-[#075fe4] bg-[#075fe4] px-3 py-2 text-xs font-bold text-white" title="Open Google Meet">Join Meet</a>`
+                : '';
 
             return `
                 <tr class="border-b border-[#edf2fb] last:border-b-0">
@@ -174,11 +178,12 @@
                     <td class="px-4 py-4 align-middle text-[13px]">
                         ${interview.status === 'scheduled' ? `
                             <div class="flex flex-wrap gap-2">
+                                ${joinButton}
                                 <button data-id="${interview.id}" data-status="completed" data-application-status="hired" class="status-action rounded-lg border border-[#b9e7c9] px-3 py-2 text-xs font-bold text-[#138a43]" type="button">Hire</button>
                                 <button data-id="${interview.id}" data-status="completed" data-application-status="rejected" class="status-action rounded-lg border border-[#ffd1d7] px-3 py-2 text-xs font-bold text-[#ff3045]" type="button">Reject</button>
                                 <button data-id="${interview.id}" data-status="cancelled" class="status-action rounded-lg border border-[#dce7f8] px-3 py-2 text-xs font-bold text-[#52607a]" type="button">Cancel</button>
                             </div>
-                        ` : '-'}
+                        ` : (joinButton || '-')}
                     </td>
                 </tr>
             `;

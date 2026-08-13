@@ -31,6 +31,12 @@ class AuthController extends Controller
                 'unique:users,email',
             ],
 
+            'mobile' => [
+                'nullable',
+                'string',
+                'max:20',
+            ],
+
             'password' => [
                 'required',
                 'string',
@@ -51,6 +57,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
+            'mobile' => $validatedData['mobile'] ?? null,
             'password' => Hash::make($validatedData['password']),
             'role' => $validatedData['role'],
             'status' => 'active',

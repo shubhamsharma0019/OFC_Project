@@ -59,6 +59,16 @@ class FresherDashboardController extends Controller
             ->latest('enrollment_date')
             ->first();
 
+        $assessmentResult = $initialAssessment?->result;
+        $directModeThreshold = (float) config(
+            'onlyfreshers.assessment.direct_mode_threshold',
+            33
+        );
+        $overallScore = (float) ($assessmentResult?->overall_score ?? 0);
+        $recommendedMode = $assessmentResult
+            ? ($overallScore >= $directModeThreshold ? 'direct' : 'fast_track')
+            : null;
+
         $upcomingInterviews = Interview::query()
             ->whereHas('jobApplication', function ($query) use (
                 $fresherProfile
@@ -196,7 +206,9 @@ class FresherDashboardController extends Controller
                         'status' => $initialAssessment->status,
                         'submitted_at' =>
                             $initialAssessment->submitted_at,
-                        'result' => $initialAssessment->result,
+                        'result' => $assessmentResult,
+                        'direct_mode_threshold' => $directModeThreshold,
+                        'recommended_mode' => $recommendedMode,
                     ]
                     : null,
 

@@ -19,7 +19,14 @@
 </style>
 <style>
     .tabs{min-height:46px!important;height:auto!important}.tab{min-width:0!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;padding:0 10px!important;white-space:nowrap!important}.tab b{min-width:20px;height:20px;border-radius:999px;background:#eef4ff;color:#064cff;display:none;place-items:center;font-size:11px;line-height:20px}.tab.has-count b{display:grid}.tab span{overflow:hidden;text-overflow:ellipsis}.tab.active b{background:#064cff;color:#fff}
-    .content-grid{grid-template-columns:1fr!important}.side{display:none!important}.stat{min-width:0!important;grid-template-columns:58px minmax(0,1fr)!important;gap:16px!important;overflow:hidden!important}.stat-icon{width:50px!important;height:50px!important;align-self:center!important;justify-self:center!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;line-height:0!important}.stat-icon svg{width:22px!important;height:22px!important;display:block!important;flex:0 0 auto!important;margin:0!important;position:static!important;transform:none!important}.stat div{min-width:0!important;overflow:hidden!important}.stat h3{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.stat strong{font-size:clamp(24px,1.9vw,30px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important}.stat span{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.2!important}
+    .content-grid{grid-template-columns:1fr!important}.side{display:none!important}.stat{min-width:0!important;grid-template-columns:58px minmax(0,1fr)!important;gap:16px!important;overflow:hidden!important;align-items:center!important}.stat-icon{width:50px!important;height:50px!important;align-self:center!important;justify-self:center!important;display:grid!important;place-items:center!important;padding:0!important;line-height:0!important;margin:auto!important}.stat-icon svg{width:22px!important;height:22px!important;display:block!important;margin:0!important;position:relative!important;top:0!important;left:0!important;transform:none!important;vertical-align:middle!important}.stat div{min-width:0!important;overflow:hidden!important}.stat h3{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.stat strong{font-size:clamp(24px,1.9vw,30px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important}.stat span{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.2!important}
+    body.assessment-onboarding .sidebar,body.assessment-onboarding .topbar{display:none!important}
+    body.assessment-onboarding .shell{grid-template-columns:1fr!important}
+    body.assessment-onboarding .main{height:100vh!important;grid-template-rows:minmax(0,max-content)!important}
+    body.assessment-onboarding .assess-page{min-height:100vh!important;padding:24px 26px 34px!important}
+    body.assessment-onboarding .welcome{display:none!important}
+    body.assessment-onboarding .panel{max-width:1120px;margin:0 auto}
+    @media(max-width:760px){body.assessment-onboarding .assess-page{padding:14px!important}}
 </style>
 @endpush
 
@@ -55,6 +62,10 @@
                         <div class="skill" data-skill="aptitude"><span>Aptitude</span><div class="bar"><span style="width:0%"></span></div><strong>0%</strong></div>
                         <div class="skill" data-skill="communication"><span>Communication</span><div class="bar"><span style="width:0%"></span></div><strong>0%</strong></div>
                         <button class="outline" type="button" data-start-assessment>Start Assessment</button>
+                        <div class="mode-actions" data-mode-actions style="display:none;margin-top:14px;gap:10px;flex-wrap:wrap">
+                            <button class="outline" type="button" data-choose-mode="direct">Continue with Direct Mode</button>
+                            <button class="outline" type="button" data-choose-mode="fast_track">Continue with Fast Track Mode</button>
+                        </div>
                     </div>
                 </article>
                 <article class="card table-card">
@@ -96,6 +107,10 @@
     const token = localStorage.getItem('onlyfreshers_token');
     const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || 'null');
     const headers = { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+    const syncAssessmentChrome = () => {
+        document.body.classList.toggle('assessment-onboarding', !localStorage.getItem('onlyfreshers_selected_mode'));
+    };
+    syncAssessmentChrome();
     let activeFilter = 'all';
     let dashboard = null;
     let currentAttempt = null;
@@ -151,9 +166,32 @@
         setSkill('technical', result?.technical_score);
         setSkill('aptitude', result?.aptitude_score);
         setSkill('communication', result?.communication_score);
-        qs('[data-track-title]').textContent = result?.recommended_track || 'Initial Assessment';
-        qs('[data-track-text]').textContent = result ? 'Follow this track to improve your weakest skill area.' : 'Complete your assessment to unlock recommendations.';
+        const recommended = data?.initial_assessment?.recommended_mode || null;
+        qs('[data-track-title]').textContent = result
+            ? (recommended === 'fast_track' ? 'Fast Track Mode Recommended' : 'Direct Mode Recommended')
+            : 'Initial Assessment';
+        qs('[data-track-text]').textContent = result
+            ? (recommended === 'fast_track'
+                ? 'Your score suggests training first will help you become job-ready faster. You can still choose Direct Mode if you want.'
+                : 'Your score shows you are ready to continue with Direct Mode jobs. You can still choose Fast Track Mode if you want.')
+            : 'Complete your initial assessment to know whether Direct Mode or Fast Track Mode fits you better.';
         qs('[data-track-action]').textContent = result ? 'Explore Career Track' : 'Start Assessment';
+        renderModeActions(data?.initial_assessment);
+    };
+    const renderModeActions = assessment => {
+        const wrap = qs('[data-mode-actions]');
+        if (!wrap) return;
+        const result = assessment?.result;
+        wrap.style.display = result ? 'flex' : 'none';
+        if (!result) return;
+        const recommended = assessment?.recommended_mode || 'direct';
+        qsa('[data-choose-mode]').forEach(button => {
+            const isRecommended = button.dataset.chooseMode === recommended;
+            button.className = isRecommended ? 'primary' : 'outline';
+            button.textContent = button.dataset.chooseMode === 'direct'
+                ? `Continue with Direct Mode${isRecommended ? ' (Recommended)' : ''}`
+                : `Continue with Fast Track Mode${isRecommended ? ' (Recommended)' : ''}`;
+        });
     };
     const renderTabCounts = () => {
         const rows = recentRows();
@@ -311,12 +349,24 @@
     qs('[data-start-assessment]').addEventListener('click', startAssessment);
     qs('[data-track-action]').addEventListener('click', () => {
         if (dashboard?.initial_assessment) {
-            alert('Opening recommended jobs for your assessment track.', 'success');
-            window.location.href = '/direct-mode/jobs';
+            const recommended = dashboard.initial_assessment.recommended_mode || 'direct';
+            localStorage.setItem('onlyfreshers_selected_mode', recommended);
+            alert('Opening your recommended mode.', 'success');
+            window.location.href = recommended === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/dashboard';
             return;
         }
         startAssessment();
     });
+    qsa('[data-choose-mode]').forEach(button => button.addEventListener('click', () => {
+        const recommended = dashboard?.initial_assessment?.recommended_mode || 'direct';
+        const chosen = recommended === 'fast_track' ? 'fast_track' : button.dataset.chooseMode;
+        localStorage.setItem('onlyfreshers_selected_mode', chosen);
+        syncAssessmentChrome();
+        if (recommended === 'fast_track' && button.dataset.chooseMode === 'direct') {
+            alert('Your assessment score is better suited for Fast Track Mode first.', 'success');
+        }
+        window.location.href = chosen === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/dashboard';
+    }));
     qs('[data-submit-assessment]').addEventListener('click', submitAssessment);
     qs('[data-close-runner]').addEventListener('click', () => {
         qs('[data-runner]').classList.remove('active');

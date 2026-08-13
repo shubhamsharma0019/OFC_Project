@@ -294,6 +294,49 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             }
         }
 
+        async function enforceFresherJourney() {
+            if (!token) {
+                window.location.href = '/direct-mode/login';
+                return false;
+            }
+
+            try {
+                const response = await fetch('/api/fresher/dashboard', { headers: apiHeaders() });
+                const payload = await response.json();
+                if (!response.ok || payload.success === false) {
+                    window.location.href = '/direct-mode/assessments';
+                    return false;
+                }
+
+                const assessment = payload.data?.initial_assessment;
+
+                if (!assessment || assessment.status !== 'submitted') {
+                    window.location.href = '/direct-mode/assessments';
+                    return false;
+                }
+
+                const selectedMode = localStorage.getItem('onlyfreshers_selected_mode');
+                if (assessment.recommended_mode === 'fast_track') {
+                    localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+                    window.location.href = '/fast-track/dashboard';
+                    return false;
+                }
+                if (selectedMode === 'fast_track') {
+                    window.location.href = '/fast-track/dashboard';
+                    return false;
+                }
+                if (selectedMode !== 'direct') {
+                    window.location.href = '/direct-mode/assessments';
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                window.location.href = '/direct-mode/assessments';
+                return false;
+            }
+        }
+
         async function loadJob() {
             try {
                 const response = await fetch(`/api/jobs/${jobId}`, { headers: { 'Accept': 'application/json' } });
@@ -379,9 +422,8 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         updateUserChrome();
         wireTabs();
         wireActions();
-        loadApplications().then(loadJob);
+        enforceFresherJourney().then(allowed => {
+            if (allowed) loadApplications().then(loadJob);
+        });
     </script>
 @endpush
-
-
-
