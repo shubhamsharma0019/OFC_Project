@@ -12,8 +12,18 @@
     $activePage = 'notifications';
 @endphp
 
+@push('styles')
+<style>
+    .admin-notifications-page,
+    .admin-notifications-page * {
+        font-family: Inter, Arial, Helvetica, sans-serif !important;
+        font-weight: 500 !important;
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="grid gap-5">
+    <section class="admin-notifications-page grid gap-5">
         <div id="notificationStats" class="grid gap-4 sm:grid-cols-3">
             <article class="rounded-lg border border-[#dce7f8] bg-white p-5 text-sm text-[#52607a] shadow-[0_12px_26px_rgba(6,25,66,.05)] sm:col-span-3">Loading notifications...</article>
         </div>
@@ -73,8 +83,13 @@
     function number(value) { return Number(value || 0).toLocaleString('en-IN'); }
     function formatDate(value) { if (!value) return '-'; const date = new Date(value); return Number.isNaN(date.getTime()) ? value : date.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
     function valueOf(item, keys, fallback = '-') { for (const key of keys) if (item?.[key]) return item[key]; return fallback; }
+    const statIcons = {
+        Total: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+        Unread: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a2 2 0 0 1-2.06 0L2 7"/><circle cx="18" cy="18" r="3"/><path d="M18 16.8v1.4l.9.6"/></svg>',
+        'This Page': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>',
+    };
     function statCard(label, value, tone) {
-        return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><span class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-xs font-black ${tone}">${escapeHtml(label.slice(0, 2).toUpperCase())}</span><p class="mt-4 text-xs font-bold text-[#52607a]">${escapeHtml(label)}</p><h2 class="mt-2 text-3xl font-bold text-[#061942]">${escapeHtml(value)}</h2></article>`;
+        return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><span class="inline-flex h-10 w-10 items-center justify-center rounded-lg ${tone} [&>svg]:h-5 [&>svg]:w-5">${statIcons[label] || statIcons.Total}</span><p class="mt-4 text-xs text-[#52607a]">${escapeHtml(label)}</p><h2 class="mt-2 text-3xl text-[#061942]">${escapeHtml(value)}</h2></article>`;
     }
     function filteredNotifications() {
         const query = notificationSearch.value.trim().toLowerCase();

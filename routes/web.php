@@ -39,7 +39,8 @@ Route::redirect('/traning-partner/{path}', '/training-partner/{path}')
 
 Route::view('/direct-mode/dashboard', 'direct-mode.dashboard');
 Route::view('/direct-mode/profile', 'direct-mode.profile');
-Route::view('/direct-mode/assessments', 'direct-mode.assessments');
+Route::view('/direct-mode/flow-selection', 'direct-mode.assessments');
+Route::redirect('/direct-mode/assessments', '/direct-mode/flow-selection');
 Route::view('/direct-mode/jobs', 'direct-mode.jobs');
 Route::view('/direct-mode/jobs/{slug}', 'direct-mode.job-details');
 Route::view('/direct-mode/applications', 'direct-mode.applications');
@@ -51,7 +52,7 @@ Route::view('/direct-mode/logout', 'direct-mode.logout');
 
 Route::redirect('/fresher/dashboard', '/direct-mode/dashboard');
 Route::redirect('/fresher/profile', '/direct-mode/profile');
-Route::redirect('/fresher/assessments', '/direct-mode/assessments');
+Route::redirect('/fresher/assessments', '/direct-mode/flow-selection');
 Route::redirect('/fresher/jobs', '/direct-mode/jobs');
 Route::redirect('/fresher/applications', '/direct-mode/applications');
 Route::redirect('/fresher/interviews', '/direct-mode/interviews');
@@ -62,7 +63,7 @@ Route::redirect('/fresher/settings', '/direct-mode/settings');
 Route::view('/fast-track/dashboard', 'fresher.fast-track.index');
 Route::view('/fast-track/profile', 'fresher.profile.show');
 Route::view('/fast-track/courses', 'fresher.fast-track.courses');
-Route::redirect('/fast-track/assessment', '/fast-track/dashboard');
+Route::redirect('/fast-track/assessment', '/direct-mode/flow-selection');
 Route::view('/fast-track/final-assessment', 'fresher.final-assessment.index');
 Route::view('/fast-track/course-details', 'fresher.fast-track.course-details');
 Route::view('/fast-track/training', 'fresher.fast-track.training');
@@ -191,6 +192,7 @@ Route::view('/training-partner/certificates/show', 'training-partner.certificate
 Route::view('/training-partner/reports', 'training-partner.reports.index');
 Route::view('/training-partner/payouts', 'training-partner.payouts.index');
 Route::view('/training-partner/notifications', 'training-partner.notifications.index');
+Route::view('/training-partner/settings', 'training-partner.settings.index');
 
 Route::view('/training-partner/students', 'training-partner.students.index');
 Route::view('/training-partner/students/show', 'training-partner.students.show');

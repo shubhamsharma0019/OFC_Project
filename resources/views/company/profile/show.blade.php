@@ -8,11 +8,24 @@
     $activePage = 'profile';
 @endphp
 
+@push('styles')
+<style>
+    .company-profile-page,
+    .company-profile-page * {
+        font-family: Inter, Arial, Helvetica, sans-serif !important;
+        font-weight: 500 !important;
+    }
+
+    .company-profile-page [data-company-profile-initial] {
+        box-shadow: 0 18px 34px rgba(7, 95, 228, 0.18);
+    }
+</style>
+@endpush
 
 @section('content')
 
 <section
-    class="min-h-[690px] rounded-lg border border-[#dce7f8] bg-white px-4 py-5 shadow-[0_10px_24px_rgba(6,25,66,0.04)] sm:px-6 sm:py-7 xl:px-9 xl:py-8"
+    class="company-profile-page min-h-[690px] rounded-lg border border-[#dce7f8] bg-white px-4 py-5 shadow-[0_10px_24px_rgba(6,25,66,0.04)] sm:px-6 sm:py-7 xl:px-9 xl:py-8"
 >
 
     {{-- =========================================================

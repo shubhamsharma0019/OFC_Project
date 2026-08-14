@@ -21,7 +21,7 @@
             <section class="auth-card">
                 <aside class="intro">
                     <div class="illustration">
-                        <img src="/study.svg" alt="Company registration" onerror="this.src='/direct.svg'">
+                        <img src="{{ asset('home-hero-students.png') }}" alt="OnlyFreshers students" onerror="this.src='/direct.svg'">
                     </div>
                 </aside>
 

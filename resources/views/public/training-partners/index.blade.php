@@ -6,26 +6,150 @@
     $activePage = 'training-partners';
 @endphp
 
-@section('content')
-    <main class="bg-[linear-gradient(120deg,#ffffff,#f8fbff)] py-12 lg:pb-[60px]">
-        <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
-            <div id="partnerListing">
-                <h1 class="m-0 text-[32px] font-semibold leading-tight text-[#061942] sm:text-[42px]">Our Trusted <span class="text-[#075fe4]">Training Partners</span></h1>
-                <p class="mb-6 mt-2.5 max-w-3xl text-base font-medium text-[#34445e]">Explore verified and industry-aligned training partners who help freshers build job-ready skills.</p>
+@push('styles')
+<style>
+    .partner-filter-panel {
+        border: 1px solid #cfe0ff;
+        border-radius: 18px;
+        background: linear-gradient(145deg, #ffffff, #f3f8ff);
+        box-shadow: 0 18px 38px rgba(7, 95, 228, .08);
+    }
+    .partner-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 292px;
+        border: 1px solid #cfe0ff;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #ffffff, #f7fbff);
+        box-shadow: 0 18px 38px rgba(7, 95, 228, .09);
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .partner-card:hover {
+        transform: translateY(-6px);
+        border-color: #9fc0f8;
+        box-shadow: 0 26px 52px rgba(7, 95, 228, .15);
+    }
+    .partner-card:before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 4px;
+        background: linear-gradient(90deg, #075fe4, #17a6a8);
+    }
+    .partner-card:after {
+        content: "";
+        position: absolute;
+        right: -52px;
+        top: -58px;
+        width: 150px;
+        height: 150px;
+        border-radius: 999px;
+        background: rgba(220, 236, 255, .86);
+        filter: blur(22px);
+        pointer-events: none;
+    }
+    .partner-badge {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        font-size: 23px;
+        font-weight: 900;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .75), 0 12px 24px rgba(7, 95, 228, .08);
+    }
+    .partner-chip {
+        border: 1px solid #cfe0ff;
+        border-radius: 999px;
+        background: #fff;
+        padding: 7px 12px;
+        color: #075fe4;
+        font-size: 12px;
+        font-weight: 800;
+    }
+    .partner-meta {
+        border: 1px solid #dce7f8;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, .78);
+        padding: 12px 14px;
+        color: #34445e;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: right;
+    }
+    .partner-card-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .partner-card-button {
+        display: inline-flex;
+        width: 100%;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #075fe4;
+        border-radius: 12px;
+        background: #075fe4;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        box-shadow: 0 10px 20px rgba(7, 95, 228, .18);
+        transition: background .2s ease;
+    }
+    .partner-card-button:hover { background: #0554cc; }
+</style>
+@endpush
 
-                <div class="mb-6 grid gap-3.5 rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_10px_24px_rgba(6,25,66,0.04)] lg:grid-cols-[1.3fr_1fr_1fr_160px] lg:gap-6">
-                    <input id="partnerSearch" class="h-[46px] rounded-lg border border-[#dce7f8] bg-white px-4 text-sm font-medium text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4]" type="text" placeholder="Search by partner or course">
-                    <select id="courseFilter" class="h-[46px] rounded-lg border border-[#dce7f8] bg-white px-4 text-sm font-medium text-[#52607a] outline-none focus:border-[#075fe4]"><option value="">All Categories</option></select>
-                    <select id="locationFilter" class="h-[46px] rounded-lg border border-[#dce7f8] bg-white px-4 text-sm font-medium text-[#52607a] outline-none focus:border-[#075fe4]"><option value="">All Locations</option></select>
-                    <button id="partnerSearchButton" class="h-[46px] rounded-lg border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white transition hover:bg-[#003f9e]" type="button">Search</button>
+@section('content')
+    <main class="bg-white">
+        <section class="relative overflow-hidden bg-[linear-gradient(120deg,#ffffff,#f4f8ff)] py-10 lg:py-[55px]">
+            <div class="pointer-events-none absolute -left-24 top-1/2 hidden h-[300px] w-[430px] -translate-y-1/2 rounded-full bg-[#dcecff]/65 blur-3xl lg:block"></div>
+            <div class="pointer-events-none absolute left-0 top-0 hidden h-full w-[46%] bg-[radial-gradient(circle_at_14%_28%,rgba(207,228,255,0.48)_0%,rgba(244,249,255,0.42)_34%,rgba(255,255,255,0)_72%)] lg:block"></div>
+            <div class="pointer-events-none absolute inset-y-0 right-0 hidden w-[54%] bg-[radial-gradient(circle_at_80%_28%,rgba(207,228,255,0.56)_0%,rgba(244,248,255,0.48)_38%,rgba(255,255,255,0)_76%)] lg:block"></div>
+            <div class="relative mx-auto grid w-full max-w-7xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-[52px] lg:px-8">
+                <div>
+                    <h1 class="m-0 text-[38px] font-semibold leading-tight text-[#061942] sm:text-[52px]">Our Trusted <span class="text-[#075fe4]">Training Partners</span></h1>
+                    <p class="mt-4 max-w-2xl text-lg font-medium leading-[1.7] text-[#34445e]">Explore verified and industry-aligned training partners who help freshers build practical, job-ready skills.</p>
+                    <div class="mt-7 grid max-w-[620px] grid-cols-3 gap-3">
+                        <div class="rounded-xl border border-[#cfe0ff] bg-white/72 p-4 shadow-[0_14px_30px_rgba(7,95,228,0.09)]">
+                            <strong id="partnerHeroCount" class="block font-['Inter'] text-3xl font-semibold text-[#061942]">...</strong>
+                            <span class="text-xs font-semibold text-[#34445e]">Partners</span>
+                        </div>
+                        <div class="rounded-xl border border-[#cfe0ff] bg-white/72 p-4 shadow-[0_14px_30px_rgba(7,95,228,0.09)]">
+                            <strong class="block font-['Inter'] text-3xl font-semibold text-[#061942]">100%</strong>
+                            <span class="text-xs font-semibold text-[#34445e]">Verified</span>
+                        </div>
+                        <div class="rounded-xl border border-[#cfe0ff] bg-white/72 p-4 shadow-[0_14px_30px_rgba(7,95,228,0.09)]">
+                            <strong class="block font-['Inter'] text-3xl font-semibold text-[#061942]">Job</strong>
+                            <span class="text-xs font-semibold text-[#34445e]">Ready Skills</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="{{ asset('training-partner-hero.png') }}" alt="Training partner mentoring freshers" class="block h-[280px] w-full rounded-2xl object-cover object-center shadow-[0_22px_48px_rgba(6,25,66,0.12)] sm:h-[340px] lg:h-[380px]">
+                </div>
+            </div>
+        </section>
+
+        <div class="mx-auto w-full max-w-7xl px-5 py-10 sm:px-6 lg:px-8 lg:pb-[60px]">
+            <div id="partnerListing">
+                <div class="partner-filter-panel mb-6 grid gap-4 p-5 lg:grid-cols-[1.35fr_1fr_1fr_170px]">
+                    <input id="partnerSearch" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]" type="text" placeholder="Search by partner or course">
+                    <select id="courseFilter" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]"><option value="">All Categories</option></select>
+                    <select id="locationFilter" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]"><option value="">All Locations</option></select>
+                    <button id="partnerSearchButton" class="h-12 rounded-xl border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_10px_22px_rgba(7,95,228,0.18)] transition hover:-translate-y-0.5 hover:bg-[#003f9e]" type="button">Search</button>
                 </div>
 
-                <div class="mb-4 flex items-center justify-between text-sm font-bold text-[#061942]">
+                <div class="mb-5 flex items-center justify-between rounded-xl border border-[#e5eefc] bg-white px-4 py-3 text-sm font-bold text-[#061942] shadow-[0_10px_22px_rgba(6,25,66,0.035)]">
                     <span id="partnerCount">Loading partners...</span>
                     <button id="clearPartnerFilters" class="text-[#075fe4]" type="button">Clear Filters</button>
                 </div>
 
-                <div id="partnerGrid" class="grid gap-[22px] lg:grid-cols-3">
+                <div id="partnerGrid" class="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
                     <article class="rounded-lg border border-[#dce7f8] bg-white p-6 text-sm font-semibold text-[#34445e] shadow-[0_12px_26px_rgba(6,25,66,0.04)] lg:col-span-3">Loading training partners...</article>
                 </div>
             </div>
@@ -45,6 +169,7 @@
     const partnerGrid = document.getElementById('partnerGrid');
     const partnerDetailContent = document.getElementById('partnerDetailContent');
     const partnerCount = document.getElementById('partnerCount');
+    const partnerHeroCount = document.getElementById('partnerHeroCount');
     const partnerSearch = document.getElementById('partnerSearch');
     const courseFilter = document.getElementById('courseFilter');
     const locationFilter = document.getElementById('locationFilter');
@@ -113,20 +238,20 @@
             const courses = coursesOf(partner);
             const tags = courses.flatMap((course) => [course.course_name, course.category]).filter(Boolean).slice(0, 4);
             const iconClass = ['bg-[#eff5ff] text-[#075fe4]', 'bg-[#eafaf8] text-[#17a078]', 'bg-[#f1efff] text-[#5142b9]', 'bg-[#fff0e2] text-[#f37a22]'][index % 4];
-            return `<article class="rounded-lg border border-[#dce7f8] bg-white px-6 pb-[22px] pt-7 shadow-[0_12px_26px_rgba(6,25,66,0.04)]">
-                <div class="mb-[18px] flex flex-col gap-[18px] sm:flex-row sm:items-start sm:justify-between">
-                    <div class="flex items-center gap-[13px]">
-                        <div class="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-[10px] text-xl font-extrabold ${iconClass}">${esc(initials(partner.institute_name))}</div>
-                        <h2 class="m-0 text-[22px] font-semibold leading-tight text-[#061942]">${esc(partner.institute_name || 'Training Partner')}<small class="mt-1 block text-[11px] font-medium uppercase tracking-[2px] text-[#24344f]">${esc((partner.user && partner.user.name) || 'Approved Partner')}</small></h2>
+            return `<article class="partner-card px-5 pb-5 pt-6">
+                <div class="relative z-10 mb-5 grid grid-cols-[minmax(0,1fr)_96px] gap-4">
+                    <div class="flex min-w-0 items-start gap-4">
+                        <div class="partner-badge shrink-0 ${iconClass}">${esc(initials(partner.institute_name))}</div>
+                        <h2 class="partner-card-title m-0 min-w-0 font-['Inter'] text-[22px] font-semibold leading-tight text-[#061942]">${esc(partner.institute_name || 'Training Partner')}<small class="mt-1.5 block text-[11px] font-semibold uppercase tracking-[2px] text-[#075fe4]">${esc((partner.user && partner.user.name) || 'Approved Partner')}</small></h2>
                     </div>
-                    <div class="text-sm font-medium text-[#34445e] sm:text-right">
+                    <div class="partner-meta self-start">
                         <div class="font-bold text-[#061942]">${esc(partner.active_courses_count || courses.length)} Courses</div>
-                        <div class="mt-2">${esc(partner.location || 'India')}</div>
+                        <div class="mt-1.5">${esc(partner.location || 'India')}</div>
                     </div>
                 </div>
-                <div class="mb-4 flex flex-wrap gap-2">${tags.length ? tags.map((tag) => `<span class="rounded-md border border-[#a9c5f6] bg-[#f8fbff] px-3 py-1.5 text-xs font-bold text-[#075fe4]">${esc(tag)}</span>`).join('') : '<span class="rounded-md border border-[#a9c5f6] bg-[#f8fbff] px-3 py-1.5 text-xs font-bold text-[#075fe4]">Fast Track</span>'}</div>
-                <p class="mb-[18px] line-clamp-3 text-sm font-medium leading-[1.7] text-[#34445e]">${esc(partner.about_institute || 'Verified training partner offering industry-ready courses for freshers.')}</p>
-                <button class="view-partner mx-auto block h-10 w-[170px] rounded-lg border border-[#a9c5f6] bg-white px-5 text-sm font-bold text-[#075fe4] transition hover:bg-[#075fe4] hover:text-white" type="button" data-id="${esc(partner.id)}">View Details</button>
+                <div class="relative z-10 mb-4 flex flex-wrap gap-2">${tags.length ? tags.map((tag) => `<span class="partner-chip">${esc(tag)}</span>`).join('') : '<span class="partner-chip">Fast Track</span>'}</div>
+                <p class="relative z-10 mb-5 line-clamp-3 text-sm font-semibold leading-[1.75] text-[#34445e]">${esc(partner.about_institute || 'Verified training partner offering industry-ready courses for freshers.')}</p>
+                <button class="view-partner partner-card-button relative z-10 mt-auto" type="button" data-id="${esc(partner.id)}">View Details</button>
             </article>`;
         }).join('');
     }
@@ -215,10 +340,12 @@
         getJson('/api/training-partners?per_page=100').then((result) => {
             const page = dataOf(result, 'training_partners') || {};
             partners = Array.isArray(page) ? page : (page.data || []);
+            partnerHeroCount.textContent = partners.length;
             setOptions();
             renderPartners();
             if (initialPartnerId) showPartnerDetail(initialPartnerId);
         }).catch((error) => {
+            partnerHeroCount.textContent = '0';
             partnerCount.textContent = '0 Training Partners Found';
             partnerGrid.innerHTML = `<article class="rounded-lg border border-[#ffd6a8] bg-[#fff8ef] p-6 text-sm font-semibold text-[#8a5200] lg:col-span-3">${esc(error.message || 'Partners load nahi ho paaye.')}</article>`;
         });

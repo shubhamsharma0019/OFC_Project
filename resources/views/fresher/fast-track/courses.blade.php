@@ -80,7 +80,9 @@
     const clearFilters = document.getElementById('clearFilters');
     const courseGrid = document.getElementById('courseGrid');
     const courseStats = document.getElementById('courseStats');
+    const initialTrack = new URLSearchParams(window.location.search).get('track') || '';
     let fastTrackCourses = [];
+    if (initialTrack && courseSearchInput) courseSearchInput.value = initialTrack;
 
     function statCard(label, value) {
         return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]"><p class="text-xs font-bold text-[#52607a]">${FastTrack.esc(label)}</p><h2 class="mt-2 text-3xl font-bold text-[#061942]">${FastTrack.esc(value)}</h2></article>`;

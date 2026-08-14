@@ -250,7 +250,7 @@
             const journeyAssessment = journey.initial_assessment;
 
             if (!journeyAssessment || journeyAssessment.status !== 'submitted') {
-                window.location.href = '/direct-mode/assessments';
+                window.location.href = '/direct-mode/flow-selection';
                 return;
             }
 
@@ -265,7 +265,7 @@
                 return;
             }
             if (selectedMode !== 'direct') {
-                window.location.href = '/direct-mode/assessments';
+                window.location.href = '/direct-mode/flow-selection';
                 return;
             }
 

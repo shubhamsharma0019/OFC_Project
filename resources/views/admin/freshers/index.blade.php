@@ -8,8 +8,18 @@
     $activePage = 'freshers';
 @endphp
 
+@push('styles')
+<style>
+    .admin-freshers-page,
+    .admin-freshers-page * {
+        font-family: Inter, Arial, Helvetica, sans-serif !important;
+        font-weight: 500 !important;
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="grid gap-5">
+    <section class="admin-freshers-page grid gap-5">
         <div id="fresherStats" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <article class="rounded-lg border border-[#dce7f8] bg-white p-5 text-sm text-[#52607a] shadow-[0_12px_26px_rgba(6,25,66,.05)] sm:col-span-2 xl:col-span-4">Loading freshers...</article>
         </div>
@@ -57,7 +67,16 @@
     function escapeHtml(value) { return String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]); }
     function number(value) { return Number(value || 0).toLocaleString('en-IN'); }
     function badgeClass(status) { return status === 'active' ? 'bg-[#e8f8ef] text-[#078346]' : 'bg-[#fff0f1] text-[#ff1f2f]'; }
-    function statCard(label, value, tone) { return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><span class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-xs font-black ${tone}">${escapeHtml(label.slice(0, 2).toUpperCase())}</span><p class="mt-4 text-xs font-bold text-[#52607a]">${escapeHtml(label)}</p><h2 class="mt-2 text-3xl font-bold text-[#061942]">${escapeHtml(value)}</h2></article>`; }
+    const statIcons = {
+        page: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16h16V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8M8 17h5"></path></svg>',
+        active: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path><path d="m17 11 2 2 4-5"></path></svg>',
+        blocked: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m5.7 5.7 12.6 12.6"></path></svg>',
+        profiles: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path></svg>',
+    };
+    function statCard(label, value, tone) {
+        const key = label === 'This Page' ? 'page' : label.toLowerCase();
+        return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><span class="inline-flex h-10 w-10 items-center justify-center rounded-lg ${tone} [&>svg]:h-5 [&>svg]:w-5">${statIcons[key] || statIcons.profiles}</span><p class="mt-4 text-xs font-bold text-[#52607a]">${escapeHtml(label)}</p><h2 class="mt-2 text-3xl font-bold text-[#061942]">${escapeHtml(value)}</h2></article>`;
+    }
     function renderStats() {
         fresherStats.innerHTML = [
             statCard('This Page', number(freshers.length), 'bg-[#eaf2ff] text-[#075fe4]'),

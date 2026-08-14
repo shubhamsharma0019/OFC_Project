@@ -8,46 +8,68 @@
     $activePage = 'dashboard';
 @endphp
 
+@push('styles')
+<style>
+    .admin-dashboard-page,
+    .admin-dashboard-page * {
+        font-family: Inter, Arial, Helvetica, sans-serif !important;
+        font-weight: 500 !important;
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="grid gap-5">
-        <div id="dashboardStats" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <article class="rounded-lg border border-[#dce7f8] bg-white p-5 text-sm text-[#52607a] shadow-[0_12px_26px_rgba(6,25,66,.05)] sm:col-span-2 xl:col-span-4">Loading dashboard...</article>
+    <section class="admin-dashboard-page grid gap-6">
+        <div id="dashboardStats" class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            <article class="rounded-2xl border border-[#dce7f8] bg-white p-6 text-sm text-[#52607a] shadow-[0_18px_38px_rgba(6,25,66,.06)] sm:col-span-2 xl:col-span-4">Loading dashboard...</article>
         </div>
 
-        <div class="grid gap-5 xl:grid-cols-[1.35fr_.95fr]">
-            <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]">
-                <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <h2 class="text-lg font-bold text-[#061942]">Platform Overview</h2>
-                    <span id="totalRevenue" class="text-sm font-bold text-[#075fe4]">Rs. 0 Revenue</span>
+        <div class="grid gap-6 xl:grid-cols-[1.35fr_.95fr]">
+            <article class="overflow-hidden rounded-2xl border border-[#dce7f8] bg-white shadow-[0_18px_42px_rgba(6,25,66,.07)]">
+                <div class="flex flex-col gap-2 border-b border-[#edf3fb] bg-[linear-gradient(135deg,#ffffff,#f7fbff)] px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-[#061942]">Platform Overview</h2>
+                        <p class="mt-1 text-xs font-semibold text-[#52607a]">Live platform metrics at a glance</p>
+                    </div>
+                    <span id="totalRevenue" class="inline-flex h-9 items-center rounded-full bg-[#eaf2ff] px-4 text-sm font-bold text-[#075fe4]">Rs. 0 Revenue</span>
                 </div>
-                <div id="platformOverview" class="grid min-h-64 items-end gap-3 rounded-lg bg-[#f8fbff] p-5 sm:grid-cols-6">
+                <div id="platformOverview" class="grid min-h-72 items-end gap-4 bg-[#fbfdff] p-6 sm:grid-cols-6">
                     <div class="text-sm text-[#52607a] sm:col-span-6">Loading overview...</div>
                 </div>
             </article>
 
-            <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]">
-                <h2 class="mb-4 text-lg font-bold text-[#061942]">Approval Queue</h2>
-                <div id="approvalQueue" class="grid gap-3">
-                    <div class="rounded-lg border border-[#edf2fb] p-4 text-sm font-semibold text-[#52607a]">Loading approvals...</div>
+            <article class="overflow-hidden rounded-2xl border border-[#dce7f8] bg-white shadow-[0_18px_42px_rgba(6,25,66,.07)]">
+                <div class="border-b border-[#edf3fb] bg-[linear-gradient(135deg,#ffffff,#f7fbff)] px-6 py-5">
+                    <h2 class="text-xl font-bold text-[#061942]">Approval Queue</h2>
+                    <p class="mt-1 text-xs font-semibold text-[#52607a]">Profiles that need admin action</p>
+                </div>
+                <div id="approvalQueue" class="grid gap-3 p-6">
+                    <div class="rounded-xl border border-[#edf2fb] p-4 text-sm font-semibold text-[#52607a]">Loading approvals...</div>
                 </div>
             </article>
         </div>
 
-        <div class="grid gap-5 xl:grid-cols-2">
-            <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]">
-                <div class="mb-4 flex items-center justify-between gap-3">
-                    <h2 class="text-lg font-bold text-[#061942]">Recent Activity</h2>
-                    <a href="/admin/notifications" class="text-xs font-bold text-[#075fe4]">View Notifications</a>
+        <div class="grid gap-6 xl:grid-cols-2">
+            <article class="overflow-hidden rounded-2xl border border-[#dce7f8] bg-white shadow-[0_18px_42px_rgba(6,25,66,.07)]">
+                <div class="flex items-center justify-between gap-3 border-b border-[#edf3fb] bg-[linear-gradient(135deg,#ffffff,#f7fbff)] px-6 py-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-[#061942]">Recent Activity</h2>
+                        <p class="mt-1 text-xs font-semibold text-[#52607a]">Latest companies, partners and jobs</p>
+                    </div>
+                    <a href="/admin/notifications" class="inline-flex h-9 items-center rounded-full bg-[#eaf2ff] px-4 text-xs font-bold text-[#075fe4]">View Notifications</a>
                 </div>
-                <div id="recentActivity" class="grid gap-3">
-                    <div class="rounded-lg border border-[#edf2fb] p-4 text-sm font-semibold text-[#52607a]">Loading activity...</div>
+                <div id="recentActivity" class="grid gap-3 p-6">
+                    <div class="rounded-xl border border-[#edf2fb] p-4 text-sm font-semibold text-[#52607a]">Loading activity...</div>
                 </div>
             </article>
 
-            <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]">
-                <h2 class="mb-4 text-lg font-bold text-[#061942]">Recent Enrollments</h2>
-                <div id="recentEnrollments" class="grid gap-3">
-                    <div class="rounded-lg border border-[#edf2fb] p-4 text-sm font-semibold text-[#52607a]">Loading enrollments...</div>
+            <article class="overflow-hidden rounded-2xl border border-[#dce7f8] bg-white shadow-[0_18px_42px_rgba(6,25,66,.07)]">
+                <div class="border-b border-[#edf3fb] bg-[linear-gradient(135deg,#ffffff,#f7fbff)] px-6 py-5">
+                    <h2 class="text-xl font-bold text-[#061942]">Recent Enrollments</h2>
+                    <p class="mt-1 text-xs font-semibold text-[#52607a]">Fresh course enrollment activity</p>
+                </div>
+                <div id="recentEnrollments" class="grid gap-3 p-6">
+                    <div class="rounded-xl border border-[#edf2fb] p-4 text-sm font-semibold text-[#52607a]">Loading enrollments...</div>
                 </div>
             </article>
         </div>
@@ -78,12 +100,29 @@
         if (days === 1) return '1 day ago';
         return days + ' days ago';
     }
+    const statIcons = {
+        freshers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"></circle><path d="M3 19c0-3 2.5-5 6-5"></path><circle cx="17" cy="9" r="2.5"></circle><path d="M14 19c0-2.4 1.8-4 4-4"></path></svg>',
+        companies: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16"></path><path d="M15 9h4a1 1 0 0 1 1 1v11"></path><path d="M8 8h3M8 12h3M8 16h3"></path></svg>',
+        jobs: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M4 12h16"></path></svg>',
+        training: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-4 9 4-9 4-9-4z"></path><path d="M7 10v5c0 1.5 2.3 3 5 3s5-1.5 5-3v-5"></path></svg>',
+    };
     function statCard(label, value, tone, hint = '') {
-        return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-xs font-black ${tone}">${escapeHtml(label.slice(0, 2).toUpperCase())}</span><p class="mt-4 text-xs font-bold text-[#52607a]">${escapeHtml(label)}</p><h2 class="mt-2 text-3xl font-bold text-[#061942]">${escapeHtml(value)}</h2>${hint ? `<p class="mt-2 text-xs font-bold text-[#078346]">${escapeHtml(hint)}</p>` : ''}</article>`;
+        const key = label === 'Jobs Posted' ? 'jobs' : (label === 'Training Partners' ? 'training' : label.toLowerCase());
+        const icon = statIcons[key] || statIcons.freshers;
+        return `<article class="group relative overflow-hidden rounded-2xl border border-[#dce7f8] bg-white p-6 shadow-[0_18px_38px_rgba(6,25,66,.06)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_rgba(6,25,66,.1)]">
+            <span class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#eaf2ff]/70 blur-2xl"></span>
+            <div class="relative flex items-start justify-between gap-4">
+                <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl shadow-[inset_0_0_0_1px_rgba(255,255,255,.72)] [&>svg]:h-6 [&>svg]:w-6 ${tone}">${icon}</span>
+                ${hint ? `<span class="rounded-full bg-[#ecfdf3] px-3 py-1 text-[11px] font-bold text-[#078346]">${escapeHtml(hint)}</span>` : ''}
+            </div>
+            <p class="relative mt-5 text-xs font-bold uppercase tracking-[.04em] text-[#52607a]">${escapeHtml(label)}</p>
+            <h2 class="relative mt-2 text-4xl font-black leading-none text-[#061942]">${escapeHtml(value)}</h2>
+        </article>`;
     }
     function itemCard(title, meta, status = '', url = '') {
-        const content = `<div class="min-w-0"><h3 class="truncate text-sm font-bold text-[#061942]">${escapeHtml(title)}</h3><p class="mt-1 text-xs text-[#52607a]">${escapeHtml(meta)}</p></div>${status ? `<span class="shrink-0 rounded-md bg-[#eaf2ff] px-2.5 py-1 text-[11px] font-bold capitalize text-[#075fe4]">${escapeHtml(statusText(status))}</span>` : ''}`;
-        const cls = 'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-lg border border-[#edf2fb] p-4 text-sm font-semibold text-[#24344f]';
+        const statusTone = String(status).toLowerCase().includes('reject') ? 'bg-[#fff1f2] text-[#c8102e]' : 'bg-[#eaf2ff] text-[#075fe4]';
+        const content = `<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#eff5ff] text-xs font-black text-[#075fe4]">${escapeHtml(title.slice(0, 2).toUpperCase())}</span><div class="min-w-0"><h3 class="truncate text-sm font-bold text-[#061942]">${escapeHtml(title)}</h3><p class="mt-1 text-xs font-semibold text-[#52607a]">${escapeHtml(meta)}</p></div>${status ? `<span class="shrink-0 rounded-full px-3 py-1 text-[11px] font-bold capitalize ${statusTone}">${escapeHtml(statusText(status))}</span>` : ''}`;
+        const cls = 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-[#edf2fb] bg-white p-4 text-sm font-semibold text-[#24344f] shadow-[0_8px_20px_rgba(6,25,66,.035)] transition hover:border-[#bfd4f5] hover:bg-[#fbfdff]';
         return url ? `<a href="${url}" class="${cls} no-underline">${content}</a>` : `<div class="${cls}">${content}</div>`;
     }
     function renderStats(stats) {
@@ -107,7 +146,13 @@
         totalRevenue.textContent = money(stats.total_payment_amount) + ' Revenue';
         platformOverview.innerHTML = rows.map(([label, value]) => {
             const height = Math.max(10, Math.round((Number(value || 0) / max) * 100));
-            return `<div class="grid h-full min-h-[210px] grid-rows-[1fr_auto_auto] gap-2"><div class="flex items-end"><div class="w-full rounded-t-md bg-[#075fe4]" style="height:${height}%"></div></div><strong class="text-center text-sm text-[#061942]">${number(value)}</strong><span class="text-center text-[11px] font-bold text-[#52607a]">${escapeHtml(label)}</span></div>`;
+            return `<div class="grid h-full min-h-[220px] grid-rows-[1fr_auto_auto] gap-2">
+                <div class="flex items-end rounded-xl bg-[#eef5ff] px-3 pt-4">
+                    <div class="w-full rounded-t-xl bg-[linear-gradient(180deg,#1d72f3,#075fe4)] shadow-[0_10px_20px_rgba(7,95,228,.18)]" style="height:${height}%"></div>
+                </div>
+                <strong class="text-center text-base text-[#061942]">${number(value)}</strong>
+                <span class="text-center text-[11px] font-bold text-[#52607a]">${escapeHtml(label)}</span>
+            </div>`;
         }).join('');
     }
     function renderApprovals(stats) {

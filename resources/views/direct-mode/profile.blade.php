@@ -339,7 +339,7 @@
             await load();
             const updatedProfile = json.data?.profile || {};
             if (isProfileReadyForAssessment(updatedProfile)) {
-                window.location.href = '/direct-mode/assessments';
+                window.location.href = '/direct-mode/flow-selection';
             }
         } catch (error) {
             showAlert(error.message);

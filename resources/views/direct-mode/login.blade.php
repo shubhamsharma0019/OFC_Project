@@ -1075,8 +1075,8 @@
                 <div class="illustration">
 
                     <img
-                        src="/study.svg"
-                        alt="{{ $roleLabel }} Login"
+                        src="{{ asset('home-hero-students.png') }}"
+                        alt="OnlyFreshers students"
                         onerror="this.src='/direct.svg'"
                     >
 
@@ -1933,7 +1933,7 @@ document.addEventListener(
                     ) {
 
                         window.location.href =
-                            '/direct-mode/assessments';
+                            '/direct-mode/flow-selection';
 
                         return;
                     }
@@ -1950,7 +1950,7 @@ document.addEventListener(
                         );
 
                         window.location.href =
-                            '/direct-mode/assessments';
+                            '/direct-mode/flow-selection';
 
                         return;
                     }
@@ -1998,7 +1998,7 @@ document.addEventListener(
                     ) {
 
                         window.location.href =
-                            '/direct-mode/assessments';
+                            '/direct-mode/flow-selection';
 
                         return;
                     }

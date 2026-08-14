@@ -1,26 +1,22 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" role="img" aria-label="Only Freshers Logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img" aria-label="Only Freshers Logo">
   <defs>
-    <linearGradient id="blue" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#075fe4"/>
-      <stop offset="1" stop-color="#0054ff"/>
+    <linearGradient id="ofBlue" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#075FE4"/>
+      <stop offset="1" stop-color="#0054D8"/>
     </linearGradient>
   </defs>
 
-  <g transform="translate(35 28)">
-    <path d="M88 0 0 36l88 36 88-36L88 0Z" fill="url(#blue)"/>
-    <path d="M28 55v42c0 34 26 62 60 78 34-16 60-44 60-78V55L88 80 28 55Z" fill="url(#blue)"/>
-    <path d="M54 93c18-28 50-28 68 0-13-10-28-14-34-14s-21 4-34 14Z" fill="#061942"/>
-    <circle cx="88" cy="86" r="13" fill="#061942"/>
-    <path d="M59 111c15 28 43 35 58 0-16 14-42 14-58 0Z" fill="#061942"/>
-    <path d="M147 41v47" stroke="#061942" stroke-width="6" stroke-linecap="round"/>
-    <path d="M147 88c8 5 12 13 9 25" stroke="#075fe4" stroke-width="5" stroke-linecap="round"/>
+  <g transform="translate(24 22)">
+    <path d="M72 0 8 26l64 27 64-27L72 0Z" fill="url(#ofBlue)"/>
+    <path d="M23 49v33c0 30 22 52 49 66 27-14 49-36 49-66V49L72 70 23 49Z" fill="url(#ofBlue)"/>
+    <circle cx="72" cy="83" r="15" fill="#F7FBFF"/>
+    <path d="M43 90c4 23 17 38 29 38s25-15 29-38" fill="none" stroke="#F7FBFF" stroke-width="13" stroke-linecap="round"/>
+    <path d="M72 100v28" stroke="url(#ofBlue)" stroke-width="9" stroke-linecap="round"/>
   </g>
 
-  <g transform="translate(225 82)">
-    <text x="0" y="0" font-family="Arial, Helvetica, sans-serif" font-size="61" font-weight="900" letter-spacing="3" fill="#061942">ONLY</text>
-    <text x="209" y="0" font-family="Arial, Helvetica, sans-serif" font-size="61" font-weight="900" letter-spacing="3" fill="#075fe4">FRESHERS</text>
-    <line x1="5" y1="36" x2="46" y2="36" stroke="#075fe4" stroke-width="4" stroke-linecap="round"/>
-    <text x="60" y="45" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="800" letter-spacing="7" fill="#061942">ACCELERATE YOUR CAREER</text>
-    <line x1="475" y1="36" x2="514" y2="36" stroke="#075fe4" stroke-width="4" stroke-linecap="round"/>
+  <g transform="translate(178 72)">
+    <text x="0" y="0" font-family="Inter, Arial, Helvetica, sans-serif" font-size="46" font-weight="800" letter-spacing="2.4" fill="#061942">ONLY</text>
+    <text x="164" y="0" font-family="Inter, Arial, Helvetica, sans-serif" font-size="46" font-weight="800" letter-spacing="2.4" fill="#075FE4">FRESHERS</text>
+    <text x="82" y="44" font-family="Inter, Arial, Helvetica, sans-serif" font-size="18" font-weight="800" letter-spacing="3.6" fill="#061942">KICKSTART YOUR CAREER</text>
   </g>
 </svg>

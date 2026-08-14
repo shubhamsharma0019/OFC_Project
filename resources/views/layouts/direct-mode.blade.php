@@ -25,6 +25,11 @@
     </style>
     @stack('styles')
     <style>
+        body,
+        body * {
+            font-family: Inter, Arial, Helvetica, sans-serif !important;
+            font-weight: 500 !important;
+        }
         .topbar{grid-template-columns:40px minmax(360px,760px) minmax(260px,1fr)!important;gap:22px!important}
         .topbar>div:first-child{width:40px!important}
         .search-wrap{justify-self:start!important;width:min(760px,100%)!important}

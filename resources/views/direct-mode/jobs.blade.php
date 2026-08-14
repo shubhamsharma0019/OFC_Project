@@ -454,14 +454,14 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 const response = await fetch('/api/fresher/dashboard', { headers: apiHeaders() });
                 const payload = await response.json();
                 if (!response.ok || payload.success === false) {
-                    window.location.href = '/direct-mode/assessments';
+                    window.location.href = '/direct-mode/flow-selection';
                     return false;
                 }
 
                 const assessment = payload.data?.initial_assessment;
 
                 if (!assessment || assessment.status !== 'submitted') {
-                    window.location.href = '/direct-mode/assessments';
+                    window.location.href = '/direct-mode/flow-selection';
                     return false;
                 }
 
@@ -476,13 +476,13 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     return false;
                 }
                 if (selectedMode !== 'direct') {
-                    window.location.href = '/direct-mode/assessments';
+                    window.location.href = '/direct-mode/flow-selection';
                     return false;
                 }
 
                 return true;
             } catch (error) {
-                window.location.href = '/direct-mode/assessments';
+                window.location.href = '/direct-mode/flow-selection';
                 return false;
             }
         }

@@ -12,6 +12,28 @@
     <title>@yield('title', 'Company Dashboard - OnlyFreshers')</title>
     @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        #company-layout,
+        #company-layout * {
+            font-family: Inter, Arial, Helvetica, sans-serif !important;
+            font-weight: 500 !important;
+        }
+
+        #company-layout .company-soft-card {
+            border: 1px solid #dce7f8;
+            background: #fff;
+            box-shadow: 0 12px 28px rgba(6, 25, 66, 0.05);
+        }
+
+        #company-layout [data-company-initial],
+        #company-layout [data-company-profile-initial],
+        #company-layout #companyInitial,
+        #company-layout #candidateInitials,
+        #company-layout #chatAvatar {
+            box-shadow: 0 14px 28px rgba(7, 95, 228, 0.16);
+        }
+    </style>
+    @stack('styles')
 </head>
 
 <body class="h-screen overflow-hidden bg-[#f4f8ff] font-sans font-medium text-[#061942] antialiased">

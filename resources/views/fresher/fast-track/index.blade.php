@@ -210,16 +210,18 @@
         const profile = data.profile || {};
         const stats = data.statistics || {};
         const latestEnrollment = data.latest_course_enrollment || null;
-
         const assessment =
             data.initial_assessment ||
             data.latest_assessment ||
             data.assessment ||
             data.assessment_result ||
             null;
+        const result = assessment?.result || {};
+        const recommendedTrack = result.recommended_track || '';
 
         const rawScore = assessment
             ? (
+                result.overall_score ??
                 assessment.percentage ??
                 assessment.percentage_score ??
                 assessment.score_percentage ??
@@ -242,6 +244,7 @@
             'ofc_auth_user',
             JSON.stringify(user)
         );
+        localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
 
         dashboardStatsGrid.innerHTML = [
             circleCard(
@@ -280,13 +283,6 @@
             ),
 
             actionCard(
-                icon('assessment'),
-                'Initial Assessment',
-                '/fast-track/assessment',
-                !!assessment
-            ),
-
-            actionCard(
                 icon('course'),
                 'Explore Fast Track',
                 '/fast-track/courses',
@@ -298,6 +294,13 @@
                 'View Training',
                 '/fast-track/training',
                 Number(stats.total_course_enrollments || 0) > 0
+            ),
+
+            actionCard(
+                icon('certificate'),
+                'Certificate',
+                '/fast-track/certificate',
+                Number(stats.certificates || 0) > 0
             ),
         ].join('');
 
@@ -427,6 +430,8 @@
                     </div>
                 </div>
             `;
+        } else if (recommendedTrack) {
+            latestTrainingCard.innerHTML = `<div class="relative z-10 w-full max-w-[460px]"><h3 class="mb-3 text-[22px] font-bold text-[#061942]">${FastTrack.esc(recommendedTrack)}</h3><p class="mb-2 text-[15px] leading-6 text-[#24344f]">Recommended from your initial assessment score.</p><p class="mb-5 text-sm font-bold text-[#075fe4]">Score: ${FastTrack.esc(result.overall_score || 0)}%</p><a href="/fast-track/courses?track=${encodeURIComponent(recommendedTrack)}" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,.18)] transition hover:bg-[#064fc0]">View Recommended Courses</a></div><div class="absolute bottom-7 right-12 hidden h-[155px] w-[155px] rotate-[-28deg] items-center justify-center rounded-full bg-[#e1edff] text-[42px] font-black text-[#075fe4] sm:flex">RT</div>`;
         }
     }
 
@@ -466,13 +471,6 @@
             ),
 
             actionCard(
-                icon('assessment'),
-                'Initial Assessment',
-                '/fast-track/assessment',
-                false
-            ),
-
-            actionCard(
                 icon('course'),
                 'Explore Fast Track',
                 '/fast-track/courses',
@@ -483,6 +481,13 @@
                 icon('progress'),
                 'View Training',
                 '/fast-track/training',
+                false
+            ),
+
+            actionCard(
+                icon('certificate'),
+                'Certificate',
+                '/fast-track/certificate',
                 false
             ),
         ].join('');
@@ -514,15 +519,17 @@
             ) || 0;
 
         if (dashboardResponse.error) {
-            renderProfileMissing();
+            window.location.href = '/fast-track/profile';
             return;
         }
-
-        renderDashboard(
-            FastTrack.apiData(dashboardResponse) || {},
-            unread
-        );
-    })
-    .catch(renderProfileMissing);
+        const dashboard = FastTrack.apiData(dashboardResponse) || {};
+        if (!dashboard.initial_assessment || dashboard.initial_assessment.status !== 'submitted') {
+            localStorage.setItem('onlyfreshers_intended_mode', 'fast_track');
+            localStorage.removeItem('onlyfreshers_selected_mode');
+            window.location.href = '/direct-mode/flow-selection';
+            return;
+        }
+        renderDashboard(dashboard, unread);
+    }).catch(renderProfileMissing);
 </script>
 @endpush

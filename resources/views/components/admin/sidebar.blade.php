@@ -14,6 +14,15 @@
     ];
 @endphp
 
+<style>
+    .admin-sidebar-font,
+    .admin-sidebar-font * {
+        font-family: Inter, Arial, Helvetica, sans-serif !important;
+        font-weight: 500 !important;
+    }
+</style>
+
+<div class="admin-sidebar-font flex min-h-full flex-col justify-between">
 <div>
     <a href="/admin/dashboard" class="mb-6 flex h-12 items-center">
         @if (file_exists(public_path('ofclogo1.svg')))
@@ -37,7 +46,6 @@
         @endforeach
     </nav>
 </div>
-
 <div class="relative flex items-center gap-3 px-0.5 pt-3">
     <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-[#075fe4]">
         <svg class="h-6 w-6" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path></svg>
@@ -56,6 +64,7 @@
             Logout
         </a>
     </div>
+</div>
 </div>
 
 @push('scripts')

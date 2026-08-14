@@ -8,6 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Fast Track')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        #fastTrackLayout,
+        #fastTrackLayout * {
+            font-family: Inter, Arial, Helvetica, sans-serif !important;
+            font-weight: 500 !important;
+        }
+    </style>
     @stack('styles')
 </head>
 <body class="min-h-screen overflow-x-hidden bg-[#f5f8ff] font-sans text-[#061942] antialiased">

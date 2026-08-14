@@ -1,69 +1,47 @@
-<footer class="border-t border-[#dce7f8] bg-[#061942] text-white">
-    <div class="mx-auto w-full max-w-7xl px-5 py-10 sm:px-6 lg:px-8 lg:py-12">
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.25fr_repeat(4,minmax(0,1fr))]">
-            <div class="min-w-0">
-                <a href="/" class="mb-4 inline-flex items-center gap-3 rounded-lg bg-white px-3 py-2 text-white">
-                    @if (file_exists(public_path('ofclogo1.svg')))
-                        <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block h-[54px] w-[240px] object-contain object-left">
-                    @else
-                        <span class="flex items-center gap-2 text-[#075fe4]">
-                            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#075fe4] text-base font-bold text-white">OF</span>
-                            <span class="text-[22px] font-bold leading-none">OnlyFreshers</span>
-                        </span>
-                    @endif
-        </a>
-
-                <p class="max-w-[290px] text-sm leading-6 text-[#c8d4ea]">
-                    Connecting fresh talent with the right opportunities through jobs and training.
-                </p>
-            </div>
-
-            <div class="min-w-0">
-                <h3 class="mb-4 text-sm font-bold text-white">Quick Links</h3>
-                <nav class="grid gap-2.5 text-sm text-[#c8d4ea]">
-                    <a href="/job" class="transition hover:text-white">Jobs</a>
-                    <a href="/fast-track" class="transition hover:text-white">Fast Track Program</a>
-                    <a href="/training-partners" class="transition hover:text-white">Training Partners</a>
-                    <a href="/about" class="transition hover:text-white">About Us</a>
-                </nav>
-            </div>
-
-            <div class="min-w-0">
-                <h3 class="mb-4 text-sm font-bold text-white">For Freshers</h3>
-                <nav class="grid gap-2.5 text-sm text-[#c8d4ea]">
-                    <a href="/job" class="transition hover:text-white">Browse Jobs</a>
-                    <a href="/fast-track" class="transition hover:text-white">Fast Track Program</a>
-                    <a href="/training-partners" class="transition hover:text-white">Training Partners</a>
-                    <a href="/direct-mode/register" class="transition hover:text-white">Create Profile</a>
-                </nav>
-            </div>
-
-            <div class="min-w-0">
-                <h3 class="mb-4 text-sm font-bold text-white">For Companies</h3>
-                <nav class="grid gap-2.5 text-sm text-[#c8d4ea]">
-                    <a href="/company/post-job" class="transition hover:text-white">Post a Job</a>
-                    <a href="/company/applications" class="transition hover:text-white">Find Fresh Talent</a>
-                    <a href="#" class="transition hover:text-white">Why OnlyFreshers?</a>
-                    <a href="#" class="transition hover:text-white">Partner With Us</a>
-                </nav>
-            </div>
-
-            <div class="min-w-0">
-                <h3 class="mb-4 text-sm font-bold text-white">Support</h3>
-                <address class="not-italic text-sm leading-7 text-[#c8d4ea]">
-                    <a href="mailto:support@onlyfreshers.com" class="transition hover:text-white">support@onlyfreshers.com</a><br>
-                    <a href="tel:+9163616361669" class="transition hover:text-white">+91 6361 6361 669</a><br>
-                    <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
-                </address>
-            </div>
+<footer class="bg-white px-4 py-3">
+    <div class="mx-auto flex w-full max-w-[1680px] flex-col gap-3 rounded-md bg-[#075fe4] px-5 py-3 text-white shadow-[0_10px_24px_rgba(7,95,228,0.22)] lg:flex-row lg:items-center lg:gap-6">
+        <div class="flex min-w-0 flex-1 items-center gap-4">
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center text-white [&>svg]:h-8 [&>svg]:w-8">
+                @include('components.public.icon', ['name' => 'rocket'])
+            </span>
+            <span class="min-w-0">
+                <strong class="block font-['Inter'] text-sm font-semibold leading-tight">Start Your Journey Today!</strong>
+                <small class="mt-1 block max-w-[420px] text-[11px] font-medium leading-4 text-white/90">Whether you choose Direct Mode or Fast Track Mode, OnlyFreshers is here to help you get hired faster.</small>
+            </span>
         </div>
 
-        <div class="mt-10 flex flex-col gap-4 border-t border-white/10 pt-5 text-sm text-[#c8d4ea] sm:flex-row sm:items-center sm:justify-between">
-            <span>© 2025 OnlyFreshers. All rights reserved.</span>
-            <div class="flex flex-wrap gap-x-5 gap-y-2">
-                <a href="#" class="transition hover:text-white">Privacy Policy</a>
-                <a href="#" class="transition hover:text-white">Terms & Conditions</a>
-            </div>
+        <div class="grid gap-3 sm:grid-cols-2 lg:w-[430px]">
+            <a href="/direct-mode/register" class="flex h-12 items-center justify-center rounded-md bg-white px-5 text-center font-['Inter'] text-sm font-semibold text-[#061942] shadow-[0_6px_14px_rgba(0,0,0,0.12)]">
+                <span>
+                    For Freshers
+                    <small class="mt-0.5 block text-[10px] font-medium text-[#34445e]">Find Jobs & Programs</small>
+                </span>
+            </a>
+            <a href="/company/login" class="flex h-12 items-center justify-center rounded-md bg-white px-5 text-center font-['Inter'] text-sm font-semibold text-[#061942] shadow-[0_6px_14px_rgba(0,0,0,0.12)]">
+                <span>
+                    For Companies
+                    <small class="mt-0.5 block text-[10px] font-medium text-[#34445e]">Post Jobs & Hire Talent</small>
+                </span>
+            </a>
+        </div>
+
+        <div class="grid flex-1 grid-cols-2 divide-x divide-white/30 border-t border-white/25 pt-3 text-center sm:grid-cols-4 lg:border-l lg:border-t-0 lg:pt-0">
+            <span class="px-4">
+                <strong class="block font-['Inter'] text-lg font-semibold leading-tight">5000+</strong>
+                <small class="block text-[10px] font-medium text-white/90">Jobs Listed</small>
+            </span>
+            <span class="px-4">
+                <strong class="block font-['Inter'] text-lg font-semibold leading-tight">10,000+</strong>
+                <small class="block text-[10px] font-medium text-white/90">Fresher Hired</small>
+            </span>
+            <span class="px-4">
+                <strong class="block font-['Inter'] text-lg font-semibold leading-tight">1000+</strong>
+                <small class="block text-[10px] font-medium text-white/90">Companies</small>
+            </span>
+            <span class="px-4">
+                <strong class="block font-['Inter'] text-lg font-semibold leading-tight">50+</strong>
+                <small class="block text-[10px] font-medium text-white/90">Training Partners</small>
+            </span>
         </div>
     </div>
 </footer>

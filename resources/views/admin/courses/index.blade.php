@@ -8,8 +8,18 @@
     $activePage = 'courses';
 @endphp
 
+@push('styles')
+<style>
+    .admin-courses-page,
+    .admin-courses-page * {
+        font-family: Inter, Arial, Helvetica, sans-serif !important;
+        font-weight: 500 !important;
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="grid gap-5">
+    <section class="admin-courses-page grid gap-5">
         <div id="courseStats" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><article class="rounded-lg border border-[#dce7f8] bg-white p-5 text-sm text-[#52607a] shadow-[0_12px_26px_rgba(6,25,66,.05)] sm:col-span-2 xl:col-span-4">Loading courses...</article></div>
         <div class="rounded-lg border border-[#dce7f8] bg-white shadow-[0_12px_26px_rgba(6,25,66,.05)]">
             <div class="flex flex-col gap-3 border-b border-[#edf2fb] p-4 lg:flex-row lg:items-center lg:justify-between">
@@ -44,7 +54,13 @@ function number(value) { return Number(value || 0).toLocaleString('en-IN'); }
 function money(value) { return 'Rs. ' + Number(value || 0).toLocaleString('en-IN'); }
 function statusText(value) { return String(value || '-').replaceAll('_', ' '); }
 function badgeClass(status) { if (status === 'active') return 'bg-[#e8f8ef] text-[#078346]'; if (status === 'removed') return 'bg-[#fff0f1] text-[#ff1f2f]'; return 'bg-[#fff4df] text-[#b86500]'; }
-function statCard(label, value, tone) { return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><span class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-xs font-black ${tone}">${escapeHtml(label.slice(0, 2).toUpperCase())}</span><p class="mt-4 text-xs font-bold text-[#52607a]">${escapeHtml(label)}</p><h2 class="mt-2 text-3xl font-bold text-[#061942]">${escapeHtml(value)}</h2></article>`; }
+const statIcons = {
+    page: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16h16V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8M8 17h5"></path></svg>',
+    active: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h7z"></path><path d="m15 12 2 2 4-5"></path></svg>',
+    inactive: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>',
+    removed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 15H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg>',
+};
+function statCard(label, value, tone) { const key = label === 'This Page' ? 'page' : label.toLowerCase(); return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><span class="inline-flex h-10 w-10 items-center justify-center rounded-lg ${tone} [&>svg]:h-5 [&>svg]:w-5">${statIcons[key] || statIcons.page}</span><p class="mt-4 text-xs font-bold text-[#52607a]">${escapeHtml(label)}</p><h2 class="mt-2 text-3xl font-bold text-[#061942]">${escapeHtml(value)}</h2></article>`; }
 function renderStats() { courseStats.innerHTML = [statCard('This Page', number(courses.length), 'bg-[#eaf2ff] text-[#075fe4]'), statCard('Active', number(courses.filter((i) => i.status === 'active').length), 'bg-[#e8f8ef] text-[#078346]'), statCard('Inactive', number(courses.filter((i) => i.status === 'inactive').length), 'bg-[#fff4df] text-[#b86500]'), statCard('Removed', number(courses.filter((i) => i.status === 'removed').length), 'bg-[#fff0f1] text-[#ff1f2f]')].join(''); }
 function renderRows() { renderStats(); if (!courses.length) { adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#52607a]" colspan="7">No courses found.</td></tr>'; return; } adminRows.innerHTML = courses.map((course) => `<tr><td class="px-5 py-4"><strong class="block text-[#061942]">${escapeHtml(course.course_name)}</strong><span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(course.category || '-')} - Starts ${escapeHtml(course.start_date || '-')}</span></td><td class="px-5 py-4">${escapeHtml(course.training_partner_profile?.institute_name || '-')}<span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(course.training_partner_profile?.user?.email || '')}</span></td><td class="px-5 py-4 capitalize">${escapeHtml(statusText(course.training_mode))}<span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(course.duration || '')}</span></td><td class="px-5 py-4 font-bold text-[#061942]">${money(course.fees)}</td><td class="px-5 py-4 font-bold text-[#061942]">${number(course.enrollments_count)}</td><td class="px-5 py-4"><span class="rounded-md ${badgeClass(course.status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(course.status))}</span></td><td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-course rounded-md border border-[#075fe4] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button" data-id="${course.id}">View</button><button class="status-course rounded-md border border-[#078346] px-3 py-2 text-xs font-bold text-[#078346]" type="button" data-id="${course.id}" data-status="active">Activate</button><button class="status-course rounded-md border border-[#ff1f2f] px-3 py-2 text-xs font-bold text-[#ff1f2f]" type="button" data-id="${course.id}" data-status="removed">Remove</button></div></td></tr>`).join(''); }
 function setPagination(paginator) { currentPage = paginator.current_page || 1; lastPage = paginator.last_page || 1; pageInfo.textContent = 'Page ' + currentPage + ' of ' + lastPage; prevPage.disabled = currentPage <= 1; nextPage.disabled = currentPage >= lastPage; pagination.classList.toggle('hidden', lastPage <= 1); pagination.classList.toggle('flex', lastPage > 1); }

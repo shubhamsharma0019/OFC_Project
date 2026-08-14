@@ -11,7 +11,7 @@
 
 @extends('layouts.direct-mode')
 
-@section('title', 'Assessments - Direct Mode')
+@section('title', 'Flow Selection - Direct Mode')
 
 @push('styles')
 <style>
@@ -19,13 +19,13 @@
 </style>
 <style>
     .tabs{min-height:46px!important;height:auto!important}.tab{min-width:0!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;padding:0 10px!important;white-space:nowrap!important}.tab b{min-width:20px;height:20px;border-radius:999px;background:#eef4ff;color:#064cff;display:none;place-items:center;font-size:11px;line-height:20px}.tab.has-count b{display:grid}.tab span{overflow:hidden;text-overflow:ellipsis}.tab.active b{background:#064cff;color:#fff}
-    .content-grid{grid-template-columns:1fr!important}.side{display:none!important}.stat{min-width:0!important;grid-template-columns:58px minmax(0,1fr)!important;gap:16px!important;overflow:hidden!important;align-items:center!important}.stat-icon{width:50px!important;height:50px!important;align-self:center!important;justify-self:center!important;display:grid!important;place-items:center!important;padding:0!important;line-height:0!important;margin:auto!important}.stat-icon svg{width:22px!important;height:22px!important;display:block!important;margin:0!important;position:relative!important;top:0!important;left:0!important;transform:none!important;vertical-align:middle!important}.stat div{min-width:0!important;overflow:hidden!important}.stat h3{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.stat strong{font-size:clamp(24px,1.9vw,30px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important}.stat span{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.2!important}
+    .content-grid{grid-template-columns:1fr!important}.side{display:none!important}.stat{min-width:0!important;grid-template-columns:64px minmax(0,1fr)!important;gap:16px!important;overflow:hidden!important;align-items:center!important;justify-items:start!important}.stat-icon{width:54px!important;height:54px!important;align-self:center!important;justify-self:center!important;display:grid!important;place-items:center!important;padding:0!important;line-height:0!important;margin:auto!important;background:#eef5ff!important;color:#0b63f6!important;border:1px solid #d9e8ff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 10px 22px rgba(11,99,246,.08)!important}.stat-icon svg{width:22px!important;height:22px!important;display:block!important;margin:0!important;position:relative!important;top:0!important;left:0!important;transform:none!important;vertical-align:middle!important}.stat div{min-width:0!important;overflow:hidden!important}.stat h3{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.stat strong{font-size:clamp(24px,1.9vw,30px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important}.stat span{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.2!important}
     body.assessment-onboarding .sidebar,body.assessment-onboarding .topbar{display:none!important}
     body.assessment-onboarding .shell{grid-template-columns:1fr!important}
     body.assessment-onboarding .main{height:100vh!important;grid-template-rows:minmax(0,max-content)!important}
     body.assessment-onboarding .assess-page{min-height:100vh!important;padding:24px 26px 34px!important}
     body.assessment-onboarding .welcome{display:none!important}
-    body.assessment-onboarding .panel{max-width:1120px;margin:0 auto}
+    body.assessment-onboarding .panel{width:100%;max-width:none;margin:0}
     @media(max-width:760px){body.assessment-onboarding .assess-page{padding:14px!important}}
 </style>
 @endpush
@@ -36,7 +36,7 @@
     <div class="alert" data-alert></div>
     <div class="panel">
         <div class="hero">
-            <div class="hero-title"><h2>Assessments</h2><p>Track your assessment progress and improve your skills</p></div>
+            <div class="hero-title"><h2>Choose Your Flow</h2><p>Complete the initial check and choose Direct Mode or Fast Track Mode.</p></div>
             <article class="stat"><span class="stat-icon green" data-icon="users"></span><div><h3>Assessments Taken</h3><strong data-stat="taken">0</strong><span data-note="taken">Not started</span></div></article>
             <article class="stat"><span class="stat-icon purple" data-icon="calendar"></span><div><h3>Average Score</h3><strong data-stat="score">0%</strong><span data-note="score">Pending</span></div></article>
             <article class="stat"><span class="stat-icon orange" data-icon="trophy"></span><div><h3>Rank</h3><strong data-stat="rank">Top 100%</strong><span data-note="rank">Start now</span></div></article>
@@ -350,9 +350,11 @@
     qs('[data-track-action]').addEventListener('click', () => {
         if (dashboard?.initial_assessment) {
             const recommended = dashboard.initial_assessment.recommended_mode || 'direct';
-            localStorage.setItem('onlyfreshers_selected_mode', recommended);
+            const intended = localStorage.getItem('onlyfreshers_intended_mode');
+            const selected = intended === 'fast_track' ? 'fast_track' : recommended;
+            localStorage.setItem('onlyfreshers_selected_mode', selected);
             alert('Opening your recommended mode.', 'success');
-            window.location.href = recommended === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/dashboard';
+            window.location.href = selected === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/dashboard';
             return;
         }
         startAssessment();

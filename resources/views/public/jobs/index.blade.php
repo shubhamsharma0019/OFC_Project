@@ -10,26 +10,101 @@
     ];
 @endphp
 
+@push('styles')
+<style>
+    .jobs-search-panel {
+        border: 1px solid #cfe0ff;
+        border-radius: 18px;
+        background: linear-gradient(145deg, #ffffff, #f7fbff);
+        box-shadow: 0 18px 38px rgba(7, 95, 228, .08);
+    }
+    .jobs-filter-card {
+        border: 1px solid #cfe0ff;
+        border-radius: 18px;
+        background: linear-gradient(145deg, #ffffff, #f8fbff);
+        box-shadow: 0 16px 34px rgba(7, 95, 228, .07);
+    }
+    .job-card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #cfe0ff;
+        border-radius: 18px;
+        background: linear-gradient(145deg, #ffffff, #f7fbff);
+        box-shadow: 0 16px 34px rgba(7, 95, 228, .08);
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .job-card:hover {
+        transform: translateY(-4px);
+        border-color: #9fc0f8;
+        box-shadow: 0 24px 46px rgba(7, 95, 228, .14);
+    }
+    .job-card:before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 4px;
+        background: linear-gradient(90deg, #075fe4, #17a6a8);
+    }
+    .job-card:after {
+        content: "";
+        position: absolute;
+        right: -52px;
+        top: -60px;
+        width: 150px;
+        height: 150px;
+        border-radius: 999px;
+        background: rgba(220, 236, 255, .82);
+        filter: blur(22px);
+        pointer-events: none;
+    }
+    .job-logo {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #cfe0ff;
+        background: #fff;
+        color: #075fe4;
+        font-size: 24px;
+        font-weight: 900;
+        box-shadow: 0 12px 24px rgba(7, 95, 228, .08);
+    }
+    .job-pill {
+        border-radius: 999px;
+        background: #eaf2ff;
+        color: #075fe4;
+        padding: 6px 11px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+</style>
+@endpush
+
 @section('content')
-    <main class="bg-[linear-gradient(120deg,#ffffff,#f8fbff)] py-10 lg:py-[42px] lg:pb-[65px]">
+    <main class="relative overflow-hidden bg-[linear-gradient(120deg,#ffffff,#f8fbff)] py-10 lg:py-[42px] lg:pb-[65px]">
+        <div class="pointer-events-none absolute -left-24 top-20 hidden h-[320px] w-[430px] rounded-full bg-[#dcecff]/62 blur-3xl lg:block"></div>
+        <div class="pointer-events-none absolute right-0 top-0 hidden h-[380px] w-[55%] bg-[radial-gradient(circle_at_80%_20%,rgba(207,228,255,0.55)_0%,rgba(244,248,255,0.44)_38%,rgba(255,255,255,0)_76%)] lg:block"></div>
         <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
             <div id="listingView">
-                <h1 class="m-0 text-[28px] font-semibold text-[#061942] sm:text-[34px]">Find Your Dream Job</h1>
-                <p class="mb-6 mt-2 text-base font-medium text-[#34445e]">Explore the latest job openings and start your career today.</p>
+                <div class="relative mb-8 max-w-3xl">
+                    <h1 class="m-0 font-['Inter'] text-[38px] font-semibold leading-tight text-[#061942] sm:text-[52px]">Find Your <span class="text-[#075fe4]">Dream Job</span></h1>
+                    <p class="mt-3 text-lg font-medium leading-[1.7] text-[#34445e]">Explore active fresher openings, filter by work mode, and apply to roles that match your skills.</p>
+                </div>
 
-                <div class="mb-[18px] grid gap-3.5 rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_10px_24px_rgba(6,25,66,0.04)] lg:grid-cols-[1.3fr_1fr_1fr_160px] lg:gap-6">
-                    <input id="searchInput" class="h-[46px] rounded-lg border border-[#dce7f8] bg-white px-4 text-sm font-medium text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]" type="text" placeholder="Search job title or keyword">
-                    <select id="modeSelect" class="h-[46px] rounded-lg border border-[#dce7f8] bg-white px-4 text-sm font-medium text-[#52607a] outline-none focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
+                <div class="jobs-search-panel mb-6 grid gap-4 p-5 lg:grid-cols-[1.35fr_1fr_1fr_170px]">
+                    <input id="searchInput" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]" type="text" placeholder="Search job title or keyword">
+                    <select id="modeSelect" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]">
                         <option value="">All Categories</option>
                         <option value="direct">Direct Hiring</option>
                         <option value="fast_track">Fast Track</option>
                     </select>
-                    <input id="locationInput" class="h-[46px] rounded-lg border border-[#dce7f8] bg-white px-4 text-sm font-medium text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]" type="text" placeholder="All Locations">
-                    <button id="searchButton" class="h-[46px] rounded-lg border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white transition hover:bg-[#003f9e]" type="button">Search</button>
+                    <input id="locationInput" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]" type="text" placeholder="All Locations">
+                    <button id="searchButton" class="h-12 rounded-xl border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_10px_22px_rgba(7,95,228,0.18)] transition hover:-translate-y-0.5 hover:bg-[#003f9e]" type="button">Search</button>
                 </div>
 
-                <div class="grid gap-[22px] lg:grid-cols-[230px_minmax(0,1fr)] lg:gap-[35px]">
-                    <aside class="rounded-lg border border-[#dce7f8] bg-white p-[18px] shadow-[0_10px_24px_rgba(6,25,66,0.04)]">
+                <div class="grid gap-[22px] lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-[35px]">
+                    <aside class="jobs-filter-card p-5 lg:sticky lg:top-24 lg:self-start">
                         <h3 class="mb-[18px] text-base font-semibold text-[#061942]">Filters</h3>
 
                         @foreach ($filters as $filter)
@@ -59,7 +134,7 @@
                             </select>
                         </div>
 
-                        <div id="jobList" class="overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,0.04)]">
+                        <div id="jobList" class="grid gap-5">
                             <div class="p-6 text-sm font-medium text-[#52607a]">Loading active jobs...</div>
                         </div>
                     </section>
@@ -169,21 +244,21 @@
         }
 
         jobList.innerHTML = sorted.map((job) => `
-            <article class="grid gap-4 border-b border-[#dce7f8] p-[18px] last:border-b-0 sm:grid-cols-[75px_minmax(0,1fr)] lg:grid-cols-[75px_minmax(0,1fr)_135px] lg:items-center lg:gap-[22px] lg:p-6">
-                <div class="flex h-[70px] w-[70px] items-center justify-center rounded-lg border border-[#dce7f8] bg-[#fbfdff] text-[22px] font-semibold text-[#075fe4]">${escapeHtml(initials(companyName(job)))}</div>
-                <div class="min-w-0">
-                    <h2 class="mb-1.5 text-lg font-semibold text-[#061942]">${escapeHtml(job.title)}</h2>
-                    <div class="mb-2 flex flex-wrap gap-x-3.5 gap-y-1 text-sm font-medium text-[#52607a]">
-                        <span>${escapeHtml(companyName(job))}</span>
-                        <span>${escapeHtml(job.location || 'Location not added')}</span>
-                        <span>${escapeHtml(job.job_type || 'Job Type')}</span>
-                        <span>${escapeHtml(job.hiring_mode === 'fast_track' ? 'Fast Track' : 'Direct')}</span>
+            <article class="job-card grid gap-4 p-5 sm:grid-cols-[82px_minmax(0,1fr)] lg:grid-cols-[82px_minmax(0,1fr)_150px] lg:items-center lg:gap-5 lg:p-6">
+                <div class="job-logo relative z-10">${escapeHtml(initials(companyName(job)))}</div>
+                <div class="relative z-10 min-w-0">
+                    <h2 class="mb-2 font-['Inter'] text-xl font-semibold text-[#061942]">${escapeHtml(job.title)}</h2>
+                    <div class="mb-3 flex flex-wrap gap-2 text-sm font-medium text-[#52607a]">
+                        <span class="job-pill">${escapeHtml(companyName(job))}</span>
+                        <span class="job-pill">${escapeHtml(job.location || 'Location not added')}</span>
+                        <span class="job-pill">${escapeHtml(job.job_type || 'Job Type')}</span>
+                        <span class="job-pill">${escapeHtml(job.hiring_mode === 'fast_track' ? 'Fast Track' : 'Direct')}</span>
                     </div>
-                    <p class="line-clamp-2 text-sm font-medium leading-[1.6] text-[#24344f]">${escapeHtml(job.description || job.qualification || 'Apply for this fresher opportunity.')}</p>
+                    <p class="line-clamp-2 text-sm font-semibold leading-[1.7] text-[#24344f]">${escapeHtml(job.description || job.qualification || 'Apply for this fresher opportunity.')}</p>
                 </div>
-                <div class="sm:col-start-2 lg:col-start-auto lg:text-right">
-                    <div class="mb-4 text-[13px] font-medium text-[#52607a] lg:mb-7">${escapeHtml(humanDate(job.created_at))}</div>
-                    <button class="view-job inline-flex h-10 items-center justify-center rounded-lg border border-[#a9c5f6] bg-white px-5 text-sm font-bold text-[#075fe4] transition hover:bg-[#075fe4] hover:text-white" type="button" data-id="${job.id}">View Details</button>
+                <div class="relative z-10 sm:col-start-2 lg:col-start-auto lg:text-right">
+                    <div class="mb-4 text-[13px] font-semibold text-[#52607a] lg:mb-7">${escapeHtml(humanDate(job.created_at))}</div>
+                    <button class="view-job inline-flex h-11 w-full items-center justify-center rounded-xl border border-[#075fe4] bg-[#075fe4] px-5 text-sm font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,0.18)] transition hover:bg-[#0554cc] lg:w-auto" type="button" data-id="${job.id}">View Details</button>
                 </div>
             </article>
         `).join('');

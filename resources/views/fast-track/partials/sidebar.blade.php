@@ -13,12 +13,6 @@
             'url' => '/fast-track/profile'
         ],
         [
-            'key' => 'assessment',
-            'title' => 'Initial Assessment',
-            'icon' => '<rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 8h6M9 13h6M9 17h3"></path>',
-            'url' => '/fast-track/assessment'
-        ],
-        [
             'key' => 'courses',
             'title' => 'Fast Track Courses',
             'icon' => '<path d="M4 5h7a3 3 0 0 1 3 3v12a3 3 0 0 0-3-3H4z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v12a3 3 0 0 1 3-3h7z"></path>',
@@ -83,6 +77,7 @@
 
 <style>
     #fastTrackSidebarNav {
+        overflow: hidden !important;
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
@@ -92,15 +87,38 @@
         height: 0;
         display: none;
     }
+
+    @media (min-width: 1024px) {
+        #fastTrackSidebar .fast-track-sidebar-inner {
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+        #fastTrackSidebar .fast-track-logo-link {
+            height: 48px;
+            margin-bottom: 14px;
+        }
+
+        #fastTrackSidebar .fast-track-sidebar-link {
+            min-height: 38px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        #fastTrackSidebar .fast-track-sidebar-icon {
+            width: 31px;
+            height: 31px;
+        }
+    }
 </style>
 
 <aside
     id="fastTrackSidebar"
     class="fixed inset-y-0 left-0 z-50 flex w-[286px] -translate-x-full flex-col border-r border-[#dce7f8] bg-white shadow-2xl transition-transform duration-300 lg:translate-x-0 lg:shadow-none"
 >
-    <div class="flex min-h-0 flex-1 flex-col px-5 py-5">
+    <div class="fast-track-sidebar-inner flex min-h-0 flex-1 flex-col px-5 py-5">
 
-        <a href="/fast-track/dashboard" class="mb-5 flex h-14 items-center">
+        <a href="/fast-track/dashboard" class="fast-track-logo-link mb-5 flex h-14 items-center">
             <img
                 src="/ofclogo1.svg"
                 alt="OnlyFreshers"
@@ -110,13 +128,14 @@
 
         <nav
             id="fastTrackSidebarNav"
-            class="min-h-0 flex-1 space-y-1.5 overflow-y-auto overflow-x-hidden pr-0"
+            class="min-h-0 flex-1 space-y-1 overflow-hidden pr-0"
         >
             @foreach ($fastTrackMenuItems as $item)
 
                 <a
                     href="{{ $item['url'] }}"
                     class="
+                        fast-track-sidebar-link
                         flex min-h-10 items-center gap-3 rounded-lg px-3 py-1.5
                         text-sm font-bold transition
 
@@ -133,6 +152,7 @@
 
                     <span
                         class="
+                            fast-track-sidebar-icon
                             grid h-8 w-8 shrink-0 place-items-center rounded-lg
 
                             {{ ($activePage ?? '') === $item['key']

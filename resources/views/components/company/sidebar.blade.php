@@ -13,23 +13,27 @@
     ];
 @endphp
 
-<div>
-    <a href="/" class="mb-5 flex h-14 items-center gap-2.5 overflow-hidden" aria-label="OnlyFreshers">
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#075fe4] text-base font-bold text-white">OF</span>
-        <span class="min-w-0">
-            <span class="block truncate text-[21px] font-extrabold leading-none text-[#061942]">Only<span class="text-[#075fe4]">Freshers</span></span>
-            <span class="mt-1 block truncate text-[10px] font-bold uppercase tracking-[1px] text-[#52607a]">Jobs Training Hiring</span>
-        </span>
+<div class="company-sidebar-font">
+    <style>
+        .company-sidebar-font,
+        .company-sidebar-font * {
+            font-family: Inter, Arial, Helvetica, sans-serif !important;
+            font-weight: 500 !important;
+        }
+    </style>
+
+    <a href="/" class="mb-7 flex h-16 items-center overflow-hidden" aria-label="OnlyFreshers">
+        <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block max-h-11 w-[198px] object-contain object-left">
     </a>
 
-    <nav class="grid gap-1">
+    <nav class="grid gap-2">
         @foreach ($companyMenu as $item)
             <a
                 href="{{ $item['url'] }}"
-                class="relative flex min-h-9 items-center gap-3 rounded-lg px-2.5 py-1 text-sm
-                       {{ ($activePage ?? '') === $item['key'] ? 'bg-[#eaf2ff] font-bold text-[#075fe4]' : 'font-medium text-[#24344f]' }}"
+                class="relative flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm transition
+                       {{ ($activePage ?? '') === $item['key'] ? 'bg-[#eaf2ff] text-[#075fe4]' : 'text-[#061942] hover:bg-[#f5f9ff]' }}"
             >
-                <span class="flex h-5 w-5 shrink-0 items-center justify-center">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#eef5ff] text-[#075fe4]">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $item['icon'] !!}</svg>
                 </span>
 
@@ -45,7 +49,7 @@
     </nav>
 </div>
 
-<div class="relative">
+<div class="company-sidebar-font relative">
     <button id="company-account-menu-button" type="button" class="flex w-full items-center gap-2.5 rounded-lg border border-[#dce7f8] bg-white p-2.5 text-left shadow-[0_8px_22px_rgba(6,25,66,.04)]" aria-label="Open account menu" aria-expanded="false">
         <span data-company-initial class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-[#075fe4] font-bold text-white">
             C

@@ -8,7 +8,18 @@
     $activePage = 'dashboard';
 @endphp
 
+@push('styles')
+<style>
+    .company-dashboard-page,
+    .company-dashboard-page * {
+        font-family: Inter, Arial, Helvetica, sans-serif !important;
+        font-weight: 500 !important;
+    }
+</style>
+@endpush
+
 @section('content')
+<div class="company-dashboard-page">
 
     {{-- Welcome Section --}}
     <section
@@ -106,6 +117,7 @@
 
     </section>
 
+</div>
 @endsection
 
 

@@ -985,14 +985,17 @@
         }
 
         .illustration {
-            margin-top: 38px;
+            margin-top: 24px;
             justify-content: flex-start;
         }
 
         .illustration img {
-            width: 430px;
-            max-width: 82%;
-            height: 240px;
+            width: min(620px, 96%);
+            max-width: 96%;
+            height: 310px;
+            object-fit: contain;
+            object-position: left bottom;
+            filter: drop-shadow(0 20px 30px rgba(6, 25, 66, .10));
         }
 
         .form-wrap {
@@ -1001,12 +1004,15 @@
         }
 
         .form-panel {
-            max-width: 540px;
-            padding: 26px 34px 30px;
-            border: 0;
+            max-width: 570px;
+            padding: 28px 34px 30px;
+            border: 1px solid rgba(207, 224, 255, .82);
             border-radius: 22px;
-            background: #ffffff;
-            box-shadow: 0 22px 45px rgba(6, 25, 66, .08);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,.98), #ffffff);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.95),
+                0 24px 56px rgba(6, 25, 66, .11);
         }
 
         .tabs {
@@ -1018,7 +1024,7 @@
             display: block;
             text-align: center;
             color: #061942;
-            font-size: 28px;
+            font-size: 25px;
             line-height: 1.1;
             font-weight: 600;
         }
@@ -1026,72 +1032,100 @@
         .form-panel::after {
             content: "";
             display: block;
-            width: 58px;
-            height: 3px;
-            margin: 10px auto 18px;
+            width: 48px;
+            height: 2px;
+            margin: 9px auto 28px;
             border-radius: 999px;
             background: #075fe4;
         }
 
+        .form-panel form {
+            margin-top: 0;
+        }
+
         label {
-            margin-bottom: 8px;
+            margin-bottom: 7px;
             color: #061942;
-            font-size: 12px;
+            font-size: 11.5px;
+            letter-spacing: .01em;
         }
 
         .grid {
-            gap: 14px 16px;
+            gap: 10px 18px;
         }
 
         .control,
         .control.password,
         .control.select-control {
-            height: 44px;
-            border-color: #bcd2f2;
-            border-radius: 11px;
+            height: 46px;
+            border-color: #c7dafa;
+            border-radius: 10px;
+            background: #fbfdff;
+            transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .control:hover,
+        .control:focus-within {
+            background: #ffffff;
         }
 
         .control {
-            grid-template-columns: 46px 1fr;
+            grid-template-columns: 44px 1fr;
         }
 
         .control.password {
-            grid-template-columns: 46px 1fr 46px;
+            grid-template-columns: 44px 1fr 44px;
         }
 
         .control.select-control {
-            grid-template-columns: 1fr 46px;
+            grid-template-columns: 1fr 44px;
         }
 
         input,
         select {
-            padding: 0 14px;
+            padding: 0 13px;
+            font-size: 13px;
         }
 
         .input-icon {
             border-right: 1px solid #dce7f8;
+            color: #647596;
+            background: rgba(238, 245, 255, .72);
         }
 
         .primary {
-            margin-top: 6px;
-            height: 46px;
-            border-radius: 11px;
+            margin-top: 10px;
+            height: 48px;
+            border-radius: 12px;
             font-size: 15px;
-            box-shadow: 0 8px 18px rgba(7, 95, 228, .24);
+            box-shadow: 0 13px 24px rgba(7, 95, 228, .24);
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .primary:hover {
+            background: #064fc0;
+            box-shadow: 0 16px 30px rgba(7, 95, 228, .28);
+            transform: translateY(-1px);
         }
 
         .switch {
-            margin-top: 14px;
+            margin-top: 16px;
             font-size: 13px;
         }
 
         .terms {
-            margin-top: 14px;
-            margin-bottom: 8px;
+            margin-top: 12px;
+            margin-bottom: 2px;
+            align-items: center;
+            border-radius: 10px;
+            background: #f7fbff;
+            padding: 10px 12px;
         }
 
         .field-error {
-            margin-top: 6px;
+            min-height: 10px;
+            margin-top: 3px;
+            font-size: 9.5px;
         }
 
         @media (max-width: 1120px) {
@@ -1186,8 +1220,8 @@
             <div class="illustration">
 
                 <img
-                    src="/direct.svg"
-                    alt="{{ $roleLabel }} registration"
+                    src="{{ asset('home-hero-students.png') }}"
+                    alt="OnlyFreshers students"
                 >
 
             </div>
@@ -2420,7 +2454,7 @@ document.addEventListener(
 
 
                     window.location.href =
-                        '/direct-mode/assessments';
+                        '/direct-mode/flow-selection';
 
 
                 } catch (error) {

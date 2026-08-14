@@ -81,11 +81,8 @@
                 @endforeach
             </div>
 
-            <div class="relative z-[1] mx-auto mt-[38px] h-[150px] w-[430px] origin-top-left scale-[0.65] sm:scale-100" aria-hidden="true">
-                <div class="absolute bottom-[34px] left-[120px] h-[136px] w-[116px] rounded-[70px_70px_10px_10px] bg-[linear-gradient(#ffd4b7_0_32%,#ffffff_32%_52%,#075fe4_52%)] before:absolute before:left-[27px] before:top-[-22px] before:h-12 before:w-[62px] before:rounded-[45px_45px_25px_25px] before:bg-[#10204a] before:content-['']"></div>
-                <div class="absolute bottom-[34px] left-[285px] h-[126px] w-[106px] rounded-[70px_70px_10px_10px] bg-[linear-gradient(#ffd4b7_0_32%,#ffffff_32%_52%,#075fe4_52%)] before:absolute before:left-[27px] before:top-[-22px] before:h-12 before:w-[62px] before:rounded-[45px_45px_25px_25px] before:bg-[#10204a] before:content-['']"></div>
-                <div class="absolute bottom-[34px] left-[205px] z-[3] h-[74px] w-[165px] rounded-[9px] bg-[linear-gradient(145deg,#e5edf9,#aebbd0)] shadow-[0_8px_18px_rgba(6,25,66,0.14)] after:absolute after:left-[74px] after:top-[31px] after:h-[19px] after:w-[19px] after:rounded-full after:bg-white after:content-['']"></div>
-                <div class="absolute inset-x-0 bottom-6 h-2.5 rounded-full bg-[#b9cceb]"></div>
+            <div class="relative z-[1] mx-auto mt-[38px] h-[210px] w-full max-w-[560px]" aria-hidden="true">
+                <img src="{{ asset('home-hero-students.png') }}" alt="" class="h-full w-full object-contain object-bottom">
             </div>
         </section>
 
