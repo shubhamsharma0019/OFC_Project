@@ -12,7 +12,7 @@
     <main class="page">
         <header class="topbar">
             <a class="logo" href="/">
-                <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <img src="{{ asset('build/assets/ofclogo1.png') }}?v=2" alt="OnlyFreshers Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                 <span class="logo-fallback"><b>OF</b>OnlyFreshers</span>
             </a>
         </header>
@@ -21,7 +21,7 @@
             <section class="auth-card">
                 <aside class="intro">
                     <div class="illustration">
-                        <img src="{{ asset('home-hero-students.png') }}" alt="OnlyFreshers students" onerror="this.src='/direct.svg'">
+                       <img src="{{ asset('home-hero-students.png') }}" alt="OnlyFreshers students" onerror="this.src='/direct.svg'">
                     </div>
                 </aside>
 

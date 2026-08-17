@@ -138,9 +138,7 @@
             display: grid;
             grid-template-rows: auto minmax(0, 1fr) auto auto;
             gap: 14px;
-
             padding: 18px 22px 12px;
-
             background: linear-gradient(
                 135deg,
                 #ffffff,
@@ -148,21 +146,16 @@
             );
         }
 
-
         /* Header */
 
         .topbar {
             min-height: 52px;
-
             max-width: 1280px;
             width: 100%;
-
             margin: 0 auto;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             gap: 18px;
         }
 
@@ -174,22 +167,16 @@
         .logo img {
             width: 205px;
             max-height: 48px;
-
             display: block;
-
             object-fit: contain;
             object-position: left center;
         }
 
         .logo-fallback {
             display: none;
-
             align-items: center;
-
             gap: 10px;
-
             color: #075fe4;
-
             font-size: 22px;
             font-weight: 800;
         }
@@ -197,71 +184,51 @@
         .logo-fallback b {
             display: grid;
             place-items: center;
-
             width: 38px;
             height: 38px;
-
             border-radius: 10px;
-
             background: #075fe4;
             color: #ffffff;
-
             font-size: 16px;
         }
 
         .role-badge {
             border: 1px solid #d8e4fb;
             border-radius: 7px;
-
             background: #f4f8ff;
-
             color: #075fe4;
-
             padding: 8px 13px;
-
             font-size: 11px;
             font-weight: 800;
         }
-
 
         /* Main */
 
         .auth-card {
             max-width: 1280px;
             width: 100%;
-
             margin: 0 auto;
-
             border: 1px solid #d8e4fb;
             border-radius: 8px;
-
             background: #ffffff;
-
             box-shadow:
                 0 14px 34px
                 rgba(6, 25, 66, .08);
-
             display: grid;
-
             grid-template-columns:
                 minmax(360px, 39%)
                 minmax(0, 1fr);
-
             overflow: hidden;
         }
-
 
         /* Intro */
 
         .intro {
             min-width: 0;
-
             display: flex;
             flex-direction: column;
             justify-content: center;
-
             padding: 32px 40px;
-
             background:
                 linear-gradient(
                     145deg,
@@ -272,12 +239,9 @@
 
         .intro h1 {
             max-width: 430px;
-
             margin: 0 0 14px;
-
             font-size: 28px;
             line-height: 1.3;
-
             font-weight: 800;
         }
 
@@ -287,20 +251,15 @@
 
         .intro p {
             margin: 0;
-
             color: #41527d;
-
             font-size: 13px;
             line-height: 1.6;
-
             max-width: 420px;
         }
 
         .illustration {
             min-height: 0;
-
             margin-top: 18px;
-
             display: flex;
             justify-content: center;
         }
@@ -308,19 +267,15 @@
         .illustration img {
             width: min(360px, 100%);
             height: 270px;
-
             object-fit: contain;
             object-position: center bottom;
         }
-
 
         /* Form */
 
         .form-wrap {
             min-width: 0;
-
             padding: 18px 28px;
-
             display: flex;
             align-items: center;
         }
@@ -328,55 +283,41 @@
         .form-panel {
             min-width: 0;
             width: 100%;
-
             border: 1px solid #dfe6f5;
             border-radius: 8px;
-
             padding: 18px 20px;
-
             background: #ffffff;
         }
 
         .tabs {
             display: grid;
             grid-template-columns: 1fr 1fr;
-
             border-bottom: 1px solid #dfe6f5;
-
             margin-bottom: 16px;
         }
 
         .tab {
             height: 36px;
-
             border: 0;
-
             background: transparent;
-
             color: #657190;
-
             font-size: 15px;
             font-weight: 800;
-
             cursor: pointer;
         }
 
         .tab.active {
             color: #075fe4;
-
             border-bottom:
                 3px solid #075fe4;
         }
-
 
         /* Form Grid */
 
         .grid {
             display: grid;
-
             grid-template-columns:
                 repeat(2, minmax(0, 1fr));
-
             gap: 14px 20px;
         }
 
@@ -390,9 +331,7 @@
 
         label {
             display: block;
-
             margin-bottom: 6px;
-
             font-size: 11px;
             font-weight: 800;
         }
@@ -403,27 +342,19 @@
 
         .control {
             min-width: 0;
-
             height: 38px;
-
             border: 1px solid #cfd8eb;
             border-radius: 6px;
-
             display: grid;
-
             grid-template-columns:
                 42px 1fr;
-
             align-items: center;
-
             background: #ffffff;
-
             overflow: hidden;
         }
 
         .control:focus-within {
             border-color: #075fe4;
-
             box-shadow:
                 0 0 0 3px
                 rgba(7, 95, 228, .08);
@@ -446,14 +377,11 @@
 
         .input-icon {
             height: 100%;
-
             border-right:
                 1px solid #dfe6f5;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             color: #657190;
         }
 
@@ -465,13 +393,9 @@
         .input-icon svg {
             width: 16px;
             height: 16px;
-
             fill: none;
-
             stroke: currentColor;
-
             stroke-width: 2;
-
             stroke-linecap: round;
             stroke-linejoin: round;
         }
@@ -479,19 +403,13 @@
         input,
         select {
             min-width: 0;
-
             width: 100%;
             height: 100%;
-
             border: 0;
             outline: 0;
-
             padding: 0 12px;
-
             font-size: 12px;
-
             color: #071849;
-
             background: transparent;
         }
 
@@ -501,30 +419,20 @@
 
         .eye {
             height: 100%;
-
             border: 0;
-
             background: transparent;
-
             color: #657190;
-
             cursor: pointer;
-
             font-size: 11px;
         }
-
 
         /* Errors */
 
         .form-alert {
             display: none;
-
             margin: 0 0 14px;
-
             border-radius: 6px;
-
             padding: 10px 12px;
-
             font-size: 12px;
             font-weight: 700;
             line-height: 1.45;
@@ -532,55 +440,42 @@
 
         .form-alert.error {
             display: block;
-
             background: #fff1f2;
             color: #c8102e;
-
             border:
                 1px solid #ffd0d7;
         }
 
         .form-alert.success {
             display: block;
-
             background: #ecfdf3;
             color: #087443;
-
             border:
                 1px solid #baf0ce;
         }
 
         .field-error {
             min-height: 14px;
-
             margin-top: 4px;
-
             color: #c8102e;
-
             font-size: 10px;
             font-weight: 700;
         }
-
 
         /* Terms */
 
         .terms {
             display: flex;
             align-items: flex-start;
-
             gap: 9px;
-
             margin: 12px 0 3px;
-
             font-size: 11px;
-
             color: #41527d;
         }
 
         .terms input {
             width: 16px;
             height: 16px;
-
             flex: 0 0 auto;
         }
 
@@ -593,24 +488,18 @@
             font-weight: 800;
         }
 
-
         /* Buttons */
 
         .primary {
             width: 100%;
             height: 38px;
-
             margin-top: 6px;
-
             border: 0;
             border-radius: 6px;
-
             background: #075fe4;
             color: #ffffff;
-
             font-size: 13px;
             font-weight: 800;
-
             cursor: pointer;
         }
 
@@ -619,59 +508,41 @@
             cursor: not-allowed;
         }
 
-
         /* Google */
 
         .divider {
             display: flex;
             align-items: center;
-
             gap: 16px;
-
             margin: 14px auto 12px;
-
             max-width: 260px;
-
             color: #657190;
-
             font-size: 12px;
         }
 
         .divider::before,
         .divider::after {
             content: "";
-
             height: 1px;
-
             background: #e3e8f4;
-
             flex: 1;
         }
 
         .google {
             height: 36px;
-
             width: 46%;
             min-width: 240px;
-
             margin: 0 auto;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             gap: 12px;
-
             border:
                 1px solid #d2dbea;
-
             border-radius: 6px;
-
             background: #ffffff;
-
             font-size: 12px;
             font-weight: 800;
-
             cursor: pointer;
         }
 
@@ -682,11 +553,8 @@
 
         .switch {
             text-align: center;
-
             margin: 12px 0 0;
-
             color: #657190;
-
             font-size: 11px;
         }
 
@@ -695,40 +563,28 @@
             font-weight: 800;
         }
 
-
         /* Features */
 
         .feature-bar {
             max-width: 1280px;
             width: 100%;
-
             margin: 0 auto;
-
             border:
                 1px solid #dfe6f5;
-
             border-radius: 8px;
-
             background: #ffffff;
-
             display: grid;
-
             grid-template-columns:
                 repeat(4, minmax(0, 1fr));
-
             padding: 12px 18px;
         }
 
         .feature {
             min-width: 0;
-
             display: flex;
             align-items: center;
-
             gap: 12px;
-
             padding: 0 16px;
-
             border-right:
                 1px solid #eef2f8;
         }
@@ -740,29 +596,21 @@
         .feature .icon {
             width: 30px;
             height: 30px;
-
             border-radius: 9px;
-
             background: #edf4ff;
             color: #075fe4;
-
             display: inline-flex;
             align-items: center;
             justify-content: center;
-
             flex: 0 0 auto;
         }
 
         .icon svg {
             width: 16px;
             height: 16px;
-
             fill: none;
-
             stroke: currentColor;
-
             stroke-width: 2;
-
             stroke-linecap: round;
             stroke-linejoin: round;
         }
@@ -773,9 +621,7 @@
 
         .feature h3 {
             margin: 0 0 4px;
-
             font-size: 12px;
-
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -783,11 +629,8 @@
 
         .feature p {
             margin: 0;
-
             color: #41527d;
-
             font-size: 10px;
-
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -795,14 +638,10 @@
 
         .copyright {
             text-align: center;
-
             color: #41527d;
-
             font-size: 10px;
-
             margin: 0;
         }
-
 
         /* Responsive */
 
@@ -832,7 +671,6 @@
             .feature-bar {
                 grid-template-columns:
                     repeat(2, minmax(0, 1fr));
-
                 margin-top: 14px;
             }
 
@@ -844,7 +682,6 @@
                 border-right: 0;
             }
         }
-
 
         @media (max-width: 760px) {
 
@@ -892,7 +729,6 @@
 
             .feature {
                 border-right: 0;
-
                 border-bottom:
                     1px solid #eef2f8;
             }
@@ -922,7 +758,17 @@
             grid-template-rows: 1fr;
             gap: 0;
             padding: 18px 46px;
-            background: radial-gradient(circle at 34% 58%, rgba(7, 95, 228, .08) 0 260px, transparent 261px), linear-gradient(130deg, #ffffff, #dfeeff);
+            background:
+                radial-gradient(
+                    circle at 34% 58%,
+                    rgba(7, 95, 228, .08) 0 260px,
+                    transparent 261px
+                ),
+                linear-gradient(
+                    130deg,
+                    #ffffff,
+                    #dfeeff
+                );
         }
 
         .auth-card {
@@ -950,7 +796,9 @@
             width: 245px;
             height: 70px;
             margin-bottom: 62px;
-            background: url('/ofclogo1.svg') left center / contain no-repeat;
+            background:
+                url('/build/assets/ofclogo1.png')
+                left center / contain no-repeat;
         }
 
         .intro h1 {
@@ -995,7 +843,11 @@
             height: 310px;
             object-fit: contain;
             object-position: left bottom;
-            filter: drop-shadow(0 20px 30px rgba(6, 25, 66, .10));
+            filter:
+                drop-shadow(
+                    0 20px 30px
+                    rgba(6, 25, 66, .10)
+                );
         }
 
         .form-wrap {
@@ -1009,7 +861,11 @@
             border: 1px solid rgba(207, 224, 255, .82);
             border-radius: 22px;
             background:
-                linear-gradient(180deg, rgba(255,255,255,.98), #ffffff);
+                linear-gradient(
+                    180deg,
+                    rgba(255,255,255,.98),
+                    #ffffff
+                );
             box-shadow:
                 inset 0 1px 0 rgba(255,255,255,.95),
                 0 24px 56px rgba(6, 25, 66, .11);
@@ -1054,6 +910,10 @@
             gap: 10px 18px;
         }
 
+        .register-role-company .form-panel::after {
+            margin-bottom: 30px;
+        }
+
         .control,
         .control.password,
         .control.select-control {
@@ -1061,7 +921,10 @@
             border-color: #c7dafa;
             border-radius: 10px;
             background: #fbfdff;
-            transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+            transition:
+                border-color .18s ease,
+                box-shadow .18s ease,
+                background .18s ease;
         }
 
         .control:hover,
@@ -1098,13 +961,20 @@
             height: 48px;
             border-radius: 12px;
             font-size: 15px;
-            box-shadow: 0 13px 24px rgba(7, 95, 228, .24);
-            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+            box-shadow:
+                0 13px 24px
+                rgba(7, 95, 228, .24);
+            transition:
+                transform .18s ease,
+                box-shadow .18s ease,
+                background .18s ease;
         }
 
         .primary:hover {
             background: #064fc0;
-            box-shadow: 0 16px 30px rgba(7, 95, 228, .28);
+            box-shadow:
+                0 16px 30px
+                rgba(7, 95, 228, .28);
             transform: translateY(-1px);
         }
 
@@ -1129,17 +999,20 @@
         }
 
         @media (max-width: 1120px) {
+
             .page {
                 display: block;
                 padding: 18px;
             }
 
             .auth-card {
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
             }
         }
 
         @media (max-width: 760px) {
+
             .intro::before {
                 width: 220px;
                 margin-bottom: 34px;
@@ -1162,11 +1035,9 @@
 
 </head>
 
-
-<body>
+<body class="register-role-{{ $registerRole }}">
 
 <main class="page">
-
 
     {{-- Header --}}
     <header class="topbar">
@@ -1177,7 +1048,7 @@
         >
 
             <img
-                src="/ofclogo1.svg"
+                src="{{ asset('build/assets/ofclogo1.png') }}?v=2"
                 alt="OnlyFreshers Logo"
                 onerror="
                     this.style.display='none';
@@ -1192,17 +1063,14 @@
 
         </a>
 
-
         <div class="role-badge">
             {{ $roleLabel }}
         </div>
 
     </header>
 
-
     {{-- Main Card --}}
     <section class="auth-card">
-
 
         {{-- Intro --}}
         <div class="intro">
@@ -1216,7 +1084,6 @@
                 {{ $introText }}
             </p>
 
-
             <div class="illustration">
 
                 <img
@@ -1228,12 +1095,10 @@
 
         </div>
 
-
         {{-- Form Side --}}
         <div class="form-wrap">
 
             <div class="form-panel">
-
 
                 {{-- Tabs --}}
                 <div class="tabs">
@@ -1246,7 +1111,6 @@
                         Login
                     </button>
 
-
                     <button
                         class="tab active"
                         type="button"
@@ -1256,14 +1120,13 @@
 
                 </div>
 
-
                 {{-- Form --}}
                 <form
                     id="registerForm"
                     data-role="{{ $registerRole }}"
+                    @if ($isCompanyAuth) style="padding-top: 22px;" @endif
                     novalidate
                 >
-
 
                     {{-- Alert --}}
                     <div
@@ -1272,9 +1135,7 @@
                         role="alert"
                     ></div>
 
-
                     <div class="grid">
-
 
                         {{-- Name --}}
                         <div class="field">
@@ -1284,14 +1145,12 @@
                                 <span class="required">*</span>
                             </label>
 
-
                             <div class="control">
 
                                 <span
                                     class="input-icon"
                                     data-icon="user"
                                 ></span>
-
 
                                 <input
                                     name="name"
@@ -1310,7 +1169,6 @@
 
                         </div>
 
-
                         {{-- Email --}}
                         <div class="field">
 
@@ -1319,14 +1177,12 @@
                                 <span class="required">*</span>
                             </label>
 
-
                             <div class="control">
 
                                 <span
                                     class="input-icon"
                                     data-icon="mail"
                                 ></span>
-
 
                                 <input
                                     name="email"
@@ -1345,7 +1201,6 @@
 
                         </div>
 
-
                         {{-- Mobile --}}
                         <div class="field">
 
@@ -1354,14 +1209,12 @@
                                 <span class="required">*</span>
                             </label>
 
-
                             <div class="control">
 
                                 <span
                                     class="input-icon"
                                     data-icon="phone"
                                 ></span>
-
 
                                 <input
                                     name="phone"
@@ -1380,7 +1233,6 @@
 
                         </div>
 
-
                         {{-- Qualification / Industry / Type --}}
                         <div class="field">
 
@@ -1389,14 +1241,12 @@
                                 <span class="required">*</span>
                             </label>
 
-
                             <div class="control">
 
                                 <span
                                     class="input-icon"
                                     data-icon="graduation"
                                 ></span>
-
 
                                 <input
                                     name="secondary_field"
@@ -1414,7 +1264,6 @@
 
                         </div>
 
-
                         {{-- Password --}}
                         <div class="field">
 
@@ -1423,14 +1272,12 @@
                                 <span class="required">*</span>
                             </label>
 
-
                             <div class="control password">
 
                                 <span
                                     class="input-icon"
                                     data-icon="lock"
                                 ></span>
-
 
                                 <input
                                     name="password"
@@ -1440,7 +1287,6 @@
                                     required
                                     minlength="8"
                                 >
-
 
                                 <button
                                     class="eye"
@@ -1459,7 +1305,6 @@
 
                         </div>
 
-
                         {{-- Confirm Password --}}
                         <div class="field">
 
@@ -1468,14 +1313,12 @@
                                 <span class="required">*</span>
                             </label>
 
-
                             <div class="control password">
 
                                 <span
                                     class="input-icon"
                                     data-icon="lock"
                                 ></span>
-
 
                                 <input
                                     name="password_confirmation"
@@ -1485,7 +1328,6 @@
                                     required
                                     minlength="8"
                                 >
-
 
                                 <button
                                     class="eye"
@@ -1504,7 +1346,6 @@
 
                         </div>
 
-
                         {{-- Category --}}
                         <div class="field full">
 
@@ -1512,7 +1353,6 @@
                                 {{ $categoryLabel }}
                                 <span class="required">*</span>
                             </label>
-
 
                             <div class="control select-control">
 
@@ -1543,7 +1383,6 @@
 
                                 </select>
 
-
                                 <span
                                     class="input-icon"
                                     data-icon="chevron"
@@ -1559,7 +1398,6 @@
                         </div>
 
                     </div>
-
 
                     {{-- Terms --}}
                     <label class="terms">
@@ -1588,12 +1426,10 @@
 
                     </label>
 
-
                     <div
                         class="field-error"
                         data-error-for="terms"
                     ></div>
-
 
                     {{-- Submit --}}
                     <button
@@ -1603,7 +1439,6 @@
                     >
                         Create Account
                     </button>
-
 
                     <p class="switch">
 
@@ -1623,13 +1458,11 @@
 
     </section>
 
-
     {{-- Features --}}
     <section
         class="feature-bar"
         id="features"
     ></section>
-
 
     <p class="copyright">
         &copy; {{ date('Y') }}
@@ -1639,18 +1472,11 @@
 
 </main>
 
-
 <script>
 
 document.addEventListener(
     'DOMContentLoaded',
     function () {
-
-        /*
-        |--------------------------------------------------------------------------
-        | Icons
-        |--------------------------------------------------------------------------
-        */
 
         const icons = {
 
@@ -1760,16 +1586,7 @@ document.addEventListener(
             `
         };
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Features
-        |--------------------------------------------------------------------------
-        */
-
-        const features =
-            @json($features);
-
+        const features = @json($features);
 
         document
             .getElementById('features')
@@ -1803,13 +1620,6 @@ document.addEventListener(
                     )
                     .join('');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Input Icons
-        |--------------------------------------------------------------------------
-        */
-
         document
             .querySelectorAll('[data-icon]')
             .forEach(
@@ -1819,13 +1629,6 @@ document.addEventListener(
                         icons[item.dataset.icon] || '';
                 }
             );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Password Toggle
-        |--------------------------------------------------------------------------
-        */
 
         document
             .querySelectorAll(
@@ -1845,13 +1648,11 @@ document.addEventListener(
                                         'input'
                                     );
 
-
                             input.type =
                                 input.type ===
                                 'password'
                                     ? 'text'
                                     : 'password';
-
 
                             button.textContent =
                                 input.type ===
@@ -1862,13 +1663,6 @@ document.addEventListener(
                     );
                 }
             );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Form Elements
-        |--------------------------------------------------------------------------
-        */
 
         const form =
             document.getElementById(
@@ -1885,13 +1679,6 @@ document.addEventListener(
                 'registerButton'
             );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Alert
-        |--------------------------------------------------------------------------
-        */
-
         function setAlert(
             message,
             type = 'error'
@@ -1900,24 +1687,15 @@ document.addEventListener(
             alertBox.textContent =
                 message || '';
 
-
             alertBox.className =
                 message
                     ? `form-alert ${type}`
                     : 'form-alert';
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Errors
-        |--------------------------------------------------------------------------
-        */
-
         function clearErrors() {
 
             setAlert('');
-
 
             form
                 .querySelectorAll(
@@ -1930,7 +1708,6 @@ document.addEventListener(
                             '';
                     }
                 );
-
 
             form
                 .querySelectorAll(
@@ -1945,7 +1722,6 @@ document.addEventListener(
                 );
         }
 
-
         function setFieldError(
             name,
             message
@@ -1956,15 +1732,12 @@ document.addEventListener(
                     `[data-error-for="${name}"]`
                 );
 
-
             const field =
                 form.elements[name];
-
 
             const control =
                 field
                     ?.closest('.control');
-
 
             if (error) {
 
@@ -1974,7 +1747,6 @@ document.addEventListener(
                         : message;
             }
 
-
             if (control) {
 
                 control
@@ -1982,13 +1754,6 @@ document.addEventListener(
                     .add('invalid');
             }
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Validation
-        |--------------------------------------------------------------------------
-        */
 
         function validateForm() {
 
@@ -1998,10 +1763,8 @@ document.addEventListener(
                         .entries()
                 );
 
-
             let valid =
                 true;
-
 
             [
                 'name',
@@ -2032,7 +1795,6 @@ document.addEventListener(
                 }
             );
 
-
             if (
                 values.password &&
                 values.password.length < 8
@@ -2046,7 +1808,6 @@ document.addEventListener(
                 valid =
                     false;
             }
-
 
             if (
                 values.password &&
@@ -2064,7 +1825,6 @@ document.addEventListener(
                     false;
             }
 
-
             if (
                 !form.elements.terms.checked
             ) {
@@ -2078,16 +1838,8 @@ document.addEventListener(
                     false;
             }
 
-
             return valid;
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | POST Helper
-        |--------------------------------------------------------------------------
-        */
 
         async function postJson(
             url,
@@ -2124,7 +1876,6 @@ document.addEventListener(
                     }
                 );
 
-
             const data =
                 await response
                     .json()
@@ -2134,7 +1885,6 @@ document.addEventListener(
                             return {};
                         }
                     );
-
 
             if (
                 !response.ok ||
@@ -2147,24 +1897,14 @@ document.addEventListener(
                         'Something went wrong. Please try again.'
                     );
 
-
                 error.payload =
                     data;
-
 
                 throw error;
             }
 
-
             return data;
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Submit
-        |--------------------------------------------------------------------------
-        */
 
         form.addEventListener(
             'submit',
@@ -2172,9 +1912,7 @@ document.addEventListener(
 
                 event.preventDefault();
 
-
                 clearErrors();
-
 
                 if (
                     !validateForm()
@@ -2187,32 +1925,21 @@ document.addEventListener(
                     return;
                 }
 
-
                 const formData =
                     new FormData(form);
-
 
                 const payload =
                     Object.fromEntries(
                         formData.entries()
                     );
 
-
                 submitButton.disabled =
                     true;
-
 
                 submitButton.textContent =
                     'Creating Account...';
 
-
                 try {
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Register
-                    |--------------------------------------------------------------------------
-                    */
 
                     const registerResponse =
                         await postJson(
@@ -2238,18 +1965,15 @@ document.addEventListener(
                             }
                         );
 
-
                     const token =
                         registerResponse
                             ?.data
                             ?.token;
 
-
                     const user =
                         registerResponse
                             ?.data
                             ?.user;
-
 
                     if (
                         !token ||
@@ -2261,46 +1985,25 @@ document.addEventListener(
                         );
                     }
 
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Save Auth
-                    |--------------------------------------------------------------------------
-                    */
-
                     localStorage.setItem(
                         'ofc_auth_token',
                         token
                     );
-
 
                     localStorage.setItem(
                         'ofc_auth_user',
                         JSON.stringify(user)
                     );
 
-
-                    /*
-                    | Compatibility
-                    */
-
                     localStorage.setItem(
                         'onlyfreshers_token',
                         token
                     );
 
-
                     localStorage.setItem(
                         'onlyfreshers_user',
                         JSON.stringify(user)
                     );
-
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Company
-                    |--------------------------------------------------------------------------
-                    */
 
                     if (
                         form.dataset.role ===
@@ -2311,7 +2014,6 @@ document.addEventListener(
                             'onlyfreshers_company_token',
                             token
                         );
-
 
                         localStorage.setItem(
                             'onlyfreshers_company_user',
@@ -2339,7 +2041,6 @@ document.addEventListener(
                                 token
                             );
 
-
                         localStorage.setItem(
                             'ofc_company_profile',
                             JSON.stringify(
@@ -2349,25 +2050,16 @@ document.addEventListener(
                             )
                         );
 
-
                         setAlert(
                             'Company account created successfully. Redirecting...',
                             'success'
                         );
-
 
                         window.location.href =
                             '/company/profile';
 
                         return;
                     }
-
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Training Partner
-                    |--------------------------------------------------------------------------
-                    */
 
                     if (
                         form.dataset.role ===
@@ -2390,7 +2082,6 @@ document.addEventListener(
                                 token
                             );
 
-
                         localStorage.setItem(
                             'ofc_training_partner_profile',
                             JSON.stringify(
@@ -2400,12 +2091,10 @@ document.addEventListener(
                             )
                         );
 
-
                         setAlert(
                             'Training partner account created successfully. Redirecting...',
                             'success'
                         );
-
 
                         window.location.href =
                             '/training-partner/profile/edit';
@@ -2413,21 +2102,14 @@ document.addEventListener(
                         return;
                     }
 
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Fresher Profile
-                    |--------------------------------------------------------------------------
-                    */
-
                     localStorage.setItem(
                         'onlyfreshers_mode',
                         'direct'
                     );
+
                     localStorage.removeItem(
                         'onlyfreshers_selected_mode'
                     );
-
 
                     await postJson(
                         '/api/fresher/profile',
@@ -2446,16 +2128,13 @@ document.addEventListener(
                         token
                     );
 
-
                     setAlert(
                         'Account created successfully. Starting initial assessment...',
                         'success'
                     );
 
-
                     window.location.href =
                         '/direct-mode/flow-selection';
-
 
                 } catch (error) {
 
@@ -2464,7 +2143,6 @@ document.addEventListener(
                             .payload
                             ?.errors || {};
 
-
                     Object
                         .entries(errors)
                         .forEach(
@@ -2472,11 +2150,6 @@ document.addEventListener(
                                 name,
                                 messages
                             ]) {
-
-                                /*
-                                | Laravel may return
-                                | "mobile" while UI uses "phone".
-                                */
 
                                 if (
                                     name === 'mobile'
@@ -2490,7 +2163,6 @@ document.addEventListener(
                                     return;
                                 }
 
-
                                 setFieldError(
                                     name,
                                     messages
@@ -2498,18 +2170,15 @@ document.addEventListener(
                             }
                         );
 
-
                     setAlert(
                         error.message ||
                         'Something went wrong.'
                     );
 
-
                 } finally {
 
                     submitButton.disabled =
                         false;
-
 
                     submitButton.textContent =
                         'Create Account';

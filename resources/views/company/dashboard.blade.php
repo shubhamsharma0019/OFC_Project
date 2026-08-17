@@ -56,7 +56,7 @@
                xl:grid-cols-5"
     >
         {{-- Stats inserted through JavaScript --}}
-    </section>
+    </section> 
 
 
     {{-- Bottom Section --}}

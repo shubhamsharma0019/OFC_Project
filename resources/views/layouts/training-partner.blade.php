@@ -12,7 +12,6 @@
         ['key' => 'reports', 'title' => 'Reports', 'icon' => '<path d="M3 3v18h18"></path><path d="M7 15l4-4 3 3 5-7"></path>', 'url' => '/training-partner/reports'],
         ['key' => 'payouts', 'title' => 'Payouts', 'icon' => '<rect x="3" y="6" width="18" height="15" rx="2"></rect><path d="M3 10h18M7 15h4"></path>', 'url' => '/training-partner/payouts'],
         ['key' => 'notifications', 'title' => 'Notifications', 'icon' => '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path>', 'url' => '/training-partner/notifications'],
-        ['key' => 'settings', 'title' => 'Settings', 'icon' => '<circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.4 3a7 7 0 0 0-1.7 1L5 6 3 9.5 5 11a7 7 0 0 0 0 2l-2 1.5L5 18l2.4-1a7 7 0 0 0 1.7 1l.4 3h5l.4-3a7 7 0 0 0 1.7-1L19 18l2-3.5-2-1.5a7 7 0 0 0 .1-1z"></path>', 'url' => '/training-partner/settings'],
     ];
     $activePage = $activePage ?? '';
 @endphp
@@ -24,45 +23,13 @@
     <title>@yield('title', 'Training Partner')</title>
     @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        #training-partner-layout,
-        #training-partner-layout * {
-            font-family: Inter, Arial, Helvetica, sans-serif !important;
-            font-weight: 500 !important;
-        }
-
-        #training-partner-layout [data-training-partner-initial],
-        #training-partner-layout #profileInitial {
-            box-shadow: 0 14px 28px rgba(91, 32, 230, 0.16);
-        }
-
-        #training-partner-sidebar {
-            scrollbar-width: none;
-        }
-
-        #training-partner-sidebar::-webkit-scrollbar {
-            display: none;
-        }
-
-        #training-partner-sidebar .training-sidebar-link.is-active::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 10px;
-            bottom: 10px;
-            width: 3px;
-            border-radius: 999px;
-            background: #5b20e6;
-        }
-    </style>
-    @stack('styles')
 </head>
 <body class="h-auto min-h-screen overflow-x-hidden bg-[#f8faff] font-sans font-medium text-[#071544] md:h-screen md:overflow-hidden">
-    <div id="training-partner-layout" class="layout group min-h-screen overflow-visible md:grid md:h-screen md:grid-cols-[270px_minmax(0,1fr)] md:overflow-hidden">
-        <aside id="training-partner-sidebar" class="fixed left-0 top-0 z-[1000] flex h-screen w-[286px] max-w-[86vw] -translate-x-[105%] flex-col overflow-y-auto overflow-x-hidden border-r border-[#dfe4f2] bg-white shadow-[18px_0_38px_rgba(34,23,91,0.18)] transition-transform duration-200 group-[.sidebar-open]:translate-x-0 md:sticky md:top-0 md:z-auto md:w-[270px] md:max-w-none md:translate-x-0 md:shadow-none">
-            <a class="flex h-[68px] shrink-0 items-center border-b border-[#dfe4f2] px-5" href="/training-partner/dashboard">
+    <div class="layout group min-h-screen overflow-visible md:grid md:h-screen md:grid-cols-[270px_minmax(0,1fr)] md:overflow-hidden">
+        <aside class="fixed left-0 top-0 z-[1000] flex h-screen w-[286px] max-w-[86vw] -translate-x-[105%] flex-col overflow-y-auto overflow-x-hidden border-r border-[#dfe4f2] bg-white shadow-[18px_0_38px_rgba(34,23,91,0.18)] transition-transform duration-200 group-[.sidebar-open]:translate-x-0 md:static md:z-auto md:w-[270px] md:max-w-none md:translate-x-0 md:shadow-none">
+            <a class="flex h-[70px] shrink-0 items-center border-b border-[#dfe4f2] px-5" href="/training-partner/dashboard">
                 @if (file_exists(public_path('ofclogo1.svg')))
-                    <img src="/ofclogo1.svg" alt="OnlyFreshers" class="block max-h-[42px] w-[188px] object-contain object-left">
+                    <img src="/ofclogo1.svg" alt="OnlyFreshers" class="block max-h-[52px] w-[205px] object-contain object-left">
                 @else
                     <span class="flex min-w-0 items-center gap-2.5 text-xl font-black text-[#5b20e6]">
                         <span class="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-[#5b20e6] text-sm text-white">OF</span>
@@ -71,11 +38,11 @@
                 @endif
             </a>
 
-            <nav class="grid min-h-0 shrink gap-1.5 overflow-visible px-4 pb-4 pt-5 content-start">
+            <nav class="grid min-h-0 shrink gap-2 overflow-hidden px-3.5 py-3 content-start">
                 @foreach($menuItems as $item)
-                    <a class="training-sidebar-link {{ $activePage === $item['key'] ? 'is-active bg-[#f2eaff] text-[#5b20e6] shadow-[0_10px_22px_rgba(91,32,230,0.08)]' : 'text-[#071544] hover:bg-[#f8f4ff] hover:text-[#5b20e6]' }} relative flex min-h-[40px] items-center gap-3 rounded-lg px-3 py-1.5 text-[13px] leading-[1.18] transition" href="{{ $item['url'] }}">
-                        <span class="{{ $activePage === $item['key'] ? 'bg-white text-[#5b20e6]' : 'bg-[#f3ecff] text-[#5b20e6]' }} flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-lg [&>svg]:h-[17px] [&>svg]:w-[17px] [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">{!! $item['icon'] !!}</svg>
+                    <a class="relative flex min-h-[42px] items-center gap-3 rounded-lg px-3 py-1.5 text-[13px] font-bold leading-[1.18] {{ $activePage === $item['key'] ? 'bg-[#f2eaff] text-[#5b20e6]' : 'text-[#26375f] hover:bg-[#f8f4ff] hover:text-[#5b20e6]' }}" href="{{ $item['url'] }}">
+                        <span class="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-lg bg-[#f3ecff] text-[#5b20e6]" style="display:flex;width:32px;height:32px;align-items:center;justify-content:center;flex:0 0 32px;border-radius:8px;background:#f3ecff;color:#5b20e6;">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;width:18px;height:18px;">{!! $item['icon'] !!}</svg>
                         </span>
                         <span class="min-w-0 truncate">{{ $item['title'] }}</span>
                         @if(!empty($item['dot']))

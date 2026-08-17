@@ -847,7 +847,7 @@
             width: 245px;
             height: 70px;
             margin-bottom: 62px;
-            background: url('/ofclogo1.svg') left center / contain no-repeat;
+            background: url('/build/assets/ofclogo1.png') left center / contain no-repeat;
         }
 
         .intro h1 {
@@ -1026,7 +1026,7 @@
         >
 
             <img
-                src="/ofclogo1.svg"
+                src="{{ asset('build/assets/ofclogo1.png') }}?v=2"
                 alt="OnlyFreshers Logo"
                 onerror="
                     this.style.display='none';
@@ -1075,8 +1075,9 @@
                 <div class="illustration">
 
                     <img
-                        src="{{ asset('home-hero-students.png') }}"
-                        alt="OnlyFreshers students"
+
+                                                src="{{ asset('home-hero-students.png') }}"
+                        alt="{{ $roleLabel }} Login"
                         onerror="this.src='/direct.svg'"
                     >
 
