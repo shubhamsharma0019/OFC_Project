@@ -45,7 +45,11 @@
 
 @push('scripts')
 <script>
-    const token = localStorage.getItem('ofc_auth_token');
+    const token = localStorage.getItem('ofc_auth_token')
+        || localStorage.getItem('onlyfreshers_token')
+        || localStorage.getItem('training_partner_token')
+        || localStorage.getItem('auth_token')
+        || localStorage.getItem('token');
     const selectedEnrollmentId = localStorage.getItem('ofc_selected_training_enrollment_id');
     const progressSummary = document.getElementById('progressSummary');
     const progressMessage = document.getElementById('progressMessage');
@@ -113,7 +117,7 @@
             const payload = await response.json();
             if (!response.ok || !payload.success) throw new Error(payload.message || 'Progress save nahi ho paaya.');
             showMessage(payload.message || 'Progress updated successfully.');
-            if (payload.data?.enrollment) renderSummary(payload.data.enrollment);
+            await loadProgress();
         } catch (error) {
             showMessage(error.message || 'Progress save nahi ho paaya.', 'error');
         } finally {

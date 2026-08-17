@@ -47,6 +47,24 @@
         return new Date(dateValue).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     }
 
+    function normalizeMode(value) {
+        return String(value || '').toLowerCase().replace(/\s+/g, '_');
+    }
+
+    function labelMode(value) {
+        return normalizeMode(value) === 'fast_track' ? 'Fast Track' : 'Direct';
+    }
+
+    function applyLink(job) {
+        return normalizeMode(job.hiring_mode) === 'fast_track' ? '/fast-track/login' : '/direct-mode/login';
+    }
+
+    function openingsLeft(job) {
+        const total = Number(job.openings || 0);
+        const hired = Number(job.hired_applications_count || 0);
+        return total ? Math.max(0, total - hired) : 'Open';
+    }
+
     function overviewRow(label, value) {
         return '<div class="flex items-center justify-between gap-4 border-b border-[#dce7f8] py-3.5 text-sm font-medium text-[#24344f] last:border-b-0"><span>' + escapeHtml(label) + '</span><strong class="text-right font-bold text-[#061942]">' + escapeHtml(value || '-') + '</strong></div>';
     }
@@ -67,7 +85,7 @@
                     <div class="mb-7 flex flex-wrap gap-[18px] text-[15px] font-medium text-[#52607a]">
                         <span>${escapeHtml(job.location || 'Location not added')}</span>
                         <span>${escapeHtml(job.job_type || 'Job Type')}</span>
-                        <span>${escapeHtml(job.hiring_mode === 'fast_track' ? 'Fast Track' : 'Direct')}</span>
+                        <span>${escapeHtml(labelMode(job.hiring_mode))}</span>
                         <span>${escapeHtml(humanDate(job.created_at))}</span>
                     </div>
 
@@ -91,17 +109,17 @@
 
                 <aside class="min-w-0">
                     <div class="mb-[22px] rounded-lg border border-[#dce7f8] bg-white p-[22px] shadow-[0_10px_24px_rgba(6,25,66,0.04)]">
-                        <a href="/direct-mode/login" class="flex h-11 w-full items-center justify-center rounded-lg border border-[#075fe4] bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#003f9e]">Apply Now</a>
+                        <a href="${escapeHtml(applyLink(job))}" class="flex h-11 w-full items-center justify-center rounded-lg border border-[#075fe4] bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#003f9e]">Apply Now</a>
                     </div>
 
                     <div class="rounded-lg border border-[#dce7f8] bg-white p-[22px] shadow-[0_10px_24px_rgba(6,25,66,0.04)]">
                         <h2 class="mb-[18px] text-xl font-semibold text-[#061942]">Job Overview</h2>
                         ${overviewRow('Job Type', job.job_type)}
-                        ${overviewRow('Hiring Mode', job.hiring_mode === 'fast_track' ? 'Fast Track' : 'Direct')}
+                        ${overviewRow('Hiring Mode', labelMode(job.hiring_mode))}
                         ${overviewRow('Location', job.location)}
                         ${overviewRow('Industry', company.industry)}
                         ${overviewRow('Salary', job.salary)}
-                        ${overviewRow('Openings', job.openings || '1')}
+                        ${overviewRow('Openings Left', openingsLeft(job))}
                         ${overviewRow('Last Date', job.application_last_date ? new Date(job.application_last_date).toLocaleDateString('en-IN') : '-')}
                     </div>
                 </aside>

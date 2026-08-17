@@ -54,6 +54,8 @@ class FresherFinalAssessmentController extends Controller
             ], 403);
         }
 
+        $courseEnrollment->load('trainingProgress');
+
         if ($courseEnrollment->payment_status !== 'paid') {
             return response()->json([
                 'success' => false,
@@ -61,20 +63,28 @@ class FresherFinalAssessmentController extends Controller
             ], 422);
         }
 
-        if (
-            $courseEnrollment->training_status !== 'completed'
-            || $courseEnrollment->enrollment_status !== 'completed'
-        ) {
+        $hasCompletedTrainingProgress = $courseEnrollment->trainingProgress
+            && $courseEnrollment->trainingProgress->progress_percentage >= 100;
+
+        $hasCompletedTrainingStatus =
+            $courseEnrollment->training_status === 'completed'
+            && $courseEnrollment->enrollment_status === 'completed';
+
+        if (!$hasCompletedTrainingProgress && !$hasCompletedTrainingStatus) {
             return response()->json([
                 'success' => false,
                 'message' => 'Complete the training before starting the final assessment.',
             ], 422);
         }
 
-        $activeQuestionsCount = AssessmentQuestion::query()
-            ->where('assessment_type', 'final')
-            ->where('is_active', true)
-            ->count();
+        if ($hasCompletedTrainingProgress && !$hasCompletedTrainingStatus) {
+            $courseEnrollment->update([
+                'training_status' => 'completed',
+                'enrollment_status' => 'completed',
+            ]);
+        }
+
+        $activeQuestionsCount = $this->activeFinalQuestions()->count();
 
         if ($activeQuestionsCount === 0) {
             return response()->json([
@@ -186,10 +196,9 @@ class FresherFinalAssessmentController extends Controller
             ], 422);
         }
 
-        $questions = AssessmentQuestion::query()
-            ->where('assessment_type', 'final')
-            ->where('is_active', true)
-            ->select([
+        $questions = $this->activeFinalQuestions()
+            ->map
+            ->only([
                 'id',
                 'category',
                 'question',
@@ -198,8 +207,7 @@ class FresherFinalAssessmentController extends Controller
                 'option_c',
                 'option_d',
             ])
-            ->orderBy('id')
-            ->get();
+            ->values();
 
         if ($questions->isEmpty()) {
             return response()->json([
@@ -266,11 +274,7 @@ class FresherFinalAssessmentController extends Controller
             ],
         ]);
 
-        $activeQuestions = AssessmentQuestion::query()
-            ->where('assessment_type', 'final')
-            ->where('is_active', true)
-            ->orderBy('id')
-            ->get();
+        $activeQuestions = $this->activeFinalQuestions();
 
         if ($activeQuestions->isEmpty()) {
             return response()->json([
@@ -535,5 +539,134 @@ class FresherFinalAssessmentController extends Controller
             ($correctAnswers / $totalQuestions) * 100,
             2
         );
+    }
+
+    private function activeFinalQuestions()
+    {
+        $this->ensureDefaultFinalQuestions();
+
+        return AssessmentQuestion::query()
+            ->where('assessment_type', 'final')
+            ->where('is_active', true)
+            ->orderBy('category')
+            ->orderBy('id')
+            ->get();
+    }
+
+    private function ensureDefaultFinalQuestions(): void
+    {
+        foreach ($this->defaultFinalQuestions() as $category => $questions) {
+            $activeCount = AssessmentQuestion::query()
+                ->where('assessment_type', 'final')
+                ->where('category', $category)
+                ->where('is_active', true)
+                ->count();
+
+            if ($activeCount >= 3) {
+                continue;
+            }
+
+            foreach ($questions as $question) {
+                AssessmentQuestion::firstOrCreate(
+                    [
+                        'assessment_type' => 'final',
+                        'category' => $category,
+                        'question' => $question['question'],
+                    ],
+                    [
+                        'option_a' => $question['option_a'],
+                        'option_b' => $question['option_b'],
+                        'option_c' => $question['option_c'],
+                        'option_d' => $question['option_d'],
+                        'correct_option' => $question['correct_option'],
+                        'is_active' => true,
+                    ]
+                );
+            }
+        }
+    }
+
+    private function defaultFinalQuestions(): array
+    {
+        return [
+            'technical' => [
+                [
+                    'question' => 'Which Laravel command is commonly used to run database migrations?',
+                    'option_a' => 'php artisan migrate',
+                    'option_b' => 'php artisan serve',
+                    'option_c' => 'php artisan route:list',
+                    'option_d' => 'php artisan cache:clear',
+                    'correct_option' => 'A',
+                ],
+                [
+                    'question' => 'In a relational database, what does a foreign key usually represent?',
+                    'option_a' => 'A password field',
+                    'option_b' => 'A relationship with another table',
+                    'option_c' => 'A frontend component',
+                    'option_d' => 'A browser cache value',
+                    'correct_option' => 'B',
+                ],
+                [
+                    'question' => 'Which HTTP method is generally used to update an existing resource?',
+                    'option_a' => 'GET',
+                    'option_b' => 'POST',
+                    'option_c' => 'PATCH',
+                    'option_d' => 'HEAD',
+                    'correct_option' => 'C',
+                ],
+            ],
+            'aptitude' => [
+                [
+                    'question' => 'A course has 40 lessons. If 75% are completed, how many lessons are done?',
+                    'option_a' => '20',
+                    'option_b' => '25',
+                    'option_c' => '30',
+                    'option_d' => '35',
+                    'correct_option' => 'C',
+                ],
+                [
+                    'question' => 'If a task takes 6 hours for 3 people, how many person-hours are required?',
+                    'option_a' => '9',
+                    'option_b' => '12',
+                    'option_c' => '18',
+                    'option_d' => '24',
+                    'correct_option' => 'C',
+                ],
+                [
+                    'question' => 'Find the missing number: 3, 6, 12, 24, ?',
+                    'option_a' => '30',
+                    'option_b' => '36',
+                    'option_c' => '42',
+                    'option_d' => '48',
+                    'correct_option' => 'D',
+                ],
+            ],
+            'communication' => [
+                [
+                    'question' => 'Which response is most professional after receiving interview instructions?',
+                    'option_a' => 'Ok',
+                    'option_b' => 'I will try',
+                    'option_c' => 'Thank you, I confirm my availability.',
+                    'option_d' => 'Why so early?',
+                    'correct_option' => 'C',
+                ],
+                [
+                    'question' => 'What should a fresher do when they do not know an interview answer?',
+                    'option_a' => 'Stay silent',
+                    'option_b' => 'Guess confidently without logic',
+                    'option_c' => 'Explain what they know and ask for clarification',
+                    'option_d' => 'End the interview',
+                    'correct_option' => 'C',
+                ],
+                [
+                    'question' => 'Which email subject is clearer for sending a resume?',
+                    'option_a' => 'Hi',
+                    'option_b' => 'Resume - Web Developer Application - Your Name',
+                    'option_c' => 'Please check',
+                    'option_d' => 'Urgent',
+                    'correct_option' => 'B',
+                ],
+            ],
+        ];
     }
 }

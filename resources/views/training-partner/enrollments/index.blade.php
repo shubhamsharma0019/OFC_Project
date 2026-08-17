@@ -39,7 +39,11 @@
 
 @push('scripts')
 <script>
-    const token = localStorage.getItem('ofc_auth_token');
+    const token = localStorage.getItem('ofc_auth_token')
+        || localStorage.getItem('onlyfreshers_token')
+        || localStorage.getItem('training_partner_token')
+        || localStorage.getItem('auth_token')
+        || localStorage.getItem('token');
     const enrollmentStats = document.getElementById('enrollmentStats');
     const enrollmentTable = document.getElementById('enrollmentTable');
     const enrollmentSearch = document.getElementById('enrollmentSearch');
@@ -96,7 +100,7 @@
                     <td class="px-5 py-4"><span class="rounded-md ${badgeClass('payment', enrollment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.payment_status))}</span></td>
                     <td class="px-5 py-4"><span class="rounded-md ${badgeClass('training', enrollment.training_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.training_status))}</span></td>
                     <td class="px-5 py-4"><div class="mb-1 flex justify-between text-xs font-bold"><span>${progress}%</span></div><div class="h-2 w-28 overflow-hidden rounded-full bg-[#f0eaff]"><div class="h-full rounded-full bg-[#6a2df0]" style="width:${progress}%"></div></div></td>
-                    <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-enrollment rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${enrollment.id}">View</button><button class="progress-enrollment rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" type="button" data-id="${enrollment.id}">Progress</button></div></td>
+                    <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-enrollment rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${enrollment.id}">View</button><button class="progress-enrollment rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f] disabled:cursor-not-allowed disabled:opacity-50" type="button" data-id="${enrollment.id}" data-payment="${escapeHtml(enrollment.payment_status)}" ${enrollment.payment_status !== 'paid' ? 'disabled title="Payment pending"' : ''}>Progress</button></div></td>
                 </tr>
             `;
         }).join('');
@@ -121,6 +125,10 @@
         const progress = event.target.closest('.progress-enrollment');
         const id = view?.dataset.id || progress?.dataset.id;
         if (!id) return;
+        if (progress && progress.dataset.payment !== 'paid') {
+            alert('Payment complete hone ke baad training progress update hoga.');
+            return;
+        }
         localStorage.setItem('ofc_selected_training_enrollment_id', id);
         window.location.href = view ? '/training-partner/enrollments/show' : '/training-partner/progress/edit';
     });

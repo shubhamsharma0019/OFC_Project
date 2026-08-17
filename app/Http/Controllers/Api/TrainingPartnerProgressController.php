@@ -37,8 +37,8 @@ class TrainingPartnerProgressController extends Controller
                     $trainingPartnerProfile->id
                 );
             })
-            ->where('payment_status', 'paid')
             ->whereIn('enrollment_status', [
+                'pending',
                 'enrolled',
                 'completed',
             ])

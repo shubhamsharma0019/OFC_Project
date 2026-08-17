@@ -87,9 +87,15 @@
     }
 
     function isCompletedEnrollment(item) {
+        const progress = FastTrack.progress(item);
         return item.payment_status === 'paid'
-            && item.training_status === 'completed'
-            && item.enrollment_status === 'completed';
+            && (
+                progress >= 100
+                || (
+                    item.training_status === 'completed'
+                    && item.enrollment_status === 'completed'
+                )
+            );
     }
     function overviewItem(icon, label, value) {
         return `<div class="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-4 text-sm">${finalIcon(icon)}<span class="font-semibold text-[#334b83]">${FastTrack.esc(label)}</span><strong class="text-right font-bold text-[#061942]">${FastTrack.esc(value)}</strong></div>`;

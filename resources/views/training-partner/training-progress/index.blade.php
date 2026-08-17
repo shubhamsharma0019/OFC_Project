@@ -37,7 +37,11 @@
 
 @push('scripts')
 <script>
-    const token = localStorage.getItem('ofc_auth_token');
+    const token = localStorage.getItem('ofc_auth_token')
+        || localStorage.getItem('onlyfreshers_token')
+        || localStorage.getItem('training_partner_token')
+        || localStorage.getItem('auth_token')
+        || localStorage.getItem('token');
     const progressStats = document.getElementById('progressStats');
     const progressTable = document.getElementById('progressTable');
     const progressSearch = document.getElementById('progressSearch');
@@ -84,7 +88,7 @@
                 <td class="px-5 py-4"><div class="mb-1 text-xs font-bold text-[#071544]">${progress}%</div><div class="h-2 w-32 overflow-hidden rounded-full bg-[#f0eaff]"><div class="h-full rounded-full bg-[#6a2df0]" style="width:${progress}%"></div></div></td>
                 <td class="max-w-[260px] px-5 py-4 text-xs text-[#526287]">${escapeHtml(item.training_progress?.short_remark || '-')}</td>
                 <td class="px-5 py-4 text-xs text-[#526287]">${formatDate(item.training_progress?.updated_at || item.updated_at)}</td>
-                <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-progress rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" type="button" data-id="${item.id}">View</button><button class="edit-progress rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${item.id}">Update</button></div></td>
+                <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-progress rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" type="button" data-id="${item.id}">View</button><button class="edit-progress rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${item.id}">Edit</button></div></td>
             </tr>`;
         }).join('');
     }

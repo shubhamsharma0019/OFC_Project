@@ -22,6 +22,11 @@ class PublicJobController extends Controller
                 },
             ])
             ->where('status', 'active')
+            ->where(function ($query) {
+                $query
+                    ->whereNull('application_last_date')
+                    ->orWhereDate('application_last_date', '>=', now()->toDateString());
+            })
             ->whereRaw(
                 "openings IS NULL OR openings > (
                     SELECT COUNT(*)
@@ -88,6 +93,16 @@ class PublicJobController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Job available nahi hai.',
+            ], 404);
+        }
+
+        if (
+            $job->application_last_date &&
+            $job->application_last_date->lt(now()->startOfDay())
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Is job ki application date expire ho chuki hai.',
             ], 404);
         }
 

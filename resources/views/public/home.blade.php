@@ -4,6 +4,18 @@
 
 @php
     $activePage = 'home';
+    $homeStats = array_merge([
+        'jobs_listed' => 0,
+        'freshers_hired' => 0,
+        'partner_companies' => 0,
+        'top_brands' => 'Trusted',
+    ], $homeStats ?? []);
+    $statCards = [
+        ['icon' => 'briefcase', 'label' => 'Jobs Listed', 'value' => $homeStats['jobs_listed'] . '+'],
+        ['icon' => 'users', 'label' => 'Fresher Hired', 'value' => $homeStats['freshers_hired'] . '+'],
+        ['icon' => 'training', 'label' => 'Partner Companies', 'value' => $homeStats['partner_companies'] . '+'],
+        ['icon' => 'shield', 'label' => 'Top Brands', 'value' => $homeStats['top_brands']],
+    ];
 @endphp
 
 @section('content')
@@ -38,10 +50,17 @@
             <div class="relative z-10 flex min-h-[245px] items-end justify-center overflow-visible lg:min-h-[285px] lg:justify-end">
                 <img src="{{ asset('home-hero-students.png') }}" alt="OnlyFreshers students" class="block h-auto max-h-[292px] w-full max-w-[700px] object-contain object-bottom lg:mr-[-28px] lg:max-h-[305px] xl:mr-[-46px]">
                 <div id="homeStats" class="absolute bottom-4 left-1/2 grid w-[min(95%,590px)] -translate-x-1/2 grid-cols-2 gap-2 rounded-lg border border-[#dce7f8] bg-white/90 p-2.5 text-left shadow-[0_12px_26px_rgba(6,25,66,0.16)] backdrop-blur sm:grid-cols-4 lg:left-[56%]">
-                    <article class="flex items-center gap-2"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#eaf2ff] text-[#075fe4]"></span><span><strong class="block text-[13px] font-extrabold leading-tight text-[#061942]">...</strong><small class="block text-[9px] font-semibold leading-tight text-[#34445e]">Jobs Listed</small></span></article>
-                    <article class="flex items-center gap-2"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#eaf2ff] text-[#075fe4]"></span><span><strong class="block text-[13px] font-extrabold leading-tight text-[#061942]">...</strong><small class="block text-[9px] font-semibold leading-tight text-[#34445e]">Fresher Hired</small></span></article>
-                    <article class="flex items-center gap-2"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#eaf2ff] text-[#075fe4]"></span><span><strong class="block text-[13px] font-extrabold leading-tight text-[#061942]">...</strong><small class="block text-[9px] font-semibold leading-tight text-[#34445e]">Partner Companies</small></span></article>
-                    <article class="flex items-center gap-2"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#eaf2ff] text-[#075fe4]"></span><span><strong class="block text-[13px] font-extrabold leading-tight text-[#061942]">Trusted</strong><small class="block text-[9px] font-semibold leading-tight text-[#34445e]">Top Brands</small></span></article>
+                    @foreach ($statCards as $statCard)
+                        <article class="flex items-center gap-2">
+                            <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#eaf2ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4">
+                                @include('components.public.icon', ['name' => $statCard['icon']])
+                            </span>
+                            <span>
+                                <strong class="block text-[13px] font-extrabold leading-tight text-[#061942]">{{ $statCard['value'] }}</strong>
+                                <small class="block text-[9px] font-semibold leading-tight text-[#34445e]">{{ $statCard['label'] }}</small>
+                            </span>
+                        </article>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -63,17 +82,17 @@
                         <div class="mb-2 flex items-center justify-center gap-3 md:justify-start"><span class="grid h-8 w-8 place-items-center rounded-full bg-[#075fe4] text-sm font-black text-white">1</span><h3 class="font-['Inter'] text-lg font-medium uppercase tracking-wide text-[#075fe4]">Direct Mode</h3></div>
                         <p class="mb-3 max-w-[310px] text-sm font-semibold leading-5 text-[#293850] max-md:mx-auto">Apply directly to top companies for fresher job openings.</p>
                         <ul class="grid gap-2 text-sm font-semibold text-[#293850]">
-                            <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#9bbdf1] text-[#075fe4]">✓</span>Browse & apply to jobs</li>
-                            <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#9bbdf1] text-[#075fe4]">✓</span>Companies receive your resume with Initial Track Analysis</li>
-                            <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#9bbdf1] text-[#075fe4]">✓</span>Companies shortlist & hire suitable candidates</li>
+                            @foreach ($directModePoints as $point)
+                                <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#9bbdf1] text-[#075fe4]">✓</span>{{ $point }}</li>
+                            @endforeach
                         </ul>
                         <span class="mt-3 inline-flex h-9 min-w-[170px] items-center justify-center rounded-md border border-[#8eb4ef] bg-white text-sm font-bold text-[#075fe4] shadow-[0_8px_18px_rgba(7,95,228,0.08)]">Explore Jobs</span>
                     </div>
                     <div class="mt-4 min-w-0 rounded-lg border border-[#e0e9f7] bg-white/80 p-3 text-left md:mt-0">
                         <h4 class="mb-2 font-['Inter'] text-sm font-medium text-[#075fe4]">Initial Track Analysis</h4>
                         <div class="grid gap-2 text-[11px] font-semibold text-[#293850]">
-                            @foreach ([['Technical Skills','75%'],['Aptitude','68%'],['Communication','72%'],['Learning Ability','80%']] as $row)
-                                <div class="grid grid-cols-[90px_minmax(0,1fr)_32px] items-center gap-2"><span>{{ $row[0] }}</span><span class="h-1.5 rounded-full bg-[#dce7f8]"><span class="block h-full rounded-full bg-[#075fe4]" style="width: {{ $row[1] }}"></span></span><b>{{ $row[1] }}</b></div>
+                            @foreach ($directAnalysis as $row)
+                                <div class="grid grid-cols-[90px_minmax(0,1fr)_32px] items-center gap-2"><span>{{ $row['label'] }}</span><span class="h-1.5 rounded-full bg-[#dce7f8]"><span class="block h-full rounded-full bg-[#075fe4]" style="width: {{ $row['value'] }}%"></span></span><b>{{ $row['value'] }}%</b></div>
                             @endforeach
                             <div class="mt-1 flex items-center justify-between"><span>Overall Match</span><span class="font-black text-[#075fe4]">★★★★★ <small class="text-[#05843e]">(Good Fit)</small></span></div>
                         </div>
@@ -89,10 +108,9 @@
                         <div class="mb-1.5 flex items-center justify-center gap-3 md:justify-start"><span class="grid h-8 w-8 place-items-center rounded-full bg-[#f37a22] text-sm font-black text-white">2</span><h3 class="font-['Inter'] text-lg font-medium uppercase tracking-wide text-[#f37a22]">Fast Track Mode</h3></div>
                         <p class="mb-2 max-w-[330px] text-[13px] font-semibold leading-5 text-[#293850] max-md:mx-auto">Get assessed, trained & certified by our partner training entities. Companies get candidates with initial & final assessment.</p>
                         <ul class="grid gap-1.5 text-[13px] font-semibold leading-5 text-[#293850]">
-                            <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#f2b17e] text-[#f37a22]">✓</span>Initial Assessment & Profile Analysis</li>
-                            <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#f2b17e] text-[#f37a22]">✓</span>Training by Verified Training Partners</li>
-                            <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#f2b17e] text-[#f37a22]">✓</span>Final Assessment & Certification</li>
-                            <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#f2b17e] text-[#f37a22]">✓</span>Companies get candidates with Initial & Final Assessment</li>
+                            @foreach ($fastTrackPoints as $point)
+                                <li class="flex items-start gap-2"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[#f2b17e] text-[#f37a22]">✓</span>{{ $point }}</li>
+                            @endforeach
                         </ul>
                         <span class="mt-2.5 inline-flex h-9 min-w-[220px] items-center justify-center rounded-md border border-[#f2b17e] bg-white text-sm font-bold text-[#f37a22] shadow-[0_8px_18px_rgba(243,122,34,0.08)]">Explore Fast Track Program</span>
                     </div>
@@ -100,8 +118,8 @@
                         <h4 class="mb-2 font-['Inter'] text-sm font-medium text-[#f37a22]">Assessment Overview</h4>
                         <div class="mb-2 grid grid-cols-[1fr_48px_16px_48px] gap-2 text-[10px] font-black text-[#536484]"><span></span><span>Initial</span><span></span><span>Final</span></div>
                         <div class="grid gap-2 text-[11px] font-semibold text-[#293850]">
-                            @foreach ([['Technical Skills','56%','82%'],['Aptitude','50%','78%'],['Communication','58%','80%'],['Overall Match','★★★☆☆','★★★★★']] as $row)
-                                <div class="grid grid-cols-[1fr_48px_16px_48px] items-center gap-2"><span>{{ $row[0] }}</span><b>{{ $row[1] }}</b><span>→</span><b class="text-[#075fe4]">{{ $row[2] }}</b></div>
+                            @foreach ($fastTrackOverview as $row)
+                                <div class="grid grid-cols-[1fr_48px_16px_48px] items-center gap-2"><span>{{ $row['label'] }}</span><b>{{ $row['initial'] }}</b><span>→</span><b class="text-[#075fe4]">{{ $row['final'] }}</b></div>
                             @endforeach
                         </div>
                         <p class="mt-3 text-xs font-semibold leading-5 text-[#536484]">Companies get job-ready candidates with improved skills, attitude & confidence.</p>
@@ -112,17 +130,6 @@
             <div class="mt-12 bg-white px-0 pb-2 pt-0">
                 <h2 class="mb-6 text-center font-['Inter'] text-[20px] font-semibold leading-tight text-[#061942]">How Fast Track Mode Works</h2>
                 <div class="overflow-x-auto px-0 py-2">
-                    @php
-                        $fastTrackSteps = [
-                            ['icon' => 'document', 'title' => '1. Enroll', 'text' => 'Student enrolls for Fast Track Program'],
-                            ['icon' => 'check', 'title' => '2. Initial Assessment', 'text' => 'Students are assessed on skills, aptitude, attitude & communication'],
-                            ['icon' => 'training', 'title' => '3. Training by Partners', 'text' => 'Training by verified training entities listed on OnlyFreshers'],
-                            ['icon' => 'document', 'title' => '4. Final Assessment', 'text' => 'Students appear for final assessment & practical evaluations'],
-                            ['icon' => 'certificate', 'title' => '5. Get Certified', 'text' => 'Students get certified based on performance'],
-                            ['icon' => 'briefcase', 'title' => '6. Get Hired', 'text' => 'Companies get candidates with Initial & Final Assessment'],
-                        ];
-                    @endphp
-
                     <div class="flex min-w-[1500px] items-start justify-center gap-0 xl:min-w-0">
                         @foreach ($fastTrackSteps as $index => $step)
                             <article class="grid w-[216px] shrink-0 grid-cols-[64px_minmax(0,1fr)] items-start gap-3 text-left xl:w-auto xl:flex-1">
@@ -160,10 +167,9 @@
                 <article class="min-h-[168px] border-b border-[#d8eee8] p-6 lg:border-b-0 lg:border-r">
                     <h3 class="font-['Inter'] text-[17px] font-semibold text-[#0b8b67]">What You Get in Fast Track Mode</h3>
                     <ul class="mt-3 grid gap-2 text-[13px] font-semibold leading-5 text-[#1f2f45]">
-                        <li class="flex gap-2"><span class="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#17a673] text-[10px] text-white">✓</span>Pre-assessment & profile insights</li>
-                        <li class="flex gap-2"><span class="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#17a673] text-[10px] text-white">✓</span>Training by industry experts</li>
-                        <li class="flex gap-2"><span class="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#17a673] text-[10px] text-white">✓</span>Final assessment & certification</li>
-                        <li class="flex gap-2"><span class="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#17a673] text-[10px] text-white">✓</span>Job-ready candidates with improved skills & attitude</li>
+                        @foreach ($companyBenefits as $benefit)
+                            <li class="flex gap-2"><span class="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#17a673] text-[10px] text-white">✓</span>{{ $benefit }}</li>
+                        @endforeach
                     </ul>
                 </article>
 
@@ -200,7 +206,7 @@
                 </article>
 
                 <article class="grid grid-cols-2 gap-2 p-4 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-                    @foreach (['EXCELR', 'ENLITE', 'TecnMinds', 'iNeuron', 'Besant', 'TTA'] as $partnerLogo)
+                    @foreach ($trainingPartnerLogos as $partnerLogo)
                         <span class="flex min-h-[48px] items-center justify-center rounded-md border border-[#d8eee8] bg-white px-2 text-center font-['Inter'] text-sm font-semibold text-[#35516f]">{{ $partnerLogo }}</span>
                     @endforeach
                 </article>
@@ -264,56 +270,3 @@
         </div>
     </section>
 @endsection
-
-@push('scripts')
-<script>
-    const homeStats = document.getElementById('homeStats');
-
-    function esc(value) {
-        return String(value ?? '').replace(/[&<>"']/g, function (char) {
-            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char];
-        });
-    }
-
-    function dataOf(result, key) {
-        return result && result.data ? (key ? result.data[key] : result.data) : result;
-    }
-
-    async function getJson(url) {
-        const response = await fetch(url, { headers: { Accept: 'application/json' } });
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.message || 'Request failed');
-        return result;
-    }
-
-    function renderStats(jobs, courses, partners) {
-        const icons = {
-            jobs: '<svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="2"></rect><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path><path d="M4 13h16"></path></svg>',
-            hired: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3 19c0-3 2.5-5 6-5"></path><path d="m16 11 2 2 3-4"></path></svg>',
-            partners: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3 19c0-3 2.5-5 6-5"></path><path d="M14 8h7M14 12h7M14 16h5"></path></svg>',
-            trusted: '<svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 7.5 8 8 4.5-.5 8-3 8-8V7l-8-4Z"></path><path d="m9 12 2 2 4-5"></path></svg>',
-        };
-        homeStats.innerHTML = [
-            [icons.jobs, 'Jobs Listed', jobs.length + '+'],
-            [icons.hired, 'Fresher Hired', Math.max(jobs.length * 2, 1000) + '+'],
-            [icons.partners, 'Partner Companies', partners.length + '+'],
-            [icons.trusted, 'Top Brands', 'Trusted'],
-        ].map((item) => `<article class="flex items-center gap-2"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#eaf2ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${item[0]}</span><span><strong class="block text-[13px] font-extrabold leading-tight text-[#061942]">${item[2]}</strong><small class="block text-[9px] font-semibold leading-tight text-[#34445e]">${item[1]}</small></span></article>`).join('');
-    }
-
-    Promise.all([
-        getJson('/api/jobs'),
-        getJson('/api/courses'),
-        getJson('/api/training-partners?per_page=6'),
-    ]).then(([jobsResult, coursesResult, partnersResult]) => {
-        const jobs = dataOf(jobsResult, 'jobs') || [];
-        const courses = dataOf(coursesResult, 'courses') || [];
-        const partnersPage = dataOf(partnersResult, 'training_partners') || {};
-        const partners = Array.isArray(partnersPage) ? partnersPage : (partnersPage.data || []);
-        renderStats(jobs, courses, partners);
-    }).catch((error) => {
-        const message = esc(error.message || 'Website data load nahi ho paaya.');
-        homeStats.innerHTML = `<article class="rounded-lg border border-[#ffd6a8] bg-[#fff8ef] p-4 text-sm font-semibold text-[#8a5200] sm:col-span-3">${message}</article>`;
-    });
-</script>
-@endpush

@@ -4,10 +4,6 @@
 
 @php
     $activePage = 'jobs';
-    $filters = [
-        ['title' => 'Job Type', 'name' => 'job_type', 'items' => ['Full Time', 'Part Time', 'Internship', 'Contract']],
-        ['title' => 'Work Mode', 'name' => 'hiring_mode', 'items' => ['Direct', 'Fast Track']],
-    ];
 @endphp
 
 @push('styles')
@@ -94,10 +90,8 @@
 
                 <div class="jobs-search-panel mb-6 grid gap-4 p-5 lg:grid-cols-[1.35fr_1fr_1fr_170px]">
                     <input id="searchInput" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]" type="text" placeholder="Search job title or keyword">
-                    <select id="modeSelect" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]">
+                    <select id="categorySelect" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]">
                         <option value="">All Categories</option>
-                        <option value="direct">Direct Hiring</option>
-                        <option value="fast_track">Fast Track</option>
                     </select>
                     <input id="locationInput" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]" type="text" placeholder="All Locations">
                     <button id="searchButton" class="h-12 rounded-xl border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_10px_22px_rgba(7,95,228,0.18)] transition hover:-translate-y-0.5 hover:bg-[#003f9e]" type="button">Search</button>
@@ -107,21 +101,14 @@
                     <aside class="jobs-filter-card p-5 lg:sticky lg:top-24 lg:self-start">
                         <h3 class="mb-[18px] text-base font-semibold text-[#061942]">Filters</h3>
 
-                        @foreach ($filters as $filter)
-                            <div class="mb-3.5 border-b border-[#dce7f8] pb-3.5 last:mb-0 last:border-b-0 last:pb-0">
-                                <p class="mb-2.5 text-[13px] font-semibold text-[#061942]">{{ $filter['title'] }}</p>
-                                @foreach ($filter['items'] as $item)
-                                    <label class="mb-2 block text-sm font-medium text-[#24344f]"><input type="checkbox" class="sidebar-filter mr-2 accent-[#075fe4]" data-filter="{{ $filter['name'] }}" value="{{ $item }}">{{ $item }}</label>
-                                @endforeach
-                            </div>
-                        @endforeach
+                        <div id="dynamicFilterGroups" class="text-sm font-medium text-[#52607a]">
+                            Loading filters...
+                        </div>
 
                         <div class="pt-3.5">
                             <p class="mb-2.5 text-[13px] font-semibold text-[#061942]">Location</p>
                             <input id="sideLocationInput" class="mb-2.5 h-[46px] w-full rounded-lg border border-[#dce7f8] bg-white px-4 text-sm font-medium text-[#52607a] outline-none placeholder:text-[#74839d]" type="text" placeholder="Search location">
-                            @foreach (['Bengaluru', 'Hyderabad', 'Pune', 'Noida', 'Remote'] as $location)
-                                <button type="button" class="location-chip mb-2 block text-sm font-medium text-[#24344f]" data-location="{{ $location }}">{{ $location }}</button>
-                            @endforeach
+                            <div id="locationChips" class="grid gap-2"></div>
                         </div>
                     </aside>
 
@@ -152,6 +139,7 @@
 @push('scripts')
 <script>
     let jobs = [];
+    let allJobs = [];
     let selectedJob = null;
 
     const jobList = document.getElementById('jobList');
@@ -160,8 +148,10 @@
     const searchInput = document.getElementById('searchInput');
     const locationInput = document.getElementById('locationInput');
     const sideLocationInput = document.getElementById('sideLocationInput');
-    const modeSelect = document.getElementById('modeSelect');
+    const categorySelect = document.getElementById('categorySelect');
     const sortSelect = document.getElementById('sortSelect');
+    const dynamicFilterGroups = document.getElementById('dynamicFilterGroups');
+    const locationChips = document.getElementById('locationChips');
     const initialParams = new URLSearchParams(window.location.search);
 
     function escapeHtml(value) {
@@ -178,6 +168,13 @@
         return job.company_profile?.company_name || 'Company';
     }
 
+    function companyLogo(job) {
+        const logo = job.company_profile?.company_logo || '';
+        if (!logo) return '';
+        if (/^(https?:)?\/\//.test(logo) || String(logo).startsWith('/')) return logo;
+        return '/storage/' + logo;
+    }
+
     function initials(text) {
         return String(text || 'CO').split(/\s+/).map((word) => word[0]).join('').slice(0, 2).toUpperCase();
     }
@@ -192,17 +189,85 @@
         return new Date(dateValue).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     }
 
+    function dateText(dateValue) {
+        return dateValue ? new Date(dateValue).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+    }
+
+    function applyLink(job) {
+        return normalizeMode(job.hiring_mode) === 'fast_track' ? '/fast-track/login' : '/direct-mode/login';
+    }
+
+    function openingsLeft(job) {
+        const total = Number(job.openings || 0);
+        const hired = Number(job.hired_applications_count || 0);
+        return total ? Math.max(0, total - hired) : 'Open';
+    }
+
     function splitSkills(value) {
         return String(value || '').split(',').map((item) => item.trim()).filter(Boolean);
     }
 
-    function buildQuery() {
-        const params = new URLSearchParams();
-        if (searchInput.value.trim()) params.set('search', searchInput.value.trim());
-        const location = locationInput.value.trim() || sideLocationInput.value.trim();
-        if (location) params.set('location', location);
-        if (modeSelect.value) params.set('hiring_mode', modeSelect.value);
-        return params.toString();
+    function normalizeMode(value) {
+        return String(value || '').toLowerCase().replace(/\s+/g, '_');
+    }
+
+    function labelMode(value) {
+        return normalizeMode(value) === 'fast_track' ? 'Fast Track' : 'Direct';
+    }
+
+    function unique(values) {
+        return [...new Set(values.map((value) => String(value || '').trim()).filter(Boolean))].sort();
+    }
+
+    function setSelect(select, values, label) {
+        const current = select.value;
+        select.innerHTML = `<option value="">${escapeHtml(label)}</option>` + values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('');
+        if (values.includes(current)) select.value = current;
+    }
+
+    function renderLogo(job) {
+        const logo = companyLogo(job);
+        return logo
+            ? `<img src="${escapeHtml(logo)}" alt="${escapeHtml(companyName(job))}" class="h-full w-full rounded-[18px] object-contain p-2" onerror="this.outerHTML='${escapeHtml(initials(companyName(job)))}'">`
+            : escapeHtml(initials(companyName(job)));
+    }
+
+    function renderFilterGroup(title, name, items, formatter) {
+        if (!items.length) return '';
+        return `<div class="mb-3.5 border-b border-[#dce7f8] pb-3.5 last:mb-0 last:border-b-0 last:pb-0">
+            <p class="mb-2.5 text-[13px] font-semibold text-[#061942]">${escapeHtml(title)}</p>
+            ${items.map((item) => `<label class="mb-2 flex items-center text-sm font-medium text-[#24344f]"><input type="checkbox" class="sidebar-filter mr-2 accent-[#075fe4]" data-filter="${escapeHtml(name)}" value="${escapeHtml(item)}">${escapeHtml(formatter ? formatter(item) : item)}</label>`).join('')}
+        </div>`;
+    }
+
+    function renderDynamicFilters() {
+        const jobTypes = unique(allJobs.map((job) => job.job_type));
+        const modes = unique(allJobs.map((job) => normalizeMode(job.hiring_mode))).filter(Boolean);
+        const industries = unique(allJobs.map((job) => job.company_profile?.industry));
+        const locations = unique(allJobs.map((job) => job.location)).slice(0, 8);
+
+        setSelect(categorySelect, industries, 'All Categories');
+        dynamicFilterGroups.innerHTML = [
+            renderFilterGroup('Job Type', 'job_type', jobTypes),
+            renderFilterGroup('Work Mode', 'hiring_mode', modes, labelMode),
+            renderFilterGroup('Industry', 'industry', industries),
+        ].filter(Boolean).join('') || '<p class="text-sm text-[#52607a]">No filters available.</p>';
+
+        locationChips.innerHTML = locations.length
+            ? locations.map((location) => `<button type="button" class="location-chip text-left text-sm font-medium text-[#24344f] transition hover:text-[#075fe4]" data-location="${escapeHtml(location)}">${escapeHtml(location)}</button>`).join('')
+            : '<p class="text-sm text-[#52607a]">No locations available.</p>';
+
+        document.querySelectorAll('.sidebar-filter').forEach((checkbox) => {
+            checkbox.addEventListener('change', renderJobs);
+        });
+
+        document.querySelectorAll('.location-chip').forEach((button) => {
+            button.addEventListener('click', () => {
+                locationInput.value = button.dataset.location;
+                sideLocationInput.value = button.dataset.location;
+                renderJobs();
+            });
+        });
     }
 
     async function loadJobs() {
@@ -210,10 +275,18 @@
         jobCount.textContent = 'Loading jobs...';
 
         try {
-            const response = await fetch('/api/jobs?' + buildQuery(), { headers: { 'Accept': 'application/json' } });
+            const response = await fetch('/api/jobs', { headers: { 'Accept': 'application/json' } });
             const payload = await response.json();
             if (!response.ok || !payload.success) throw new Error(payload.message || 'Jobs load nahi ho paayi.');
-            jobs = payload.data?.jobs || [];
+            allJobs = payload.data?.jobs || [];
+            jobs = allJobs;
+            renderDynamicFilters();
+            if (initialParams.get('search')) searchInput.value = initialParams.get('search');
+            if (initialParams.get('location')) {
+                locationInput.value = initialParams.get('location');
+                sideLocationInput.value = initialParams.get('location');
+            }
+            if (initialParams.get('category')) categorySelect.value = initialParams.get('category');
             renderJobs();
         } catch (error) {
             jobList.innerHTML = '<div class="p-6 text-sm font-medium text-[#b42318]">' + escapeHtml(error.message) + '</div>';
@@ -223,11 +296,31 @@
 
     function renderJobs() {
         const checkedTypes = Array.from(document.querySelectorAll('.sidebar-filter[data-filter="job_type"]:checked')).map((item) => item.value.toLowerCase());
-        const checkedModes = Array.from(document.querySelectorAll('.sidebar-filter[data-filter="hiring_mode"]:checked')).map((item) => item.value.toLowerCase().replace(/\s+/g, '_'));
-        const filtered = jobs.filter((job) => {
+        const checkedModes = Array.from(document.querySelectorAll('.sidebar-filter[data-filter="hiring_mode"]:checked')).map((item) => normalizeMode(item.value));
+        const checkedIndustries = Array.from(document.querySelectorAll('.sidebar-filter[data-filter="industry"]:checked')).map((item) => item.value.toLowerCase());
+        const query = searchInput.value.trim().toLowerCase();
+        const location = (locationInput.value.trim() || sideLocationInput.value.trim()).toLowerCase();
+        const category = categorySelect.value.trim().toLowerCase();
+
+        const filtered = allJobs.filter((job) => {
             const typeOk = !checkedTypes.length || checkedTypes.includes(String(job.job_type || '').toLowerCase());
-            const modeOk = !checkedModes.length || checkedModes.includes(String(job.hiring_mode || '').toLowerCase());
-            return typeOk && modeOk;
+            const modeOk = !checkedModes.length || checkedModes.includes(normalizeMode(job.hiring_mode));
+            const industry = String(job.company_profile?.industry || '').toLowerCase();
+            const industryOk = (!checkedIndustries.length || checkedIndustries.includes(industry)) && (!category || industry === category);
+            const locationOk = !location || String(job.location || '').toLowerCase().includes(location);
+            const searchable = [
+                job.title,
+                companyName(job),
+                job.required_skills,
+                job.qualification,
+                job.description,
+                job.location,
+                job.job_type,
+                labelMode(job.hiring_mode),
+                job.company_profile?.industry,
+            ].join(' ').toLowerCase();
+            const searchOk = !query || searchable.includes(query);
+            return typeOk && modeOk && industryOk && locationOk && searchOk;
         });
 
         const sorted = [...filtered].sort((a, b) => {
@@ -245,14 +338,16 @@
 
         jobList.innerHTML = sorted.map((job) => `
             <article class="job-card grid gap-4 p-5 sm:grid-cols-[82px_minmax(0,1fr)] lg:grid-cols-[82px_minmax(0,1fr)_150px] lg:items-center lg:gap-5 lg:p-6">
-                <div class="job-logo relative z-10">${escapeHtml(initials(companyName(job)))}</div>
+                <div class="job-logo relative z-10">${renderLogo(job)}</div>
                 <div class="relative z-10 min-w-0">
                     <h2 class="mb-2 font-['Inter'] text-xl font-semibold text-[#061942]">${escapeHtml(job.title)}</h2>
                     <div class="mb-3 flex flex-wrap gap-2 text-sm font-medium text-[#52607a]">
                         <span class="job-pill">${escapeHtml(companyName(job))}</span>
                         <span class="job-pill">${escapeHtml(job.location || 'Location not added')}</span>
                         <span class="job-pill">${escapeHtml(job.job_type || 'Job Type')}</span>
-                        <span class="job-pill">${escapeHtml(job.hiring_mode === 'fast_track' ? 'Fast Track' : 'Direct')}</span>
+                        <span class="job-pill">${escapeHtml(labelMode(job.hiring_mode))}</span>
+                        ${job.company_profile?.industry ? `<span class="job-pill">${escapeHtml(job.company_profile.industry)}</span>` : ''}
+                        <span class="job-pill">${escapeHtml(openingsLeft(job))} Openings</span>
                     </div>
                     <p class="line-clamp-2 text-sm font-semibold leading-[1.7] text-[#24344f]">${escapeHtml(job.description || job.qualification || 'Apply for this fresher opportunity.')}</p>
                 </div>
@@ -297,7 +392,7 @@
                     <div class="mb-7 flex flex-wrap gap-[18px] text-[15px] font-medium text-[#52607a]">
                         <span>${escapeHtml(job.location || 'Location not added')}</span>
                         <span>${escapeHtml(job.job_type || 'Job Type')}</span>
-                        <span>${escapeHtml(job.hiring_mode === 'fast_track' ? 'Fast Track' : 'Direct')}</span>
+                        <span>${escapeHtml(labelMode(job.hiring_mode))}</span>
                         <span>${escapeHtml(humanDate(job.created_at))}</span>
                     </div>
 
@@ -321,19 +416,19 @@
 
                 <aside class="min-w-0">
                     <div class="mb-[22px] rounded-lg border border-[#dce7f8] bg-white p-[22px] shadow-[0_10px_24px_rgba(6,25,66,0.04)]">
-                        <a href="/direct-mode/login" class="mb-3 flex h-11 w-full items-center justify-center rounded-lg border border-[#075fe4] bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#003f9e]">Apply Now</a>
+                        <a href="${escapeHtml(applyLink(job))}" class="mb-3 flex h-11 w-full items-center justify-center rounded-lg border border-[#075fe4] bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#003f9e]">Apply Now</a>
                         <a href="/jobs/show?job=${escapeHtml(job.id)}" class="flex h-11 w-full items-center justify-center rounded-lg border border-[#a9c5f6] bg-white text-sm font-bold text-[#075fe4] transition hover:bg-[#075fe4] hover:text-white">Open Detail Page</a>
                     </div>
 
                     <div class="rounded-lg border border-[#dce7f8] bg-white p-[22px] shadow-[0_10px_24px_rgba(6,25,66,0.04)]">
                         <h2 class="mb-[18px] text-xl font-semibold text-[#061942]">Job Overview</h2>
                         ${overviewRow('Job Type', job.job_type || '-')}
-                        ${overviewRow('Hiring Mode', job.hiring_mode === 'fast_track' ? 'Fast Track' : 'Direct')}
+                        ${overviewRow('Hiring Mode', labelMode(job.hiring_mode))}
                         ${overviewRow('Location', job.location || '-')}
                         ${overviewRow('Industry', company.industry || '-')}
                         ${overviewRow('Salary', job.salary || '-')}
-                        ${overviewRow('Openings', job.openings || '1')}
-                        ${overviewRow('Last Date', job.application_last_date ? new Date(job.application_last_date).toLocaleDateString('en-IN') : '-')}
+                        ${overviewRow('Openings Left', openingsLeft(job))}
+                        ${overviewRow('Last Date', dateText(job.application_last_date))}
                     </div>
                 </aside>
             </div>
@@ -350,30 +445,21 @@
         window.scrollTo(0, 0);
     }
 
-    document.getElementById('searchButton').addEventListener('click', loadJobs);
+    document.getElementById('searchButton').addEventListener('click', renderJobs);
     sortSelect.addEventListener('change', renderJobs);
     searchInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') loadJobs();
+        if (event.key === 'Enter') renderJobs();
     });
     locationInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') loadJobs();
+        if (event.key === 'Enter') renderJobs();
     });
     sideLocationInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             locationInput.value = sideLocationInput.value;
-            loadJobs();
+            renderJobs();
         }
     });
-    document.querySelectorAll('.location-chip').forEach((button) => {
-        button.addEventListener('click', () => {
-            locationInput.value = button.dataset.location;
-            sideLocationInput.value = button.dataset.location;
-            loadJobs();
-        });
-    });
-    document.querySelectorAll('.sidebar-filter').forEach((checkbox) => {
-        checkbox.addEventListener('change', renderJobs);
-    });
+    categorySelect.addEventListener('change', renderJobs);
     jobList.addEventListener('click', (event) => {
         const button = event.target.closest('.view-job');
         if (button) showDetail(button.dataset.id);

@@ -20,6 +20,24 @@
             font-family: Inter, Arial, Helvetica, sans-serif !important;
             font-weight: 500 !important;
         }
+
+        .company-account-block {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid #e6eefb;
+        }
+
+        .company-account-card {
+            min-height: 72px;
+            border-color: #cfe0f8 !important;
+            background: linear-gradient(135deg, #ffffff 0%, #f4f8ff 100%) !important;
+            box-shadow: 0 14px 30px rgba(6, 25, 66, 0.07) !important;
+        }
+
+        .company-account-card:hover {
+            border-color: #a9c6f4 !important;
+            box-shadow: 0 18px 34px rgba(7, 95, 228, 0.11) !important;
+        }
     </style>
 
     <a href="/" class="mb-7 flex h-16 items-center overflow-hidden" aria-label="OnlyFreshers">
@@ -49,18 +67,18 @@
     </nav>
 </div>
 
-<div class="company-sidebar-font relative">
-    <button id="company-account-menu-button" type="button" class="flex w-full items-center gap-2.5 rounded-lg border border-[#dce7f8] bg-white p-2.5 text-left shadow-[0_8px_22px_rgba(6,25,66,.04)]" aria-label="Open account menu" aria-expanded="false">
-        <span data-company-initial class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-[#075fe4] font-bold text-white">
+<div class="company-sidebar-font company-account-block relative">
+    <button id="company-account-menu-button" type="button" class="company-account-card flex w-full items-center gap-3 rounded-xl border p-3 text-left transition" aria-label="Open account menu" aria-expanded="false">
+        <span data-company-initial class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#075fe4] text-base font-bold text-white">
             C
         </span>
 
-        <span class="min-w-0">
-            <span data-company-name class="mb-1 block truncate text-sm font-bold text-[#061942]">Company</span>
-            <span class="block text-xs text-[#075fe4]">Company Account</span>
+        <span class="min-w-0 flex-1">
+            <span data-company-name class="mb-1 block truncate text-sm leading-tight font-bold text-[#061942]">Company</span>
+            <span class="block truncate text-xs leading-tight text-[#075fe4]">Company Account</span>
         </span>
 
-        <span class="ml-auto text-lg text-[#061942]">&#8964;</span>
+        <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-[#dce7f8] bg-white text-base leading-none text-[#061942]">&#8964;</span>
     </button>
 
     <div id="company-account-menu" class="absolute bottom-[calc(100%+8px)] left-0 right-0 z-[1200] hidden overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_12px_28px_rgba(6,25,66,.14)]">
