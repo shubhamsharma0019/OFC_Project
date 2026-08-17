@@ -8,6 +8,15 @@
 
 @push('styles')
 <style>
+    .training-partners-page,
+    .training-partners-page * {
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .training-partners-page h1,
+    .training-partners-page h2,
+    .training-partners-page h3 {
+        font-weight: 700;
+    }
     .partner-filter-panel {
         border: 1px solid #cfe0ff;
         border-radius: 18px;
@@ -105,64 +114,171 @@
 @endpush
 
 @section('content')
-    <main class="bg-white">
-        <section class="relative overflow-hidden bg-[linear-gradient(120deg,#ffffff,#f4f8ff)] py-10 lg:py-[55px]">
-            <div class="pointer-events-none absolute -left-24 top-1/2 hidden h-[300px] w-[430px] -translate-y-1/2 rounded-full bg-[#dcecff]/65 blur-3xl lg:block"></div>
-            <div class="pointer-events-none absolute left-0 top-0 hidden h-full w-[46%] bg-[radial-gradient(circle_at_14%_28%,rgba(207,228,255,0.48)_0%,rgba(244,249,255,0.42)_34%,rgba(255,255,255,0)_72%)] lg:block"></div>
-            <div class="pointer-events-none absolute inset-y-0 right-0 hidden w-[54%] bg-[radial-gradient(circle_at_80%_28%,rgba(207,228,255,0.56)_0%,rgba(244,248,255,0.48)_38%,rgba(255,255,255,0)_76%)] lg:block"></div>
-            <div class="relative mx-auto grid w-full max-w-7xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-[52px] lg:px-8">
-                <div>
-                    <h1 class="m-0 text-[38px] font-semibold leading-tight text-[#061942] sm:text-[52px]">Our Trusted <span class="text-[#075fe4]">Training Partners</span></h1>
-                    <p class="mt-4 max-w-2xl text-lg font-medium leading-[1.7] text-[#34445e]">Explore verified and industry-aligned training partners who help freshers build practical, job-ready skills.</p>
-                    <div class="mt-7 grid max-w-[620px] grid-cols-3 gap-3">
-                        <div class="rounded-xl border border-[#cfe0ff] bg-white/72 p-4 shadow-[0_14px_30px_rgba(7,95,228,0.09)]">
-                            <strong id="partnerHeroCount" class="block font-['Inter'] text-3xl font-semibold text-[#061942]">...</strong>
-                            <span class="text-xs font-semibold text-[#34445e]">Partners</span>
+    <main class="training-partners-page bg-white">
+        <section class="bg-white px-4 py-5 sm:px-6 lg:px-8">
+            <div class="mx-auto grid w-full max-w-7xl overflow-hidden rounded-lg bg-[#eef5ff] shadow-[0_8px_24px_rgba(7,95,228,0.08)] lg:grid-cols-[1fr_520px]">
+                <div class="relative z-10 px-6 py-6 sm:px-8 lg:py-8">
+                    <h1 class="mb-2 text-[30px] font-bold leading-tight text-[#061942] sm:text-[34px]">Our Trusted Training Partners</h1>
+                    <p class="mb-6 max-w-[650px] text-[13px] font-semibold leading-5 text-[#24344f]">Learn, grow and get hired. Choose from industry-aligned courses offered by our verified training partners under Fast Track Program.</p>
+
+                    <div class="mb-6 grid max-w-[610px] gap-3 sm:grid-cols-[1fr_170px]">
+                        <div class="flex h-11 items-center gap-2 rounded-md border border-[#c7d8f2] bg-white px-4 text-[#6f7d90] shadow-[0_3px_10px_rgba(6,25,66,0.04)]">
+                            <span class="[&>svg]:h-4 [&>svg]:w-4">@include('components.public.icon', ['name' => 'search'])</span>
+                            <span class="text-[12px] font-semibold">Search training partner or course</span>
                         </div>
-                        <div class="rounded-xl border border-[#cfe0ff] bg-white/72 p-4 shadow-[0_14px_30px_rgba(7,95,228,0.09)]">
-                            <strong class="block font-['Inter'] text-3xl font-semibold text-[#061942]">100%</strong>
-                            <span class="text-xs font-semibold text-[#34445e]">Verified</span>
-                        </div>
-                        <div class="rounded-xl border border-[#cfe0ff] bg-white/72 p-4 shadow-[0_14px_30px_rgba(7,95,228,0.09)]">
-                            <strong class="block font-['Inter'] text-3xl font-semibold text-[#061942]">Job</strong>
-                            <span class="text-xs font-semibold text-[#34445e]">Ready Skills</span>
+                        <div class="flex h-11 items-center justify-between rounded-md border border-[#c7d8f2] bg-white px-4 text-[#24344f] shadow-[0_3px_10px_rgba(6,25,66,0.04)]">
+                            <span class="text-[12px] font-semibold">All Locations</span>
+                            <span class="text-[12px] text-[#6f7d90]">⌄</span>
                         </div>
                     </div>
+
+                    <div class="grid max-w-[760px] gap-3 rounded-lg bg-white/78 p-3 shadow-[0_5px_18px_rgba(6,25,66,0.04)] sm:grid-cols-2 xl:grid-cols-4">
+                        @foreach ([
+                            ['icon' => 'shield', 'title' => 'Verified Partners', 'text' => 'Quality training you can trust'],
+                            ['icon' => 'briefcase', 'title' => 'Industry Relevant Courses', 'text' => 'Designed for job roles'],
+                            ['icon' => 'users', 'title' => 'Expert Trainers', 'text' => 'Learn from industry experts'],
+                            ['icon' => 'chart', 'title' => 'Placement Support', 'text' => 'Better training, better jobs'],
+                        ] as $benefit)
+                            <div class="flex items-center gap-3">
+                                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#e8f1ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4">@include('components.public.icon', ['name' => $benefit['icon']])</span>
+                                <span>
+                                    <strong class="block text-[10px] font-bold leading-tight text-[#07518f]">{{ $benefit['title'] }}</strong>
+                                    <span class="block text-[9px] font-semibold leading-tight text-[#34445e]">{{ $benefit['text'] }}</span>
+                                </span>
+                            </div>
+                        @endforeach
+                    </div>
+                    <span id="partnerHeroCount" class="hidden">...</span>
                 </div>
-                <div class="relative">
-                    <img src="{{ asset('training-partner-hero.png') }}" alt="Training partner mentoring freshers" class="block h-[280px] w-full rounded-2xl object-cover object-center shadow-[0_22px_48px_rgba(6,25,66,0.12)] sm:h-[340px] lg:h-[380px]">
+                <div class="relative min-h-[260px] lg:min-h-[300px]">
+                    <div class="absolute inset-0 bg-[linear-gradient(90deg,#eef5ff_0%,rgba(238,245,255,0.82)_10%,rgba(238,245,255,0)_34%)]"></div>
+                    <img src="{{ asset('training-partners-banner.png') }}" alt="Training partner students" class="h-full w-full object-cover object-center">
                 </div>
             </div>
         </section>
 
-        <div class="mx-auto w-full max-w-7xl px-5 py-10 sm:px-6 lg:px-8 lg:pb-[60px]">
-            <div id="partnerListing">
-                <div class="partner-filter-panel mb-6 grid gap-4 p-5 lg:grid-cols-[1.35fr_1fr_1fr_170px]">
-                    <input id="partnerSearch" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none placeholder:text-[#74839d] focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]" type="text" placeholder="Search by partner or course">
-                    <select id="courseFilter" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]"><option value="">All Categories</option></select>
-                    <select id="locationFilter" class="h-12 rounded-xl border border-[#cfe0ff] bg-white px-4 text-sm font-semibold text-[#52607a] outline-none focus:border-[#075fe4] focus:shadow-[0_0_0_3px_rgba(7,95,228,0.08)]"><option value="">All Locations</option></select>
-                    <button id="partnerSearchButton" class="h-12 rounded-xl border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_10px_22px_rgba(7,95,228,0.18)] transition hover:-translate-y-0.5 hover:bg-[#003f9e]" type="button">Search</button>
-                </div>
-
-                <div class="mb-5 flex items-center justify-between rounded-xl border border-[#e5eefc] bg-white px-4 py-3 text-sm font-bold text-[#061942] shadow-[0_10px_22px_rgba(6,25,66,0.035)]">
-                    <span id="partnerCount">Loading partners...</span>
-                    <button id="clearPartnerFilters" class="text-[#075fe4]" type="button">Clear Filters</button>
-                </div>
-
-                <div id="partnerGrid" class="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
-                    <article class="rounded-lg border border-[#dce7f8] bg-white p-6 text-sm font-semibold text-[#34445e] shadow-[0_12px_26px_rgba(6,25,66,0.04)] lg:col-span-3">Loading training partners...</article>
+        <div class="mx-auto w-full max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:pb-[60px]">
+            <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <p class="text-[13px] font-bold text-[#061942]">Showing 42 Training Partners</p>
+                <div class="grid gap-3 sm:grid-cols-[190px_190px_110px]">
+                    <select class="h-10 rounded-md border border-[#dce7f8] bg-white px-3 text-[12px] font-semibold text-[#34445e] outline-none"><option>All Categories</option></select>
+                    <select class="h-10 rounded-md border border-[#dce7f8] bg-white px-3 text-[12px] font-semibold text-[#34445e] outline-none"><option>All Course Levels</option></select>
+                    <button class="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[#b9cff0] bg-white px-4 text-[12px] font-bold text-[#075fe4]" type="button">@include('components.public.icon', ['name' => 'search']) Filters</button>
                 </div>
             </div>
 
-            <div id="partnerDetail" class="hidden">
-                <button class="mb-[22px] inline-flex h-10 items-center justify-center rounded-lg border border-[#a9c5f6] bg-white px-5 text-sm font-bold text-[#075fe4] transition hover:bg-[#075fe4] hover:text-white" type="button" onclick="showPartnerListing()">Back to Partners</button>
-                <div id="partnerDetailContent" class="rounded-lg border border-[#dce7f8] bg-white p-6 text-sm text-[#52607a] shadow-[0_12px_26px_rgba(6,25,66,0.04)]">Loading partner details...</div>
+            <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_285px]">
+                <div class="grid gap-3">
+                    @php
+                        $courseRows = [
+                            ['logo' => 'EXCELR', 'sub' => 'Raising Excellence', 'rating' => '4.6', 'reviews' => '1280', 'title' => 'Data Science & Analytics', 'city' => 'Bangalore, Karnataka', 'mode' => 'Classroom | Live Online', 'text' => 'Become a data expert and work with real-world data, analytics tools and dashboards.', 'join' => '999', 'fee' => '12,999', 'tags' => ['Python', 'SQL', 'Machine Learning', 'Power BI', '+2'], 'features' => ['60 Hours of Training', '80 Hours of Training', 'Hands-on Projects', 'Certificate of Completion', 'Placement Assistance']],
+                            ['logo' => 'ENLITE', 'sub' => 'INSTITUTE', 'rating' => '4.5', 'reviews' => '980', 'title' => 'Full Stack Development', 'city' => 'Pune, Maharashtra', 'mode' => 'Classroom | Live Online', 'text' => 'Learn full stack web development from basics to deployment.', 'join' => '799', 'fee' => '10,999', 'tags' => ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', '+2'], 'features' => ['80 Hours of Training', 'Live Projects', 'Certificate of Completion', 'Placement Assistance']],
+                            ['logo' => 'iNeuron', 'sub' => 'Intelligence Pathway', 'rating' => '4.7', 'reviews' => '1640', 'title' => 'Cloud Computing (AWS)', 'city' => 'Online', 'mode' => 'Live Online', 'text' => 'Master AWS cloud services and build scalable cloud solutions.', 'join' => '999', 'fee' => '13,999', 'tags' => ['AWS', 'DevOps', 'Linux', 'Docker', '+1'], 'features' => ['50 Hours of Training', 'Real-time Labs', 'Certificate of Completion', 'Placement Assistance']],
+                            ['logo' => 'Besant', 'sub' => 'Technologies', 'rating' => '4.4', 'reviews' => '870', 'title' => 'Digital Marketing', 'city' => 'Chennai, Tamil Nadu', 'mode' => 'Classroom | Live Online', 'text' => 'Learn digital marketing strategies and tools to grow brands and businesses.', 'join' => '699', 'fee' => '8,999', 'tags' => ['SEO', 'SEM', 'Social Media', 'Google Ads', '+2'], 'features' => ['50 Hours of Training', 'Live Projects', 'Certificate of Completion', 'Placement Assistance']],
+                            ['logo' => 'TTA', 'sub' => 'The Tech Academy', 'rating' => '4.6', 'reviews' => '1120', 'title' => 'Python Programming', 'city' => 'Hyderabad, Telangana', 'mode' => 'Classroom | Live Online', 'text' => 'Learn Python programming from scratch and build real-world applications.', 'join' => '599', 'fee' => '7,999', 'tags' => ['Python', 'DSA', 'OOPs', 'Projects', '+1'], 'features' => ['45 Hours of Training', 'Hands-on Coding', 'Certificate of Completion', 'Placement Assistance']],
+                            ['logo' => 'Teks academy', 'sub' => 'Transforming Life', 'rating' => '4.3', 'reviews' => '760', 'title' => 'Business Analytics', 'city' => 'Delhi, NCR', 'mode' => 'Live Online', 'text' => 'Turn data into insights and make better business decisions.', 'join' => '699', 'fee' => '9,999', 'tags' => ['Excel', 'SQL', 'Power BI', 'Tableau', '+1'], 'features' => ['45 Hours of Training', 'Case Studies', 'Certificate of Completion', 'Placement Assistance']],
+                        ];
+                    @endphp
+                    @foreach ($courseRows as $row)
+                        <article class="grid gap-4 rounded-lg border border-[#dce7f8] bg-white p-3 shadow-[0_6px_18px_rgba(6,25,66,0.04)] xl:grid-cols-[150px_minmax(0,1fr)_132px_175px_118px]">
+                            <div class="flex flex-col justify-between border-b border-[#edf2f8] pb-3 xl:border-b-0 xl:border-r xl:pb-0 xl:pr-3">
+                                <div>
+                                    <strong class="block text-[22px] font-black leading-tight text-[#176aa6]">{{ $row['logo'] }}</strong>
+                                    <span class="block text-[9px] font-bold text-[#6f7d90]">{{ $row['sub'] }}</span>
+                                </div>
+                                <p class="mt-3 text-[10px] font-bold text-[#061942]">{{ $row['rating'] }} <span class="text-[#f3a51d]">★</span> <span class="font-semibold text-[#6f7d90]">({{ $row['reviews'] }} Reviews)</span></p>
+                            </div>
+                            <div>
+                                <h2 class="mb-1.5 text-[14px] font-bold text-[#061942]">{{ $row['title'] }}</h2>
+                                <p class="mb-1 text-[10px] font-semibold text-[#34445e]">{{ $row['city'] }}</p>
+                                <p class="mb-2 text-[10px] font-semibold text-[#34445e]">{{ $row['mode'] }}</p>
+                                <p class="mb-2 line-clamp-2 text-[11px] font-semibold leading-4 text-[#34445e]">{{ $row['text'] }}</p>
+                                <div class="flex flex-wrap gap-1.5">
+                                    @foreach ($row['tags'] as $tag)
+                                        <span class="rounded-md bg-[#f2f5f9] px-2 py-0.5 text-[9px] font-semibold text-[#34445e]">{{ $tag }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-semibold text-[#6f7d90]">Joining Fee</p>
+                                <p class="mb-4 text-[16px] font-black text-[#0b9b6b]">₹{{ $row['join'] }}</p>
+                                <p class="text-[10px] font-semibold text-[#6f7d90]">Package Fee (Per Course)</p>
+                                <p class="text-[16px] font-black text-[#061942]">₹{{ $row['fee'] }}</p>
+                            </div>
+                            <ul class="grid content-start gap-1.5 text-[10px] font-semibold text-[#061942]">
+                                @foreach ($row['features'] as $feature)
+                                    <li class="flex gap-2"><span class="font-bold text-[#0b9b6b]">✓</span><span>{{ $feature }}</span></li>
+                                @endforeach
+                            </ul>
+                            <div class="flex items-center xl:justify-end">
+                                <a href="/courses" class="inline-flex h-8 min-w-[112px] items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-4 text-[10px] font-bold text-[#075fe4] transition hover:bg-[#f3f8ff]">View Details</a>
+                            </div>
+                        </article>
+                    @endforeach
+
+                    <div class="flex justify-center">
+                        <a href="/courses" class="inline-flex h-10 items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-5 text-[12px] font-bold text-[#075fe4]">Load More Partners ˅</a>
+                    </div>
+                </div>
+
+                <aside class="grid content-start gap-4 lg:sticky lg:top-24">
+                    <section class="rounded-lg border border-[#dce7f8] bg-[#f8fbff] p-4 shadow-[0_6px_18px_rgba(6,25,66,0.035)]">
+                        <h2 class="mb-4 text-[13px] font-bold text-[#061942]">Why Join Fast Track Program?</h2>
+                        <ul class="grid gap-3 text-[10px] font-semibold text-[#061942]">
+                            @foreach (['Industry aligned training', 'Initial & Final assessment', 'Certification on completion', 'Enhanced job opportunities', 'Dedicated placement support'] as $item)
+                                <li class="flex items-center gap-2"><span class="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full bg-[#0b9b6b] text-[8px] font-bold text-white">✓</span><span>{{ $item }}</span></li>
+                            @endforeach
+                        </ul>
+                    </section>
+
+                    <section class="rounded-lg border border-[#dce7f8] bg-[#f8fbff] p-4 shadow-[0_6px_18px_rgba(6,25,66,0.035)]">
+                        <h2 class="mb-4 text-[13px] font-bold text-[#061942]">Popular Courses</h2>
+                        @foreach ([
+                            ['Data Science & Analytics', 'Starting at ₹12,999'],
+                            ['Full Stack Development', 'Starting at ₹10,999'],
+                            ['Cloud Computing (AWS)', 'Starting at ₹13,999'],
+                            ['Digital Marketing', 'Starting at ₹8,999'],
+                            ['Python Programming', 'Starting at ₹7,999'],
+                        ] as $index => $course)
+                            <a href="/courses" class="mb-3 flex items-center gap-3 rounded-md transition hover:bg-white last:mb-0">
+                                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md text-[10px] font-black text-white {{ ['bg-[#35b99b]', 'bg-[#8239d7]', 'bg-[#2563eb]', 'bg-[#f59a23]', 'bg-[#21a391]'][$index] }}">{{ substr($course[0], 0, 2) }}</span>
+                                <span><strong class="block text-[10px] font-bold text-[#061942]">{{ $course[0] }}</strong><span class="text-[9px] font-semibold text-[#6f7d90]">{{ $course[1] }}</span></span>
+                            </a>
+                        @endforeach
+                        <a href="/courses" class="mt-3 inline-flex text-[10px] font-bold text-[#075fe4]">View All Courses -></a>
+                    </section>
+
+                    <section class="rounded-lg border border-[#dce7f8] bg-[#f8fbff] p-4 shadow-[0_6px_18px_rgba(6,25,66,0.035)]">
+                        <h2 class="mb-4 text-[13px] font-bold text-[#061942]">How It Works?</h2>
+                        @foreach ([['Choose a Course', 'Select a course that matches your career goals.'], ['Enroll & Pay', 'Pay joining fee and course package fee to enroll.'], ['Learn & Grow', 'Attend sessions, complete assignments and projects.'], ['Get Certified', 'Complete the course and get certified.'], ['Get Hired', 'Companies hire job-ready candidates like you.']] as $step => $item)
+                            <div class="mb-4 flex gap-3 last:mb-0">
+                                <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#075fe4] text-[11px] font-bold text-white">{{ $step + 1 }}</span>
+                                <span><strong class="block text-[10px] font-bold text-[#061942]">{{ $item[0] }}</strong><span class="block text-[9px] font-semibold leading-4 text-[#34445e]">{{ $item[1] }}</span></span>
+                            </div>
+                        @endforeach
+                    </section>
+
+                    <section class="rounded-lg border border-[#dce7f8] bg-[#f8fbff] p-4 shadow-[0_6px_18px_rgba(6,25,66,0.035)]">
+                        <h2 class="mb-2 text-[13px] font-bold text-[#061942]">Need Help Choosing?</h2>
+                        <p class="mb-4 text-[10px] font-semibold leading-4 text-[#34445e]">Talk to our experts and find the right course for your career.</p>
+                        <a href="/fast-track/register" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#9bb7dc] bg-white px-4 text-[11px] font-bold text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4">@include('components.public.icon', ['name' => 'users']) Talk to Expert</a>
+                    </section>
+                </aside>
+            </div>
+
+            <div class="mt-6 grid gap-0 overflow-hidden rounded-lg border border-[#edf2f8] bg-[#f8fbff] px-4 py-4 md:grid-cols-2 xl:grid-cols-5">
+                @foreach ([['users', '100% Verified Trainers', 'Learn from industry experts'], ['training', 'Live Interactive Sessions', 'Real-time doubt solving'], ['learn', 'Hands-on Projects', 'Work on real-world projects'], ['briefcase', 'Placement Assistance', 'Get hired with confidence'], ['location', 'Flexible Learning', 'Classroom & Online options']] as $benefit)
+                    <article class="flex min-h-[58px] items-center gap-3 px-4 py-2 xl:border-r xl:border-[#e7eef8] xl:last:border-r-0">
+                        <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md text-[#075fe4] [&>svg]:h-6 [&>svg]:w-6">@include('components.public.icon', ['name' => $benefit[0]])</span>
+                        <span><strong class="block text-[10px] font-bold leading-tight text-[#075fe4]">{{ $benefit[1] }}</strong><span class="block text-[9px] font-semibold leading-tight text-[#34445e]">{{ $benefit[2] }}</span></span>
+                    </article>
+                @endforeach
             </div>
         </div>
     </main>
 @endsection
 
-@push('scripts')
+@push('unused-training-partner-scripts')
 <script>
     const partnerListing = document.getElementById('partnerListing');
     const partnerDetail = document.getElementById('partnerDetail');

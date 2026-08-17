@@ -2,7 +2,8 @@
     $activePage = $activePage ?? 'home';
     $navItems = [
         ['key' => 'home', 'label' => 'Home', 'url' => '/'],
-        ['key' => 'jobs', 'label' => 'Jobs', 'url' => '/job'],
+        ['key' => 'companies', 'label' => 'Companies', 'url' => '/job'],
+        ['key' => 'direct-mode', 'label' => 'Direct Mode', 'url' => '/direct-mode'],
         ['key' => 'fast-track', 'label' => 'Fast Track Program', 'url' => '/fast-track'],
         ['key' => 'training-partners', 'label' => 'Training Partners', 'url' => '/training-partners'],
         ['key' => 'about', 'label' => 'About Us', 'url' => '/about'],

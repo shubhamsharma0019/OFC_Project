@@ -13,7 +13,11 @@
     .company-dashboard-page,
     .company-dashboard-page * {
         font-family: Inter, Arial, Helvetica, sans-serif !important;
-        font-weight: 500 !important;
+    }
+    .company-dashboard-page h1,
+    .company-dashboard-page h2,
+    .company-dashboard-page h3 {
+        font-weight: 700;
     }
 </style>
 @endpush
@@ -21,57 +25,57 @@
 @section('content')
 <div class="company-dashboard-page">
 
-    {{-- Welcome Section --}}
+    {{-- Welcome + Statistics --}}
     <section
-        class="mb-5 min-h-[150px] rounded-lg border border-[#dce7f8]
-               bg-white px-5 py-7
-               shadow-[0_10px_24px_rgba(6,25,66,0.04)]
-               sm:px-8 sm:py-10"
+        class="mb-5 grid gap-5 rounded-lg border border-[#dbe8fb]
+               bg-[#edf5ff] p-4
+               shadow-[0_8px_24px_rgba(7,95,228,0.08)]
+               xl:grid-cols-[minmax(0,1fr)_minmax(620px,1.45fr)]
+               xl:items-center"
     >
-        <h2 class="mb-2.5 text-[22px] font-bold leading-tight text-[#061942]">
-            Welcome back,
+        <div class="px-2 py-2">
+            <h2 class="mb-2 text-[18px] font-bold leading-tight text-[#061942]">
+                Welcome back,
+                <strong id="welcomeCompanyName" class="break-words font-bold">Company</strong>!
+            </h2>
 
-            <strong
-                id="welcomeCompanyName"
-                class="block break-words text-[27px] font-bold sm:text-[28px]"
-            >
-                Company
-            </strong>
-        </h2>
+            <p id="dashboardStatus" class="mb-5 text-[13px] font-semibold text-[#34445e]">
+                Loading dashboard...
+            </p>
 
-        <p
-            id="dashboardStatus"
-            class="text-sm text-[#34445e]"
+            <div class="flex flex-wrap gap-3">
+                <a href="/company/post-job" class="inline-flex h-10 min-w-[122px] items-center justify-center rounded-md bg-[#075fe4] px-5 text-[12px] font-bold text-white shadow-[0_8px_15px_rgba(7,95,228,0.16)] transition hover:bg-[#0554cc]">
+                    Post a Job
+                </a>
+                <a href="/company/applications" class="inline-flex h-10 min-w-[145px] items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-5 text-[12px] font-bold text-[#075fe4] transition hover:bg-[#f3f8ff]">
+                    View Candidates
+                </a>
+            </div>
+        </div>
+
+        <div
+            id="statsGrid"
+            class="grid gap-3 rounded-lg bg-white p-3 shadow-[0_2px_12px_rgba(6,25,66,0.04)]
+                   sm:grid-cols-2 xl:grid-cols-5"
         >
-            Loading dashboard...
-        </p>
-    </section>
-
-
-    {{-- Statistics --}}
-    <section
-        id="statsGrid"
-        class="mb-[22px] grid grid-cols-1 gap-5
-               md:grid-cols-2
-               xl:grid-cols-5"
-    >
-        {{-- Stats inserted through JavaScript --}}
+            {{-- Stats inserted through JavaScript --}}
+        </div>
     </section>
 
 
     {{-- Bottom Section --}}
     <section
         class="grid grid-cols-1 gap-5
-               xl:grid-cols-[1.1fr_0.9fr]"
+               xl:grid-cols-[1.15fr_0.85fr]"
     >
 
         {{-- Recent Activities --}}
         <div
             class="min-w-0 rounded-lg border border-[#dce7f8]
-                   bg-white p-6
+                   bg-white p-5
                    shadow-[0_10px_24px_rgba(6,25,66,0.04)]"
         >
-            <h2 class="mb-[18px] text-lg font-bold text-[#061942]">
+            <h2 class="mb-4 text-[16px] font-bold text-[#061942]">
                 Recent Activities
             </h2>
 
@@ -100,10 +104,10 @@
         {{-- Quick Actions --}}
         <div
             class="min-w-0 rounded-lg border border-[#dce7f8]
-                   bg-white p-6
+                   bg-white p-5
                    shadow-[0_10px_24px_rgba(6,25,66,0.04)]"
         >
-            <h2 class="mb-[18px] text-lg font-bold text-[#061942]">
+            <h2 class="mb-4 text-[16px] font-bold text-[#061942]">
                 Quick Actions
             </h2>
 
@@ -326,12 +330,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return `
             <div
-                class="flex h-[58px] w-[58px] shrink-0
+                class="flex h-10 w-10 shrink-0
                        items-center justify-center
                        rounded-full ${classes}"
             >
                 <div
-                    class="h-7 w-7
+                    class="h-5 w-5
                            [&>svg]:h-full
                            [&>svg]:w-full
                            [&>svg]:fill-none
@@ -417,40 +421,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     return `
                         <article
-                            class="flex min-h-[142px] min-w-0
-                                   items-center justify-center
-                                   gap-[18px]
-                                   rounded-lg
-                                   border border-[#dce7f8]
+                            class="grid min-h-[112px] min-w-0
+                                   grid-cols-[minmax(0,1fr)_42px]
+                                   gap-3
+                                   rounded-md
                                    bg-white
-                                   p-[22px]
-                                   shadow-[0_10px_24px_rgba(6,25,66,0.04)]"
+                                   px-3 py-3"
                         >
-
-                            ${iconWrap(icon, classes)}
 
                             <div class="min-w-0">
 
-                                <h3
-                                    class="mb-[5px]
-                                           text-[25px]
+                                <p
+                                    class="mb-2 truncate
+                                           text-[10px]
                                            font-bold
+                                           text-[#061942]"
+                                >
+                                    ${label}
+                                </p>
+
+                                <h3
+                                    class="text-[26px]
+                                           font-bold
+                                           leading-none
                                            text-[#061942]"
                                 >
                                     ${statistics?.[key] ?? 0}
                                 </h3>
 
-                                <p
-                                    class="mb-[15px]
-                                           text-xs
-                                           text-[#34445e]"
-                                >
-                                    ${label}
-                                </p>
-
                                 <a
                                     href="${url}"
-                                    class="text-xs
+                                    class="mt-3 block text-[9px]
                                            font-bold
                                            text-[#075fe4]
                                            hover:underline"
@@ -459,6 +460,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </a>
 
                             </div>
+
+                            ${iconWrap(icon, classes)}
 
                         </article>
                     `;
@@ -626,21 +629,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     return `
                         <div
                             class="grid
-                                   grid-cols-[42px_minmax(0,1fr)]
+                                   grid-cols-[38px_minmax(0,1fr)]
                                    items-center
-                                   gap-x-[18px]
+                                   gap-x-3
                                    border-b
                                    border-[#edf2fb]
-                                   px-2
-                                   py-[11px]
+                                   px-1
+                                   py-3
                                    last:border-b-0
-                                   sm:grid-cols-[48px_minmax(0,1fr)_auto]"
+                                   sm:grid-cols-[42px_minmax(0,1fr)_auto]"
                         >
 
                             <div
                                 class="flex
-                                       h-[42px]
-                                       w-[42px]
+                                       h-9
+                                       w-9
                                        items-center
                                        justify-center
                                        rounded-[9px]
@@ -666,7 +669,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <h3
                                 class="min-w-0
                                        break-words
-                                       text-xs
+                                       text-[12px]
                                        font-bold
                                        text-[#061942]"
                             >
@@ -677,7 +680,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <time
                                 class="col-start-2
                                        whitespace-nowrap
-                                       text-xs
+                                       text-[11px]
                                        text-[#34445e]
                                        sm:col-start-auto"
                             >
@@ -713,15 +716,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         return `
                             <a
                                 href="${url}"
-                                class="grid min-h-[76px]
-                                       grid-cols-[52px_minmax(0,1fr)_auto]
+                                class="grid min-h-[72px]
+                                       grid-cols-[42px_minmax(0,1fr)_auto]
                                        items-center
-                                       gap-4
+                                       gap-3
                                        rounded-lg
                                        border border-[#dce7f8]
-                                       bg-white
-                                       px-[18px]
-                                       py-[13px]
+                                       bg-[#f8fbff]
+                                       px-4
+                                       py-3
                                        shadow-[0_10px_24px_rgba(6,25,66,0.04)]
                                        transition
                                        hover:-translate-y-0.5
@@ -735,7 +738,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                     <h3
                                         class="mb-[5px]
-                                               text-[13px]
+                                               text-[12px]
                                                font-bold
                                                text-[#061942]"
                                     >
@@ -743,7 +746,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </h3>
 
                                     <p
-                                        class="text-xs
+                                        class="text-[11px]
                                                text-[#34445e]"
                                     >
                                         ${text}
@@ -753,7 +756,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                                 <span
-                                    class="text-[30px]
+                                    class="text-[24px]
                                            leading-none
                                            text-[#061942]"
                                 >
