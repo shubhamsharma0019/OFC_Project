@@ -78,15 +78,19 @@ class FresherJobApplicationController extends Controller
             ], 422);
         }
 
+        $isFastTrackJob = $job->hiring_mode === 'fast_track';
+
         if (
             empty($fresherProfile->phone) ||
             empty($fresherProfile->qualification) ||
             empty($fresherProfile->skills) ||
-            empty($fresherProfile->resume)
+            (! $isFastTrackJob && empty($fresherProfile->resume))
         ) {
             return response()->json([
                 'success' => false,
-                'message' => 'Job apply karne se pehle profile details, skills aur resume complete karein.',
+                'message' => $isFastTrackJob
+                    ? 'Job apply karne se pehle profile details aur skills complete karein.'
+                    : 'Job apply karne se pehle profile details, skills aur resume complete karein.',
             ], 422);
         }
 
@@ -96,7 +100,7 @@ class FresherJobApplicationController extends Controller
             ->where('status', 'submitted')
             ->exists();
 
-        if (! $assessmentSubmitted) {
+        if (! $isFastTrackJob && ! $assessmentSubmitted) {
             return response()->json([
                 'success' => false,
                 'message' => 'Job apply karne se pehle initial assessment complete karein.',
@@ -112,7 +116,7 @@ class FresherJobApplicationController extends Controller
 
         if (
             $job->application_last_date &&
-            $job->application_last_date->isPast()
+            $job->application_last_date->lt(today())
         ) {
             return response()->json([
                 'success' => false,

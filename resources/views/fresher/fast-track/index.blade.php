@@ -12,10 +12,50 @@
             <h1 class="text-[27px] font-bold leading-tight text-[#061942]">Dashboard</h1>
         </div>
 
-        <div>
-            <p class="mb-2 text-base font-medium text-[#24344f]">Welcome back,</p>
-            <h2 id="welcomeName" class="text-[22px] font-bold leading-tight text-[#061942]">Fresher!</h2>
-        </div>
+        <article class="flex flex-col gap-5 rounded-lg border border-[#cfe0f7] bg-[#eef6ff] px-6 py-6 shadow-[0_10px_24px_rgba(6,25,66,.04)] md:flex-row md:items-center md:px-8">
+            <div
+                id="dashboardProfileAvatar"
+                class="grid h-[96px] w-[96px] shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white bg-gradient-to-br from-[#1769ff] to-[#17a6a8] bg-cover bg-center text-2xl font-black text-white shadow-[0_10px_22px_rgba(6,25,66,.14)]"
+                aria-hidden="true"
+            >
+                FT
+            </div>
+
+            <div class="min-w-0 flex-1">
+                <p class="mb-1 text-sm font-bold leading-tight text-[#061942]">Welcome,</p>
+                <h2 id="welcomeName" class="mb-3 break-words text-[26px] font-black leading-tight text-[#061942]">Fresher</h2>
+
+                <div class="mb-4 inline-flex items-center gap-2 text-sm font-bold text-[#075fe4]">
+                    <span class="grid h-4 w-4 place-items-center rounded-full bg-[#075fe4] text-white">
+                        <svg class="h-3 w-3 fill-none stroke-current stroke-[3] [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 12 4 4L19 6"></path>
+                        </svg>
+                    </span>
+                    Verified Fresher
+                </div>
+
+                <p id="dashboardProfileCourse" class="mb-2 text-sm font-extrabold leading-tight text-[#061942]">B.Tech - Computer Science</p>
+                <p id="dashboardProfileLocation" class="flex items-center gap-1.5 text-sm font-semibold leading-tight text-[#24344f]">
+                    <svg class="h-4 w-4 shrink-0 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Delhi, India</span>
+                </p>
+            </div>
+
+            <div
+                id="dashboardProfileImageWrap"
+                class="hidden w-full shrink-0 overflow-hidden rounded-lg border border-white/80 bg-white shadow-[0_12px_28px_rgba(6,25,66,.12)] md:h-[132px] md:w-[220px]"
+            >
+                <img
+                    id="dashboardProfileImage"
+                    class="h-full w-full object-cover"
+                    src=""
+                    alt="Profile photo"
+                >
+            </div>
+        </article>
 
         <div class="grid items-start gap-8 xl:grid-cols-[500px_minmax(0,1fr)]">
             <div class="space-y-5">
@@ -91,6 +131,11 @@
 @push('scripts')
 <script>
     const welcomeName = document.getElementById('welcomeName');
+    const dashboardProfileAvatar = document.getElementById('dashboardProfileAvatar');
+    const dashboardProfileCourse = document.getElementById('dashboardProfileCourse');
+    const dashboardProfileLocation = document.getElementById('dashboardProfileLocation');
+    const dashboardProfileImageWrap = document.getElementById('dashboardProfileImageWrap');
+    const dashboardProfileImage = document.getElementById('dashboardProfileImage');
     const dashboardStatsGrid = document.getElementById('dashboardStatsGrid');
     const quickActions = document.getElementById('quickActions');
     const recentActivity = document.getElementById('recentActivity');
@@ -205,6 +250,76 @@
         `;
     }
 
+    function profilePhotoUrl(profile) {
+        const photo = profile && (
+            profile.profile_photo ||
+            profile.profilePhoto ||
+            profile.photo ||
+            profile.avatar
+        );
+
+        if (!photo) return '';
+        if (/^(https?:)?\/\//.test(photo) || String(photo).startsWith('data:') || String(photo).startsWith('/')) return photo;
+        return '/storage/' + photo;
+    }
+
+    function setDashboardProfileCard(user, profile) {
+        const displayName =
+            user.name ||
+            user.full_name ||
+            user.email ||
+            'Fresher';
+
+        const qualification =
+            profile.qualification ||
+            profile.highest_qualification ||
+            profile.degree ||
+            'B.Tech';
+
+        const specialization =
+            profile.specialization ||
+            profile.branch ||
+            profile.stream ||
+            profile.course ||
+            'Computer Science';
+
+        const city = profile.city || profile.location || 'Delhi';
+        const country = profile.country || 'India';
+        const locationText = [city, country].filter(Boolean).join(', ');
+        const photo = profilePhotoUrl(profile);
+
+        welcomeName.textContent = displayName;
+        dashboardProfileCourse.textContent = [qualification, specialization].filter(Boolean).join(' - ');
+        dashboardProfileLocation.querySelector('span').textContent = locationText || 'Delhi, India';
+
+        dashboardProfileAvatar.textContent = FastTrack.initials(displayName);
+        dashboardProfileAvatar.title = displayName;
+        dashboardProfileAvatar.style.backgroundImage = '';
+        dashboardProfileImageWrap.classList.add('hidden');
+        dashboardProfileImageWrap.classList.remove('md:block');
+        dashboardProfileImage.removeAttribute('src');
+
+        if (photo) {
+            const image = new Image();
+            image.onload = function () {
+                dashboardProfileAvatar.textContent = '';
+                dashboardProfileAvatar.style.backgroundImage = `url("${photo.replace(/"/g, '\\"')}")`;
+                dashboardProfileImage.src = photo;
+                dashboardProfileImage.alt = displayName + ' profile photo';
+                dashboardProfileImageWrap.classList.remove('hidden');
+                dashboardProfileImageWrap.classList.add('md:block');
+            };
+            image.onerror = function () {
+                dashboardProfileAvatar.textContent = FastTrack.initials(displayName);
+                dashboardProfileAvatar.style.backgroundImage = '';
+                dashboardProfileImageWrap.classList.add('hidden');
+                dashboardProfileImageWrap.classList.remove('md:block');
+                dashboardProfileImage.removeAttribute('src');
+            };
+            image.src = photo;
+        }
+    }
+
     function renderDashboard(data, unread) {
         const user = data.user || FastTrack.user() || {};
         const profile = data.profile || {};
@@ -237,8 +352,7 @@
             Math.min(100, Number(rawScore || 0))
         );
 
-        welcomeName.textContent =
-            (user.name || user.email || 'Fresher') + '!';
+        setDashboardProfileCard(user, profile);
 
         localStorage.setItem(
             'ofc_auth_user',
@@ -508,9 +622,16 @@
                     unread_count: 0
                 }
             })),
+
+        FastTrack
+            .getJson('/api/fresher/profile')
+            .catch(() => ({
+                data: {}
+            })),
     ])
     .then(function (responses) {
         const dashboardResponse = responses[0];
+        const profileResponse = responses[2];
 
         const unread =
             FastTrack.apiData(
@@ -523,6 +644,10 @@
             return;
         }
         const dashboard = FastTrack.apiData(dashboardResponse) || {};
+        const profileData = FastTrack.apiData(profileResponse) || {};
+        dashboard.user = profileData.user || dashboard.user;
+        dashboard.profile = Object.assign({}, dashboard.profile || {}, profileData.profile || {});
+
         if (!dashboard.initial_assessment || dashboard.initial_assessment.status !== 'submitted') {
             localStorage.setItem('onlyfreshers_intended_mode', 'fast_track');
             localStorage.removeItem('onlyfreshers_selected_mode');

@@ -9,8 +9,52 @@
 @section('content')
     <div class="mb-6">
         <h1 class="mb-2.5 text-[30px] font-extrabold leading-tight text-[#0a1748]">Training Partner Dashboard</h1>
-        <p class="m-0 text-[15px] text-[#526287]">Welcome back, <strong id="welcomeName" class="text-[#5b2ce1]">Training Partner</strong>!</p>
     </div>
+
+    <article class="mb-[18px] flex flex-col gap-5 rounded-[10px] border border-[#d8cdfa] bg-[#f3edff] px-6 py-6 shadow-[0_12px_26px_rgba(50,35,120,.05)] md:flex-row md:items-center md:px-8">
+        <div
+            id="partnerLogoAvatar"
+            class="grid h-[96px] w-[96px] shrink-0 place-items-center overflow-hidden rounded-[18px] border-2 border-white bg-gradient-to-br from-[#7b45ee] to-[#0ea5a8] bg-cover bg-center bg-no-repeat text-2xl font-black text-white shadow-[0_10px_22px_rgba(50,35,120,.14)]"
+            aria-hidden="true"
+        >
+            TP
+        </div>
+
+        <div class="min-w-0 flex-1">
+            <p class="mb-1 text-sm font-extrabold leading-tight text-[#0a1748]">Welcome,</p>
+            <h2 id="welcomeName" class="mb-3 break-words text-[26px] font-black leading-tight text-[#0a1748]">Training Partner</h2>
+
+            <div class="mb-4 inline-flex items-center gap-2 text-sm font-extrabold text-[#5b2ce1]">
+                <span class="grid h-4 w-4 place-items-center rounded-full bg-[#5b2ce1] text-white">
+                    <svg class="h-3 w-3 fill-none stroke-current stroke-[3] [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m5 12 4 4L19 6"></path>
+                    </svg>
+                </span>
+                Verified Training Partner
+            </div>
+
+            <p id="partnerEmail" class="mb-2 text-sm font-extrabold leading-tight text-[#0a1748]">Institute profile completed</p>
+            <p id="partnerLocation" class="flex items-center gap-1.5 text-sm font-semibold leading-tight text-[#26375f]">
+                <svg class="h-4 w-4 shrink-0 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span>Location</span>
+            </p>
+        </div>
+
+        <div
+            id="partnerLogoPreviewWrap"
+            class="hidden w-full shrink-0 overflow-hidden rounded-[10px] border border-white/80 bg-white shadow-[0_12px_28px_rgba(50,35,120,.12)] md:h-[132px] md:w-[220px]"
+        >
+            <img
+                id="partnerLogoPreview"
+                class="h-full w-full object-cover object-center"
+                src=""
+                alt="Institution logo"
+            >
+        </div>
+    </article>
 
     <section id="dashboardStats" class="mb-[18px] grid grid-cols-1 gap-[18px] md:grid-cols-2 xl:grid-cols-4">
         <article class="rounded-[10px] border border-[#dddff0] bg-white p-6 text-sm text-[#526287] shadow-[0_12px_26px_rgba(50,35,120,.05)] md:col-span-2 xl:col-span-4">Loading dashboard...</article>
@@ -88,6 +132,15 @@
         return String(value || '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]);
     }
     function formatNumber(value) { return Number(value || 0).toLocaleString('en-IN'); }
+    function initials(value) {
+        return String(value || 'TP').split(/\s+/).filter(Boolean).map((word) => word[0]).join('').slice(0, 2).toUpperCase() || 'TP';
+    }
+    function storageUrl(path) {
+        if (!path) return '';
+        const value = String(path);
+        if (/^(https?:)?\/\//.test(value) || value.startsWith('data:') || value.startsWith('/')) return value;
+        return '/storage/' + value.replace(/^\/?storage\//, '');
+    }
     function timeAgo(dateValue) {
         if (!dateValue) return '';
         const days = Math.floor(Math.max(1, (Date.now() - new Date(dateValue).getTime()) / 1000) / 86400);
@@ -148,6 +201,44 @@
             ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="5" fill="#6a2df0"></circle><text x="${point.x - 18}" y="178" font-size="11" fill="#526287">${escapeHtml(point.label)}</text>`).join('')}
         `;
     }
+    function setPartnerProfileCard(user, profile) {
+        const name = profile.institute_name || user?.name || 'Training Partner';
+        const logo = storageUrl(profile.institute_logo || profile.logo || profile.image);
+        const avatar = document.getElementById('partnerLogoAvatar');
+        const previewWrap = document.getElementById('partnerLogoPreviewWrap');
+        const preview = document.getElementById('partnerLogoPreview');
+
+        document.getElementById('welcomeName').textContent = name;
+        document.getElementById('partnerEmail').textContent = profile.email || user?.email || 'Institute profile completed';
+        document.getElementById('partnerLocation').querySelector('span').textContent = profile.location || 'Location not added';
+
+        avatar.textContent = initials(name);
+        avatar.title = name;
+        avatar.style.backgroundImage = '';
+        previewWrap.classList.add('hidden');
+        previewWrap.classList.remove('md:block');
+        preview.removeAttribute('src');
+
+        if (logo) {
+            const image = new Image();
+            image.onload = function () {
+                avatar.textContent = '';
+                avatar.style.backgroundImage = `url("${logo.replace(/"/g, '\\"')}")`;
+                preview.src = logo;
+                preview.alt = name + ' institution logo';
+                previewWrap.classList.remove('hidden');
+                previewWrap.classList.add('md:block');
+            };
+            image.onerror = function () {
+                avatar.textContent = initials(name);
+                avatar.style.backgroundImage = '';
+                previewWrap.classList.add('hidden');
+                previewWrap.classList.remove('md:block');
+                preview.removeAttribute('src');
+            };
+            image.src = logo;
+        }
+    }
     function renderDashboard(data) {
         const profile = data.training_partner_profile || {};
         const stats = data.statistics || {};
@@ -156,7 +247,7 @@
         const certificates = data.recent_certificates || [];
         localStorage.setItem('ofc_training_partner_profile', JSON.stringify(profile));
         document.dispatchEvent(new CustomEvent('training-partner-profile-loaded', { detail: profile }));
-        document.getElementById('welcomeName').textContent = profile.institute_name || data.user?.name || 'Training Partner';
+        setPartnerProfileCard(data.user || {}, profile);
         document.getElementById('dashboardStats').innerHTML = [
             statCard('Total Courses', formatNumber(stats.total_courses), formatNumber(stats.active_courses) + ' Active', 'TC'),
             statCard('Total Enrollments', formatNumber(stats.total_enrollments), formatNumber(stats.pending_enrollments) + ' Pending', 'TE'),

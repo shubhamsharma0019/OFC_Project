@@ -137,6 +137,10 @@ class TrainingPartnerDashboardController extends Controller
                     'profile_id' => $trainingPartnerProfile->id,
                     'institute_name' =>
                         $trainingPartnerProfile->institute_name,
+                    'institute_logo' =>
+                        $trainingPartnerProfile->institute_logo,
+                    'email' =>
+                        $trainingPartnerProfile->email,
                     'location' =>
                         $trainingPartnerProfile->location,
                     'website' =>

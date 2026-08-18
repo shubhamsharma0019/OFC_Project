@@ -145,6 +145,13 @@ class CompanyApplicationController extends Controller
             ], 403);
         }
 
+        if (in_array($jobApplication->application_status, ['hired', 'rejected'], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This application already has a final status and cannot be updated.',
+            ], 422);
+        }
+
         $validatedData = $request->validate([
             'application_status' => [
                 'required',

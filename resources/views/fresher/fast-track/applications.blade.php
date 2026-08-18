@@ -109,6 +109,41 @@
         return 'bg-[#eaf2ff] text-[#075fe4]';
     }
 
+    function interviewPlace(interview) {
+        if (!interview?.id) return '';
+        return interview.interview_mode === 'online'
+            ? interview.meeting_link
+            : interview.interview_location;
+    }
+
+    function interviewDetails(application) {
+        const interview = application.interview || {};
+        if (!interview.id) return '';
+
+        const place = interviewPlace(interview);
+        return `<div class="mt-2 grid gap-1 text-xs text-[#536484]">
+            <span><strong class="text-[#334b83]">Interview:</strong> ${FastTrack.esc(FastTrack.date(interview.interview_date))} ${FastTrack.esc(interview.interview_time || '')}</span>
+            <span><strong class="text-[#334b83]">Mode:</strong> ${FastTrack.esc(FastTrack.statusText(interview.interview_mode || '-'))}</span>
+            ${place ? `<span class="max-w-[280px] break-all"><strong class="text-[#334b83]">${interview.interview_mode === 'online' ? 'Meet' : 'Location'}:</strong> ${FastTrack.esc(place)}</span>` : ''}
+        </div>`;
+    }
+
+    function applicationActions(application, jobId) {
+        const interview = application.interview || {};
+        const status = applicationStatus(application);
+        const buttons = [];
+
+        if (status === 'interview_scheduled' && interview.status === 'scheduled' && interview.interview_mode === 'online' && interview.meeting_link) {
+            buttons.push(`<a class="inline-flex h-9 items-center justify-center rounded-md bg-[#075fe4] px-4 text-xs font-bold text-white" href="${FastTrack.esc(interview.meeting_link)}" target="_blank" rel="noopener noreferrer">Join Meet</a>`);
+        }
+
+        if (jobId) {
+            buttons.push(`<a class="inline-flex h-9 items-center justify-center rounded-md border border-[#075fe4] px-4 text-xs font-bold text-[#075fe4]" href="/jobs/show?job=${FastTrack.esc(jobId)}">View Job</a>`);
+        }
+
+        return buttons.length ? `<div class="flex flex-wrap gap-2">${buttons.join('')}</div>` : '-';
+    }
+
     function statCard(icon, label, value, hint) {
         return `<article class="grid grid-cols-[58px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
             ${applicationIcon(icon)}
@@ -162,9 +197,12 @@
                 </td>
                 <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]">${FastTrack.esc(companyName(application))}</td>
                 <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]">${FastTrack.date(application.applied_at || application.created_at)}</td>
-                <td class="border-b border-[#e6eef8] px-4 py-4"><span class="inline-flex rounded-md ${statusBadgeClass(status)} px-3 py-1.5 text-xs font-bold">${FastTrack.esc(FastTrack.statusText(status))}</span></td>
+                <td class="border-b border-[#e6eef8] px-4 py-4">
+                    <span class="inline-flex rounded-md ${statusBadgeClass(status)} px-3 py-1.5 text-xs font-bold">${FastTrack.esc(FastTrack.statusText(status))}</span>
+                    ${interviewDetails(application)}
+                </td>
                 <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]">${FastTrack.esc(FastTrack.statusText(mode))}</td>
-                <td class="border-b border-[#e6eef8] px-4 py-4">${jobId ? `<a class="inline-flex h-9 items-center justify-center rounded-md border border-[#075fe4] px-4 text-xs font-bold text-[#075fe4]" href="/jobs/show?job=${FastTrack.esc(jobId)}">View Job</a>` : '-'}</td>
+                <td class="border-b border-[#e6eef8] px-4 py-4">${applicationActions(application, jobId)}</td>
             </tr>`;
         }).join('');
     }
