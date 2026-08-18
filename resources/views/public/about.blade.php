@@ -1,21 +1,9 @@
 @extends('layouts.public')
 
-@section('title', 'About Us - OnlyFreshers')
+@section('title', $aboutMeta['page_title'])
 
 @php
-    $activePage = 'about';
-
-    $infoCards = [
-        ['icon' => 'target', 'title' => 'Our Mission', 'text' => 'To empower freshers by connecting them with the right opportunities, career-focused training, and industry partners.'],
-        ['icon' => 'eye', 'title' => 'Our Vision', 'text' => 'To be the most trusted platform for freshers, enabling them to build successful and meaningful careers.'],
-        ['icon' => 'briefcase', 'title' => 'What We Do', 'text' => 'We bridge the gap between talent and opportunity through jobs, training programs, and trusted partnerships.'],
-    ];
-
-    $trustCards = [
-        ['icon' => 'shield', 'title' => 'Verified Opportunities', 'text' => 'All job listings are verified to ensure legitimacy and trust.'],
-        ['icon' => 'training', 'title' => 'Industry-Aligned Training', 'text' => 'Learn the most in-demand skills from trusted training partners.'],
-        ['icon' => 'growth', 'title' => 'Career Growth', 'text' => 'We help you build a strong foundation for a successful career.'],
-    ];
+    $activePage = $aboutMeta['active_page'];
 @endphp
 
 @section('content')
@@ -27,15 +15,15 @@
         <div class="relative mx-auto grid w-full max-w-7xl items-center gap-5 px-5 text-center sm:px-6 lg:min-h-[270px] lg:grid-cols-[0.82fr_1.18fr] lg:gap-2 lg:px-8 lg:text-left">
             <div class="relative z-10 pb-2 lg:pl-4">
                 <h1 class="m-0 font-['Inter'] text-[32px] font-semibold leading-[1.08] text-[#061942] sm:text-[42px] lg:text-[46px]">
-                    About <span class="text-[#075fe4]">OnlyFreshers</span>
+                    {{ $aboutHero['title'] }} <span class="text-[#075fe4]">{{ $aboutHero['highlight'] }}</span>
                 </h1>
                 <p class="mx-auto mt-4 max-w-[520px] text-[15px] font-medium leading-[1.75] text-[#1e2f4d] sm:text-base lg:mx-0">
-                    OnlyFreshers connects freshers, companies, and training partners in one place.
+                    {{ $aboutHero['text'] }}
                 </p>
             </div>
 
             <div class="relative z-10 flex min-h-[225px] items-end justify-center overflow-visible lg:min-h-[270px] lg:justify-end">
-                <img src="{{ asset('home-hero-students.png') }}" alt="OnlyFreshers students" class="block h-auto max-h-[285px] w-full max-w-[660px] object-contain object-bottom lg:mr-[-24px] lg:max-h-[300px] xl:mr-[-42px]">
+                <img src="{{ asset($aboutHero['image']) }}" alt="{{ $aboutHero['highlight'] }}" class="block h-auto max-h-[285px] w-full max-w-[660px] object-contain object-bottom lg:mr-[-24px] lg:max-h-[300px] xl:mr-[-42px]">
             </div>
         </div>
     </section>
@@ -57,39 +45,29 @@
             </div>
 
             <div class="mt-[42px] text-center">
-                <h2 class="text-2xl font-semibold text-[#061942]">How OnlyFreshers Helps</h2>
-                <div class="mx-auto mt-2.5 h-[3px] w-[70px] rounded-full bg-[#075fe4]"></div>
+                <h2 class="text-2xl font-semibold text-[#061942]">{{ $helpTitle }}</h2>
+                <div class="mx-auto mt-2.5 {{ $aboutDecor['help_divider'] }} rounded-full {{ $aboutDecor['divider_color'] }}"></div>
             </div>
 
             <div class="mt-6 grid gap-[22px] lg:grid-cols-2">
-                <article class="flex flex-col gap-6 rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_12px_26px_rgba(6,25,66,0.04)] sm:flex-row sm:items-center sm:gap-7">
-                    <div class="flex h-[74px] w-[74px] shrink-0 items-center justify-center rounded-full bg-[#eff5ff] text-[#075fe4] [&>svg]:h-8 [&>svg]:w-8">@include('components.public.icon', ['name' => 'briefcase'])</div>
-                    <div>
-                        <h3 class="mb-[9px] text-lg font-semibold text-[#061942]">Direct Mode</h3>
-                        <ul class="list-disc space-y-1.5 pl-[18px] text-sm font-medium leading-[1.9] text-[#24344f] marker:text-[#075fe4]">
-                            <li>Browse and apply to verified job openings.</li>
-                            <li>Create your profile and showcase your skills.</li>
-                            <li>Connect directly with top companies hiring freshers.</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <article class="flex flex-col gap-6 rounded-lg border border-[#f5d4ba] bg-[#fffaf5] p-6 shadow-[0_12px_26px_rgba(6,25,66,0.04)] sm:flex-row sm:items-center sm:gap-7">
-                    <div class="flex h-[74px] w-[74px] shrink-0 items-center justify-center rounded-full bg-[#fff0e2] text-[#f37a22] [&>svg]:h-8 [&>svg]:w-8">@include('components.public.icon', ['name' => 'rocket'])</div>
-                    <div>
-                        <h3 class="mb-[9px] text-lg font-semibold text-[#061942]">Fast Track Program</h3>
-                        <ul class="list-disc space-y-1.5 pl-[18px] text-sm font-medium leading-[1.9] text-[#24344f] marker:text-[#075fe4]">
-                            <li>Get industry-aligned training from trusted partners.</li>
-                            <li>Improve your skills with practical learning.</li>
-                            <li>Get recommended for jobs and career opportunities.</li>
-                        </ul>
-                    </div>
-                </article>
+                @foreach ($helpCards as $card)
+                    <article class="flex flex-col gap-6 rounded-lg border {{ $card['classes'] }} p-6 shadow-[0_12px_26px_rgba(6,25,66,0.04)] sm:flex-row sm:items-center sm:gap-7">
+                        <div class="flex h-[74px] w-[74px] shrink-0 items-center justify-center rounded-full {{ $card['iconClasses'] }} [&>svg]:h-8 [&>svg]:w-8">@include('components.public.icon', ['name' => $card['icon']])</div>
+                        <div>
+                            <h3 class="mb-[9px] text-lg font-semibold text-[#061942]">{{ $card['title'] }}</h3>
+                            <ul class="list-disc space-y-1.5 pl-[18px] text-sm font-medium leading-[1.9] text-[#24344f] marker:text-[#075fe4]">
+                                @foreach ($card['points'] as $point)
+                                    <li>{{ $point }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </article>
+                @endforeach
             </div>
 
             <div class="mt-[42px] text-center">
-                <h2 class="text-xl font-semibold text-[#061942]">Why Freshers Trust OnlyFreshers</h2>
-                <div class="mx-auto mt-2 h-[2px] w-[56px] rounded-full bg-[#075fe4]"></div>
+                <h2 class="text-xl font-semibold text-[#061942]">{{ $trustTitle }}</h2>
+                <div class="mx-auto mt-2 {{ $aboutDecor['trust_divider'] }} rounded-full {{ $aboutDecor['divider_color'] }}"></div>
             </div>
 
             <div class="mx-auto mt-5 grid max-w-[1120px] gap-5 lg:grid-cols-3">

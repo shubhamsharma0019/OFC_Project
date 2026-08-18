@@ -4,13 +4,6 @@
 
 @php
     $activePage = 'fast-track';
-
-    $points = [
-        ['icon' => 'learn', 'text' => 'Industry-relevant learning'],
-        ['icon' => 'users', 'text' => 'Expert training partners'],
-        ['icon' => 'certificate', 'text' => 'Final assessment & certificate'],
-        ['icon' => 'briefcase', 'text' => 'Better job opportunities'],
-    ];
 @endphp
 
 @push('styles')
@@ -29,69 +22,29 @@
 
 @section('content')
     <main class="fast-track-page bg-white">
-    <section class="bg-white px-4 py-5 sm:px-6 lg:px-8">
-        <div class="mx-auto grid w-full max-w-7xl gap-4 rounded-lg border border-[#dbe8fb] bg-[#edf5ff] p-3 shadow-[0_8px_24px_rgba(7,95,228,0.08)] lg:grid-cols-[1.25fr_1.05fr_1.18fr]">
-            <article class="flex items-center gap-5 rounded-lg bg-[#eef5ff] px-5 py-4">
-                <img src="{{ asset('fast-track-hero-girl.png') }}" alt="Ananya Gupta" class="h-[108px] w-[108px] shrink-0 rounded-full border border-white object-cover object-top shadow-[0_8px_18px_rgba(6,25,66,0.12)]">
-                <div class="min-w-0">
-                    <p class="mb-1 text-[13px] font-bold leading-none text-[#061942]">Welcome,</p>
-                    <h1 class="mb-2 truncate text-[25px] font-bold leading-tight text-[#061942]">Ananya Gupta</h1>
-                    <p class="mb-4 inline-flex items-center gap-1.5 text-[13px] font-bold text-[#075fe4]">
-                        <span class="grid h-4 w-4 place-items-center rounded-full bg-[#075fe4] text-[10px] text-white">✓</span>
-                        Verified Fresher
-                    </p>
-                    <p class="mb-1 text-[13px] font-semibold text-[#061942]">B.Tech - Computer Science</p>
-                    <p class="flex items-center gap-1.5 text-[13px] font-semibold text-[#34445e]">
-                        <span class="[&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2">@include('components.public.icon', ['name' => 'location'])</span>
-                        Delhi, India
-                    </p>
-                </div>
-            </article>
+    <section class="bg-[#f3f8ff] px-4 py-5 sm:px-6 lg:px-8">
+        <div class="mx-auto grid w-full max-w-7xl overflow-hidden rounded-lg bg-[#edf5ff] shadow-[0_10px_28px_rgba(7,95,228,0.10)] lg:h-[330px] lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-stretch">
+            <div class="flex min-h-[250px] flex-col items-start justify-center px-6 py-9 sm:px-9 lg:h-full lg:min-h-0 lg:px-12">
+                <p class="mb-2 text-[13px] font-black uppercase tracking-[.05em] text-[#075fe4]">{{ $hero['eyebrow'] }}</p>
+                <h1 class="mb-3 text-[30px] leading-tight text-[#061942] sm:text-[38px] lg:text-[44px]">{{ $hero['title'] }}</h1>
+                <p class="mb-6 max-w-md text-[14px] font-semibold leading-6 text-[#34445e] sm:text-[15px]">{{ $hero['text'] }}</p>
+                <a href="{{ $hero['href'] }}" class="inline-flex h-11 min-w-[170px] items-center justify-center rounded-md bg-[#075fe4] px-6 text-[13px] font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,0.20)] transition hover:bg-[#0554cc]">{{ $hero['button'] }}</a>
+            </div>
 
-            <article class="flex items-center gap-5 rounded-lg border border-[#e0e9f6] bg-white px-6 py-4 shadow-[0_2px_12px_rgba(6,25,66,0.04)]">
-                <div class="relative grid h-[90px] w-[90px] shrink-0 place-items-center rounded-full bg-[conic-gradient(#075fe4_0_25%,#dfe6f1_25%_100%)]">
-                    <div class="grid h-[72px] w-[72px] place-items-center rounded-full bg-[#eef2f7] text-[20px] font-bold text-[#061942]">25%</div>
-                </div>
-                <div class="min-w-0">
-                    <p class="mb-2 text-[11px] font-black uppercase tracking-[.06em] text-[#061942]">Fast Track Progress</p>
-                    <h2 class="mb-1 text-[14px] font-bold text-[#061942]">Step 2 of 6</h2>
-                    <p class="mb-3 text-[12px] font-semibold leading-5 text-[#34445e]">Keep going! You're doing great.</p>
-                    <a href="/fast-track/training-progress" class="inline-flex h-9 items-center justify-center rounded-md border border-[#8fb2df] bg-white px-5 text-[12px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">View My Progress</a>
-                </div>
-            </article>
-
-            <article class="rounded-lg border border-[#e0e9f6] bg-white px-6 py-4 shadow-[0_2px_12px_rgba(6,25,66,0.04)]">
-                <h2 class="mb-2 text-[14px] font-bold text-[#061942]">Get Trained. Get Assessed. Get Hired.</h2>
-                <p class="mb-4 max-w-[390px] text-[12px] font-semibold leading-5 text-[#34445e]">
-                    Our Fast Track Program helps you build the right skills, attitude & knowledge and connects you with top companies for better opportunities.
-                </p>
-                <a href="/fast-track/how-it-works" class="inline-flex h-9 items-center gap-2 rounded-md border border-[#8fb2df] bg-white px-4 text-[12px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">
-                    <span class="grid h-4 w-4 place-items-center rounded-full border border-[#07518f] text-[9px]">i</span>
-                    How Fast Track Works
-                </a>
-            </article>
+            <div class="relative flex min-h-[250px] items-center justify-center bg-white px-6 py-7 sm:min-h-[280px] lg:h-full lg:min-h-0">
+                <img src="{{ asset($hero['image']) }}" alt="{{ $hero['title'] }}" class="h-full max-h-[280px] w-full object-contain lg:max-h-[300px]">
+            </div>
         </div>
         <div id="fastTrackStats" class="hidden"></div>
     </section>
-
     <section class="bg-white pb-10 pt-8">
         <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
             <div class="mb-8">
-                <h2 class="mb-1 text-[26px] font-bold leading-tight text-[#061942]">Fast Track Program</h2>
-                <p class="text-[13px] font-semibold text-[#34445e]">Get trained by our verified training partners, improve your skills and get access to better job opportunities.</p>
+                <h2 class="mb-1 text-[26px] font-bold leading-tight text-[#061942]">{{ $programHeader['title'] }}</h2>
+                <p class="text-[13px] font-semibold text-[#34445e]">{{ $programHeader['text'] }}</p>
             </div>
 
             <div class="mb-8 grid gap-5 lg:grid-cols-6 lg:gap-0">
-                @php
-                    $fastTrackSteps = [
-                        ['step' => '1', 'title' => 'Enroll', 'text' => 'Choose your track', 'icon' => 'learn', 'color' => '#25ad82'],
-                        ['step' => '2', 'title' => 'Initial Assessment', 'text' => 'Evaluate your current skills', 'icon' => 'target', 'color' => '#075fe4'],
-                        ['step' => '3', 'title' => 'Training', 'text' => 'Learn from our training partners', 'icon' => 'training', 'color' => '#cbd5e1'],
-                        ['step' => '4', 'title' => 'Final Assessment', 'text' => 'Showcase your improved skills', 'icon' => 'chart', 'color' => '#cbd5e1'],
-                        ['step' => '5', 'title' => 'Certification', 'text' => 'Get certified & job ready', 'icon' => 'certificate', 'color' => '#cbd5e1'],
-                        ['step' => '6', 'title' => 'Get Hired', 'text' => 'Companies get your profile', 'icon' => 'users', 'color' => '#cbd5e1'],
-                    ];
-                @endphp
                 @foreach ($fastTrackSteps as $index => $step)
                     <article class="relative flex items-start gap-3 lg:block lg:text-center">
                         @if ($index < count($fastTrackSteps) - 1)
@@ -114,22 +67,13 @@
 
             <div class="mb-4 flex items-end justify-between gap-4">
                 <div>
-                    <h2 class="mb-1 text-[20px] font-bold text-[#061942]">Explore Career Tracks</h2>
-                    <p class="text-[13px] font-semibold text-[#34445e]">Choose a career track that matches your interest and career goals.</p>
+                    <h2 class="mb-1 text-[20px] font-bold text-[#061942]">{{ $trackHeader['title'] }}</h2>
+                    <p class="text-[13px] font-semibold text-[#34445e]">{{ $trackHeader['text'] }}</p>
                 </div>
-                <a href="/fast-track/courses" class="hidden shrink-0 items-center gap-2 text-[13px] font-bold text-[#075fe4] sm:inline-flex">View All Tracks <span aria-hidden="true">-&gt;</span></a>
+                <a href="{{ $trackHeader['href'] }}" class="hidden shrink-0 items-center gap-2 text-[13px] font-bold text-[#075fe4] sm:inline-flex">{{ $trackHeader['button'] }} <span aria-hidden="true">-&gt;</span></a>
             </div>
 
             <div id="careerTracks" class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                @php
-                    $careerTracks = [
-                        ['title' => 'Software Development', 'text' => 'Build your career in coding and software development.', 'icon' => 'code', 'color' => '#2563eb', 'skills' => ['Python', 'DSA', 'SQL', 'Git']],
-                        ['title' => 'Data Science & Analytics', 'text' => 'Become a data expert and work with real-world data.', 'icon' => 'data', 'color' => '#2fbf9b', 'skills' => ['Python', 'SQL', 'Excel', 'Power BI']],
-                        ['title' => 'Digital Marketing', 'text' => 'Learn digital strategies and grow brands online.', 'icon' => 'marketing', 'color' => '#f59a23', 'skills' => ['SEO', 'SEM', 'SMM', 'Google Analytics']],
-                        ['title' => 'Business & Finance', 'text' => 'Build a career in finance, analytics and management.', 'icon' => 'briefcase', 'color' => '#8239d7', 'skills' => ['Accounting', 'Excel', 'Financial Modeling']],
-                        ['title' => 'Cloud Computing', 'text' => 'Learn cloud technologies and services.', 'icon' => 'cloud', 'color' => '#1f73ea', 'skills' => ['AWS', 'Azure', 'Linux', 'DevOps']],
-                    ];
-                @endphp
                 @foreach ($careerTracks as $track)
                     <article class="rounded-lg border border-[#dce7f8] bg-white px-4 py-5 text-center shadow-[0_6px_18px_rgba(6,25,66,0.05)]">
                         <div class="mx-auto mb-4 grid h-[58px] w-[58px] place-items-center rounded-full text-white shadow-[0_10px_20px_rgba(6,25,66,0.14)] [&>svg]:h-7 [&>svg]:w-7" style="background-color: {{ $track['color'] }}">
@@ -137,13 +81,13 @@
                         </div>
                         <h3 class="mb-2 text-[14px] font-bold leading-tight text-[#061942]">{{ $track['title'] }}</h3>
                         <p class="mx-auto mb-3 min-h-[48px] max-w-[190px] text-[11px] font-semibold leading-4 text-[#34445e]">{{ $track['text'] }}</p>
-                        <p class="mb-2 text-[11px] font-bold text-[#061942]">Key Skills</p>
+                        <p class="mb-2 text-[11px] font-bold text-[#061942]">{{ $trackLabels['skills'] }}</p>
                         <div class="mb-4 flex min-h-[52px] flex-wrap items-start justify-center gap-2">
                             @foreach ($track['skills'] as $skill)
                                 <span class="rounded-full bg-[#f2f5f9] px-2.5 py-1 text-[10px] font-semibold text-[#34445e]">{{ $skill }}</span>
                             @endforeach
                         </div>
-                        <a href="/fast-track/courses" class="inline-flex h-8 min-w-[132px] items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-4 text-[11px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">View Details</a>
+                        <a href="{{ $trackLabels['href'] }}" class="inline-flex h-8 min-w-[132px] items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-4 text-[11px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">{{ $trackLabels['details'] }}</a>
                     </article>
                 @endforeach
             </div>
@@ -151,35 +95,26 @@
             <div class="mt-10">
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div>
-                        <h2 class="mb-1 text-[18px] font-bold text-[#061942]">Assessment Summary</h2>
-                        <p class="text-[12px] font-semibold text-[#34445e]">Improve your skills and see your growth with initial and final assessments.</p>
+                        <h2 class="mb-1 text-[18px] font-bold text-[#061942]">{{ $assessmentHeader['title'] }}</h2>
+                        <p class="text-[12px] font-semibold text-[#34445e]">{{ $assessmentHeader['text'] }}</p>
                     </div>
-                    <a href="/fast-track/final-assessment" class="hidden shrink-0 items-center gap-2 text-[12px] font-bold text-[#07518f] sm:inline-flex">View Detailed Report <span aria-hidden="true">-&gt;</span></a>
+                    <a href="{{ $assessmentHeader['href'] }}" class="hidden shrink-0 items-center gap-2 text-[12px] font-bold text-[#07518f] sm:inline-flex">{{ $assessmentHeader['button'] }} <span aria-hidden="true">-&gt;</span></a>
                 </div>
 
                 <div class="grid gap-4 xl:grid-cols-[1.18fr_28px_1fr_.78fr] xl:items-stretch">
                     <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_6px_18px_rgba(6,25,66,0.04)]">
                         <div class="mb-4">
-                            <h3 class="text-[12px] font-bold text-[#061942]">Initial Assessment <span class="font-semibold text-[#34445e]">(Before Training)</span></h3>
-                            <p class="mt-1 text-[10px] font-semibold text-[#6f7d90]">Completed on 01-Jun 2024</p>
+                            <h3 class="text-[12px] font-bold text-[#061942]">{{ $assessmentCards['initial']['title'] }} <span class="font-semibold text-[#34445e]">{{ $assessmentCards['initial']['subtitle'] }}</span></h3>
+                            <p class="mt-1 text-[10px] font-semibold text-[#6f7d90]">{{ $assessmentCards['initial']['date'] }}</p>
                         </div>
                         <div class="grid gap-5 sm:grid-cols-[120px_minmax(0,1fr)] sm:items-center">
                             <div class="text-center">
                                 <div class="mx-auto grid h-[92px] w-[92px] place-items-center rounded-full bg-[conic-gradient(#075fe4_0_40%,#e4e9f1_40%_100%)]">
-                                    <div class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">40%</div>
+                                    <div class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">{{ $assessmentCards['initial']['score'] }}</div>
                                 </div>
-                                <p class="mt-3 text-[10px] font-bold text-[#34445e]">Overall Score</p>
+                                <p class="mt-3 text-[10px] font-bold text-[#34445e]">{{ $assessmentCards['initial']['score_label'] }}</p>
                             </div>
                             <div class="grid gap-3">
-                                @php
-                                    $initialScores = [
-                                        ['label' => 'Technical Skills', 'value' => 42],
-                                        ['label' => 'Aptitude', 'value' => 38],
-                                        ['label' => 'Communication', 'value' => 45],
-                                        ['label' => 'Attitude', 'value' => 40],
-                                        ['label' => 'Problem Solving', 'value' => 35],
-                                    ];
-                                @endphp
                                 @foreach ($initialScores as $score)
                                     <div class="grid grid-cols-[120px_minmax(0,1fr)_34px] items-center gap-3">
                                         <span class="text-[11px] font-semibold text-[#061942]">{{ $score['label'] }}</span>
@@ -195,22 +130,22 @@
 
                     <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_6px_18px_rgba(6,25,66,0.04)]">
                         <div class="mb-4">
-                            <h3 class="text-[12px] font-bold text-[#061942]">Final Assessment <span class="font-semibold text-[#34445e]">(After Training)</span></h3>
-                            <p class="mt-1 text-[10px] font-semibold text-[#6f7d90]">To be taken after course completion</p>
+                            <h3 class="text-[12px] font-bold text-[#061942]">{{ $assessmentCards['final']['title'] }} <span class="font-semibold text-[#34445e]">{{ $assessmentCards['final']['subtitle'] }}</span></h3>
+                            <p class="mt-1 text-[10px] font-semibold text-[#6f7d90]">{{ $assessmentCards['final']['date'] }}</p>
                         </div>
                         <div class="grid gap-5 sm:grid-cols-[120px_minmax(0,1fr)] sm:items-center">
                             <div class="text-center">
                                 <div class="mx-auto grid h-[92px] w-[92px] place-items-center rounded-full bg-[#e7ebf1]">
-                                    <div class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">--%</div>
+                                    <div class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">{{ $assessmentCards['final']['score'] }}</div>
                                 </div>
-                                <p class="mt-3 text-[10px] font-bold text-[#34445e]">Overall Score</p>
+                                <p class="mt-3 text-[10px] font-bold text-[#34445e]">{{ $assessmentCards['final']['score_label'] }}</p>
                             </div>
                             <div class="grid gap-3">
-                                @foreach (['Technical Skills', 'Aptitude', 'Communication', 'Attitude', 'Problem Solving'] as $label)
+                                @foreach ($assessmentLabels as $label)
                                     <div class="grid grid-cols-[120px_minmax(0,1fr)_18px] items-center gap-3">
                                         <span class="text-[11px] font-semibold text-[#061942]">{{ $label }}</span>
                                         <span class="h-1.5 rounded-full bg-[#e6edf6]"></span>
-                                        <span class="text-right text-[10px] font-bold text-[#9aa9bc]">--</span>
+                                        <span class="text-right text-[10px] font-bold text-[#9aa9bc]">{{ $assessmentCards['final']['empty_value'] }}</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -218,14 +153,13 @@
                     </article>
 
                     <aside class="rounded-lg border border-[#f3dfb8] bg-[#fff9ed] p-5 shadow-[0_8px_18px_rgba(125,83,0,0.06)]">
-                        <h3 class="mb-3 text-[13px] font-bold text-[#9a6700]">Companies Get You With</h3>
+                        <h3 class="mb-3 text-[13px] font-bold text-[#9a6700]">{{ $companyProfileBox['title'] }}</h3>
                         <ul class="mb-4 grid gap-3 text-[11px] font-semibold leading-4 text-[#061942]">
-                            <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">✓</span><span><strong>Initial Assessment</strong><br><span class="text-[#34445e]">(Your Current Skills)</span></span></li>
-                            <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">✓</span><span><strong>Final Assessment</strong><br><span class="text-[#34445e]">(Your Improved Skills)</span></span></li>
-                            <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">✓</span><span>Training Completion Certificate</span></li>
-                            <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">✓</span><span>Industry Ready Profile</span></li>
+                            @foreach ($companyProfileBox['items'] as $item)
+                                <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">&#10003;</span><span><strong>{{ $item['title'] }}</strong>@if ($item['text'])<br><span class="text-[#34445e]">{{ $item['text'] }}</span>@endif</span></li>
+                            @endforeach
                         </ul>
-                        <a href="/fast-track/how-it-works" class="inline-flex h-8 min-w-[132px] items-center justify-center rounded-md border border-[#d8c8a2] bg-white px-4 text-[11px] font-bold text-[#07518f] transition hover:bg-[#f7f2e7]">Know More</a>
+                        <a href="{{ $companyProfileBox['href'] }}" class="inline-flex h-8 min-w-[132px] items-center justify-center rounded-md border border-[#d8c8a2] bg-white px-4 text-[11px] font-bold text-[#07518f] transition hover:bg-[#f7f2e7]">{{ $companyProfileBox['button'] }}</a>
                     </aside>
                 </div>
             </div>
@@ -233,23 +167,13 @@
             <div class="mt-10">
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div>
-                        <h2 class="mb-1 text-[18px] font-bold text-[#061942]">Our Trusted Training Partners</h2>
-                        <p class="text-[12px] font-semibold text-[#34445e]">Learn from the best. Get Certified. Get hired.</p>
+                        <h2 class="mb-1 text-[18px] font-bold text-[#061942]">{{ $partnersHeader['title'] }}</h2>
+                        <p class="text-[12px] font-semibold text-[#34445e]">{{ $partnersHeader['text'] }}</p>
                     </div>
-                    <a href="/training-partners" class="hidden shrink-0 items-center gap-2 text-[12px] font-bold text-[#07518f] sm:inline-flex">View All Partners <span aria-hidden="true">-&gt;</span></a>
+                    <a href="{{ $partnersHeader['href'] }}" class="hidden shrink-0 items-center gap-2 text-[12px] font-bold text-[#07518f] sm:inline-flex">{{ $partnersHeader['button'] }} <span aria-hidden="true">-&gt;</span></a>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
-                    @php
-                        $partners = [
-                            ['name' => 'EXCELR', 'sub' => 'Raising Excellence', 'score' => '4.6', 'color' => '#176aa6'],
-                            ['name' => 'ENLITE', 'sub' => 'INSTITUTE', 'score' => '4.5', 'color' => '#111827'],
-                            ['name' => 'iNeuron', 'sub' => 'Intelligence Pathway', 'score' => '4.7', 'color' => '#2f64b2'],
-                            ['name' => 'Teks academy', 'sub' => 'Transforming Life Through Technology', 'score' => '4.4', 'color' => '#d98728'],
-                            ['name' => 'Besant', 'sub' => 'Technologies', 'score' => '4.5', 'color' => '#176aa6'],
-                            ['name' => 'TTA', 'sub' => 'The Tech Academy', 'score' => '4.6', 'color' => '#176aa6'],
-                        ];
-                    @endphp
                     @foreach ($partners as $partner)
                         <article class="flex min-h-[94px] flex-col items-center justify-center rounded-lg border border-[#dce7f8] bg-white px-4 py-3 text-center shadow-[0_6px_16px_rgba(6,25,66,0.04)]">
                             <div class="mb-2 flex min-h-[34px] items-center justify-center gap-1.5">
@@ -262,14 +186,6 @@
                 </div>
 
                 <div class="mt-5 grid gap-4 rounded-lg bg-[#f8fbff] px-4 py-4 md:grid-cols-2 xl:grid-cols-4">
-                    @php
-                        $partnerBenefits = [
-                            ['icon' => 'shield', 'title' => 'Verified Training Partners', 'text' => 'Industry-aligned curriculum'],
-                            ['icon' => 'training', 'title' => 'Live Interactive Sessions', 'text' => 'Learn from industry experts'],
-                            ['icon' => 'users', 'title' => 'Hands-on Projects', 'text' => 'Build real-world experience'],
-                            ['icon' => 'briefcase', 'title' => 'Placement Assistance', 'text' => 'Get placed in top companies'],
-                        ];
-                    @endphp
                     @foreach ($partnerBenefits as $benefit)
                         <article class="flex items-center gap-4">
                             <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#bcd0eb] bg-white text-[#07518f] [&>svg]:h-5 [&>svg]:w-5">@include('components.public.icon', ['name' => $benefit['icon']])</span>
@@ -289,34 +205,26 @@
             <div>
                 <div class="mb-4 flex items-start justify-between gap-4">
                     <div>
-                        <h2 class="mb-1 text-[22px] font-bold text-[#061942]">Choose a Fast Track Program Plan</h2>
-                        <p class="text-[12px] font-semibold text-[#34445e]">Select a plan that suits your learning needs.</p>
+                        <h2 class="mb-1 text-[22px] font-bold text-[#061942]">{{ $plansHeader['title'] }}</h2>
+                        <p class="text-[12px] font-semibold text-[#34445e]">{{ $plansHeader['text'] }}</p>
                     </div>
                     <p class="hidden items-center gap-1.5 text-[12px] font-bold text-[#07518f] sm:flex">
                         <span class="grid h-4 w-4 place-items-center rounded-sm border border-[#9bb7dc] bg-[#edf5ff] text-[10px]">₹</span>
-                        EMI options available
+                        {{ $plansHeader['emi'] }}
                     </p>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    @php
-                        $plans = [
-                            ['name' => 'Basic', 'desc' => 'Access to training content & assessments', 'price' => '4,999', 'items' => ['Live Training Sessions', 'Study Materials', 'Initial & Final Assessment'], 'popular' => false],
-                            ['name' => 'Standard', 'desc' => 'Includes projects & doubt clearing sessions', 'price' => '8,999', 'items' => ['All in Basic', 'Hands-on Projects', 'Doubt Clearing Sessions'], 'popular' => false],
-                            ['name' => 'Premium', 'desc' => 'Placement assistance & interview preparation', 'price' => '14,999', 'items' => ['All in Standard', 'Interview Preparation', 'Placement Assistance'], 'popular' => true],
-                            ['name' => 'Pro', 'desc' => 'One-to-one mentoring & personalized support', 'price' => '19,999', 'items' => ['All in Premium', '1:1 Mentoring', 'Priority Placement Support'], 'popular' => false],
-                        ];
-                    @endphp
-                    @foreach ($plans as $plan)
+                    @foreach ($fastTrackPlans as $plan)
                         <article class="relative rounded-lg border bg-white px-5 pb-5 pt-4 text-center shadow-[0_6px_18px_rgba(6,25,66,0.05)] {{ $plan['popular'] ? 'border-[#075fe4] ring-1 ring-[#075fe4]' : 'border-[#dce7f8]' }}">
                             @if ($plan['popular'])
-                                <span class="absolute left-1/2 top-0 inline-flex h-7 min-w-[116px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#075fe4] px-4 text-[11px] font-bold text-white shadow-[0_8px_16px_rgba(7,95,228,0.2)]">Popular</span>
+                                <span class="absolute left-1/2 top-0 inline-flex h-7 min-w-[116px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#075fe4] px-4 text-[11px] font-bold text-white shadow-[0_8px_16px_rgba(7,95,228,0.2)]">{{ $planLabels['popular'] }}</span>
                             @endif
                             <h3 class="mb-2 text-[15px] font-bold text-[#061942]">{{ $plan['name'] }}</h3>
                             <p class="mx-auto mb-3 min-h-[32px] max-w-[175px] text-[11px] font-semibold leading-4 text-[#34445e]">{{ $plan['desc'] }}</p>
                             <p class="mb-1 text-[25px] font-black leading-none text-[#061942]">₹{{ $plan['price'] }}</p>
-                            <p class="mb-3 text-[10px] font-bold text-[#075fe4]">+ Taxes</p>
-                            <a href="/fast-track/register" class="mb-4 inline-flex h-8 min-w-[132px] items-center justify-center rounded-md bg-[#075fe4] px-4 text-[11px] font-bold text-white shadow-[0_8px_15px_rgba(7,95,228,0.18)] transition hover:bg-[#0554cc]">Enroll Now</a>
+                            <p class="mb-3 text-[10px] font-bold text-[#075fe4]">{{ $planLabels['taxes'] }}</p>
+                            <a href="{{ $planLabels['href'] }}" class="mb-4 inline-flex h-8 min-w-[132px] items-center justify-center rounded-md bg-[#075fe4] px-4 text-[11px] font-bold text-white shadow-[0_8px_15px_rgba(7,95,228,0.18)] transition hover:bg-[#0554cc]">{{ $planLabels['button'] }}</a>
                             <ul class="grid gap-2 text-left text-[11px] font-semibold text-[#061942]">
                                 @foreach ($plan['items'] as $item)
                                     <li class="flex items-start gap-2"><span class="font-bold text-[#1a8c62]">✓</span><span>{{ $item }}</span></li>
@@ -328,22 +236,16 @@
             </div>
 
             <aside class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_6px_18px_rgba(6,25,66,0.05)]">
-                <h2 class="mb-4 text-[16px] font-bold text-[#061942]">Frequently Asked Questions</h2>
+                <h2 class="mb-4 text-[16px] font-bold text-[#061942]">{{ $faqHeader['title'] }}</h2>
                 <div class="grid gap-2">
-                    @foreach ([
-                        'What is the Fast Track Program?',
-                        'How does the Fast Track Program work?',
-                        'Who can enroll in the program?',
-                        'Will I get a certificate?',
-                        'How will companies see my profile?',
-                    ] as $faq)
+                    @foreach ($fastTrackFaqs as $faq)
                         <button type="button" class="flex h-10 w-full items-center justify-between rounded-md border border-[#e7eef8] bg-white px-3 text-left text-[12px] font-bold text-[#07518f]">
                             <span>{{ $faq }}</span>
                             <span class="text-[#6f7d90]">⌄</span>
                         </button>
                     @endforeach
                 </div>
-                <a href="/fast-track/how-it-works" class="mt-4 inline-flex h-10 w-full items-center justify-center rounded-md border border-[#cfdceb] bg-white px-4 text-[12px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">View All FAQs</a>
+                <a href="{{ $faqHeader['href'] }}" class="mt-4 inline-flex h-10 w-full items-center justify-center rounded-md border border-[#cfdceb] bg-white px-4 text-[12px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">{{ $faqHeader['button'] }}</a>
             </aside>
         </div>
     </section>
@@ -468,7 +370,7 @@
         const jobs = dataOf(jobsResult, 'jobs') || [];
         renderStats(courses, partners, jobs);
     }).catch((error) => {
-        careerTracks.innerHTML = `<article class="rounded-lg border border-[#ffd6a8] bg-[#fff8ef] p-6 text-sm font-semibold text-[#8a5200] lg:col-span-3">${esc(error.message || 'Fast Track data load nahi ho paaya.')}</article>`;
+        console.warn(error.message || 'Fast Track data load nahi ho paaya.');
     });
 </script>
 @endpush

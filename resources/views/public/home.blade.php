@@ -29,26 +29,26 @@
         <div class="relative mx-auto grid w-full max-w-7xl items-center gap-5 px-5 py-5 text-center sm:px-6 lg:min-h-[285px] lg:grid-cols-[0.9fr_1.18fr] lg:gap-3 lg:px-8 lg:py-0 lg:text-left">
             <div class="relative z-10">
                 <h1 class="m-0 font-['Inter'] text-[31px] font-medium leading-[1.04] text-[#061942] sm:text-[42px] lg:text-[44px] xl:text-[49px]">
-                    Bridging Fresh Talent With <span class="text-[#075fe4]">Great Opportunities</span>
+                    {{ $hero['title'] }} <span class="text-[#075fe4]">{{ $hero['highlight'] }}</span>
                 </h1>
                 <p class="mx-auto my-4 max-w-[520px] text-[13px] font-semibold leading-[1.45] text-[#34445e] sm:text-sm lg:mx-0">
-                    OnlyFreshers connects companies with skilled, confident and job-ready freshers. Hire directly or through our Fast Track Program.
+                    {{ $hero['text'] }}
                 </p>
 
                 <div class="flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-                    <a href="/direct-mode/login" class="inline-flex h-10 min-w-[155px] items-center justify-center gap-2 rounded-md border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#003f9e]">
-                        <span class="[&>svg]:h-4 [&>svg]:w-4">@include('components.public.icon', ['name' => 'users'])</span>
-                        I'm a Fresher
+                    <a href="{{ $hero['primary']['href'] }}" class="inline-flex h-10 min-w-[155px] items-center justify-center gap-2 rounded-md border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#003f9e]">
+                        <span class="[&>svg]:h-4 [&>svg]:w-4">@include('components.public.icon', ['name' => $hero['primary']['icon']])</span>
+                        {{ $hero['primary']['label'] }}
                     </a>
-                    <a href="/company/login" class="inline-flex h-10 min-w-[155px] items-center justify-center gap-2 rounded-md border border-[#8eb4ef] bg-white px-6 text-sm font-bold text-[#075fe4] transition hover:bg-[#eff5ff]">
-                        <span class="[&>svg]:h-4 [&>svg]:w-4">@include('components.public.icon', ['name' => 'briefcase'])</span>
-                        I'm a Company
+                    <a href="{{ $hero['secondary']['href'] }}" class="inline-flex h-10 min-w-[155px] items-center justify-center gap-2 rounded-md border border-[#8eb4ef] bg-white px-6 text-sm font-bold text-[#075fe4] transition hover:bg-[#eff5ff]">
+                        <span class="[&>svg]:h-4 [&>svg]:w-4">@include('components.public.icon', ['name' => $hero['secondary']['icon']])</span>
+                        {{ $hero['secondary']['label'] }}
                     </a>
                 </div>
             </div>
 
             <div class="relative z-10 flex min-h-[245px] items-end justify-center overflow-visible lg:min-h-[285px] lg:justify-end">
-                <img src="{{ asset('home-hero-students.png') }}" alt="OnlyFreshers students" class="block h-auto max-h-[292px] w-full max-w-[700px] object-contain object-bottom lg:mr-[-28px] lg:max-h-[305px] xl:mr-[-46px]">
+                <img src="{{ asset($hero['image']) }}" alt="{{ $hero['highlight'] }}" class="block h-auto max-h-[292px] w-full max-w-[700px] object-contain object-bottom lg:mr-[-28px] lg:max-h-[305px] xl:mr-[-46px]">
                 <div id="homeStats" class="absolute bottom-4 left-1/2 grid w-[min(95%,590px)] -translate-x-1/2 grid-cols-2 gap-2 rounded-lg border border-[#dce7f8] bg-white/90 p-2.5 text-left shadow-[0_12px_26px_rgba(6,25,66,0.16)] backdrop-blur sm:grid-cols-4 lg:left-[56%]">
                     @foreach ($statCards as $statCard)
                         <article class="flex items-center gap-2">
@@ -178,13 +178,13 @@
                     <div class="mb-3 flex items-center gap-3">
                         <img src="{{ asset('fast-track-hero-girl.png') }}" alt="Fast Track candidate" class="h-[52px] w-[52px] rounded-lg object-cover object-top shadow-sm">
                         <span class="min-w-0">
-                            <strong class="block font-['Inter'] text-[13px] font-semibold leading-tight text-[#061942]">Ananya Gupta</strong>
-                            <small class="mt-1 block text-[11px] font-semibold leading-tight text-[#34445e]">B.Tech - IT</small>
+                            <strong class="block font-['Inter'] text-[13px] font-semibold leading-tight text-[#061942]">{{ $candidateReport['name'] }}</strong>
+                            <small class="mt-1 block text-[11px] font-semibold leading-tight text-[#34445e]">{{ $candidateReport['course'] }}</small>
                         </span>
                     </div>
                     <div class="grid grid-cols-[1fr_56px_18px_56px] items-center gap-x-2 rounded-lg bg-[#f7fbff] px-2 py-2 text-[9px] font-semibold leading-tight text-[#34445e]">
                         <span></span><b class="text-center text-[#061942]">Initial<br>Score</b><span></span><b class="text-center text-[#061942]">Final<br>Score</b>
-                        @foreach ([['Technical Skills','55%','82%'],['Aptitude','52%','78%'],['Communication','60%','83%'],['Attitude','58%','85%']] as $row)
+                        @foreach ($candidateReport['rows'] as $row)
                             <span class="border-t border-[#e3edf9] py-1.5">{{ $row[0] }}</span><b class="border-t border-[#e3edf9] py-1.5 text-center">{{ $row[1] }}</b><span class="border-t border-[#e3edf9] py-1.5 text-center text-[#6b7890]">→</span><b class="border-t border-[#e3edf9] py-1.5 text-center text-[#061942]">{{ $row[2] }}</b>
                         @endforeach
                         <span>Overall Match</span><b class="text-center text-[#075fe4]">★★★★★<small class="block text-[8px] text-[#6b7890]">(Average Fit)</small></b><span class="text-center text-[#6b7890]">-&gt;</span><b class="text-center text-[#075fe4]">★★★★★<small class="block text-[8px] text-[#0b8b67]">(Strong Fit)</small></b>
@@ -260,12 +260,12 @@
                 <div class="flex flex-col items-center gap-6 lg:flex-row">
                     <div class="flex h-[105px] w-[105px] shrink-0 items-center justify-center rounded-full bg-[#f1f6ff] text-[#075fe4] shadow-[inset_0_0_0_1px_rgba(7,95,228,0.06),0_12px_24px_rgba(7,95,228,0.08)] [&>svg]:h-12 [&>svg]:w-12">@include('components.public.icon', ['name' => 'company'])</div>
                     <div>
-                        <h2 class="mb-1 font-['Inter'] text-xl font-medium text-[#061942]">Hire Freshers with Confidence</h2>
-                        <p class="text-sm font-medium leading-[1.5] text-[#4a5871] sm:text-base">Post jobs, review applications, shortlist candidates, and hire top talent.</p>
+                        <h2 class="mb-1 font-['Inter'] text-xl font-medium text-[#061942]">{{ $companyCta['title'] }}</h2>
+                        <p class="text-sm font-medium leading-[1.5] text-[#4a5871] sm:text-base">{{ $companyCta['text'] }}</p>
                     </div>
                 </div>
 
-                <a href="/company/post-job" class="inline-flex h-11 shrink-0 items-center justify-center rounded-lg border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#003f9e]">Post a Job</a>
+                <a href="{{ $companyCta['href'] }}" class="inline-flex h-11 shrink-0 items-center justify-center rounded-lg border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#003f9e]">{{ $companyCta['button'] }}</a>
             </div>
         </div>
     </section>

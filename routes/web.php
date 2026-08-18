@@ -1,96 +1,24 @@
 <?php
 
 use App\Http\Controllers\CompanyDashboardPageController;
+use App\Http\Controllers\PublicPageController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $fallbackStats = [
-        'jobs_listed' => 0,
-        'freshers_hired' => 0,
-        'partner_companies' => 0,
-        'top_brands' => 'Trusted',
-    ];
+Route::get('/', [PublicPageController::class, 'home']);
 
-    try {
-        $jobsListed = \App\Models\Job::query()->where('status', 'active')->count();
-        $freshersHired = \App\Models\JobApplication::query()->where('status', 'hired')->count();
-        $partnerCompanies = \App\Models\CompanyProfile::query()->where('approval_status', 'approved')->count();
-        $trainingPartners = \App\Models\TrainingPartnerProfile::query()
-            ->where('approval_status', 'approved')
-            ->withCount(['courses' => fn ($query) => $query->where('status', 'active')])
-            ->latest()
-            ->take(6)
-            ->get();
+Route::get('/about', [PublicPageController::class, 'about']);
 
-        $homeStats = [
-            'jobs_listed' => $jobsListed,
-            'freshers_hired' => $freshersHired,
-            'partner_companies' => $partnerCompanies,
-            'top_brands' => $partnerCompanies > 0 ? 'Trusted' : 'Verified',
-        ];
-    } catch (\Throwable $exception) {
-        $trainingPartners = collect();
-        $homeStats = $fallbackStats;
-    }
-
-    return view('public.home', [
-        'homeStats' => $homeStats,
-        'directModePoints' => [
-            'Browse & apply to jobs',
-            'Companies receive your resume with Initial Track Analysis',
-            'Companies shortlist & hire suitable candidates',
-        ],
-        'directAnalysis' => [
-            ['label' => 'Technical Skills', 'value' => 75],
-            ['label' => 'Aptitude', 'value' => 68],
-            ['label' => 'Communication', 'value' => 72],
-            ['label' => 'Learning Ability', 'value' => 80],
-        ],
-        'fastTrackPoints' => [
-            'Initial Assessment & Profile Analysis',
-            'Training by Verified Training Partners',
-            'Final Assessment & Certification',
-            'Companies get candidates with Initial & Final Assessment',
-        ],
-        'fastTrackOverview' => [
-            ['label' => 'Technical Skills', 'initial' => '56%', 'final' => '82%'],
-            ['label' => 'Aptitude', 'initial' => '50%', 'final' => '78%'],
-            ['label' => 'Communication', 'initial' => '58%', 'final' => '80%'],
-            ['label' => 'Overall Match', 'initial' => '★★★☆☆', 'final' => '★★★★★'],
-        ],
-        'fastTrackSteps' => [
-            ['icon' => 'document', 'title' => '1. Enroll', 'text' => 'Student enrolls for Fast Track Program'],
-            ['icon' => 'check', 'title' => '2. Initial Assessment', 'text' => 'Students are assessed on skills, aptitude, attitude & communication'],
-            ['icon' => 'training', 'title' => '3. Training by Partners', 'text' => 'Training by verified training entities listed on OnlyFreshers'],
-            ['icon' => 'document', 'title' => '4. Final Assessment', 'text' => 'Students appear for final assessment & practical evaluations'],
-            ['icon' => 'certificate', 'title' => '5. Get Certified', 'text' => 'Students get certified based on performance'],
-            ['icon' => 'briefcase', 'title' => '6. Get Hired', 'text' => 'Companies get candidates with Initial & Final Assessment'],
-        ],
-        'companyBenefits' => [
-            'Pre-assessment & profile insights',
-            'Training by industry experts',
-            'Final assessment & certification',
-            'Job-ready candidates with improved skills & attitude',
-        ],
-        'trainingPartnerLogos' => $trainingPartners->isNotEmpty()
-            ? $trainingPartners->map(fn ($partner) => $partner->institute_name ?: 'Partner')->values()->all()
-            : ['EXCELR', 'ENLITE', 'TecnMinds', 'iNeuron', 'Besant', 'TTA'],
-    ]);
-});
-
-Route::view('/about', 'public.about');
-
-Route::view('/job', 'public.jobs.index');
-Route::view('/jobs', 'public.jobs.index');
+Route::get('/job', [PublicPageController::class, 'companies']);
+Route::get('/jobs', [PublicPageController::class, 'companies']);
 Route::view('/job/show', 'public.jobs.show');
 Route::view('/jobs/show', 'public.jobs.show');
 
-Route::view('/fast-track', 'public.fast-track.index');
+Route::get('/fast-track', [PublicPageController::class, 'fastTrack']);
 Route::view('/fast-track/how-it-works', 'public.fast-track.how-it-works');
 Route::view('/fast-track/login', 'fast-track.login');
 Route::view('/fast-track/register', 'fast-track.register');
 
-Route::view('/direct-mode', 'public.direct-mode.index');
+Route::get('/direct-mode', [PublicPageController::class, 'directMode']);
 Route::view('/direct-mode/login', 'direct-mode.login');
 Route::view('/direct-mode/register', 'direct-mode.register');
 
@@ -143,11 +71,11 @@ Route::view('/fast-track/job-recommendations', 'fresher.fast-track.job-recommend
 Route::view('/fast-track/applications', 'fresher.fast-track.applications');
 Route::view('/fast-track/certificate', 'fresher.fast-track.certificate');
 
-Route::view('/training-partners', 'public.training-partners.index');
+Route::get('/training-partners', [PublicPageController::class, 'trainingPartners']);
 Route::view('/training-partners/show', 'public.training-partners.show');
 
-Route::view('/courses', 'public.courses.index');
-Route::view('/courses/show', 'public.courses.show');
+Route::get('/courses', [PublicPageController::class, 'courses']);
+Route::get('/courses/show', [PublicPageController::class, 'courseShow']);
 
 Route::view('/certificates/verify', 'public.certificates.verify');
 
