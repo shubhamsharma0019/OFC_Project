@@ -106,6 +106,13 @@ class CompanyInterviewController extends Controller
             ], 403);
         }
 
+        if (in_array($jobApplication->application_status, ['hired', 'rejected'], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An interview cannot be scheduled for an application with a final status.',
+            ], 422);
+        }
+
         if ($jobApplication->application_status !== 'shortlisted') {
             return response()->json([
                 'success' => false,
@@ -209,6 +216,124 @@ class CompanyInterviewController extends Controller
     }
 
     /**
+     * Company scheduled interview details update karegi.
+     */
+    public function update(
+        Request $request,
+        Interview $interview
+    ): JsonResponse {
+        $user = $request->user();
+
+        if ($user->role !== 'company') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only companies can update interviews.',
+            ], 403);
+        }
+
+        $companyProfile = $user->companyProfile;
+
+        if (!$companyProfile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Company profile nahi mili.',
+            ], 422);
+        }
+
+        $interview->load([
+            'jobApplication.job',
+        ]);
+
+        if (
+            $interview->jobApplication->job->company_profile_id
+            !== $companyProfile->id
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot update this interview.',
+            ], 403);
+        }
+
+        if (
+            $interview->status !== 'scheduled' ||
+            in_array($interview->jobApplication->application_status, ['hired', 'rejected'], true)
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only scheduled interviews can be edited.',
+            ], 422);
+        }
+
+        $validatedData = $request->validate([
+            'interview_date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+            ],
+
+            'interview_time' => [
+                'required',
+                'date_format:H:i',
+            ],
+
+            'interview_mode' => [
+                'required',
+                Rule::in([
+                    'online',
+                    'offline',
+                ]),
+            ],
+
+            'interview_location' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::requiredIf(
+                    $request->input('interview_mode') === 'offline'
+                ),
+            ],
+
+            'meeting_link' => [
+                'nullable',
+                'url',
+                'max:500',
+                'regex:/^https?:\/\/meet\.google\.com\/[a-z0-9-]+(?:[\/?#].*)?$/i',
+                Rule::requiredIf(
+                    $request->input('interview_mode') === 'online'
+                ),
+            ],
+        ], [
+            'meeting_link.required' => 'Online interview ke liye Google Meet link required hai.',
+            'meeting_link.url' => 'Please paste a valid Google Meet link.',
+            'meeting_link.regex' => 'Meeting link Google Meet ka hona chahiye, for example https://meet.google.com/abc-defg-hij.',
+        ]);
+
+        if ($validatedData['interview_mode'] === 'online') {
+            $validatedData['interview_location'] = null;
+        }
+
+        if ($validatedData['interview_mode'] === 'offline') {
+            $validatedData['meeting_link'] = null;
+        }
+
+        $validatedData['status'] = 'scheduled';
+
+        $interview->update($validatedData);
+        $interview->jobApplication->update([
+            'application_status' => 'interview_scheduled',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Interview updated successfully.',
+            'data' => [
+                'interview' => $interview->fresh(),
+                'application' => $interview->jobApplication->fresh(),
+            ],
+        ]);
+    }
+
+    /**
      * Company interview ka status update karegi.
      */
     public function updateStatus(
@@ -245,6 +370,13 @@ class CompanyInterviewController extends Controller
                 'success' => false,
                 'message' => 'Aap is interview ka status update nahi kar sakte.',
             ], 403);
+        }
+
+        if ($interview->status !== 'scheduled') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only scheduled interviews can be updated.',
+            ], 422);
         }
 
         $validatedData = $request->validate([

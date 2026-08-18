@@ -290,13 +290,10 @@
             const application = FastTrack.apiData(result, 'application') || {};
             applications.unshift(Object.assign(application, { job_id: Number(jobId), job: jobs.find((job) => String(job.id) === String(jobId)) }));
         } catch (error) {
-            if (error.status !== 422) {
-                alert(error.message || 'Apply nahi ho paaya.');
-                button.disabled = false;
-                button.textContent = 'Apply Now';
-                return;
-            }
-            applications.unshift({ job_id: Number(jobId), application_status: 'applied', job: jobs.find((job) => String(job.id) === String(jobId)) });
+            alert(error.message || 'Apply nahi ho paaya.');
+            button.disabled = false;
+            button.textContent = 'Apply Now';
+            return;
         }
         renderJobs();
     }

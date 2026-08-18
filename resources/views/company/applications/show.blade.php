@@ -43,6 +43,7 @@
             <button id="shortlistButton" type="button" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#075fe4] text-sm font-bold text-white">Shortlist</button>
             <a id="scheduleInterviewLink" href="/company/interviews/create" class="inline-flex h-10 items-center justify-center rounded-lg border border-[#9fc0f5] text-sm font-bold text-[#075fe4]">Schedule Interview</a>
             <button id="rejectButton" type="button" class="inline-flex h-10 items-center justify-center rounded-lg border border-[#ffd1d7] text-sm font-bold text-[#ff3045]">Reject</button>
+            <p id="finalStatusNote" class="hidden rounded-lg border border-[#b9e7c9] bg-[#f1fff5] px-3 py-2 text-xs font-bold text-[#138a43]"></p>
             <a href="/company/applications" class="inline-flex h-10 items-center justify-center rounded-lg border border-[#dce7f8] text-sm font-bold text-[#24344f]">Back to Applications</a>
         </div>
     </aside>
@@ -57,6 +58,13 @@
     const content = document.getElementById('applicationContent');
     const actionMessage = document.getElementById('actionMessage');
     let currentApplication = null;
+    const actionControls = {
+        underReview: document.getElementById('underReviewButton'),
+        shortlist: document.getElementById('shortlistButton'),
+        schedule: document.getElementById('scheduleInterviewLink'),
+        reject: document.getElementById('rejectButton'),
+        finalNote: document.getElementById('finalStatusNote'),
+    };
 
     const statusClasses = {
         applied: 'bg-[#eaf2ff] text-[#075fe4]',
@@ -82,6 +90,15 @@
     function showActionMessage(text, type = 'error') {
         actionMessage.textContent = text;
         actionMessage.className = `mb-3 rounded-lg border px-3 py-2 text-xs font-bold ${type === 'success' ? 'border-[#b9e7c9] bg-[#f1fff5] text-[#138a43]' : 'border-[#ffd1d7] bg-[#fff7f8] text-[#ff3045]'}`;
+    }
+
+    function clearActionMessage() {
+        actionMessage.textContent = '';
+        actionMessage.className = 'mb-3 hidden rounded-lg border px-3 py-2 text-xs font-bold';
+    }
+
+    function setActionVisible(element, visible) {
+        element.style.display = visible ? '' : 'none';
     }
 
     async function guardCompanyFlow() {
@@ -147,9 +164,28 @@
             ? skills.map((skill) => `<span class="rounded-lg bg-[#eaf2ff] px-3 py-2 text-xs font-bold text-[#075fe4]">${escapeHtml(skill)}</span>`).join('')
             : '<span class="text-sm text-[#52607a]">No skills added.</span>';
 
-        document.getElementById('scheduleInterviewLink').addEventListener('click', () => {
-            localStorage.setItem('ofc_selected_company_application_id', application.id);
-        });
+        renderActions(status, application);
+    }
+
+    function renderActions(status, application) {
+        const finalStatus = ['hired', 'rejected'].includes(status);
+        const interviewScheduled = status === 'interview_scheduled' || Boolean(application.interview?.id);
+
+        setActionVisible(actionControls.underReview, !finalStatus);
+        setActionVisible(actionControls.shortlist, !finalStatus);
+        setActionVisible(actionControls.schedule, !finalStatus && !interviewScheduled && status === 'shortlisted');
+        setActionVisible(actionControls.reject, !finalStatus);
+        setActionVisible(actionControls.finalNote, finalStatus);
+
+        if (status === 'hired') {
+            clearActionMessage();
+            actionControls.finalNote.textContent = 'Candidate already hired. Further application actions are closed.';
+        } else if (status === 'rejected') {
+            clearActionMessage();
+            actionControls.finalNote.textContent = 'Candidate already rejected. Further application actions are closed.';
+        } else {
+            actionControls.finalNote.textContent = '';
+        }
     }
 
     async function loadApplication() {
@@ -201,6 +237,9 @@
 
     document.getElementById('underReviewButton').addEventListener('click', () => updateStatus('under_review').catch((error) => showActionMessage(error.message)));
     document.getElementById('shortlistButton').addEventListener('click', () => updateStatus('shortlisted').catch((error) => showActionMessage(error.message)));
+    document.getElementById('scheduleInterviewLink').addEventListener('click', () => {
+        if (currentApplication) localStorage.setItem('ofc_selected_company_application_id', currentApplication.id);
+    });
     document.getElementById('rejectButton').addEventListener('click', () => updateStatus('rejected').catch((error) => showActionMessage(error.message)));
 
     loadApplication().catch((error) => {

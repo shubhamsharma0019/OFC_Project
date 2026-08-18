@@ -384,6 +384,11 @@ Route::middleware('auth:sanctum')->group(function () {
     );
 
     Route::patch(
+        '/company/interviews/{interview}',
+        [CompanyInterviewController::class, 'update']
+    );
+
+    Route::patch(
         '/company/interviews/{interview}/status',
         [CompanyInterviewController::class, 'updateStatus']
     );

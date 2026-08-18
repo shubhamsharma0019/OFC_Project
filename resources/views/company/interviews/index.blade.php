@@ -51,6 +51,55 @@
             <span id="resultText">Loading interviews...</span>
         </div>
     </section>
+
+    <div id="editInterviewModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#061942]/45 px-4 py-6">
+        <form id="editInterviewForm" class="w-full max-w-[560px] rounded-lg border border-[#dce7f8] bg-white p-5 shadow-2xl">
+            <div class="mb-5 flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-[#061942]">Edit Interview</h2>
+                    <p id="editInterviewCandidate" class="mt-1 text-sm text-[#52607a]"></p>
+                </div>
+                <button id="closeEditInterview" type="button" class="grid h-9 w-9 place-items-center rounded-lg border border-[#dce7f8] text-lg font-bold text-[#52607a]">x</button>
+            </div>
+
+            <p id="editInterviewMessage" class="mb-4 hidden rounded-lg border px-4 py-3 text-sm font-bold"></p>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                <label class="grid gap-2 text-sm font-bold text-[#061942]">
+                    Date
+                    <input id="editInterviewDate" class="h-11 rounded-lg border border-[#dce7f8] px-3 text-sm font-medium outline-none focus:border-[#075fe4]" type="date" required>
+                </label>
+
+                <label class="grid gap-2 text-sm font-bold text-[#061942]">
+                    Time
+                    <input id="editInterviewTime" class="h-11 rounded-lg border border-[#dce7f8] px-3 text-sm font-medium outline-none focus:border-[#075fe4]" type="time" required>
+                </label>
+
+                <label class="grid gap-2 text-sm font-bold text-[#061942] sm:col-span-2">
+                    Mode
+                    <select id="editInterviewMode" class="h-11 rounded-lg border border-[#dce7f8] px-3 text-sm font-medium outline-none focus:border-[#075fe4]" required>
+                        <option value="online">Online</option>
+                        <option value="offline">Offline</option>
+                    </select>
+                </label>
+
+                <label id="editMeetingLinkWrap" class="grid gap-2 text-sm font-bold text-[#061942] sm:col-span-2">
+                    Google Meet Link
+                    <input id="editMeetingLink" class="h-11 rounded-lg border border-[#dce7f8] px-3 text-sm font-medium outline-none focus:border-[#075fe4]" type="url" placeholder="https://meet.google.com/abc-defg-hij">
+                </label>
+
+                <label id="editLocationWrap" class="hidden gap-2 text-sm font-bold text-[#061942] sm:col-span-2">
+                    Location
+                    <input id="editInterviewLocation" class="h-11 rounded-lg border border-[#dce7f8] px-3 text-sm font-medium outline-none focus:border-[#075fe4]" type="text" placeholder="Office address / venue">
+                </label>
+            </div>
+
+            <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button id="cancelEditInterview" type="button" class="h-10 rounded-lg border border-[#dce7f8] px-5 text-sm font-bold text-[#52607a]">Cancel</button>
+                <button id="saveEditInterview" type="submit" class="h-10 rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white">Save Changes</button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @push('scripts')
@@ -61,8 +110,16 @@
     const jobFilter = document.getElementById('jobFilter');
     const resultText = document.getElementById('resultText');
     const message = document.getElementById('interviewMessage');
+    const editModal = document.getElementById('editInterviewModal');
+    const editForm = document.getElementById('editInterviewForm');
+    const editMessage = document.getElementById('editInterviewMessage');
+    const editMode = document.getElementById('editInterviewMode');
+    const editMeetingLinkWrap = document.getElementById('editMeetingLinkWrap');
+    const editLocationWrap = document.getElementById('editLocationWrap');
+    const saveEditInterview = document.getElementById('saveEditInterview');
     let interviews = [];
     let activeStatus = 'all';
+    let editingInterviewId = null;
 
     const statusClasses = {
         scheduled: 'bg-[#fff0d1] text-[#c86b00]',
@@ -81,10 +138,62 @@
     const formatStatus = (status) => String(status || '').replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
     const formatDate = (value) => value ? new Date(value).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
     const initials = (name) => String(name || 'C').split(' ').map((part) => part.charAt(0)).join('').slice(0, 2).toUpperCase();
+    const dateValue = (value) => value ? String(value).slice(0, 10) : '';
+    const timeValue = (value) => value ? String(value).slice(0, 5) : '';
 
     function showMessage(text, type = 'error') {
         message.textContent = text;
         message.className = `mb-4 rounded-lg border px-4 py-3 text-sm font-bold ${type === 'success' ? 'border-[#b9e7c9] bg-[#f1fff5] text-[#138a43]' : 'border-[#ffd1d7] bg-[#fff7f8] text-[#ff3045]'}`;
+    }
+
+    function showEditMessage(text, type = 'error') {
+        editMessage.textContent = text;
+        editMessage.className = `mb-4 rounded-lg border px-4 py-3 text-sm font-bold ${type === 'success' ? 'border-[#b9e7c9] bg-[#f1fff5] text-[#138a43]' : 'border-[#ffd1d7] bg-[#fff7f8] text-[#ff3045]'}`;
+    }
+
+    function clearEditMessage() {
+        editMessage.textContent = '';
+        editMessage.className = 'mb-4 hidden rounded-lg border px-4 py-3 text-sm font-bold';
+    }
+
+    function toggleEditModeFields() {
+        const online = editMode.value === 'online';
+        editMeetingLinkWrap.classList.toggle('hidden', !online);
+        editMeetingLinkWrap.classList.toggle('grid', online);
+        editLocationWrap.classList.toggle('hidden', online);
+        editLocationWrap.classList.toggle('grid', !online);
+        document.getElementById('editMeetingLink').required = online;
+        document.getElementById('editInterviewLocation').required = !online;
+    }
+
+    function openEditInterview(interviewId) {
+        const interview = interviews.find((item) => String(item.id) === String(interviewId));
+        if (!interview) return;
+
+        const app = interview.job_application || {};
+        const user = app.fresher_profile?.user || {};
+        const job = app.job || {};
+        editingInterviewId = interview.id;
+        clearEditMessage();
+
+        document.getElementById('editInterviewCandidate').textContent = `${user.name || 'Candidate'} - ${job.title || 'Job Role'}`;
+        document.getElementById('editInterviewDate').value = dateValue(interview.interview_date);
+        document.getElementById('editInterviewTime').value = timeValue(interview.interview_time);
+        editMode.value = interview.interview_mode || 'online';
+        document.getElementById('editMeetingLink').value = interview.meeting_link || '';
+        document.getElementById('editInterviewLocation').value = interview.interview_location || '';
+        toggleEditModeFields();
+
+        editModal.classList.remove('hidden');
+        editModal.classList.add('flex');
+    }
+
+    function closeEditInterview() {
+        editingInterviewId = null;
+        editModal.classList.add('hidden');
+        editModal.classList.remove('flex');
+        editForm.reset();
+        clearEditMessage();
     }
 
     async function guardCompanyFlow() {
@@ -156,8 +265,11 @@
             const user = app.fresher_profile?.user || {};
             const job = app.job || {};
             const place = interview.interview_mode === 'online' ? interview.meeting_link : interview.interview_location;
-            const joinButton = interview.interview_mode === 'online' && interview.meeting_link
+            const joinButton = interview.status === 'scheduled' && interview.interview_mode === 'online' && interview.meeting_link
                 ? `<a href="${escapeAttr(interview.meeting_link)}" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg border border-[#075fe4] bg-[#075fe4] px-3 py-2 text-xs font-bold text-white" title="Open Google Meet">Join Meet</a>`
+                : '';
+            const editButton = interview.status === 'scheduled'
+                ? `<button data-id="${interview.id}" class="edit-interview rounded-lg border border-[#9fc0f5] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button">Edit</button>`
                 : '';
 
             return `
@@ -178,21 +290,68 @@
                     <td class="px-4 py-4 align-middle text-[13px]">
                         ${interview.status === 'scheduled' ? `
                             <div class="flex flex-wrap gap-2">
+                                ${editButton}
                                 ${joinButton}
                                 <button data-id="${interview.id}" data-status="completed" data-application-status="hired" class="status-action rounded-lg border border-[#b9e7c9] px-3 py-2 text-xs font-bold text-[#138a43]" type="button">Hire</button>
                                 <button data-id="${interview.id}" data-status="completed" data-application-status="rejected" class="status-action rounded-lg border border-[#ffd1d7] px-3 py-2 text-xs font-bold text-[#ff3045]" type="button">Reject</button>
                                 <button data-id="${interview.id}" data-status="cancelled" class="status-action rounded-lg border border-[#dce7f8] px-3 py-2 text-xs font-bold text-[#52607a]" type="button">Cancel</button>
                             </div>
-                        ` : (joinButton || '-')}
+                        ` : (editButton || joinButton ? `<div class="flex flex-wrap gap-2">${editButton}${joinButton}</div>` : '-')}
                     </td>
                 </tr>
             `;
         }).join('');
 
+        document.querySelectorAll('.edit-interview').forEach((button) => {
+            button.addEventListener('click', () => openEditInterview(button.dataset.id));
+        });
         document.querySelectorAll('.status-action').forEach((button) => {
             button.addEventListener('click', () => updateInterviewStatus(button));
         });
         resultText.textContent = `Showing ${filtered.length} of ${interviews.length} interviews`;
+    }
+
+    async function updateInterview(event) {
+        event.preventDefault();
+        if (!editingInterviewId) return;
+
+        saveEditInterview.disabled = true;
+        saveEditInterview.textContent = 'Saving...';
+        clearEditMessage();
+
+        try {
+            const payload = {
+                interview_date: document.getElementById('editInterviewDate').value,
+                interview_time: document.getElementById('editInterviewTime').value,
+                interview_mode: editMode.value,
+                meeting_link: editMode.value === 'online' ? document.getElementById('editMeetingLink').value.trim() : null,
+                interview_location: editMode.value === 'offline' ? document.getElementById('editInterviewLocation').value.trim() : null,
+            };
+
+            const response = await fetch(`/api/company/interviews/${editingInterviewId}`, {
+                method: 'PATCH',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                const validationMessage = result.errors ? Object.values(result.errors).flat()[0] : null;
+                throw new Error(validationMessage || result.message || 'Unable to update interview.');
+            }
+
+            closeEditInterview();
+            showMessage(result.message || 'Interview updated.', 'success');
+            await loadInterviews();
+        } catch (error) {
+            showEditMessage(error.message || 'Unable to update interview.');
+        } finally {
+            saveEditInterview.disabled = false;
+            saveEditInterview.textContent = 'Save Changes';
+        }
     }
 
     async function updateInterviewStatus(button) {
@@ -256,6 +415,13 @@
 
     searchInput.addEventListener('input', renderInterviews);
     jobFilter.addEventListener('change', renderInterviews);
+    editMode.addEventListener('change', toggleEditModeFields);
+    editForm.addEventListener('submit', updateInterview);
+    document.getElementById('closeEditInterview').addEventListener('click', closeEditInterview);
+    document.getElementById('cancelEditInterview').addEventListener('click', closeEditInterview);
+    editModal.addEventListener('click', (event) => {
+        if (event.target === editModal) closeEditInterview();
+    });
     document.getElementById('resetFilters').addEventListener('click', () => {
         searchInput.value = '';
         jobFilter.value = 'all';
