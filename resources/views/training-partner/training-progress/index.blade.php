@@ -57,7 +57,13 @@
     function studentName(item) { return item.fresher_profile?.user?.name || 'Fresher #' + (item.fresher_profile?.id || item.id); }
     function studentEmail(item) { return item.fresher_profile?.user?.email || item.fresher_profile?.phone || '-'; }
     function progressPercent(item) { return item.training_progress?.progress_percentage ?? (item.training_status === 'completed' ? 100 : 0); }
-    function statCard(label, value, icon) { return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">${icon}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`; }
+    function avatarUrl(item) {
+        const photo = item.fresher_profile?.profile_photo || item.fresher_profile?.photo || item.fresher_profile?.user?.avatar;
+        if (!photo) return '/student.svg';
+        if (/^(https?:)?\/\//.test(photo) || String(photo).startsWith('/')) return photo;
+        return '/storage/' + String(photo).replace(/^\/?storage\//, '');
+    }
+    function statCard(label, value, icon) { return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-[#5b20e6]">${window.trainingPartnerMetricIcon(icon)}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`; }
     function filteredRows() {
         const query = progressSearch.value.trim().toLowerCase();
         const status = progressFilter.value;
@@ -82,7 +88,12 @@
         progressTable.innerHTML = rows.map((item) => {
             const progress = progressPercent(item);
             return `<tr>
-                <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(studentName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(studentEmail(item))}</span></td>
+                <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                        <span class="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[#dce7f8] bg-[#eef5ff]"><img class="h-full w-full object-cover" src="${escapeHtml(avatarUrl(item))}" alt="${escapeHtml(studentName(item))}"></span>
+                        <span class="min-w-0"><strong class="block truncate text-[#071544]">${escapeHtml(studentName(item))}</strong><span class="mt-1 block truncate text-xs text-[#526287]">${escapeHtml(studentEmail(item))}</span></span>
+                    </div>
+                </td>
                 <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(item.course?.course_name || '-')}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(item.course?.training_mode || '')}</span></td>
                 <td class="px-5 py-4"><span class="rounded-md ${badgeClass(item.training_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(item.training_status))}</span></td>
                 <td class="px-5 py-4"><div class="mb-1 text-xs font-bold text-[#071544]">${progress}%</div><div class="h-2 w-32 overflow-hidden rounded-full bg-[#f0eaff]"><div class="h-full rounded-full bg-[#6a2df0]" style="width:${progress}%"></div></div></td>

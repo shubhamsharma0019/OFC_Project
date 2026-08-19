@@ -5,10 +5,10 @@
 @php
     $activePage = 'enrollments';
     $stats = [
-        ['label' => 'Total', 'value' => '124', 'icon' => 'TT'],
-        ['label' => 'Active', 'value' => '86', 'icon' => 'AC'],
-        ['label' => 'Pending', 'value' => '18', 'icon' => 'PN'],
-        ['label' => 'Updated', 'value' => 'Today', 'icon' => 'UP'],
+        ['label' => 'Total', 'value' => '124', 'icon' => '<circle cx="9" cy="8" r="3"></circle><path d="M3 19c0-3 2.5-5 6-5"></path><circle cx="17" cy="9" r="2.5"></circle><path d="M14 19c0-2.4 1.8-4 4-4"></path>'],
+        ['label' => 'Active', 'value' => '86', 'icon' => '<path d="m5 12 4 4L19 6"></path><circle cx="12" cy="12" r="9"></circle>'],
+        ['label' => 'Pending', 'value' => '18', 'icon' => '<circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path>'],
+        ['label' => 'Updated', 'value' => 'Today', 'icon' => '<path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 3v6h-6"></path>'],
     ];
     $rows = [
         ['name' => 'Full Stack Development', 'type' => 'Course', 'status' => 'Active', 'date' => '10 May 2024'],
@@ -35,7 +35,7 @@
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             @foreach ($stats as $stat)
                 <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">{{ $stat['icon'] }}</span>
+                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-[#5b20e6]"><svg class="h-5 w-5 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true">{!! $stat['icon'] !!}</svg></span>
                     <p class="mt-4 text-xs font-bold text-[#526287]">{{ $stat['label'] }}</p>
                     <h2 class="mt-2 text-2xl font-bold text-[#071544]">{{ $stat['value'] }}</h2>
                 </article>

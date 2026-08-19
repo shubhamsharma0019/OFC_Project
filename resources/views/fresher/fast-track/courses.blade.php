@@ -18,6 +18,102 @@
     ];
 @endphp
 
+@push('styles')
+<style>
+    .course-stat-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 118px;
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #fff;
+        padding: 22px 24px;
+        box-shadow: 0 10px 24px rgba(6, 25, 66, .04);
+    }
+
+    .course-stat-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 4px;
+        background: #075fe4;
+    }
+
+    .course-card {
+        display: flex;
+        min-height: 390px;
+        flex-direction: column;
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #fff;
+        padding: 22px;
+        box-shadow: 0 10px 24px rgba(6, 25, 66, .04);
+        transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-2px);
+        border-color: #a9c6f4;
+        box-shadow: 0 18px 34px rgba(6, 25, 66, .08);
+    }
+
+    .course-badge {
+        display: inline-flex;
+        width: fit-content;
+        max-width: 100%;
+        align-items: center;
+        border-radius: 999px;
+        background: #eef4ff;
+        padding: 6px 11px;
+        color: #075fe4;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .course-avatar {
+        display: grid;
+        height: 58px;
+        width: 58px;
+        place-items: center;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 800;
+        box-shadow: 0 10px 20px rgba(6, 25, 66, .12);
+    }
+
+    .course-meta-panel {
+        margin-top: auto;
+        margin-bottom: 18px;
+        display: grid;
+        gap: 10px;
+        border-radius: 8px;
+        background: #f7faff;
+        padding: 14px;
+    }
+
+    .course-meta-row {
+        display: grid;
+        grid-template-columns: 82px minmax(0, 1fr);
+        align-items: center;
+        gap: 14px;
+        color: #334b83;
+        font-size: 13px;
+    }
+
+    .course-meta-row strong {
+        min-width: 0;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061942;
+        font-weight: 700;
+    }
+</style>
+@endpush
+
 @section('content')
     <section class="space-y-6">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -85,7 +181,11 @@
     if (initialTrack && courseSearchInput) courseSearchInput.value = initialTrack;
 
     function statCard(label, value) {
-        return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]"><p class="text-xs font-bold text-[#52607a]">${FastTrack.esc(label)}</p><h2 class="mt-2 text-3xl font-bold text-[#061942]">${FastTrack.esc(value)}</h2></article>`;
+        return `<article class="course-stat-card">
+            <p class="text-sm font-bold text-[#334b83]">${FastTrack.esc(label)}</p>
+            <h2 class="mt-3 text-[34px] font-bold leading-none text-[#061942]">${FastTrack.esc(value)}</h2>
+            <span class="mt-3 block h-1.5 w-12 rounded-full bg-[#075fe4]"></span>
+        </article>`;
     }
     function courseFee(course) {
         return course.fees || course.fee || course.price || course.course_fee || course.amount;
@@ -125,19 +225,25 @@
         courseGrid.innerHTML = courses.map(function (course, index) {
             const title = FastTrack.courseName(course);
             const text = FastTrack.courseText(course);
+            const accent = index % 3 === 0 ? '#071743' : index % 3 === 1 ? '#7744eb' : '#0a8f3f';
             return `
-                <article class="flex min-h-[360px] flex-col rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                    <span class="mb-5 grid h-[54px] w-[54px] place-items-center rounded-lg text-sm font-black text-white" style="background:${index % 3 === 0 ? '#071743' : index % 3 === 1 ? '#7744eb' : '#0a8f3f'};">${FastTrack.initials(title)}</span>
-                    <span class="mb-4 inline-flex self-start rounded-md bg-[#eee7ff] px-2.5 py-1 text-[11px] font-bold text-[#7744eb]">${FastTrack.esc(course.category || FastTrack.partnerName(course))}</span>
-                    <h3 class="mb-3 text-base font-bold text-[#061942]">${FastTrack.esc(title)}</h3>
-                    <p class="mb-5 line-clamp-4 text-sm leading-6 text-[#334b83]">${FastTrack.esc(text)}</p>
-                    <div class="mt-auto mb-5 grid gap-3 text-sm">
-                        <div class="flex justify-between gap-4 text-[#334b83]"><span>Partner</span><strong class="truncate font-medium text-[#061942]">${FastTrack.esc(FastTrack.partnerName(course))}</strong></div>
-                        <div class="flex justify-between gap-4 text-[#334b83]"><span>Duration</span><strong class="font-medium text-[#061942]">${FastTrack.esc(FastTrack.courseDuration(course))}</strong></div>
-                        <div class="flex justify-between gap-4 text-[#334b83]"><span>Fees</span><strong class="font-medium text-[#061942]">${FastTrack.money(courseFee(course))}</strong></div>
-                        <div class="flex justify-between gap-4 text-[#334b83]"><span>Mode</span><strong class="font-medium capitalize text-[#061942]">${FastTrack.esc(FastTrack.courseMode(course))}</strong></div>
+                <article class="course-card">
+                    <div class="mb-5 flex items-start justify-between gap-4">
+                        <span class="course-avatar" style="background:${accent};">${FastTrack.initials(title)}</span>
+                        <span class="course-badge">${FastTrack.esc(course.category || FastTrack.partnerName(course))}</span>
                     </div>
-                    <a class="inline-flex h-[42px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold transition ${index === 0 ? 'bg-[#075fe4] text-white hover:bg-[#064fc0]' : 'bg-white text-[#075fe4] hover:bg-[#eff5ff]'}" href="/fast-track/course-details?course=${encodeURIComponent(course.id)}" data-course-id="${FastTrack.esc(course.id)}">View Details</a>
+
+                    <h3 class="mb-3 min-h-[52px] text-[18px] font-bold leading-snug text-[#061942]">${FastTrack.esc(title)}</h3>
+                    <p class="mb-5 line-clamp-3 text-sm leading-6 text-[#334b83]">${FastTrack.esc(text)}</p>
+
+                    <div class="course-meta-panel">
+                        <div class="course-meta-row"><span>Partner</span><strong>${FastTrack.esc(FastTrack.partnerName(course))}</strong></div>
+                        <div class="course-meta-row"><span>Duration</span><strong>${FastTrack.esc(FastTrack.courseDuration(course))}</strong></div>
+                        <div class="course-meta-row"><span>Fees</span><strong>${FastTrack.money(courseFee(course))}</strong></div>
+                        <div class="course-meta-row"><span>Mode</span><strong class="capitalize">${FastTrack.esc(FastTrack.courseMode(course))}</strong></div>
+                    </div>
+
+                    <a class="inline-flex h-[44px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold transition ${index === 0 ? 'bg-[#075fe4] text-white shadow-[0_10px_20px_rgba(7,95,228,.18)] hover:bg-[#064fc0]' : 'bg-white text-[#075fe4] hover:bg-[#eff5ff]'}" href="/fast-track/course-details?course=${encodeURIComponent(course.id)}" data-course-id="${FastTrack.esc(course.id)}">View Details</a>
                 </article>
             `;
         }).join('');

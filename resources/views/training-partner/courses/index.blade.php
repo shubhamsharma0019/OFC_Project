@@ -6,6 +6,130 @@
     $activePage = 'courses';
 @endphp
 
+@push('styles')
+<style>
+    .course-card-list {
+        display: grid;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .course-list-card {
+        position: relative;
+        display: grid;
+        grid-template-columns: 82px minmax(0, 1fr) 240px;
+        align-items: center;
+        gap: 18px;
+        min-height: 118px;
+        border: 1px solid #e6e9f4;
+        border-radius: 12px;
+        background: #ffffff;
+        padding: 17px 18px;
+        box-shadow: 0 10px 26px rgba(36, 30, 86, 0.05);
+        transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+
+    .course-list-card:hover {
+        transform: translateY(-1px);
+        border-color: #d8cdfa;
+        box-shadow: 0 16px 34px rgba(36, 30, 86, 0.09);
+    }
+
+    .course-card-icon {
+        display: inline-flex;
+        height: 72px;
+        width: 72px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 17px;
+        background: #f2eaff;
+        color: #6334e8;
+    }
+
+    .course-card-title {
+        margin: 0;
+        color: #071544;
+        font-size: 18px;
+        line-height: 1.2;
+        font-weight: 900 !important;
+    }
+
+    .course-card-meta {
+        margin-top: 9px;
+        color: #526287;
+        font-size: 14px;
+        line-height: 1.3;
+        font-weight: 800 !important;
+    }
+
+    .course-card-numbers {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(110px, max-content));
+        gap: 42px;
+        color: #2d345f;
+        font-size: 14px;
+        font-weight: 900 !important;
+    }
+
+    .course-card-price {
+        color: #071544;
+        font-size: 16px;
+        font-weight: 900 !important;
+    }
+
+    .course-card-side {
+        display: flex;
+        min-height: 94px;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .course-card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 7px;
+        width: 100%;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+
+    @media (max-width: 900px) {
+        .course-list-card {
+            grid-template-columns: 72px minmax(0, 1fr);
+        }
+
+        .course-card-side {
+            grid-column: 2;
+            align-items: flex-start;
+        }
+
+        .course-card-actions {
+            justify-content: flex-start;
+        }
+
+        .course-card-numbers {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .course-list-card {
+            grid-template-columns: 1fr;
+        }
+
+        .course-card-side {
+            grid-column: auto;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
     <section class="grid gap-5">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -25,13 +149,8 @@
                 <input id="courseSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search courses...">
                 <select id="statusFilter" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option value="all">All Status</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="removed">Removed</option></select>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full min-w-[980px] text-left text-sm">
-                    <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Course</th><th class="px-5 py-4">Category</th><th class="px-5 py-4">Mode</th><th class="px-5 py-4">Fees</th><th class="px-5 py-4">Start Date</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Action</th></tr></thead>
-                    <tbody id="courseTable" class="divide-y divide-[#e7ebf5] text-[#26375f]">
-                        <tr><td class="px-5 py-5" colspan="7">Loading courses...</td></tr>
-                    </tbody>
-                </table>
+            <div id="courseTable" class="course-card-list">
+                <article class="rounded-lg border border-[#e7ebf5] bg-white p-5 text-sm text-[#526287]">Loading courses...</article>
             </div>
         </article>
     </section>
@@ -58,8 +177,22 @@
         if (status === 'inactive') return 'bg-[#fff0de] text-[#d06d00]';
         return 'bg-[#f2f4f7] text-[#344054]';
     }
+    function courseIcon() {
+        return '<svg class="h-9 w-9 fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"></path><path d="M15 3v5h5"></path><path d="M9 13l2 2 4-5"></path><path d="M9 18h6"></path></svg>';
+    }
+    function moduleText(course) {
+        const modules = course.modules_count || course.lessons_count || course.total_modules;
+        const duration = course.duration || '-';
+        return (modules ? modules + ' Modules' : 'Course') + ' - ' + duration;
+    }
+    function enrollmentCount(course) {
+        return course.enrollments_count ?? course.total_enrollments ?? 0;
+    }
+    function completedCount(course) {
+        return course.completed_enrollments_count ?? course.completed_trainings_count ?? 0;
+    }
     function statCard(label, value, icon) {
-        return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">${icon}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`;
+        return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-[#5b20e6]">${window.trainingPartnerMetricIcon(icon)}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`;
     }
     function filteredCourses() {
         const query = courseSearch.value.trim().toLowerCase();
@@ -81,29 +214,34 @@
         const visible = filteredCourses();
         renderStats();
         if (!visible.length) {
-            courseTable.innerHTML = '<tr><td class="px-5 py-5 text-[#526287]" colspan="7">No courses found.</td></tr>';
+            courseTable.innerHTML = '<article class="rounded-lg border border-[#e7ebf5] bg-white p-5 text-sm text-[#526287]">No courses found.</article>';
             return;
         }
         courseTable.innerHTML = visible.map((course) => `
-            <tr>
-                <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(course.course_name)}</strong><span class="mt-1 block max-w-[300px] truncate text-xs text-[#526287]">${escapeHtml(course.description)}</span></td>
-                <td class="px-5 py-4">${escapeHtml(course.category || '-')}</td>
-                <td class="px-5 py-4 capitalize">${escapeHtml(course.training_mode || '-')}</td>
-                <td class="px-5 py-4 font-bold text-[#071544]">${formatMoney(course.fees)}</td>
-                <td class="px-5 py-4">${formatDate(course.start_date)}</td>
-                <td class="px-5 py-4"><span class="rounded-md ${badgeClass(course.status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(course.status)}</span></td>
-                <td class="px-5 py-4">
-                    <div class="flex flex-wrap gap-2">
+            <article class="course-list-card">
+                <span class="course-card-icon">${courseIcon()}</span>
+                <div class="min-w-0">
+                    <h3 class="course-card-title truncate">${escapeHtml(course.course_name)}</h3>
+                    <p class="course-card-meta">${escapeHtml(moduleText(course))}</p>
+                    <div class="course-card-numbers">
+                        <p>Enrolled: <span>${escapeHtml(enrollmentCount(course))}</span></p>
+                        <p>Completed: <span>${escapeHtml(completedCount(course))}</span></p>
+                        <p class="course-card-price">${escapeHtml(formatMoney(course.fees))}</p>
+                    </div>
+                </div>
+                <div class="course-card-side">
+                    <span class="inline-flex w-fit rounded-lg ${badgeClass(course.status)} px-4 py-2 text-xs font-black capitalize">${escapeHtml(course.status || '-')}</span>
+                    <div class="course-card-actions">
                         <button class="view-course rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${course.id}">View</button>
                         <button class="edit-course rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" type="button" data-id="${course.id}">Edit</button>
-                        <select class="status-change rounded-md border border-[#cfd8eb] px-2 py-2 text-xs font-bold" data-id="${course.id}">
+                        <select class="status-change h-9 rounded-md border border-[#cfd8eb] px-2 text-xs font-bold" data-id="${course.id}">
                             <option value="active" ${course.status === 'active' ? 'selected' : ''}>Active</option>
                             <option value="inactive" ${course.status === 'inactive' ? 'selected' : ''}>Inactive</option>
                             <option value="removed" ${course.status === 'removed' ? 'selected' : ''}>Removed</option>
                         </select>
                     </div>
-                </td>
-            </tr>
+                </div>
+            </article>
         `).join('');
     }
     async function loadCourses() {
@@ -117,7 +255,7 @@
             courses = payload.data?.courses || [];
             renderCourses();
         } catch (error) {
-            courseTable.innerHTML = '<tr><td class="px-5 py-5 text-[#b42318]" colspan="7">' + escapeHtml(error.message || 'Courses load nahi ho paaye.') + '</td></tr>';
+            courseTable.innerHTML = '<article class="rounded-lg border border-[#ffd7d7] bg-[#fff4f4] p-5 text-sm text-[#b42318]">' + escapeHtml(error.message || 'Courses load nahi ho paaye.') + '</article>';
         }
     }
     async function updateStatus(id, status) {
@@ -129,7 +267,12 @@
         const payload = await response.json();
         if (!response.ok || !payload.success) throw new Error(payload.message || 'Status update nahi ho paaya.');
         const index = courses.findIndex((course) => String(course.id) === String(id));
-        if (index >= 0) courses[index] = payload.data.course;
+        if (index >= 0) {
+            courses[index] = {
+                ...courses[index],
+                ...payload.data.course,
+            };
+        }
         renderCourses();
     }
     courseSearch.addEventListener('input', renderCourses);

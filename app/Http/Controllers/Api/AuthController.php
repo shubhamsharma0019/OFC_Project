@@ -153,6 +153,40 @@ class AuthController extends Controller
         ]);
     }
 
+    public function updatePassword(Request $request): JsonResponse
+    {
+        $validatedData = $request->validate([
+            'current_password' => [
+                'required',
+                'string',
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+            ],
+        ]);
+
+        $user = $request->user();
+
+        if (! Hash::check($validatedData['current_password'], $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Current password incorrect hai.',
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($validatedData['password']),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully.',
+        ]);
+    }
+
     /**
      * Current token logout karega.
      */

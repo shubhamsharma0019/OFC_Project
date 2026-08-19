@@ -6,6 +6,18 @@
     $activePage = 'applications';
 @endphp
 
+@push('styles')
+<style>
+    #applicationSearch:disabled,
+    #applicationModeFilter:disabled,
+    #applicationStatusFilter:disabled {
+        cursor: not-allowed;
+        background: #f4f7fb;
+        color: #7b8aa8;
+    }
+</style>
+@endpush
+
 @section('content')
     <section class="space-y-5">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -13,7 +25,7 @@
                 <h1 class="text-[27px] font-bold leading-tight text-[#061942]">Applications</h1>
                 <p class="mt-2 text-sm font-medium text-[#334b83]">Track Fast Track job applications and interview status.</p>
             </div>
-            <a class="inline-flex h-10 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white" href="/fast-track/job-recommendations">Browse Jobs</a>
+            <a id="applicationsPrimaryAction" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white" href="/fast-track/job-recommendations">Browse Jobs</a>
         </div>
 
         <div id="applicationStats" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -60,7 +72,9 @@
     const applicationSearch = document.getElementById('applicationSearch');
     const applicationModeFilter = document.getElementById('applicationModeFilter');
     const applicationStatusFilter = document.getElementById('applicationStatusFilter');
+    const applicationsPrimaryAction = document.getElementById('applicationsPrimaryAction');
     let applicationRows = [];
+    let hasCertificate = false;
     const applicationIcons = {
         total: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 5V3h8v2"></path><path d="M8 11h8M8 15h5"></path></svg>',
         applied: '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>',
@@ -165,6 +179,23 @@
         ].join('');
     }
 
+    function renderFlowState() {
+        if (hasCertificate) {
+            applicationsPrimaryAction.textContent = 'Browse Jobs';
+            applicationsPrimaryAction.href = '/fast-track/job-recommendations';
+            applicationSearch.disabled = false;
+            applicationModeFilter.disabled = false;
+            applicationStatusFilter.disabled = false;
+            return;
+        }
+
+        applicationsPrimaryAction.textContent = 'View Certificate';
+        applicationsPrimaryAction.href = '/fast-track/certificate';
+        applicationSearch.disabled = true;
+        applicationModeFilter.disabled = true;
+        applicationStatusFilter.disabled = true;
+    }
+
     function filteredApplications() {
         const query = applicationSearch.value.trim().toLowerCase();
         const mode = applicationModeFilter.value;
@@ -181,7 +212,14 @@
         const rows = filteredApplications();
 
         if (!rows.length) {
-            applicationsBody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-sm text-[#334b83]">No applications found. Apply to a Fast Track job to see it here.</td></tr>';
+            applicationsBody.innerHTML = `<tr><td colspan="6" class="px-4 py-10 text-center text-sm text-[#334b83]">
+                <div class="mx-auto max-w-md">
+                    <div class="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full bg-[#eef5ff] text-lg font-bold text-[#075fe4]">FT</div>
+                    <h3 class="mb-2 text-base font-bold text-[#061942]">${hasCertificate ? 'No applications found' : 'Applications locked'}</h3>
+                    <p class="mb-5 leading-6">${hasCertificate ? 'Apply to a Fast Track job to see your application status here.' : 'Complete your Fast Track certificate first. After certification, job applications and interview tracking will unlock.'}</p>
+                    <a class="inline-flex h-10 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white" href="${hasCertificate ? '/fast-track/job-recommendations' : '/fast-track/certificate'}">${hasCertificate ? 'Browse Jobs' : 'View Certificate'}</a>
+                </div>
+            </td></tr>`;
             return;
         }
 
@@ -208,11 +246,17 @@
     }
 
     function loadApplications() {
-        FastTrack.getJson('/api/fresher/applications')
-            .then(function (result) {
-                applicationRows = FastTrack.apiData(result, 'applications') || [];
+        Promise.all([
+            FastTrack.getJson('/api/fresher/applications'),
+            FastTrack.getJson('/api/fresher/certificates').catch(() => ({ data: { certificates: [] } })),
+        ])
+            .then(function ([applicationsResult, certificatesResult]) {
+                const certificates = FastTrack.apiData(certificatesResult, 'certificates') || [];
+                hasCertificate = certificates.length > 0;
+                applicationRows = hasCertificate ? (FastTrack.apiData(applicationsResult, 'applications') || []) : [];
                 setOptions(applicationModeFilter, unique(applicationRows.map(applicationMode)), 'All Modes');
                 setOptions(applicationStatusFilter, unique(applicationRows.map(applicationStatus)), 'All Status');
+                renderFlowState();
                 renderStats();
                 renderApplications();
             })

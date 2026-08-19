@@ -14,10 +14,10 @@
         </div>
 
         <div class="flex gap-8 overflow-x-auto border-b border-[#dce7f8]">
-            <button class="job-tab shrink-0 border-b-[3px] border-[#075fe4] px-4 pb-3 text-sm font-bold text-[#075fe4]" type="button" data-tab="recommended">Recommended Jobs</button>
-            <button class="job-tab shrink-0 border-b-[3px] border-transparent px-4 pb-3 text-sm font-bold text-[#334b83]" type="button" data-tab="all">All Jobs</button>
-            <button class="job-tab shrink-0 border-b-[3px] border-transparent px-4 pb-3 text-sm font-bold text-[#334b83]" type="button" data-tab="saved">Saved Jobs</button>
-            <button class="job-tab shrink-0 border-b-[3px] border-transparent px-4 pb-3 text-sm font-bold text-[#334b83]" type="button" data-tab="applied">Applied Jobs</button>
+            <button class="job-tab shrink-0 border-b-[3px] border-[#075fe4] px-4 pb-3 text-sm font-bold text-[#075fe4]" type="button" data-tab="recommended">Recommended Jobs <span data-tab-count="recommended">0</span></button>
+            <button class="job-tab shrink-0 border-b-[3px] border-transparent px-4 pb-3 text-sm font-bold text-[#334b83]" type="button" data-tab="all">All Jobs <span data-tab-count="all">0</span></button>
+            <button class="job-tab shrink-0 border-b-[3px] border-transparent px-4 pb-3 text-sm font-bold text-[#334b83]" type="button" data-tab="saved">Saved Jobs <span data-tab-count="saved">0</span></button>
+            <button class="job-tab shrink-0 border-b-[3px] border-transparent px-4 pb-3 text-sm font-bold text-[#334b83]" type="button" data-tab="applied">Applied Jobs <span data-tab-count="applied">0</span></button>
         </div>
 
         <div class="grid gap-3 lg:grid-cols-[1.8fr_repeat(3,180px)_120px]">
@@ -81,6 +81,8 @@
     const savedStorageKey = 'fast_track_saved_job_ids';
 
     let jobs = [];
+    let allJobs = [];
+    let recommendedJobs = [];
     let applications = [];
     let profileSkills = [];
     let recommendedTrack = '';
@@ -164,16 +166,16 @@
     }
 
     function populateFilters() {
-        setSelectOptions(jobLocationFilter, uniqueOptions(jobs.map((job) => job.location)), 'All Locations');
-        setSelectOptions(jobTypeFilter, uniqueOptions(jobs.map((job) => job.job_type)), 'All Job Types');
-        setSelectOptions(jobExperienceFilter, uniqueOptions(jobs.map((job) => job.experience || job.experience_level || job.qualification)), 'Experience Level');
+        setSelectOptions(jobLocationFilter, uniqueOptions(allJobs.map((job) => job.location)), 'All Locations');
+        setSelectOptions(jobTypeFilter, uniqueOptions(allJobs.map((job) => job.job_type)), 'All Job Types');
+        setSelectOptions(jobExperienceFilter, uniqueOptions(allJobs.map((job) => job.experience || job.experience_level || job.qualification)), 'Experience Level');
     }
 
     function filteredJobs() {
-        let rows = jobs.slice();
-        if (activeTab === 'recommended') rows = sortedRecommended(rows);
-        if (activeTab === 'saved') rows = rows.filter((job) => savedJobIds.has(String(job.id)));
-        if (activeTab === 'applied') rows = rows.filter(isApplied);
+        let rows = allJobs.slice();
+        if (activeTab === 'recommended') rows = hasCertificate ? sortedRecommended(recommendedJobs.length ? recommendedJobs : allJobs) : [];
+        if (activeTab === 'saved') rows = allJobs.filter((job) => savedJobIds.has(String(job.id)));
+        if (activeTab === 'applied') rows = allJobs.filter(isApplied);
 
         const query = jobSearchInput.value.trim().toLowerCase();
         const location = jobLocationFilter.value;
@@ -196,9 +198,17 @@
     }
 
     function renderTabs() {
+        const counts = {
+            recommended: hasCertificate ? (recommendedJobs.length || allJobs.length) : 0,
+            all: allJobs.length,
+            saved: allJobs.filter((job) => savedJobIds.has(String(job.id))).length,
+            applied: allJobs.filter(isApplied).length,
+        };
         document.querySelectorAll('.job-tab').forEach((button) => {
             const active = button.dataset.tab === activeTab;
             button.className = `job-tab shrink-0 border-b-[3px] px-4 pb-3 text-sm font-bold ${active ? 'border-[#075fe4] text-[#075fe4]' : 'border-transparent text-[#334b83]'}`;
+            const count = button.querySelector('[data-tab-count]');
+            if (count) count.textContent = counts[button.dataset.tab] || 0;
         });
     }
 
@@ -216,6 +226,7 @@
         const score = Math.min(100, Math.max(45, matchScore(job) || 65));
         const skills = jobSkills(job).slice(0, 4);
         const description = job.description || job.qualification || 'Fast Track role for freshers.';
+        const applyLocked = !hasCertificate;
 
         return `<article class="job-card grid gap-4 rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:grid-cols-[82px_minmax(0,1fr)_auto_38px] lg:items-center">
             <span class="grid h-[76px] w-[76px] shrink-0 place-items-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-[#075fe4] [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${jobIcons.company}</span>
@@ -237,7 +248,7 @@
                 <div class="mb-3 text-right text-xs font-bold text-[#334b83] max-lg:text-left">Match ${score}%</div>
                 <div class="flex flex-wrap gap-2 lg:justify-end">
                     <a class="inline-flex h-[38px] items-center justify-center rounded-md border border-[#075fe4] bg-white px-4 text-sm font-bold text-[#075fe4] hover:bg-[#eff5ff]" href="/jobs/show?job=${FastTrack.esc(job.id)}">Details</a>
-                    <button class="apply-job-btn inline-flex h-[38px] items-center justify-center rounded-md ${applied ? 'bg-[#e6fff0] text-[#05843e]' : 'bg-[#075fe4] text-white hover:bg-[#064fc0]'} px-5 text-sm font-bold" type="button" data-job-id="${FastTrack.esc(job.id)}" ${applied ? 'disabled' : ''}>${applied ? FastTrack.statusText(application?.application_status || 'Applied') : 'Apply Now'}</button>
+                    <button class="apply-job-btn inline-flex h-[38px] items-center justify-center rounded-md ${applied ? 'bg-[#e6fff0] text-[#05843e]' : (applyLocked ? 'bg-[#eef2f8] text-[#526287]' : 'bg-[#075fe4] text-white hover:bg-[#064fc0]')} px-5 text-sm font-bold" type="button" data-job-id="${FastTrack.esc(job.id)}" ${applied || applyLocked ? 'disabled' : ''}>${applied ? FastTrack.statusText(application?.application_status || 'Applied') : (applyLocked ? 'Certificate Locked' : 'Apply Now')}</button>
                 </div>
             </div>
             <button class="save-job-btn grid h-9 w-9 place-items-center rounded-full border ${saved ? 'border-[#075fe4] bg-[#eaf2ff] text-[#075fe4]' : 'border-[#dce7f8] bg-white text-[#334b83]'} text-sm font-black" type="button" data-job-id="${FastTrack.esc(job.id)}" aria-label="Save job">${saved ? 'S' : '+'}</button>
@@ -245,7 +256,7 @@
     }
 
     function renderSavedSidebar() {
-        const savedJobs = jobs.filter((job) => savedJobIds.has(String(job.id))).slice(0, 4);
+        const savedJobs = allJobs.filter((job) => savedJobIds.has(String(job.id))).slice(0, 4);
         savedJobsList.innerHTML = savedJobs.length ? savedJobs.map((job) => `<div class="grid grid-cols-[54px_minmax(0,1fr)_34px] items-center gap-3">
             <span class="grid h-[54px] w-[54px] shrink-0 place-items-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-[#075fe4] [&>svg]:h-6 [&>svg]:w-6 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${jobIcons.company}</span>
             <div class="min-w-0">
@@ -258,12 +269,14 @@
 
     function renderCounts() {
         jobsCountLabel.textContent = usedAllJobsFallback ? 'Active Jobs' : 'Fast Track Jobs';
-        fastTrackCount.textContent = jobs.length;
+        fastTrackCount.textContent = hasCertificate ? (recommendedJobs.length || allJobs.length) : 0;
         appliedCount.textContent = applications.length;
         savedCount.textContent = savedJobIds.size;
         const skillsText = profileSkills.length ? profileSkills.slice(0, 4).join(', ') : 'your profile skills';
         recommendationText.textContent = usedAllJobsFallback
             ? `Certificate completed. Showing active jobs sorted using ${skillsText}.`
+            : !hasCertificate
+            ? 'Complete your Fast Track certificate to unlock recommended jobs and applications.'
             : recommendedTrack
             ? `Recommended track: ${recommendedTrack}. Jobs are sorted using ${skillsText}.`
             : `Jobs are sorted using ${skillsText}, applications and active Fast Track openings.`;
@@ -288,7 +301,7 @@
         try {
             const result = await FastTrack.postJson('/api/fresher/jobs/' + jobId + '/apply');
             const application = FastTrack.apiData(result, 'application') || {};
-            applications.unshift(Object.assign(application, { job_id: Number(jobId), job: jobs.find((job) => String(job.id) === String(jobId)) }));
+            applications.unshift(Object.assign(application, { job_id: Number(jobId), job: allJobs.find((job) => String(job.id) === String(jobId)) }));
         } catch (error) {
             alert(error.message || 'Apply nahi ho paaya.');
             button.disabled = false;
@@ -315,11 +328,13 @@
             FastTrack.getJson('/api/fresher/certificates').catch(() => ({ data: { certificates: [] } })),
         ]).then(function ([fastTrackJobsResult, allJobsResult, applicationsResult, dashboardResult, certificatesResult]) {
             const fastTrackJobs = FastTrack.apiData(fastTrackJobsResult, 'jobs') || [];
-            const allJobs = FastTrack.apiData(allJobsResult, 'jobs') || [];
+            const allJobsResultRows = FastTrack.apiData(allJobsResult, 'jobs') || [];
             const certificates = FastTrack.apiData(certificatesResult, 'certificates') || [];
             hasCertificate = certificates.length > 0;
-            usedAllJobsFallback = hasCertificate && fastTrackJobs.length === 0 && allJobs.length > 0;
-            jobs = usedAllJobsFallback ? allJobs : fastTrackJobs;
+            usedAllJobsFallback = hasCertificate && fastTrackJobs.length === 0 && allJobsResultRows.length > 0;
+            allJobs = allJobsResultRows;
+            recommendedJobs = fastTrackJobs.length ? fastTrackJobs : allJobsResultRows;
+            jobs = recommendedJobs;
             applications = FastTrack.apiData(applicationsResult, 'applications') || [];
             const dashboard = FastTrack.apiData(dashboardResult) || {};
             const profile = dashboard.profile || {};

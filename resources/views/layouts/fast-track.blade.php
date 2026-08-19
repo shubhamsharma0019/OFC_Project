@@ -14,6 +14,30 @@
             font-family: Inter, Arial, Helvetica, sans-serif !important;
             font-weight: 500 !important;
         }
+
+        #fastTrackLayout h1,
+        #fastTrackLayout h2,
+        #fastTrackLayout h3,
+        #fastTrackLayout strong,
+        #fastTrackLayout .font-bold,
+        #fastTrackLayout .font-extrabold,
+        #fastTrackLayout .font-black {
+            font-weight: 700 !important;
+        }
+
+        #fastTrackLayout h1 {
+            font-weight: 800 !important;
+        }
+
+        #fastTrackSidebar .fast-track-sidebar-link,
+        #fastTrackSidebar .fast-track-sidebar-link span {
+            font-weight: 650 !important;
+        }
+
+        #fastTrackSidebar .fast-track-sidebar-link.bg-\[\#eff5ff\],
+        #fastTrackSidebar .fast-track-sidebar-link.bg-\[\#eff5ff\] span {
+            font-weight: 750 !important;
+        }
     </style>
     @stack('styles')
 </head>

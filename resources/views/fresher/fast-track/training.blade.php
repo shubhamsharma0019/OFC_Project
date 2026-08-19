@@ -6,6 +6,113 @@
     $activePage = 'training';
 @endphp
 
+@push('styles')
+<style>
+    .training-panel {
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 12px 28px rgba(6, 25, 66, .045);
+    }
+
+    .training-tabs {
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #fff;
+        padding: 6px;
+        box-shadow: 0 10px 24px rgba(6, 25, 66, .035);
+    }
+
+    .training-tab {
+        border: 0 !important;
+        border-radius: 7px;
+        padding: 12px 16px;
+        outline: none;
+    }
+
+    .training-tab:focus-visible {
+        box-shadow: 0 0 0 3px rgba(7, 95, 228, .16);
+    }
+
+    .training-tab.text-\[\#075fe4\] {
+        background: #eff5ff;
+    }
+
+    .training-card {
+        display: grid;
+        min-height: 226px;
+        overflow: hidden;
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 12px 28px rgba(6, 25, 66, .045);
+        transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .training-card:hover {
+        transform: translateY(-2px);
+        border-color: #a9c6f4;
+        box-shadow: 0 18px 34px rgba(6, 25, 66, .08);
+    }
+
+    @media (min-width: 900px) {
+        .training-card {
+            grid-template-columns: 185px minmax(0, 1fr);
+        }
+    }
+
+    .training-card-cover {
+        position: relative;
+        min-height: 150px;
+        padding: 18px;
+        background: linear-gradient(135deg, #071743, #dff5ff);
+    }
+
+    .training-card-cover::after {
+        content: "";
+        position: absolute;
+        right: -36px;
+        bottom: -42px;
+        width: 118px;
+        height: 118px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .22);
+    }
+
+    .training-progress-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        border-bottom: 1px solid #edf2fa;
+        padding-bottom: 10px;
+        color: #334b83;
+        font-size: 13px;
+    }
+
+    .training-progress-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .learning-progress-card {
+        display: grid;
+        gap: 18px;
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 12px 28px rgba(6, 25, 66, .045);
+    }
+
+    @media (min-width: 900px) {
+        .learning-progress-card {
+            grid-template-columns: minmax(0, 1fr) 180px;
+            align-items: center;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
     <section class="space-y-6">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -16,23 +123,23 @@
             <a class="inline-flex h-10 items-center justify-center rounded-lg border border-[#075fe4] bg-white px-5 text-sm font-bold text-[#075fe4] transition hover:bg-[#eff5ff]" href="/fast-track/courses">Browse Courses</a>
         </div>
 
-        <div class="flex gap-8 overflow-x-auto border-b border-[#dce7f8]">
+        <div class="training-tabs flex gap-2 overflow-x-auto">
             <button class="training-tab shrink-0 border-b-[3px] border-[#075fe4] pb-3 text-sm font-bold text-[#075fe4]" type="button" data-filter="all">Enrolled Courses</button>
             <button class="training-tab shrink-0 border-b-[3px] border-transparent pb-3 text-sm font-bold text-[#334b83]" type="button" data-filter="progress">Learning Progress</button>
             <button class="training-tab shrink-0 border-b-[3px] border-transparent pb-3 text-sm font-bold text-[#334b83]" type="button" data-filter="pending">Payment Pending</button>
         </div>
 
-        <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4" id="trainingGrid">
+        <div class="grid gap-5 xl:grid-cols-2" id="trainingGrid">
             <article class="rounded-lg border border-[#dce7f8] bg-white p-8 text-center text-sm text-[#334b83] shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:col-span-2 xl:col-span-4">Loading training...</article>
         </div>
 
-        <div class="grid gap-5 xl:grid-cols-[1.05fr_1fr]">
-            <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+        <div class="grid gap-6 xl:grid-cols-[1.05fr_1fr]">
+            <article class="training-panel p-6">
                 <h2 class="mb-6 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]"><svg viewBox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-3 3 2 5-7"></path></svg></span> Overall Progress</h2>
                 <div id="overallTrainingProgress" class="text-sm text-[#334b83]">Loading overall progress...</div>
             </article>
 
-            <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+            <article class="training-panel p-6">
                 <h2 class="mb-5 flex items-center gap-3 text-lg font-bold text-[#061942]"><span class="grid h-8 w-8 place-items-center rounded-lg bg-[#f0f5ff] text-[#075fe4] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"></path><circle cx="12" cy="12" r="9"></circle></svg></span> Recent Activity <a class="ml-auto text-xs font-bold text-[#075fe4]" href="/fast-track/training-progress">View All</a></h2>
                 <div id="trainingActivity"><p class="text-sm text-[#334b83]">Loading activity...</p></div>
             </article>
@@ -81,24 +188,66 @@
             return;
         }
 
+        if (currentFilter === 'progress') {
+            trainingGrid.innerHTML = enrollments.map(function (enrollment) {
+                const course = FastTrack.course(enrollment);
+                const title = FastTrack.courseName(course);
+                const progress = FastTrack.progress(enrollment);
+                const status = progress >= 100 ? 'Completed' : (progress > 0 ? 'In Progress' : 'Not Started');
+                return `
+                    <article class="learning-progress-card xl:col-span-2">
+                        <div class="min-w-0">
+                            <div class="mb-3 flex flex-wrap items-center gap-3">
+                                ${trainingIcon(progress >= 100 ? 'complete' : 'training', 'h-10 w-10')}
+                                <div class="min-w-0">
+                                    <h3 class="truncate text-lg font-bold text-[#061942]">${FastTrack.esc(title)}</h3>
+                                    <p class="mt-1 text-sm text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
+                                </div>
+                            </div>
+                            <div class="mb-3 h-3 overflow-hidden rounded-full bg-[#e9edf5]">
+                                <span class="block h-full rounded-full bg-[linear-gradient(90deg,#075fe4,#17a6a8)]" style="width:${progress}%;"></span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold text-[#334b83]">
+                                <span>${progress}% Complete</span>
+                                <span>${FastTrack.esc(status)}</span>
+                                <span>Updated ${FastTrack.date(enrollment.updated_at || enrollment.enrollment_date)}</span>
+                            </div>
+                        </div>
+                        <a class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white" href="/fast-track/training-progress">View Full Progress</a>
+                    </article>`;
+            }).join('');
+            return;
+        }
+
         trainingGrid.innerHTML = enrollments.map(function (enrollment, index) {
             const course = FastTrack.course(enrollment);
             const title = FastTrack.courseName(course);
             const progress = FastTrack.progress(enrollment);
             const paid = isPaid(enrollment);
             return `
-                <article class="training-card overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,.04)]" data-progress="${progress}" data-paid="${paid ? 'yes' : 'no'}">
-                    <div class="relative h-[135px] p-4" style="background:linear-gradient(135deg, ${index % 3 === 0 ? '#24249c' : index % 3 === 1 ? '#6041db' : '#0a8f9d'}, #dff5ff);">
-                        <span class="inline-flex rounded-lg ${badgeClass(enrollment, progress)} px-3 py-1.5 text-xs font-bold">${paid ? FastTrack.statusText(enrollment.training_status || 'not_started') : 'Payment Pending'}</span>
-                        <span class="float-right rounded-full bg-white px-2.5 py-2 text-xs font-black text-[#075fe4]">${progress}%</span>
-                        <div class="absolute bottom-6 left-5 grid h-14 w-14 place-items-center rounded-xl bg-white/15 text-white backdrop-blur-sm [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${trainingIcons.course}</div>
+                <article class="training-card" data-progress="${progress}" data-paid="${paid ? 'yes' : 'no'}">
+                    <div class="training-card-cover" style="background:linear-gradient(135deg, ${index % 3 === 0 ? '#071743' : index % 3 === 1 ? '#6041db' : '#0a8f9d'}, #dff5ff);">
+                        <div class="relative z-10 flex h-full flex-col justify-between">
+                            <div class="flex items-start justify-between gap-3">
+                                <span class="inline-flex rounded-lg ${badgeClass(enrollment, progress)} px-3 py-1.5 text-xs font-bold">${paid ? FastTrack.statusText(enrollment.training_status || 'not_started') : 'Payment Pending'}</span>
+                                <span class="rounded-full bg-white px-3 py-2 text-xs font-bold text-[#075fe4]">${progress}%</span>
+                            </div>
+                            <div class="grid h-14 w-14 place-items-center rounded-xl bg-white/15 text-white backdrop-blur-sm [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${trainingIcons.course}</div>
+                        </div>
                     </div>
-                    <div class="p-5">
-                        <h3 class="mb-2 text-base font-bold text-[#061942]">${FastTrack.esc(title)}</h3>
-                        <p class="mb-5 line-clamp-3 text-sm leading-6 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
+                    <div class="flex min-w-0 flex-col p-5">
+                        <div class="mb-4 flex items-start justify-between gap-4">
+                            <div class="min-w-0">
+                                <h3 class="mb-2 truncate text-lg font-bold text-[#061942]">${FastTrack.esc(title)}</h3>
+                                <p class="line-clamp-2 text-sm leading-6 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
+                            </div>
+                        </div>
                         <div class="mb-3 h-2 overflow-hidden rounded-full bg-[#e9edf5]"><span class="block h-full rounded-full bg-[#075fe4]" style="width:${progress}%;"></span></div>
-                        <small class="text-xs font-medium text-[#334b83]">${progress}% Completed</small>
-                        <div class="mt-5 grid grid-cols-[1fr_44px] gap-3">
+                        <div class="mb-4 flex items-center justify-between gap-4 text-xs font-bold text-[#334b83]">
+                            <span>${progress}% Completed</span>
+                            <span>${paid ? 'Unlocked' : 'Payment required'}</span>
+                        </div>
+                        <div class="mt-auto grid grid-cols-[1fr_44px] gap-3">
                             <a class="inline-flex h-[38px] items-center justify-center rounded-lg border border-[#075fe4] text-sm font-bold ${paid ? 'bg-[#075fe4] text-white' : 'bg-white text-[#075fe4]'}" href="${paid ? '/fast-track/training-progress' : '/fast-track/course-details?course=' + encodeURIComponent(course.id || '')}">${paid ? 'Continue Learning' : 'Pay Now'}</a>
                             <a class="grid h-[38px] place-items-center rounded-lg border border-[#dce7f8] bg-white text-[#061942] hover:bg-[#f5f8ff] [&>svg]:h-4 [&>svg]:w-4 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]" href="/fast-track/course-details?course=${encodeURIComponent(course.id || '')}" aria-label="Course details">${trainingIcons.details}</a>
                         </div>
@@ -119,10 +268,12 @@
             </div>
             <div class="grid gap-4">
                 <p class="text-sm font-medium text-[#334b83]">${total ? 'Keep going! Your training progress is updating from partner records.' : 'Enroll in a course to start your training journey.'}</p>
-                <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Courses Enrolled</span><strong>${total}</strong></div>
-                <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Paid Enrollments</span><strong>${paid}</strong></div>
-                <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>In Progress</span><strong>${inProgress}</strong></div>
-                <div class="grid grid-cols-[1fr_auto] gap-5 text-sm"><span>Courses Completed</span><strong>${completed}</strong></div>
+                <div class="grid gap-3">
+                    <div class="training-progress-row"><span>Courses Enrolled</span><strong>${total}</strong></div>
+                    <div class="training-progress-row"><span>Paid Enrollments</span><strong>${paid}</strong></div>
+                    <div class="training-progress-row"><span>In Progress</span><strong>${inProgress}</strong></div>
+                    <div class="training-progress-row"><span>Courses Completed</span><strong>${completed}</strong></div>
+                </div>
             </div>
         </div>`;
     }

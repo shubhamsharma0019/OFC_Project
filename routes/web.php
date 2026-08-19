@@ -31,6 +31,8 @@ Route::view('/company/register', 'direct-mode.register');
 Route::view('/training-partner/login', 'direct-mode.login');
 Route::view('/training-partner/register', 'direct-mode.register');
 
+Route::redirect('/training-partners/login', '/training-partner/login');
+Route::redirect('/training-partners/register', '/training-partner/register');
 Route::redirect('/traning-partner/login', '/training-partner/login');
 Route::redirect('/traning-partner/register', '/training-partner/register');
 Route::redirect('/traning-partner/{path}', '/training-partner/{path}')
@@ -70,6 +72,7 @@ Route::view('/fast-track/training-progress', 'fresher.fast-track.training-progre
 Route::view('/fast-track/job-recommendations', 'fresher.fast-track.job-recommendations');
 Route::view('/fast-track/applications', 'fresher.fast-track.applications');
 Route::view('/fast-track/certificate', 'fresher.fast-track.certificate');
+Route::view('/fast-track/settings', 'fresher.fast-track.settings');
 
 Route::get('/training-partners', [PublicPageController::class, 'trainingPartners']);
 Route::view('/training-partners/show', 'public.training-partners.show');

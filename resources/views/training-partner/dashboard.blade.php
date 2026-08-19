@@ -77,7 +77,9 @@
         <article class="rounded-[10px] border border-[#dddff0] bg-white p-6 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
             <div class="mb-[18px] flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3.5">
-                    <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1]">CP</span>
+                    <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[#5b2ce1]">
+                        <svg class="h-5 w-5 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"></path><path d="m9 12 2 2 4-5"></path></svg>
+                    </span>
                     <h2 class="m-0 text-[17px] font-extrabold text-[#0a1748]">Course Performance Overview</h2>
                 </div>
                 <select id="courseFilter" class="h-9 rounded-[7px] border border-[#dddff0] bg-white px-3 text-xs font-extrabold text-[#26375f] outline-none">
@@ -149,7 +151,7 @@
         return days + ' days ago';
     }
     function statCard(label, value, hint, icon) {
-        return `<article class="grid min-h-[142px] grid-cols-[62px_minmax(0,1fr)] items-center gap-[18px] rounded-[10px] border border-[#dddff0] bg-white p-6 shadow-[0_12px_26px_rgba(50,35,120,.05)] max-[720px]:min-h-[110px]"><span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1]">${escapeHtml(icon)}</span><div class="min-w-0"><p class="mb-3 text-[13px] text-[#526287]">${escapeHtml(label)}</p><h2 class="mb-3 text-[30px] font-extrabold leading-none text-[#0a1748]">${escapeHtml(value)}</h2><small class="text-[13px] font-extrabold text-[#089845]">${escapeHtml(hint)}</small></div></article>`;
+        return `<article class="grid min-h-[142px] grid-cols-[62px_minmax(0,1fr)] items-center gap-[18px] rounded-[10px] border border-[#dddff0] bg-white p-6 shadow-[0_12px_26px_rgba(50,35,120,.05)] max-[720px]:min-h-[110px]"><span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[#5b2ce1]">${window.trainingPartnerMetricIcon(icon)}</span><div class="min-w-0"><p class="mb-3 text-[13px] text-[#526287]">${escapeHtml(label)}</p><h2 class="mb-3 text-[30px] font-extrabold leading-none text-[#0a1748]">${escapeHtml(value)}</h2><small class="text-[13px] font-extrabold text-[#089845]">${escapeHtml(hint)}</small></div></article>`;
     }
     function activityItem(title, text, time, icon) {
         return `<div class="relative grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-3.5 border-b border-[#edf0f8] py-3.5 last:border-b-0 max-[720px]:grid-cols-[48px_minmax(0,1fr)]"><span class="absolute left-[-21px] h-1.5 w-1.5 rounded-full bg-[#d9d0ff]"></span><span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1] max-[720px]:h-12 max-[720px]:w-12">${escapeHtml(icon)}</span><div class="min-w-0"><h3 class="mb-[7px] text-sm font-extrabold text-[#0a1748]">${escapeHtml(title)}</h3><p class="m-0 text-xs text-[#526287]">${escapeHtml(text)}</p></div><time class="text-xs text-[#526287] max-[720px]:col-start-2">${escapeHtml(time)}</time></div>`;

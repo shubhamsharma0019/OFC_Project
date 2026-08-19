@@ -48,6 +48,7 @@
     const nextPage = document.getElementById('nextPage');
     const pageInfo = document.getElementById('pageInfo');
     let notifications = [];
+    let isSyntheticFeed = false;
     let currentPage = 1;
     let lastPage = 1;
 
@@ -56,7 +57,77 @@
     function escapeHtml(value) { return String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]); }
     function formatDate(value) { return value ? new Date(value).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'; }
     function typeClass(type) { if (type === 'success' || type === 'certificate') return 'bg-[#e2f9ea] text-[#05843e]'; if (type === 'warning' || type === 'approval') return 'bg-[#fff0de] text-[#d06d00]'; if (type === 'error') return 'bg-[#fff4f4] text-[#b42318]'; return 'bg-[#eaf2ff] text-[#075fe4]'; }
-    function statCard(label, value, icon) { return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">${icon}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`; }
+    function statCard(label, value, icon) { return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-[#5b20e6]">${window.trainingPartnerMetricIcon(icon)}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`; }
+    function timeAgo(dateValue) {
+        if (!dateValue) return 'Recently';
+        const seconds = Math.max(0, Math.floor((Date.now() - new Date(dateValue).getTime()) / 1000));
+        const days = Math.floor(seconds / 86400);
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
+        if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+        if (days === 1) return '1 day ago';
+        return days + ' days ago';
+    }
+    function setHeaderBadge(count) {
+        const badge = document.getElementById('trainingPartnerNotificationBadge');
+        if (!badge) return;
+        badge.textContent = count;
+        badge.classList.toggle('hidden', Number(count || 0) <= 0);
+    }
+    function makeActivity(id, type, title, message, dateValue, url = '') {
+        return { id, type, title, message, created_at: dateValue, is_read: true, url, synthetic: true };
+    }
+    async function requestJson(url) {
+        const response = await fetch(url, { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
+        if (response.status === 401) { window.location.href = '/training-partner/login'; return null; }
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.message || 'Data load nahi ho paaya.');
+        return payload.data || {};
+    }
+    async function buildDynamicActivityFeed() {
+        const [dashboard, reports] = await Promise.all([
+            requestJson('/api/training-partner/dashboard').catch(() => ({})),
+            requestJson('/api/training-partner/reports').catch(() => ({})),
+        ]);
+        const courses = dashboard.recent_courses || [];
+        const enrollments = dashboard.recent_enrollments || [];
+        const certificates = dashboard.recent_certificates || [];
+        const payments = reports.recent_payments || [];
+        return [
+            ...enrollments.map((item) => makeActivity(
+                'enrollment-' + item.id,
+                'enrollment',
+                'New enrollment received',
+                (item.fresher_profile?.user?.name || 'A student') + ' enrolled in ' + (item.course?.course_name || 'your course') + '.',
+                item.enrollment_date || item.created_at,
+                '/training-partner/enrollments'
+            )),
+            ...payments.map((item) => makeActivity(
+                'payment-' + item.id,
+                item.payment_status === 'success' ? 'success' : item.payment_status,
+                item.payment_status === 'success' ? 'Payment received' : 'Payment update',
+                (item.course_enrollment?.fresher_profile?.user?.name || 'A student') + ' paid ' + (item.amount ? 'Rs. ' + Number(item.amount).toLocaleString('en-IN') : 'course fee') + ' for ' + (item.course_enrollment?.course?.course_name || 'a course') + '.',
+                item.payment_date || item.created_at,
+                '/training-partner/payouts'
+            )),
+            ...certificates.map((item) => makeActivity(
+                'certificate-' + item.id,
+                'certificate',
+                'Certificate generated',
+                (item.fresher_profile?.user?.name || 'A student') + ' completed ' + (item.course_enrollment?.course?.course_name || 'a course') + '.',
+                item.created_at,
+                '/training-partner/certificates'
+            )),
+            ...courses.map((item) => makeActivity(
+                'course-' + item.id,
+                'course',
+                'Course activity',
+                (item.course_name || 'A course') + ' is available with status ' + statusText(item.status) + '.',
+                item.created_at || item.updated_at,
+                '/training-partner/courses'
+            )),
+        ].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0, 12);
+    }
     function filteredNotifications() {
         const query = notificationSearch.value.trim().toLowerCase();
         const filter = notificationFilter.value;
@@ -71,8 +142,9 @@
             statCard('Total', notifications.length, 'TN'),
             statCard('Unread', notifications.filter((item) => !item.is_read).length, 'UR'),
             statCard('Read', notifications.filter((item) => item.is_read).length, 'RD'),
-            statCard('This Page', currentPage + ' / ' + lastPage, 'PG'),
+            statCard(isSyntheticFeed ? 'Live Activity' : 'This Page', isSyntheticFeed ? notifications.length : currentPage + ' / ' + lastPage, 'PG'),
         ].join('');
+        markAllBtn.disabled = isSyntheticFeed || notifications.every((item) => item.is_read);
     }
     function renderNotifications() {
         const rows = filteredNotifications();
@@ -80,8 +152,8 @@
         if (!rows.length) { notificationList.innerHTML = '<div class="p-5 text-sm text-[#526287]">No notifications found.</div>'; return; }
         notificationList.innerHTML = rows.map((item) => `<div class="grid gap-3 p-5 sm:grid-cols-[48px_minmax(0,1fr)_auto] sm:items-start ${item.is_read ? 'bg-white' : 'bg-[#fbfdff]'}">
             <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl ${typeClass(item.type)} text-xs font-black">${escapeHtml(String(item.type || 'NT').slice(0, 2).toUpperCase())}</span>
-            <div class="min-w-0"><div class="flex flex-wrap items-center gap-2"><h2 class="text-sm font-bold text-[#071544]">${escapeHtml(item.title)}</h2>${item.is_read ? '<span class="rounded-md bg-[#f3f6fb] px-2 py-1 text-[11px] font-bold text-[#526287]">Read</span>' : '<span class="rounded-md bg-[#fff0de] px-2 py-1 text-[11px] font-bold text-[#d06d00]">Unread</span>'}</div><p class="mt-2 text-sm leading-relaxed text-[#526287]">${escapeHtml(item.message)}</p><p class="mt-2 text-xs text-[#8190ad]">${formatDate(item.created_at)}</p></div>
-            <button class="mark-read rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6] ${item.is_read ? 'hidden' : ''}" type="button" data-id="${item.id}">Mark Read</button>
+            <div class="min-w-0"><div class="flex flex-wrap items-center gap-2"><h2 class="text-sm font-bold text-[#071544]">${escapeHtml(item.title || 'Notification')}</h2>${item.synthetic ? '<span class="rounded-md bg-[#eaf2ff] px-2 py-1 text-[11px] font-bold text-[#075fe4]">Live</span>' : (item.is_read ? '<span class="rounded-md bg-[#f3f6fb] px-2 py-1 text-[11px] font-bold text-[#526287]">Read</span>' : '<span class="rounded-md bg-[#fff0de] px-2 py-1 text-[11px] font-bold text-[#d06d00]">Unread</span>')}</div><p class="mt-2 text-sm leading-relaxed text-[#526287]">${escapeHtml(item.message)}</p><p class="mt-2 text-xs text-[#8190ad]">${formatDate(item.created_at)} - ${escapeHtml(timeAgo(item.created_at))}</p></div>
+            ${item.synthetic && item.url ? `<a class="rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f] no-underline" href="${item.url}">View</a>` : `<button class="mark-read rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6] ${item.is_read ? 'hidden' : ''}" type="button" data-id="${item.id}">Mark Read</button>`}
         </div>`).join('');
     }
     async function apiPatch(url) {
@@ -99,14 +171,23 @@
             if (!response.ok || !payload.success) throw new Error(payload.message || 'Notifications load nahi ho paayi.');
             const paginator = payload.data?.notifications || {};
             notifications = paginator.data || [];
+            isSyntheticFeed = false;
+            if (!notifications.length) {
+                notifications = await buildDynamicActivityFeed();
+                isSyntheticFeed = true;
+            }
             currentPage = paginator.current_page || 1;
             lastPage = paginator.last_page || 1;
-            pagination.classList.toggle('hidden', lastPage <= 1);
-            pagination.classList.toggle('flex', lastPage > 1);
+            pagination.classList.toggle('hidden', isSyntheticFeed || lastPage <= 1);
+            pagination.classList.toggle('flex', !isSyntheticFeed && lastPage > 1);
             pageInfo.textContent = 'Page ' + currentPage + ' of ' + lastPage;
             prevPage.disabled = currentPage <= 1;
             nextPage.disabled = currentPage >= lastPage;
             renderNotifications();
+            fetch('/api/notifications/unread-count', { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } })
+                .then((response) => response.json())
+                .then((payload) => setHeaderBadge(payload.data?.unread_count || 0))
+                .catch(() => setHeaderBadge(notifications.filter((item) => !item.is_read).length));
         } catch (error) {
             notificationList.innerHTML = '<div class="p-5 text-sm font-bold text-[#b42318]">' + escapeHtml(error.message || 'Notifications load nahi ho paayi.') + '</div>';
         }

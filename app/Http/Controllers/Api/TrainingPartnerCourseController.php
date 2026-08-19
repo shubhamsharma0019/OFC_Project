@@ -24,6 +24,11 @@ class TrainingPartnerCourseController extends Controller
 
         $courses = Course::query()
             ->where('training_partner_profile_id', $profile->id)
+            ->withCount([
+                'enrollments',
+                'enrollments as completed_enrollments_count' => fn ($query) => $query
+                    ->where('training_status', 'completed'),
+            ])
             ->latest()
             ->get();
 

@@ -64,8 +64,14 @@
     function studentName(enrollment) { return enrollment.fresher_profile?.user?.name || 'Fresher #' + (enrollment.fresher_profile?.id || enrollment.id); }
     function studentEmail(enrollment) { return enrollment.fresher_profile?.user?.email || enrollment.fresher_profile?.phone || '-'; }
     function progressPercent(enrollment) { return enrollment.training_progress?.progress_percentage ?? (enrollment.training_status === 'completed' ? 100 : 0); }
+    function avatarUrl(enrollment) {
+        const photo = enrollment.fresher_profile?.profile_photo || enrollment.fresher_profile?.photo || enrollment.fresher_profile?.user?.avatar;
+        if (!photo) return '/student.svg';
+        if (/^(https?:)?\/\//.test(photo) || String(photo).startsWith('/')) return photo;
+        return '/storage/' + String(photo).replace(/^\/?storage\//, '');
+    }
     function statCard(label, value, icon) {
-        return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-xs font-black text-[#5b20e6]">${icon}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`;
+        return `<article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]"><span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#f3ecff] text-[#5b20e6]">${window.trainingPartnerMetricIcon(icon)}</span><p class="mt-4 text-xs font-bold text-[#526287]">${label}</p><h2 class="mt-2 text-2xl font-bold text-[#071544]">${value}</h2></article>`;
     }
     function filteredEnrollments() {
         const query = enrollmentSearch.value.trim().toLowerCase();
@@ -94,7 +100,12 @@
             const progress = progressPercent(enrollment);
             return `
                 <tr>
-                    <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(studentName(enrollment))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(studentEmail(enrollment))}</span></td>
+                    <td class="px-5 py-4">
+                        <div class="flex items-center gap-3">
+                            <span class="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[#dce7f8] bg-[#eef5ff]"><img class="h-full w-full object-cover" src="${escapeHtml(avatarUrl(enrollment))}" alt="${escapeHtml(studentName(enrollment))}"></span>
+                            <span class="min-w-0"><strong class="block truncate text-[#071544]">${escapeHtml(studentName(enrollment))}</strong><span class="mt-1 block truncate text-xs text-[#526287]">${escapeHtml(studentEmail(enrollment))}</span></span>
+                        </div>
+                    </td>
                     <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(enrollment.course?.course_name || '-')}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(enrollment.course?.training_mode || '')}</span></td>
                     <td class="px-5 py-4"><span class="rounded-md ${badgeClass('enrollment', enrollment.enrollment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.enrollment_status))}</span><span class="mt-2 block text-xs text-[#526287]">${formatDate(enrollment.enrollment_date)}</span></td>
                     <td class="px-5 py-4"><span class="rounded-md ${badgeClass('payment', enrollment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.payment_status))}</span></td>

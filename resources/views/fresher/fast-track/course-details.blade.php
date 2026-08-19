@@ -6,9 +6,133 @@
     $activePage = 'details';
 @endphp
 
+@push('styles')
+<style>
+    .course-detail-shell {
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 12px 28px rgba(6, 25, 66, .045);
+    }
+
+    .course-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #ffffff 0%, #f4f8ff 100%);
+    }
+
+    .course-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto auto;
+        width: 220px;
+        height: 220px;
+        border-radius: 999px;
+        background: rgba(7, 95, 228, .07);
+        transform: translate(70px, -95px);
+        pointer-events: none;
+    }
+
+    .course-hero > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .course-cover {
+        display: grid;
+        height: 136px;
+        width: 136px;
+        place-items: center;
+        border-radius: 8px;
+        background: #071743;
+        color: #fff;
+        box-shadow: 0 16px 32px rgba(6, 25, 66, .14);
+    }
+
+    .course-detail-grid {
+        display: grid;
+        gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+        .course-detail-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+    }
+
+    .course-fact {
+        border-radius: 8px;
+        background: rgba(255, 255, 255, .75);
+        padding: 12px;
+    }
+
+    .course-fact span {
+        display: block;
+        color: #526287;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .course-fact b {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        margin-top: 7px;
+        color: #061942;
+        font-size: 14px;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .course-action-box {
+        border-radius: 8px;
+        border: 1px solid #dce7f8;
+        background: #fff;
+        padding: 18px;
+    }
+
+    .course-tab {
+        position: relative;
+        border-bottom: 0 !important;
+    }
+
+    .course-tab::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        border-radius: 999px 999px 0 0;
+        background: transparent;
+    }
+
+    .course-tab.text-\[\#075fe4\]::after {
+        background: #075fe4;
+    }
+
+    .highlight-row {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+        border-bottom: 1px solid #e6eef8;
+        padding: 16px 0;
+    }
+
+    .highlight-row:last-child {
+        border-bottom: 0;
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="space-y-5">
-        <a class="inline-flex text-sm font-bold text-[#075fe4] hover:text-[#064fc0]" href="/fast-track/courses">&lt; Back to Courses</a>
+    <section class="space-y-6">
+        <a class="inline-flex items-center gap-2 text-sm font-bold text-[#075fe4] hover:text-[#064fc0]" href="/fast-track/courses">
+            <span aria-hidden="true">&lt;</span>
+            Back to Courses
+        </a>
 
         <div>
             <h1 class="text-[26px] font-bold leading-tight text-[#061942]">Course Details</h1>
@@ -17,19 +141,19 @@
 
         <div id="courseMessage" class="hidden rounded-lg border px-4 py-3 text-sm font-bold"></div>
 
-        <article id="courseDetailsHero" class="grid gap-7 rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)] xl:grid-cols-[140px_minmax(0,1fr)_300px] xl:items-center">
+        <article id="courseDetailsHero" class="course-detail-shell course-hero grid gap-7 p-6 xl:grid-cols-[154px_minmax(0,1fr)_300px] xl:items-center">
             <div class="text-sm text-[#334b83] xl:col-span-3">Loading course details...</div>
         </article>
 
-        <div class="grid gap-5 xl:grid-cols-[1.25fr_1fr]">
-            <article class="overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                <div class="flex gap-7 overflow-x-auto border-b border-[#dce7f8] px-5">
+        <div class="grid gap-6 xl:grid-cols-[1.25fr_1fr]">
+            <article class="course-detail-shell overflow-hidden">
+                <div class="flex gap-7 overflow-x-auto border-b border-[#dce7f8] bg-[#fbfdff] px-6">
                     @foreach (['about' => 'About Course', 'curriculum' => 'Curriculum', 'partner' => 'Partner', 'faqs' => 'FAQs'] as $key => $label)
                         <button class="course-tab shrink-0 border-b-[3px] px-0 py-4 text-sm font-bold {{ $loop->first ? 'border-[#075fe4] text-[#075fe4]' : 'border-transparent text-[#334b83]' }}" type="button" data-tab="{{ $key }}">{{ $label }}</button>
                     @endforeach
                 </div>
 
-                <div class="min-h-[270px] p-6">
+                <div class="min-h-[305px] p-6 sm:p-7">
                     <div class="course-panel" data-panel="about"><p class="text-sm text-[#334b83]">Loading...</p></div>
                     <div class="course-panel hidden" data-panel="curriculum"><p class="text-sm text-[#334b83]">Loading...</p></div>
                     <div class="course-panel hidden" data-panel="partner"><p class="text-sm text-[#334b83]">Loading...</p></div>
@@ -37,13 +161,13 @@
                 </div>
             </article>
 
-            <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+            <article class="course-detail-shell p-6 sm:p-7">
                 <h2 class="mb-4 text-base font-bold text-[#061942]">Course Highlights</h2>
                 <div id="courseHighlights"><p class="text-sm text-[#334b83]">Loading highlights...</p></div>
             </article>
         </div>
 
-        <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:p-6">
+        <article class="course-detail-shell p-5 sm:p-6">
             <h2 class="mb-5 text-base font-bold text-[#061942]">Who Should Enroll?</h2>
             <div class="flex flex-wrap gap-4 sm:gap-5">
                 @foreach (['Freshers', 'Engineering Students', 'Career Switchers', 'Working Professionals'] as $item)
@@ -124,28 +248,29 @@
             ['mode', 'Learning Mode', FastTrack.courseMode(course)],
             ['support', 'Career Support', 'Fast Track job-ready training'],
             ['certificate', 'Certificate Path', 'Training + final assessment'],
-        ].map((item) => `<div class="grid grid-cols-[40px_minmax(0,1fr)] gap-4 border-b border-[#e6eef8] py-4 last:border-b-0">${detailIcon(item[0])}<div><h3 class="mb-1.5 text-sm font-bold text-[#061942]">${FastTrack.esc(item[1])}</h3><p class="text-xs leading-5 text-[#536484]">${FastTrack.esc(item[2])}</p></div></div>`).join('');
+        ].map((item) => `<div class="highlight-row">${detailIcon(item[0])}<div><h3 class="mb-1.5 text-sm font-bold text-[#061942]">${FastTrack.esc(item[1])}</h3><p class="text-xs leading-5 text-[#536484]">${FastTrack.esc(item[2])}</p></div></div>`).join('');
     }
     function renderHero(course) {
         const title = FastTrack.courseName(course);
         const status = enrollmentStatus();
         courseDetailsHero.innerHTML = `
-            <div class="grid h-[126px] w-[126px] place-items-center rounded-lg bg-[#071743] text-white [&>svg]:h-16 [&>svg]:w-16 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${detailIcons.course}</div>
+            <div class="course-cover [&>svg]:h-16 [&>svg]:w-16 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${detailIcons.course}</div>
             <div class="min-w-0">
                 <h2 class="mb-3 flex flex-wrap items-center gap-2 text-xl font-bold text-[#061942]">
                     <span>${FastTrack.esc(title)}</span>
                     <span class="inline-flex rounded-md bg-[#eee7ff] px-2.5 py-1 text-[11px] font-bold text-[#7744eb]">${FastTrack.esc(status.label)}</span>
                 </h2>
                 <p class="mb-6 text-sm leading-6 text-[#334b83]">${FastTrack.esc(FastTrack.courseText(course))}</p>
-                <div class="grid gap-4 text-xs text-[#334b83] sm:grid-cols-2 lg:grid-cols-5">
-                    <span>Duration<b class="mt-2 block text-sm font-bold text-[#061942]">${FastTrack.esc(FastTrack.courseDuration(course))}</b></span>
-                    <span>Fees<b class="mt-2 block text-sm font-bold text-[#061942]">${FastTrack.money(fee(course))}</b></span>
-                    <span>Mode<b class="mt-2 block text-sm font-bold capitalize text-[#061942]">${FastTrack.esc(FastTrack.courseMode(course))}</b></span>
-                    <span>Partner<b class="mt-2 block truncate text-sm font-bold text-[#061942]">${FastTrack.esc(FastTrack.partnerName(course))}</b></span>
-                    <span>Certificate<b class="mt-2 block text-sm font-bold text-[#061942]">Yes</b></span>
+                <div class="course-detail-grid">
+                    <div class="course-fact"><span>Duration</span><b>${FastTrack.esc(FastTrack.courseDuration(course))}</b></div>
+                    <div class="course-fact"><span>Fees</span><b>${FastTrack.money(fee(course))}</b></div>
+                    <div class="course-fact"><span>Mode</span><b class="capitalize">${FastTrack.esc(FastTrack.courseMode(course))}</b></div>
+                    <div class="course-fact"><span>Partner</span><b>${FastTrack.esc(FastTrack.partnerName(course))}</b></div>
+                    <div class="course-fact"><span>Certificate</span><b>Yes</b></div>
                 </div>
             </div>
-            <div class="border-t border-[#dce7f8] pt-5 text-center xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
+            <div class="course-action-box">
+                <p class="mb-4 text-left text-xs font-bold uppercase text-[#526287]">Enrollment Action</p>
                 <button id="enrollBtn" class="${status.enrolled ? 'hidden' : 'inline-flex'} mb-3 h-[42px] w-full items-center justify-center rounded-lg bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#064fc0]" type="button">Enroll Now</button>
                 <button id="payBtn" class="${status.enrolled && !status.paid ? 'inline-flex' : 'hidden'} mb-3 h-[42px] w-full items-center justify-center rounded-lg bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#064fc0]" type="button">Pay & Confirm</button>
                 <a id="trainingBtn" class="${status.paid ? 'inline-flex' : 'hidden'} mb-3 h-[42px] w-full items-center justify-center rounded-lg bg-[#075fe4] text-sm font-bold text-white transition hover:bg-[#064fc0]" href="/fast-track/training">Go to Training</a>

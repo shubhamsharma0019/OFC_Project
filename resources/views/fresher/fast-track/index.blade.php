@@ -6,6 +6,86 @@
     $activePage = 'dashboard';
 @endphp
 
+@push('styles')
+<style>
+    .dashboard-chart-card {
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #ffffff;
+        min-height: 242px;
+        padding: 22px;
+        box-shadow: 0 10px 24px rgba(6, 25, 66, .04);
+    }
+
+    .dashboard-panel {
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 10px 24px rgba(6, 25, 66, .04);
+    }
+
+    .dashboard-stat-card {
+        min-height: 150px;
+    }
+
+    .dashboard-chart-card svg {
+        display: block;
+        width: 100%;
+        min-height: 190px;
+    }
+
+    .quick-action-card {
+        display: flex;
+        min-height: 124px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 14px;
+        color: #061942;
+        text-align: center;
+        text-decoration: none;
+        transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+
+    .quick-action-card:hover {
+        transform: translateY(-1px);
+        border-color: #9fc1f8;
+        box-shadow: 0 14px 28px rgba(6, 25, 66, .08);
+    }
+
+    .quick-action-card.is-done {
+        border-color: #bcebd0;
+        background: #f4fff8;
+    }
+
+    .quick-action-card .action-status {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .latest-training-panel {
+        border: 1px solid #cfe0f7;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #ffffff 0%, #eef6ff 100%);
+        box-shadow: 0 10px 24px rgba(6, 25, 66, .04);
+    }
+
+    @media (min-width: 1280px) {
+        .dashboard-main-grid {
+            grid-template-columns: minmax(0, 1.05fr) minmax(420px, .95fr);
+        }
+    }
+</style>
+@endpush
+
 @section('content')
     <section class="space-y-6">
         <div>
@@ -57,27 +137,44 @@
             </div>
         </article>
 
-        <div class="grid items-start gap-8 xl:grid-cols-[500px_minmax(0,1fr)]">
-            <div class="space-y-5">
-                <div id="dashboardStatsGrid" class="grid gap-5 sm:grid-cols-2">
-                    <article class="rounded-lg border border-[#dce7f8] bg-white p-6 text-sm text-[#334b83] shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:col-span-2">
+        <div class="dashboard-main-grid grid items-start gap-6">
+            <div class="space-y-6">
+                <div id="dashboardStatsGrid" class="grid gap-4 sm:grid-cols-2">
+                    <article class="dashboard-panel p-6 text-sm text-[#334b83] sm:col-span-2">
                         Loading dashboard...
                     </article>
                 </div>
 
-                <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+                <article class="dashboard-chart-card">
+                    <div class="mb-5 flex items-center justify-between gap-3">
+                        <h3 class="text-lg font-bold text-[#061942]">Learning Progress</h3>
+                        <span id="learningProgressLabel" class="rounded-full bg-[#eaf2ff] px-3 py-1 text-xs font-bold text-[#075fe4]">Live</span>
+                    </div>
+                    <div id="learningProgressChart">
+                        <p class="text-sm text-[#334b83]">Loading chart...</p>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel p-5">
                     <h3 class="mb-5 text-lg font-bold text-[#061942]">Quick Actions</h3>
 
-                    <div id="quickActions" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                        <p class="text-sm text-[#334b83] sm:col-span-2 xl:col-span-4">
+                    <div id="quickActions" class="grid gap-4 sm:grid-cols-2">
+                        <p class="text-sm text-[#334b83] sm:col-span-2">
                             Loading actions...
                         </p>
                     </div>
                 </article>
             </div>
 
-            <div class="space-y-8">
-                <article class="rounded-lg border border-[#dce7f8] bg-white px-6 py-6 shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:px-7">
+            <div class="space-y-6">
+                <article class="dashboard-chart-card">
+                    <h3 class="mb-5 text-lg font-bold text-[#061942]">Application Overview</h3>
+                    <div id="applicationOverviewChart">
+                        <p class="text-sm text-[#334b83]">Loading chart...</p>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel px-6 py-6 sm:px-7">
                     <h3 class="mb-5 text-lg font-bold text-[#061942]">Recent Activity</h3>
 
                     <div id="recentActivity">
@@ -87,7 +184,7 @@
 
                 <article
                     id="latestTrainingCard"
-                    class="relative flex min-h-[220px] items-center overflow-hidden rounded-lg border border-[#dce7f8] bg-gradient-to-r from-white to-[#eef5ff] p-8 shadow-[0_10px_24px_rgba(6,25,66,.04)]"
+                    class="latest-training-panel relative flex min-h-[242px] items-center overflow-hidden p-7 sm:p-8"
                 >
                     <div class="relative z-10 max-w-[360px]">
                         <h3 class="mb-4 text-[22px] font-bold text-[#061942]">
@@ -140,6 +237,9 @@
     const quickActions = document.getElementById('quickActions');
     const recentActivity = document.getElementById('recentActivity');
     const latestTrainingCard = document.getElementById('latestTrainingCard');
+    const learningProgressChart = document.getElementById('learningProgressChart');
+    const learningProgressLabel = document.getElementById('learningProgressLabel');
+    const applicationOverviewChart = document.getElementById('applicationOverviewChart');
 
     const dashboardIcons = {
         profile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path></svg>',
@@ -174,28 +274,51 @@
         );
 
         return `
-            <article class="flex min-h-[190px] items-center justify-center rounded-lg border border-[#dce7f8] bg-white p-6 text-center shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                <div>
-                    <div
-                        class="mx-auto mb-4 flex h-[116px] w-[116px] items-center justify-center rounded-full"
-                        style="background:conic-gradient(${color} 0 ${safeValue}%, #e9edf5 ${safeValue}% 100%);"
-                    >
-                        <span class="flex h-[86px] w-[86px] items-center justify-center rounded-full bg-white text-[28px] font-bold text-[#061942]">
-                            ${safeValue}%
-                        </span>
+            <article class="dashboard-stat-card relative overflow-hidden rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+                <span class="absolute left-0 top-0 h-full w-1" style="background:${color};"></span>
+                <div class="mb-4 flex items-start justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-bold leading-snug text-[#061942]">
+                            ${FastTrack.esc(label)}
+                        </h3>
+                        <p class="mt-2 text-xs font-semibold text-[#526287]">
+                            ${safeValue >= 80 ? 'Almost complete' : (safeValue > 0 ? 'Keep going' : 'Not started yet')}
+                        </p>
                     </div>
-
-                    <h3 class="text-base font-medium leading-snug text-[#061942]">
-                        ${FastTrack.esc(label)}
-                    </h3>
+                    <span class="text-[30px] font-bold leading-none text-[#061942]">
+                        ${safeValue}%
+                    </span>
                 </div>
+                <div class="h-3 overflow-hidden rounded-full bg-[#edf3fb]">
+                    <div class="h-full rounded-full" style="width:${safeValue}%;background:${color};"></div>
+                </div>
+            </article>
+        `;
+    }
+
+    function metricCard(cardIcon, label, value, hint, tone = '#075fe4') {
+        return `
+            <article class="dashboard-stat-card relative overflow-hidden rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+                <span class="absolute left-0 top-0 h-full w-1" style="background:${tone};"></span>
+                <div class="mb-4 flex items-center justify-between gap-4">
+                    ${cardIcon}
+                    <div class="text-[32px] font-bold leading-none text-[#061942]">
+                        ${FastTrack.esc(value)}
+                    </div>
+                </div>
+                <h3 class="text-sm font-bold leading-snug text-[#061942]">
+                    ${FastTrack.esc(label)}
+                </h3>
+                <p class="mt-2 truncate text-xs font-semibold text-[#526287]">
+                    ${FastTrack.esc(hint)}
+                </p>
             </article>
         `;
     }
 
     function smallCard(cardIcon, label, value) {
         return `
-            <article class="grid min-h-[125px] grid-cols-[64px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+            <article class="dashboard-stat-card grid grid-cols-[64px_minmax(0,1fr)] items-center gap-4 rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                 ${cardIcon}
 
                 <div>
@@ -214,22 +337,12 @@
     function actionCard(cardIcon, title, url, done) {
         return `
             <a
-                class="flex min-h-[132px] flex-col items-center justify-center gap-3 rounded-lg border ${
-                    done
-                        ? 'border-[#bcebd0] bg-[#f2fff7]'
-                        : 'border-[#dce7f8] bg-white'
-                } px-4 text-center text-sm font-bold leading-snug text-[#061942] transition hover:border-[#075fe4] hover:bg-[#eff5ff] hover:text-[#075fe4]"
+                class="quick-action-card ${done ? 'is-done' : ''}"
                 href="${url}"
             >
                 ${cardIcon}
-
-                <span>
-                    ${FastTrack.esc(title)}
-                </span>
-
-                <small class="text-xs ${done ? 'text-[#078346]' : 'text-[#536484]'}">
-                    ${done ? 'Done' : 'Pending'}
-                </small>
+                <span class="max-w-[110px] text-sm font-bold leading-snug">${FastTrack.esc(title)}</span>
+                <small class="action-status ${done ? 'bg-[#dbf8e8] text-[#078346]' : 'bg-[#fff4df] text-[#b86500]'}">${done ? 'Done' : 'Pending'}</small>
             </a>
         `;
     }
@@ -248,6 +361,68 @@
                 </time>
             </div>
         `;
+    }
+
+    function renderTrendChart(target, rows) {
+        const data = rows.map((row) => ({
+            label: row[0],
+            value: Math.max(0, Math.min(100, Number(row[1] || 0))),
+        }));
+        const width = 520;
+        const height = 220;
+        const left = 38;
+        const right = 18;
+        const top = 18;
+        const bottom = 36;
+        const chartW = width - left - right;
+        const chartH = height - top - bottom;
+        const step = chartW / Math.max(1, data.length - 1);
+        const points = data.map((item, index) => ({
+            ...item,
+            x: left + index * step,
+            y: top + chartH - (item.value / 100) * chartH,
+        }));
+        const line = points.map((point) => `${point.x},${point.y}`).join(' ');
+        const area = `${left},${top + chartH} ${line} ${width - right},${top + chartH}`;
+
+        target.innerHTML = `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" aria-label="Learning progress chart">
+            <defs>
+                <linearGradient id="fastTrackProgressFill" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0" stop-color="#075fe4" stop-opacity=".18"></stop>
+                    <stop offset="1" stop-color="#075fe4" stop-opacity="0"></stop>
+                </linearGradient>
+            </defs>
+            <line x1="${left}" y1="${top}" x2="${left}" y2="${top + chartH}" stroke="#e5edf8"></line>
+            <line x1="${left}" y1="${top + chartH}" x2="${width - right}" y2="${top + chartH}" stroke="#dce7f8"></line>
+            <line x1="${left}" y1="${top + chartH / 2}" x2="${width - right}" y2="${top + chartH / 2}" stroke="#eff4fb"></line>
+            <text x="6" y="${top + 4}" font-size="11" fill="#526287">100</text>
+            <text x="12" y="${top + chartH / 2 + 4}" font-size="11" fill="#526287">50</text>
+            <text x="20" y="${top + chartH + 4}" font-size="11" fill="#526287">0</text>
+            <polygon points="${area}" fill="url(#fastTrackProgressFill)"></polygon>
+            <polyline points="${line}" fill="none" stroke="#075fe4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="5" fill="#075fe4" stroke="#cfe0ff" stroke-width="3"></circle><text x="${point.x - 20}" y="${height - 10}" font-size="10" fill="#526287">${FastTrack.esc(point.label)}</text>`).join('')}
+        </svg>`;
+    }
+
+    function renderBarChart(target, rows) {
+        const data = rows.map((row) => ({
+            label: row[0],
+            value: Number(row[1] || 0),
+            color: row[2],
+        }));
+        const max = Math.max(1, ...data.map((item) => item.value));
+        target.innerHTML = `<div class="grid gap-4">${data.map((item) => {
+            const percent = Math.max(4, Math.round((item.value / max) * 100));
+            return `<div>
+                <div class="mb-2 flex items-center justify-between gap-3 text-sm">
+                    <span class="font-bold text-[#061942]">${FastTrack.esc(item.label)}</span>
+                    <span class="font-bold text-[#24344f]">${FastTrack.esc(item.value)}</span>
+                </div>
+                <div class="h-3 overflow-hidden rounded-full bg-[#edf3fb]">
+                    <div class="h-full rounded-full" style="width:${percent}%;background:${item.color};"></div>
+                </div>
+            </div>`;
+        }).join('')}</div>`;
     }
 
     function profilePhotoUrl(profile) {
@@ -373,20 +548,40 @@
                 '#7744eb'
             ),
 
-            smallCard(
+            metricCard(
                 icon('training'),
                 'Current Training',
-                stats.active_trainings ||
-                stats.total_course_enrollments ||
-                0
+                stats.active_trainings || stats.total_course_enrollments || 0,
+                latestEnrollment ? FastTrack.courseName(latestEnrollment.course || {}) : 'No active course yet',
+                '#075fe4'
             ),
 
-            smallCard(
+            metricCard(
                 icon('notification'),
                 'Notifications',
-                unread || 0
+                unread || 0,
+                unread ? 'Unread updates waiting' : 'All caught up',
+                '#7744eb'
             ),
         ].join('');
+
+        const trainingProgress = latestEnrollment ? FastTrack.progress(latestEnrollment) : 0;
+        learningProgressLabel.textContent = trainingProgress + '% training';
+        renderTrendChart(learningProgressChart, [
+            ['Profile', profile.profile_completion || 0],
+            ['Assess', score],
+            ['Enroll', latestEnrollment ? 45 : 0],
+            ['Train', trainingProgress],
+            ['Cert', Number(stats.total_certificates || stats.certificates || 0) > 0 ? 100 : trainingProgress],
+        ]);
+
+        renderBarChart(applicationOverviewChart, [
+            ['Applications', stats.total_applications || 0, '#075fe4'],
+            ['Shortlisted', stats.shortlisted_applications || 0, '#12b76a'],
+            ['Interviews', stats.interview_scheduled_applications || stats.scheduled_interviews || 0, '#7744eb'],
+            ['Completed Training', stats.completed_trainings || 0, '#f59a23'],
+            ['Certificates', stats.total_certificates || stats.certificates || 0, '#0ea5a8'],
+        ]);
 
         quickActions.innerHTML = [
             actionCard(
@@ -498,31 +693,33 @@
 
         if (latestEnrollment?.course) {
             const progress = FastTrack.progress(latestEnrollment);
+            const trainingStatus = (latestEnrollment.training_status || 'in_progress').replaceAll('_', ' ');
 
             latestTrainingCard.innerHTML = `
-                <div class="relative z-10 w-full max-w-[420px]">
+                <div class="relative z-10 w-full">
+                    <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="min-w-0">
+                            <p class="mb-2 text-xs font-bold uppercase text-[#526287]">Current Training</p>
+                            <h3 class="truncate text-[24px] font-bold leading-tight text-[#061942]">
+                                ${FastTrack.esc(FastTrack.courseName(latestEnrollment.course))}
+                            </h3>
+                            <p class="mt-2 text-sm leading-6 text-[#24344f]">
+                                ${FastTrack.esc(FastTrack.partnerName(latestEnrollment.course))}
+                            </p>
+                        </div>
+                        <span class="w-fit rounded-full bg-[#eaf2ff] px-3 py-1 text-xs font-bold capitalize text-[#075fe4]">
+                            ${FastTrack.esc(trainingStatus)}
+                        </span>
+                    </div>
 
-                    <h3 class="mb-3 text-[22px] font-bold text-[#061942]">
-                        ${FastTrack.esc(
-                            FastTrack.courseName(
-                                latestEnrollment.course
-                            )
-                        )}
-                    </h3>
-
-                    <p class="mb-4 text-[15px] leading-6 text-[#24344f]">
-                        ${FastTrack.esc(
-                            FastTrack.partnerName(
-                                latestEnrollment.course
-                            )
-                        )}
-                    </p>
-
-                    <div class="mb-5 h-3 overflow-hidden rounded-full bg-[#dce7f8]">
-                        <div
-                            class="h-full rounded-full bg-[#075fe4]"
-                            style="width:${progress}%"
-                        ></div>
+                    <div class="mb-5">
+                        <div class="mb-2 flex items-center justify-between text-xs font-bold text-[#24344f]">
+                            <span>Training Progress</span>
+                            <span>${progress}%</span>
+                        </div>
+                        <div class="h-3 overflow-hidden rounded-full bg-[#dce7f8]">
+                            <div class="h-full rounded-full bg-[linear-gradient(90deg,#075fe4,#17a6a8)]" style="width:${progress}%"></div>
+                        </div>
                     </div>
 
                     <div class="flex flex-wrap gap-3">
@@ -563,16 +760,20 @@
                 '#7744eb'
             ),
 
-            smallCard(
+            metricCard(
                 icon('training'),
                 'Current Training',
-                0
+                0,
+                'No active course yet',
+                '#075fe4'
             ),
 
-            smallCard(
+            metricCard(
                 icon('notification'),
                 'Notifications',
-                0
+                0,
+                'All caught up',
+                '#7744eb'
             ),
         ].join('');
 
@@ -608,6 +809,20 @@
 
         recentActivity.innerHTML =
             '<p class="text-sm text-[#334b83]">Complete your profile to unlock dashboard activity.</p>';
+        renderTrendChart(learningProgressChart, [
+            ['Profile', 0],
+            ['Assess', 0],
+            ['Enroll', 0],
+            ['Train', 0],
+            ['Cert', 0],
+        ]);
+        renderBarChart(applicationOverviewChart, [
+            ['Applications', 0, '#075fe4'],
+            ['Shortlisted', 0, '#12b76a'],
+            ['Interviews', 0, '#7744eb'],
+            ['Completed Training', 0, '#f59a23'],
+            ['Certificates', 0, '#0ea5a8'],
+        ]);
     }
 
     Promise.all([
