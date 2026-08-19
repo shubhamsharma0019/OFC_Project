@@ -987,14 +987,20 @@
         .illustration {
             margin-top: 24px;
             justify-content: flex-start;
+            width: min(620px, 96%);
+            background: transparent;
+            overflow: hidden;
+            isolation: isolate;
         }
 
         .illustration img {
-            width: min(620px, 96%);
-            max-width: 96%;
+            display: block;
+            width: 100%;
+            max-width: 100%;
             height: 310px;
             object-fit: contain;
             object-position: left bottom;
+            mix-blend-mode: multiply;
             filter: drop-shadow(0 20px 30px rgba(6, 25, 66, .10));
         }
 

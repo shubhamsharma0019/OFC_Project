@@ -4,6 +4,27 @@
 
 @php
     $activePage = 'dashboard';
+    $fastTrackSteps = [
+        ['step' => '1', 'title' => 'Enroll', 'text' => 'Choose your track', 'icon' => 'learn', 'color' => '#25ad82'],
+        ['step' => '2', 'title' => 'Initial Assessment', 'text' => 'Evaluate your current skills', 'icon' => 'target', 'color' => '#075fe4'],
+        ['step' => '3', 'title' => 'Training', 'text' => 'Learn from our training partners', 'icon' => 'training', 'color' => '#cbd5e1'],
+        ['step' => '4', 'title' => 'Final Assessment', 'text' => 'Showcase improved skills', 'icon' => 'chart', 'color' => '#cbd5e1'],
+        ['step' => '5', 'title' => 'Certification', 'text' => 'Get certified & job ready', 'icon' => 'certificate', 'color' => '#cbd5e1'],
+        ['step' => '6', 'title' => 'Get Hired', 'text' => 'Companies get your profile', 'icon' => 'users', 'color' => '#cbd5e1'],
+    ];
+    $careerTracks = [
+        ['title' => 'Software Development', 'text' => 'Build your career in coding and software development.', 'icon' => 'code', 'color' => '#2563eb', 'skills' => ['Python', 'DSA', 'SQL', 'Git']],
+        ['title' => 'Data Science & Analytics', 'text' => 'Become a data expert and work with real-world data.', 'icon' => 'data', 'color' => '#2fbf9b', 'skills' => ['Python', 'SQL', 'Excel', 'Power BI']],
+        ['title' => 'Digital Marketing', 'text' => 'Learn digital strategies and grow brands online.', 'icon' => 'marketing', 'color' => '#f59a23', 'skills' => ['SEO', 'SEM', 'SMM', 'Analytics']],
+        ['title' => 'Business & Finance', 'text' => 'Build a career in finance, analytics and management.', 'icon' => 'briefcase', 'color' => '#8239d7', 'skills' => ['Accounting', 'Excel', 'Modeling']],
+        ['title' => 'Cloud Computing', 'text' => 'Learn cloud technologies and services.', 'icon' => 'cloud', 'color' => '#1f73ea', 'skills' => ['AWS', 'Azure', 'Linux', 'DevOps']],
+    ];
+    $partners = [
+        ['name' => 'EXCELR', 'sub' => 'Raising Excellence', 'score' => '4.6', 'color' => '#176aa6'],
+        ['name' => 'ENLITE', 'sub' => 'INSTITUTE', 'score' => '4.5', 'color' => '#111827'],
+        ['name' => 'iNeuron', 'sub' => 'Intelligence Pathway', 'score' => '4.7', 'color' => '#2f64b2'],
+        ['name' => 'Besant', 'sub' => 'Technologies', 'score' => '4.5', 'color' => '#176aa6'],
+    ];
 @endphp
 
 @push('styles')
@@ -78,24 +99,41 @@
         box-shadow: 0 10px 24px rgba(6, 25, 66, .04);
     }
 
+    .fast-track-dashboard-shell {
+        margin-inline: auto;
+        width: 100%;
+        max-width: 1180px;
+    }
+
+    .dashboard-welcome-card {
+        align-items: stretch;
+    }
+
     @media (min-width: 1280px) {
         .dashboard-main-grid {
-            grid-template-columns: minmax(0, 1.05fr) minmax(420px, .95fr);
+            grid-template-columns: minmax(0, 1fr) minmax(360px, .82fr);
+        }
+    }
+
+    @media (max-width: 767px) {
+        .dashboard-chart-card,
+        .dashboard-panel {
+            padding: 18px;
         }
     }
 </style>
 @endpush
 
 @section('content')
-    <section class="space-y-6">
-        <div>
+    <section class="fast-track-dashboard-shell space-y-5">
+        <div class="flex items-center justify-between gap-4">
             <h1 class="text-[27px] font-bold leading-tight text-[#061942]">Dashboard</h1>
         </div>
 
-        <article class="flex flex-col gap-5 rounded-lg border border-[#cfe0f7] bg-[#eef6ff] px-6 py-6 shadow-[0_10px_24px_rgba(6,25,66,.04)] md:flex-row md:items-center md:px-8">
+        <article class="dashboard-welcome-card flex flex-col gap-5 rounded-lg border border-[#dbe8f8] bg-[#fbfdff] px-5 py-5 shadow-[0_10px_24px_rgba(6,25,66,.035)] md:flex-row md:items-center md:px-6">
             <div
                 id="dashboardProfileAvatar"
-                class="grid h-[96px] w-[96px] shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white bg-gradient-to-br from-[#1769ff] to-[#17a6a8] bg-cover bg-center text-2xl font-black text-white shadow-[0_10px_22px_rgba(6,25,66,.14)]"
+                class="grid h-[88px] w-[88px] shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white bg-gradient-to-br from-[#1769ff] to-[#17a6a8] bg-cover bg-center text-2xl font-black text-white shadow-[0_10px_22px_rgba(6,25,66,.14)]"
                 aria-hidden="true"
             >
                 FT
@@ -126,7 +164,7 @@
 
             <div
                 id="dashboardProfileImageWrap"
-                class="hidden w-full shrink-0 overflow-hidden rounded-lg border border-white/80 bg-white shadow-[0_12px_28px_rgba(6,25,66,.12)] md:h-[132px] md:w-[220px]"
+                class="hidden w-full shrink-0 overflow-hidden rounded-lg border border-white/80 bg-white shadow-[0_12px_28px_rgba(6,25,66,.12)] md:h-[124px] md:w-[210px]"
             >
                 <img
                     id="dashboardProfileImage"
@@ -137,91 +175,240 @@
             </div>
         </article>
 
-        <div class="dashboard-main-grid grid items-start gap-6">
-            <div class="space-y-6">
-                <div id="dashboardStatsGrid" class="grid gap-4 sm:grid-cols-2">
-                    <article class="dashboard-panel p-6 text-sm text-[#334b83] sm:col-span-2">
-                        Loading dashboard...
+        <div class="hidden">
+            <div id="dashboardStatsGrid"></div>
+            <div id="learningProgressChart"></div>
+            <span id="learningProgressLabel"></span>
+            <div id="quickActions"></div>
+            <div id="applicationOverviewChart"></div>
+            <div id="recentActivity"></div>
+            <div id="latestTrainingCard"></div>
+        </div>
+
+        <section class="rounded-lg bg-white px-5 py-7 shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:px-6">
+            <div class="mb-7">
+                <h2 class="mb-1 text-[26px] font-bold leading-tight text-[#061942]">Fast Track Program</h2>
+                <p class="text-[13px] font-semibold text-[#34445e]">Get trained by verified training partners, improve your skills and get access to better job opportunities.</p>
+            </div>
+
+            <div class="mb-8 grid gap-5 lg:grid-cols-6 lg:gap-0">
+                @foreach ($fastTrackSteps as $index => $step)
+                    <article class="relative flex items-start gap-3 lg:block lg:text-center">
+                        @if ($index < count($fastTrackSteps) - 1)
+                            <span class="absolute left-[24px] top-6 hidden h-px w-full bg-[#d8e1ee] lg:block"></span>
+                        @endif
+                        <div class="relative z-10 mx-0 grid h-12 w-12 shrink-0 place-items-center rounded-full text-sm font-bold text-white shadow-[0_8px_16px_rgba(6,25,66,0.12)] lg:mx-auto" style="background-color: {{ $step['color'] }}">
+                            @if ($index < 2)
+                                {{ $step['step'] }}
+                            @else
+                                <span class="[&>svg]:h-5 [&>svg]:w-5">@include('components.public.icon', ['name' => $step['icon']])</span>
+                            @endif
+                        </div>
+                        <div class="pt-1 lg:pt-3">
+                            <h3 class="mb-1 text-[12px] font-bold text-[#061942]">{{ $step['step'] }}. {{ $step['title'] }}</h3>
+                            <p class="mx-auto max-w-[125px] text-[11px] font-semibold leading-4 text-[#34445e]">{{ $step['text'] }}</p>
+                        </div>
                     </article>
+                @endforeach
+            </div>
+
+            <div class="mb-4 flex items-end justify-between gap-4">
+                <div>
+                    <h2 class="mb-1 text-[20px] font-bold text-[#061942]">Explore Career Tracks</h2>
+                    <p class="text-[13px] font-semibold text-[#34445e]">Choose a career track that matches your interest and career goals.</p>
+                </div>
+                <a href="/fast-track/courses" class="hidden shrink-0 items-center gap-2 text-[13px] font-bold text-[#075fe4] sm:inline-flex">View All Tracks <span aria-hidden="true">-&gt;</span></a>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                @foreach ($careerTracks as $track)
+                    <article class="rounded-lg border border-[#dce7f8] bg-white px-4 py-5 text-center shadow-[0_6px_18px_rgba(6,25,66,0.05)]">
+                        <div class="mx-auto mb-4 grid h-[58px] w-[58px] place-items-center rounded-full text-white shadow-[0_10px_20px_rgba(6,25,66,0.14)] [&>svg]:h-7 [&>svg]:w-7" style="background-color: {{ $track['color'] }}">
+                            @include('components.public.icon', ['name' => $track['icon']])
+                        </div>
+                        <h3 class="mb-2 text-[14px] font-bold leading-tight text-[#061942]">{{ $track['title'] }}</h3>
+                        <p class="mx-auto mb-3 min-h-[48px] max-w-[190px] text-[11px] font-semibold leading-4 text-[#34445e]">{{ $track['text'] }}</p>
+                        <p class="mb-2 text-[11px] font-bold text-[#061942]">Key Skills</p>
+                        <div class="mb-4 flex min-h-[52px] flex-wrap items-start justify-center gap-2">
+                            @foreach ($track['skills'] as $skill)
+                                <span class="rounded-full bg-[#f2f5f9] px-2.5 py-1 text-[10px] font-semibold text-[#34445e]">{{ $skill }}</span>
+                            @endforeach
+                        </div>
+                        <a href="/fast-track/courses" class="inline-flex h-8 min-w-[132px] items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-4 text-[11px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">View Details</a>
+                    </article>
+                @endforeach
+            </div>
+
+            <article class="mt-10 rounded-xl border border-[#dce7f8] bg-white px-5 py-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+                <div class="grid gap-6 xl:grid-cols-[1.05fr_.95fr_1.25fr] xl:divide-x xl:divide-[#e6eef9]">
+                    <section class="xl:pr-6">
+                        <h2 class="mb-4 text-[16px] font-bold text-[#075fe4]">Your Current Program</h2>
+                        <div class="rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_6px_16px_rgba(6,25,66,0.04)]">
+                            <div class="mb-5 flex items-center gap-4">
+                                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#075fe4] text-white [&>svg]:h-6 [&>svg]:w-6 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">
+                                    @include('components.public.icon', ['name' => 'code'])
+                                </span>
+                                <div class="min-w-0">
+                                    <h3 class="truncate text-[18px] font-bold text-[#061942]">Software Development</h3>
+                                    <p class="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-semibold text-[#34445e]">
+                                        <span>Training Partner:</span>
+                                        <strong class="text-[18px] font-black leading-none text-[#176aa6]">EXCELR</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-3 text-[12px] font-bold text-[#34445e]">
+                                <span>Batch: SD-2024-06-01</span>
+                                <span class="rounded-full bg-[#dff6ef] px-3 py-1 text-[11px] font-bold text-[#0b8b67]">Enrolled</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="xl:px-6">
+                        <h2 class="mb-4 text-[16px] font-bold text-[#075fe4]">Program Timeline</h2>
+                        <div class="grid gap-3 text-[12px] font-semibold text-[#34445e]">
+                            <div class="grid grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span class="text-[#526287]">@include('components.public.icon', ['name' => 'document'])</span>
+                                <span>Start Date</span>
+                                <strong class="font-bold text-[#061942]">01 Jun 2024</strong>
+                            </div>
+                            <div class="grid grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span class="text-[#526287]">@include('components.public.icon', ['name' => 'document'])</span>
+                                <span>Expected End Date</span>
+                                <strong class="font-bold text-[#061942]">15 Aug 2024</strong>
+                            </div>
+                            <div class="grid grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span class="text-[#526287]">@include('components.public.icon', ['name' => 'growth'])</span>
+                                <span>Duration</span>
+                                <strong class="font-bold text-[#061942]">10 Weeks</strong>
+                            </div>
+                            <div class="grid grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span class="text-[#526287]">@include('components.public.icon', ['name' => 'training'])</span>
+                                <span>Classes</span>
+                                <strong class="font-bold text-[#061942]">Live Online</strong>
+                            </div>
+                        </div>
+                        <a href="/fast-track/training" class="mt-5 inline-flex h-9 w-full items-center justify-center rounded-md border border-[#9fc1f8] bg-white px-4 text-[13px] font-bold text-[#075fe4] shadow-[0_6px_14px_rgba(7,95,228,0.08)] transition hover:bg-[#f3f8ff]">View Class Schedule</a>
+                    </section>
+
+                    <section class="xl:pl-6">
+                        <h2 class="mb-4 text-[16px] font-bold text-[#075fe4]">Program Progress</h2>
+                        <div class="grid gap-4 text-[12px] font-semibold text-[#34445e]">
+                            <div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span>Initial Assessment</span>
+                                <span class="font-bold text-[#19a85b]">Completed</span>
+                                <span class="grid h-5 w-5 place-items-center rounded-full bg-[#19a85b] text-[11px] font-bold text-white">&#10003;</span>
+                            </div>
+                            <div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span>Training Progress</span>
+                                <span class="h-2 overflow-hidden rounded-full bg-[#e4ebf4]"><span class="block h-full w-[40%] rounded-full bg-[#075fe4]"></span></span>
+                                <strong class="font-bold text-[#061942]">40%</strong>
+                            </div>
+                            @foreach (['Final Assessment', 'Certification', 'Job Opportunities'] as $item)
+                                <div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+                                    <span>{{ $item }}</span>
+                                    <span class="h-2 rounded-full bg-[#e4ebf4]"></span>
+                                    <strong class="font-bold text-[#526287]">Upcoming</strong>
+                                </div>
+                            @endforeach
+                        </div>
+                        <a href="/fast-track/training-progress" class="mt-5 inline-flex h-9 w-full items-center justify-center rounded-md border border-[#9fc1f8] bg-white px-4 text-[13px] font-bold text-[#075fe4] shadow-[0_6px_14px_rgba(7,95,228,0.08)] transition hover:bg-[#f3f8ff]">View Full Progress</a>
+                    </section>
+                </div>
+            </article>
+
+            <div class="mt-10">
+                <div class="mb-4 flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="mb-1 text-[18px] font-bold text-[#061942]">Assessment Summary</h2>
+                        <p class="text-[12px] font-semibold text-[#34445e]">Improve your skills and see your growth with initial and final assessments.</p>
+                    </div>
+                    <a href="/fast-track/final-assessment" class="hidden shrink-0 items-center gap-2 text-[12px] font-bold text-[#07518f] sm:inline-flex">View Detailed Report <span aria-hidden="true">-&gt;</span></a>
                 </div>
 
-                <article class="dashboard-chart-card">
-                    <div class="mb-5 flex items-center justify-between gap-3">
-                        <h3 class="text-lg font-bold text-[#061942]">Learning Progress</h3>
-                        <span id="learningProgressLabel" class="rounded-full bg-[#eaf2ff] px-3 py-1 text-xs font-bold text-[#075fe4]">Live</span>
-                    </div>
-                    <div id="learningProgressChart">
-                        <p class="text-sm text-[#334b83]">Loading chart...</p>
-                    </div>
-                </article>
+                <div class="grid gap-4 xl:grid-cols-[1.18fr_28px_1fr_.78fr] xl:items-stretch">
+                    <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_6px_18px_rgba(6,25,66,0.04)]">
+                        <div class="mb-4">
+                            <h3 class="text-[12px] font-bold text-[#061942]">Initial Assessment <span class="font-semibold text-[#34445e]">(Before Training)</span></h3>
+                            <p class="mt-1 text-[10px] font-semibold text-[#6f7d90]">Completed after profile verification</p>
+                        </div>
+                        <div class="grid gap-5 sm:grid-cols-[120px_minmax(0,1fr)] sm:items-center">
+                            <div class="text-center">
+                                <div class="mx-auto grid h-[92px] w-[92px] place-items-center rounded-full bg-[conic-gradient(#075fe4_0_40%,#e4e9f1_40%_100%)]">
+                                    <div class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">40%</div>
+                                </div>
+                                <p class="mt-3 text-[10px] font-bold text-[#34445e]">Overall Score</p>
+                            </div>
+                            <div class="grid gap-3">
+                                @foreach ([['Technical Skills', 42], ['Aptitude', 38], ['Communication', 45], ['Attitude', 40], ['Problem Solving', 35]] as $score)
+                                    <div class="grid grid-cols-[120px_minmax(0,1fr)_34px] items-center gap-3">
+                                        <span class="text-[11px] font-semibold text-[#061942]">{{ $score[0] }}</span>
+                                        <span class="h-1.5 overflow-hidden rounded-full bg-[#e6edf6]"><span class="block h-full rounded-full bg-[#075fe4]" style="width: {{ $score[1] }}%"></span></span>
+                                        <span class="text-right text-[10px] font-bold text-[#34445e]">{{ $score[1] }}%</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </article>
 
-                <article class="dashboard-panel p-5">
-                    <h3 class="mb-5 text-lg font-bold text-[#061942]">Quick Actions</h3>
+                    <div class="hidden items-center justify-center text-[34px] font-light text-[#9aa9bc] xl:flex" aria-hidden="true">&gt;</div>
 
-                    <div id="quickActions" class="grid gap-4 sm:grid-cols-2">
-                        <p class="text-sm text-[#334b83] sm:col-span-2">
-                            Loading actions...
-                        </p>
-                    </div>
-                </article>
+                    <article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_6px_18px_rgba(6,25,66,0.04)]">
+                        <div class="mb-4">
+                            <h3 class="text-[12px] font-bold text-[#061942]">Final Assessment <span class="font-semibold text-[#34445e]">(After Training)</span></h3>
+                            <p class="mt-1 text-[10px] font-semibold text-[#6f7d90]">To be taken after course completion</p>
+                        </div>
+                        <div class="grid gap-5 sm:grid-cols-[120px_minmax(0,1fr)] sm:items-center">
+                            <div class="text-center">
+                                <div class="mx-auto grid h-[92px] w-[92px] place-items-center rounded-full bg-[#e7ebf1]">
+                                    <div class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">--%</div>
+                                </div>
+                                <p class="mt-3 text-[10px] font-bold text-[#34445e]">Overall Score</p>
+                            </div>
+                            <div class="grid gap-3">
+                                @foreach (['Technical Skills', 'Aptitude', 'Communication', 'Attitude', 'Problem Solving'] as $label)
+                                    <div class="grid grid-cols-[120px_minmax(0,1fr)_18px] items-center gap-3">
+                                        <span class="text-[11px] font-semibold text-[#061942]">{{ $label }}</span>
+                                        <span class="h-1.5 rounded-full bg-[#e6edf6]"></span>
+                                        <span class="text-right text-[10px] font-bold text-[#9aa9bc]">--</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </article>
+
+                    <aside class="rounded-lg border border-[#f3dfb8] bg-[#fff9ed] p-5 shadow-[0_8px_18px_rgba(125,83,0,0.06)]">
+                        <h3 class="mb-3 text-[13px] font-bold text-[#9a6700]">Companies Get You With</h3>
+                        <ul class="mb-4 grid gap-3 text-[11px] font-semibold leading-4 text-[#061942]">
+                            <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">&#10003;</span><span><strong>Initial Assessment</strong><br><span class="text-[#34445e]">(Your Current Skills)</span></span></li>
+                            <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">&#10003;</span><span><strong>Final Assessment</strong><br><span class="text-[#34445e]">(Your Improved Skills)</span></span></li>
+                            <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">&#10003;</span><span><strong>Training Completion Certificate</strong></span></li>
+                            <li class="flex gap-2"><span class="font-bold text-[#1a8c62]">&#10003;</span><span><strong>Industry Ready Profile</strong></span></li>
+                        </ul>
+                        <a href="/fast-track/how-it-works" class="inline-flex h-8 min-w-[132px] items-center justify-center rounded-md border border-[#d8c8a2] bg-white px-4 text-[11px] font-bold text-[#07518f] transition hover:bg-[#f7f2e7]">Know More</a>
+                    </aside>
+                </div>
             </div>
 
-            <div class="space-y-6">
-                <article class="dashboard-chart-card">
-                    <h3 class="mb-5 text-lg font-bold text-[#061942]">Application Overview</h3>
-                    <div id="applicationOverviewChart">
-                        <p class="text-sm text-[#334b83]">Loading chart...</p>
-                    </div>
-                </article>
+            <div class="mt-10">
+                <div class="mb-4">
+                    <h2 class="mb-1 text-[18px] font-bold text-[#061942]">Our Trusted Training Partners</h2>
+                    <p class="text-[12px] font-semibold text-[#34445e]">Learn from the best. Get Certified. Get hired.</p>
+                </div>
 
-                <article class="dashboard-panel px-6 py-6 sm:px-7">
-                    <h3 class="mb-5 text-lg font-bold text-[#061942]">Recent Activity</h3>
-
-                    <div id="recentActivity">
-                        <p class="text-sm text-[#334b83]">Loading activity...</p>
-                    </div>
-                </article>
-
-                <article
-                    id="latestTrainingCard"
-                    class="latest-training-panel relative flex min-h-[242px] items-center overflow-hidden p-7 sm:p-8"
-                >
-                    <div class="relative z-10 max-w-[360px]">
-                        <h3 class="mb-4 text-[22px] font-bold text-[#061942]">
-                            Fast Track Your Career
-                        </h3>
-
-                        <p class="mb-6 text-[15px] leading-6 text-[#24344f]">
-                            Enroll in Fast Track Courses and get placed in top companies.
-                        </p>
-
-                        <a
-                            href="/fast-track/courses"
-                            class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,.18)] transition hover:bg-[#064fc0]"
-                        >
-                            Explore Courses
-                        </a>
-                    </div>
-
-                    <div class="absolute bottom-7 right-12 hidden h-[155px] w-[155px] rotate-[-12deg] items-center justify-center rounded-full bg-[#e1edff] text-[#075fe4] sm:flex">
-                        <svg
-                            class="h-20 w-20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.9"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            aria-hidden="true"
-                        >
-                            <path d="M4 19V5"></path>
-                            <path d="M4 19h16"></path>
-                            <path d="M8 15l3-3 3 2 5-7"></path>
-                        </svg>
-                    </div>
-                </article>
+                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    @foreach ($partners as $partner)
+                        <article class="flex min-h-[94px] flex-col items-center justify-center rounded-lg border border-[#dce7f8] bg-white px-4 py-3 text-center shadow-[0_6px_16px_rgba(6,25,66,0.04)]">
+                            <div class="mb-2 flex min-h-[34px] items-center justify-center gap-1.5">
+                                <span class="text-[22px] font-black leading-none" style="color: {{ $partner['color'] }}">{{ $partner['name'] }}</span>
+                            </div>
+                            <p class="mb-2 text-[9px] font-bold leading-none text-[#6f7d90]">{{ $partner['sub'] }}</p>
+                            <p class="text-[12px] font-bold text-[#061942]">{{ $partner['score'] }} <span class="text-[#f3a51d]">*</span></p>
+                        </article>
+                    @endforeach
+                </div>
             </div>
-        </div>
+        </section>
+
     </section>
 @endsection
 
