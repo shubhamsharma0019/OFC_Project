@@ -191,13 +191,13 @@
                 <p class="text-[13px] font-semibold text-[#34445e]">Get trained by verified training partners, improve your skills and get access to better job opportunities.</p>
             </div>
 
-            <div class="mb-8 grid gap-5 lg:grid-cols-6 lg:gap-0">
+            <div id="fastTrackProgramSteps" class="mb-8 grid gap-5 lg:grid-cols-6 lg:gap-0">
                 @foreach ($fastTrackSteps as $index => $step)
-                    <article class="relative flex items-start gap-3 lg:block lg:text-center">
+                    <article class="fast-track-program-step relative flex items-start gap-3 lg:block lg:text-center" data-step="{{ $index + 1 }}">
                         @if ($index < count($fastTrackSteps) - 1)
-                            <span class="absolute left-[24px] top-6 hidden h-px w-full bg-[#d8e1ee] lg:block"></span>
+                            <span class="fast-track-step-line absolute left-[24px] top-6 hidden h-px w-full bg-[#d8e1ee] lg:block"></span>
                         @endif
-                        <div class="relative z-10 mx-0 grid h-12 w-12 shrink-0 place-items-center rounded-full text-sm font-bold text-white shadow-[0_8px_16px_rgba(6,25,66,0.12)] lg:mx-auto" style="background-color: {{ $step['color'] }}">
+                        <div class="fast-track-step-marker relative z-10 mx-0 grid h-12 w-12 shrink-0 place-items-center rounded-full text-sm font-bold text-white shadow-[0_8px_16px_rgba(6,25,66,0.12)] lg:mx-auto" style="background-color: {{ $step['color'] }}">
                             @if ($index < 2)
                                 {{ $step['step'] }}
                             @else
@@ -220,7 +220,7 @@
                 <a href="/fast-track/courses" class="hidden shrink-0 items-center gap-2 text-[13px] font-bold text-[#075fe4] sm:inline-flex">View All Tracks <span aria-hidden="true">-&gt;</span></a>
             </div>
 
-            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <div id="dynamicCareerTracks" class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                 @foreach ($careerTracks as $track)
                     <article class="rounded-lg border border-[#dce7f8] bg-white px-4 py-5 text-center shadow-[0_6px_18px_rgba(6,25,66,0.05)]">
                         <div class="mx-auto mb-4 grid h-[58px] w-[58px] place-items-center rounded-full text-white shadow-[0_10px_20px_rgba(6,25,66,0.14)] [&>svg]:h-7 [&>svg]:w-7" style="background-color: {{ $track['color'] }}">
@@ -238,6 +238,83 @@
                     </article>
                 @endforeach
             </div>
+
+            <article class="mt-10 rounded-xl border border-[#dce7f8] bg-white px-5 py-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+                <div class="grid gap-6 xl:grid-cols-[1.05fr_.95fr_1.25fr] xl:divide-x xl:divide-[#e6eef9]">
+                    <section class="xl:pr-6">
+                        <h2 class="mb-4 text-[16px] font-bold text-[#075fe4]">Your Current Program</h2>
+                        <div class="rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_6px_16px_rgba(6,25,66,0.04)]">
+                            <div class="mb-5 flex items-center gap-4">
+                                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#075fe4] text-white [&>svg]:h-6 [&>svg]:w-6 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">
+                                    @include('components.public.icon', ['name' => 'code'])
+                                </span>
+                                <div class="min-w-0">
+                                    <h3 id="currentProgramTitle" class="truncate text-[18px] font-bold text-[#061942]">Software Development</h3>
+                                    <p class="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-semibold text-[#34445e]">
+                                        <span>Training Partner:</span>
+                                        <strong id="currentProgramPartner" class="text-[18px] font-black leading-none text-[#176aa6]">EXCELR</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-3 text-[12px] font-bold text-[#34445e]">
+                                <span id="currentProgramBatch">Batch: SD-2024-06-01</span>
+                                <span id="currentProgramStatus" class="rounded-full bg-[#dff6ef] px-3 py-1 text-[11px] font-bold text-[#0b8b67]">Enrolled</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="xl:px-6">
+                        <h2 class="mb-4 text-[16px] font-bold text-[#075fe4]">Program Timeline</h2>
+                        <div class="grid gap-3 text-[12px] font-semibold text-[#34445e]">
+                            <div class="grid grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span class="text-[#526287]">@include('components.public.icon', ['name' => 'document'])</span>
+                                <span>Start Date</span>
+                                <strong id="programStartDate" class="font-bold text-[#061942]">01 Jun 2024</strong>
+                            </div>
+                            <div class="grid grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span class="text-[#526287]">@include('components.public.icon', ['name' => 'document'])</span>
+                                <span>Expected End Date</span>
+                                <strong id="programEndDate" class="font-bold text-[#061942]">15 Aug 2024</strong>
+                            </div>
+                            <div class="grid grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span class="text-[#526287]">@include('components.public.icon', ['name' => 'growth'])</span>
+                                <span>Duration</span>
+                                <strong id="programDuration" class="font-bold text-[#061942]">10 Weeks</strong>
+                            </div>
+                            <div class="grid grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span class="text-[#526287]">@include('components.public.icon', ['name' => 'training'])</span>
+                                <span>Classes</span>
+                                <strong id="programMode" class="font-bold text-[#061942]">Live Online</strong>
+                            </div>
+                        </div>
+                        <a href="/fast-track/training" class="mt-5 inline-flex h-9 w-full items-center justify-center rounded-md border border-[#9fc1f8] bg-white px-4 text-[13px] font-bold text-[#075fe4] shadow-[0_6px_14px_rgba(7,95,228,0.08)] transition hover:bg-[#f3f8ff]">View Class Schedule</a>
+                    </section>
+
+                    <section class="xl:pl-6">
+                        <h2 class="mb-4 text-[16px] font-bold text-[#075fe4]">Program Progress</h2>
+                        <div id="programProgressRows" class="grid gap-4 text-[12px] font-semibold text-[#34445e]">
+                            <div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span>Initial Assessment</span>
+                                <span id="initialAssessmentStatus" class="font-bold text-[#19a85b]">Completed</span>
+                                <span class="grid h-5 w-5 place-items-center rounded-full bg-[#19a85b] text-[11px] font-bold text-white">&#10003;</span>
+                            </div>
+                            <div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+                                <span>Training Progress</span>
+                                <span class="h-2 overflow-hidden rounded-full bg-[#e4ebf4]"><span id="programProgressBar" class="block h-full w-[40%] rounded-full bg-[#075fe4]"></span></span>
+                                <strong id="programProgressValue" class="font-bold text-[#061942]">40%</strong>
+                            </div>
+                            @foreach (['Final Assessment', 'Certification', 'Job Opportunities'] as $item)
+                                <div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+                                    <span>{{ $item }}</span>
+                                    <span class="h-2 rounded-full bg-[#e4ebf4]"></span>
+                                    <strong class="font-bold text-[#526287]">Upcoming</strong>
+                                </div>
+                            @endforeach
+                        </div>
+                        <a href="/fast-track/training-progress" class="mt-5 inline-flex h-9 w-full items-center justify-center rounded-md border border-[#9fc1f8] bg-white px-4 text-[13px] font-bold text-[#075fe4] shadow-[0_6px_14px_rgba(7,95,228,0.08)] transition hover:bg-[#f3f8ff]">View Full Progress</a>
+                    </section>
+                </div>
+            </article>
 
             <div class="mt-10">
                 <div class="mb-4 flex items-start justify-between gap-4">
@@ -318,7 +395,7 @@
                     <p class="text-[12px] font-semibold text-[#34445e]">Learn from the best. Get Certified. Get hired.</p>
                 </div>
 
-                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <div id="dynamicTrainingPartners" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     @foreach ($partners as $partner)
                         <article class="flex min-h-[94px] flex-col items-center justify-center rounded-lg border border-[#dce7f8] bg-white px-4 py-3 text-center shadow-[0_6px_16px_rgba(6,25,66,0.04)]">
                             <div class="mb-2 flex min-h-[34px] items-center justify-center gap-1.5">
@@ -548,6 +625,178 @@
         return '/storage/' + photo;
     }
 
+    function courseIconName(course) {
+        const text = String((course && (course.category || course.course_name || course.title)) || '').toLowerCase();
+        if (text.includes('data') || text.includes('analytics')) return 'data';
+        if (text.includes('market')) return 'marketing';
+        if (text.includes('cloud') || text.includes('aws')) return 'cloud';
+        if (text.includes('business') || text.includes('finance')) return 'briefcase';
+        return 'code';
+    }
+
+    function courseColorValue(course) {
+        const iconName = courseIconName(course);
+        return {
+            data: '#2fbf9b',
+            marketing: '#f59a23',
+            cloud: '#1f73ea',
+            briefcase: '#8239d7',
+            code: '#2563eb',
+        }[iconName] || '#2563eb';
+    }
+
+    function skillTagsFromCourse(course) {
+        return String((course && (course.skills_covered || course.skills || course.category)) || '')
+            .split(/[,|]/)
+            .map((skill) => skill.trim())
+            .filter(Boolean)
+            .slice(0, 4);
+    }
+
+    function renderDynamicCareerTracks(courses) {
+        const target = document.getElementById('dynamicCareerTracks');
+        if (!target || !Array.isArray(courses) || !courses.length) return;
+
+        target.innerHTML = courses.slice(0, 5).map((course) => {
+            const iconName = courseIconName(course);
+            const color = courseColorValue(course);
+            const title = course.course_name || course.title || course.name || 'Fast Track Course';
+            const text = course.description || course.short_description || 'Build job-ready skills with guided training.';
+            const tags = skillTagsFromCourse(course);
+            const detailUrl = course.id ? `/fast-track/course-details?course=${encodeURIComponent(course.id)}` : '/fast-track/courses';
+
+            return `
+                <article class="rounded-lg border border-[#dce7f8] bg-white px-4 py-5 text-center shadow-[0_6px_18px_rgba(6,25,66,0.05)]">
+                    <div class="mx-auto mb-4 grid h-[58px] w-[58px] place-items-center rounded-full text-white shadow-[0_10px_20px_rgba(6,25,66,0.14)] [&>svg]:h-7 [&>svg]:w-7" style="background-color: ${color}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${dashboardIcons[iconName] || dashboardIcons.course}</svg>
+                    </div>
+                    <h3 class="mb-2 text-[14px] font-bold leading-tight text-[#061942]">${FastTrack.esc(title)}</h3>
+                    <p class="mx-auto mb-3 min-h-[48px] max-w-[190px] text-[11px] font-semibold leading-4 text-[#34445e]">${FastTrack.esc(text)}</p>
+                    <p class="mb-2 text-[11px] font-bold text-[#061942]">Key Skills</p>
+                    <div class="mb-4 flex min-h-[52px] flex-wrap items-start justify-center gap-2">
+                        ${(tags.length ? tags : ['Job Skills', 'Projects', 'Assessment']).map((skill) => `<span class="rounded-full bg-[#f2f5f9] px-2.5 py-1 text-[10px] font-semibold text-[#34445e]">${FastTrack.esc(skill)}</span>`).join('')}
+                    </div>
+                    <a href="${detailUrl}" class="inline-flex h-8 min-w-[132px] items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-4 text-[11px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">View Details</a>
+                </article>
+            `;
+        }).join('');
+    }
+
+    function updateProgramCard(data) {
+        const latestEnrollment = data.latest_course_enrollment || null;
+        if (!latestEnrollment) return;
+
+        const course = latestEnrollment.course || {};
+        const progress = FastTrack.progress(latestEnrollment);
+        const status = FastTrack.statusText(latestEnrollment.training_status || latestEnrollment.status || 'enrolled');
+        const enrollmentDate = latestEnrollment.enrollment_date || latestEnrollment.created_at;
+
+        document.getElementById('currentProgramTitle').textContent = FastTrack.courseName(course);
+        document.getElementById('currentProgramPartner').textContent = FastTrack.partnerName(course);
+        document.getElementById('currentProgramBatch').textContent = 'Batch: ' + (latestEnrollment.batch_code || latestEnrollment.batch || ('FT-' + (course.id || '2024')));
+        document.getElementById('currentProgramStatus').textContent = status;
+        document.getElementById('programStartDate').textContent = FastTrack.date(enrollmentDate);
+        document.getElementById('programEndDate').textContent = FastTrack.date(latestEnrollment.expected_completion_date || latestEnrollment.end_date);
+        document.getElementById('programDuration').textContent = FastTrack.courseDuration(course);
+        document.getElementById('programMode').textContent = FastTrack.courseMode(course);
+        document.getElementById('programProgressBar').style.width = Math.max(0, Math.min(100, progress)) + '%';
+        document.getElementById('programProgressValue').textContent = progress + '%';
+    }
+
+    function assessmentSubmitted(assessment) {
+        if (!assessment) return false;
+        return ['submitted', 'completed', 'passed'].includes(String(assessment.status || '').toLowerCase()) ||
+            !!(assessment.submitted_at || assessment.completed_at || assessment.result);
+    }
+
+    function progressRow(label, state, percent) {
+        if (state === 'complete') {
+            return `<div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+                <span>${FastTrack.esc(label)}</span>
+                <span class="font-bold text-[#19a85b]">Completed</span>
+                <span class="grid h-5 w-5 place-items-center rounded-full bg-[#19a85b] text-[11px] font-bold text-white">&#10003;</span>
+            </div>`;
+        }
+
+        if (state === 'progress') {
+            const safePercent = Math.max(0, Math.min(100, Number(percent || 0)));
+            return `<div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+                <span>${FastTrack.esc(label)}</span>
+                <span class="h-2 overflow-hidden rounded-full bg-[#e4ebf4]"><span class="block h-full rounded-full bg-[#075fe4]" style="width:${safePercent}%"></span></span>
+                <strong class="font-bold text-[#061942]">${safePercent}%</strong>
+            </div>`;
+        }
+
+        return `<div class="grid grid-cols-[116px_minmax(0,1fr)_auto] items-center gap-3">
+            <span>${FastTrack.esc(label)}</span>
+            <span class="h-2 rounded-full bg-[#e4ebf4]"></span>
+            <strong class="font-bold text-[#526287]">Upcoming</strong>
+        </div>`;
+    }
+
+    function syncProgramProgressRows(states) {
+        const target = document.getElementById('programProgressRows');
+        if (!target) return;
+
+        target.innerHTML = [
+            progressRow('Initial Assessment', states.initial ? 'complete' : 'upcoming'),
+            progressRow('Training Progress', states.progress >= 100 ? 'complete' : (states.progress > 0 ? 'progress' : 'upcoming'), states.progress),
+            progressRow('Final Assessment', states.final ? 'complete' : 'upcoming'),
+            progressRow('Certification', states.certificate ? 'complete' : 'upcoming'),
+            progressRow('Job Opportunities', states.job ? 'complete' : 'upcoming'),
+        ].join('');
+    }
+
+    function syncProgramSteps(data) {
+        const latestEnrollment = data.latest_course_enrollment || null;
+        const assessment = data.initial_assessment || data.latest_assessment || data.assessment || data.assessment_result || null;
+        const finalAssessment = data.final_assessment || data.latest_final_assessment || null;
+        const stats = data.statistics || {};
+        const progress = latestEnrollment ? FastTrack.progress(latestEnrollment) : 0;
+        const certificates = Number(stats.total_certificates || stats.certificates || 0) + (Array.isArray(data.recent_certificates) ? data.recent_certificates.length : 0);
+        const hiredApplications = Number(stats.hired_applications || stats.total_hired || stats.hired || 0) +
+            (Array.isArray(data.recent_applications)
+                ? data.recent_applications.filter((item) => String(item.application_status || item.status || '').toLowerCase() === 'hired').length
+                : 0);
+
+        const states = {
+            initial: assessmentSubmitted(assessment),
+            training: !!latestEnrollment || progress > 0 || Number(stats.total_course_enrollments || 0) > 0,
+            progress,
+            final: assessmentSubmitted(finalAssessment) || progress >= 100,
+            certificate: certificates > 0,
+            job: hiredApplications > 0,
+        };
+
+        let activeStep = 1;
+        if (states.initial) activeStep = 2;
+        if (states.initial && states.training) activeStep = 3;
+        if (states.initial && states.training && states.final) activeStep = 4;
+        if (states.initial && states.training && states.final && states.certificate) activeStep = 5;
+        if (states.initial && states.training && states.final && states.certificate && states.job) activeStep = 6;
+
+        syncProgramProgressRows(states);
+
+        document.querySelectorAll('.fast-track-program-step').forEach((step) => {
+            const stepNumber = Number(step.dataset.step || 0);
+            const marker = step.querySelector('.fast-track-step-marker');
+            const line = step.querySelector('.fast-track-step-line');
+            const isActive = stepNumber <= activeStep;
+            const isCurrent = stepNumber === activeStep;
+
+            if (marker) {
+                marker.style.backgroundColor = isActive ? (isCurrent ? '#075fe4' : '#25ad82') : '#cbd5e1';
+                marker.style.boxShadow = isActive
+                    ? '0 10px 22px rgba(7,95,228,0.18)'
+                    : '0 8px 16px rgba(6,25,66,0.12)';
+            }
+
+            if (line) {
+                line.style.backgroundColor = stepNumber < activeStep ? '#25ad82' : '#d8e1ee';
+            }
+        });
+    }
+
     function setDashboardProfileCard(user, profile) {
         const displayName =
             user.name ||
@@ -638,6 +887,8 @@
         );
 
         setDashboardProfileCard(user, profile);
+        updateProgramCard(data);
+        syncProgramSteps(data);
 
         localStorage.setItem(
             'ofc_auth_user',
@@ -953,10 +1204,19 @@
             .catch(() => ({
                 data: {}
             })),
+
+        FastTrack
+            .getJson('/api/courses')
+            .catch(() => ({
+                data: {
+                    courses: []
+                }
+            })),
     ])
     .then(function (responses) {
         const dashboardResponse = responses[0];
         const profileResponse = responses[2];
+        const coursesResponse = responses[3];
 
         const unread =
             FastTrack.apiData(
@@ -970,6 +1230,7 @@
         }
         const dashboard = FastTrack.apiData(dashboardResponse) || {};
         const profileData = FastTrack.apiData(profileResponse) || {};
+        const courses = FastTrack.apiData(coursesResponse, 'courses') || [];
         dashboard.user = profileData.user || dashboard.user;
         dashboard.profile = Object.assign({}, dashboard.profile || {}, profileData.profile || {});
 
@@ -979,6 +1240,7 @@
             window.location.href = '/direct-mode/flow-selection';
             return;
         }
+        renderDynamicCareerTracks(courses);
         renderDashboard(dashboard, unread);
     }).catch(renderProfileMissing);
 </script>
