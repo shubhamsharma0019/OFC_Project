@@ -6,7 +6,98 @@
     <title>@yield('title', 'OnlyFreshers Admin')</title>
     @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        #admin-layout,
+        #admin-layout * {
+            font-family: Inter, Arial, Helvetica, sans-serif !important;
+            font-weight: 500 !important;
+        }
+
+        #admin-layout h1,
+        #admin-layout h2,
+        #admin-layout h3,
+        #admin-layout strong,
+        #admin-layout .font-bold,
+        #admin-layout .font-semibold,
+        #admin-layout .font-black {
+            font-weight: 600 !important;
+        }
+    </style>
     @stack('styles')
+    <style>
+        #admin-layout,
+        #admin-layout *,
+        #admin-sidebar,
+        #admin-sidebar * {
+            font-family: Inter, Arial, Helvetica, sans-serif !important;
+            font-weight: 500 !important;
+        }
+
+        #admin-layout table,
+        #admin-layout thead,
+        #admin-layout tbody,
+        #admin-layout tr,
+        #admin-layout th,
+        #admin-layout td,
+        #admin-layout input,
+        #admin-layout select,
+        #admin-layout textarea,
+        #admin-layout a,
+        #admin-layout p,
+        #admin-layout span,
+        #admin-layout div {
+            font-family: Inter, Arial, Helvetica, sans-serif !important;
+        }
+
+        #admin-layout h1,
+        #admin-layout h2,
+        #admin-layout h3,
+        #admin-layout h4,
+        #admin-layout b,
+        #admin-layout button,
+        #admin-layout thead,
+        #admin-layout th,
+        #admin-layout .font-bold,
+        #admin-layout .font-semibold,
+        #admin-layout .font-black,
+        #admin-sidebar .font-bold,
+        #admin-sidebar .font-semibold,
+        #admin-sidebar .font-black {
+            font-weight: 600 !important;
+        }
+
+        #admin-layout tbody,
+        #admin-layout tbody *,
+        #admin-layout td,
+        #admin-layout td *,
+        #admin-layout td strong,
+        #admin-layout .admin-rows,
+        #admin-layout #adminRows,
+        #admin-layout #adminRows *,
+        #admin-layout .divide-y,
+        #admin-layout .divide-y * {
+            font-weight: 500 !important;
+        }
+
+        #admin-layout td .font-bold,
+        #admin-layout td .font-semibold,
+        #admin-layout td .font-black,
+        #admin-layout td strong,
+        #admin-layout td b {
+            font-weight: 500 !important;
+        }
+
+        #admin-layout th,
+        #admin-layout button,
+        #admin-layout .rounded-md[class*="bg-"],
+        #admin-layout .rounded-full[class*="bg-"],
+        #admin-layout .admin-pill,
+        #admin-layout .admin-list-row h3,
+        #admin-layout .admin-feed-card h3,
+        #admin-layout .admin-enrollment-card h3 {
+            font-weight: 600 !important;
+        }
+    </style>
 </head>
 <body class="h-screen overflow-hidden bg-[#f4f8ff] font-sans font-medium text-[#061942] antialiased">
     <div id="admin-layout" class="h-screen lg:grid lg:grid-cols-[220px_minmax(0,1fr)]">

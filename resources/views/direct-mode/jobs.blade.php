@@ -3,7 +3,7 @@
     $menuItems = $menuItems ?? [
         ['key' => 'dashboard', 'title' => 'Dashboard', 'icon' => 'home', 'url' => '/direct-mode/dashboard'],
         ['key' => 'profile', 'title' => 'My Profile', 'icon' => 'user', 'url' => '/direct-mode/profile'],
-        ['key' => 'jobs', 'title' => 'Jobs', 'icon' => 'briefcase', 'url' => '/direct-mode/jobs'],
+        ['key' => 'jobs', 'title' => 'Jobs and Internships', 'icon' => 'briefcase', 'url' => '/direct-mode/jobs'],
         ['key' => 'applications', 'title' => 'My Applications', 'icon' => 'file', 'url' => '/direct-mode/applications'],
         ['key' => 'interviews', 'title' => 'Interviews', 'icon' => 'clock', 'url' => '/direct-mode/interviews'],
         ['key' => 'offers', 'title' => 'Offers', 'icon' => 'chart', 'url' => '/direct-mode/offers'],
@@ -17,7 +17,7 @@
 
 @extends('layouts.direct-mode')
 
-@section('title', 'Jobs - Direct Mode')
+@section('title', 'Jobs and Internships - Direct Mode')
 
 @push('styles')
 <style>
@@ -39,7 +39,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 <div class="layout">
                     <section class="card jobs-panel">
                         <div class="alert" data-alert></div>
-                        <div class="jobs-head"><h2>Jobs</h2><p>Explore and apply to the best job opportunities</p></div>
+                        <div class="jobs-head"><h2>Jobs and Internships</h2><p>Explore and apply to the best jobs and internships</p></div>
                         <div class="filters-row">
                             <label class="input"><span class="icon" data-icon="search"></span><input data-search type="search" placeholder="Search job title or company"></label>
                             <label class="select top-filter"><select data-top-location><option value="">Location</option></select><span class="icon" data-icon="chevron"></span></label>
@@ -244,7 +244,17 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     return salary >= 10;
                 });
             }
-            if (filters.jobTypes.length) jobs = jobs.filter(job => filters.jobTypes.some(type => normalize(jobType(job)) === normalize(type)));
+            if (filters.jobTypes.length) {
+                const typeAliases = {
+                    full: ['full', 'full time', 'full-time'],
+                    part: ['part', 'part time', 'part-time'],
+                    internship: ['internship', 'intern', 'internships'],
+                };
+                jobs = jobs.filter(job => {
+                    const value = normalize(jobType(job));
+                    return filters.jobTypes.some(type => (typeAliases[type] || [type]).includes(value));
+                });
+            }
 
             const sorters = {
                 newest: (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0),
@@ -271,7 +281,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const list = $('[data-job-list]');
             const count = $('[data-count]');
             const total = state.filtered.length;
-            count.textContent = total ? `Showing ${total} jobs` : 'Showing 0 jobs';
+            count.textContent = total ? `Showing ${total} jobs and internships` : 'Showing 0 jobs and internships';
             if (!total) {
                 list.innerHTML = '<div class="empty">No direct mode jobs match these filters.</div>';
                 return;
@@ -475,7 +485,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     window.location.href = '/fast-track/dashboard';
                     return false;
                 }
-                if (selectedMode !== 'direct') {
+                if (!['direct', 'internship'].includes(selectedMode)) {
                     window.location.href = '/direct-mode/flow-selection';
                     return false;
                 }
@@ -505,15 +515,26 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 state.jobs = payload.data?.jobs || [];
                 buildFilters();
                 const initialSearch = new URLSearchParams(window.location.search).get('search') || '';
+                const initialType = new URLSearchParams(window.location.search).get('type') || '';
                 if (initialSearch) {
                     $('[data-search]').value = initialSearch;
                     const headerSearch = document.querySelector('[data-global-search]') || document.querySelector('.search-top input');
                     if (headerSearch) headerSearch.value = initialSearch;
                 }
+                if (normalize(initialType) === 'internship') {
+                    const topExperience = $('[data-top-experience]');
+                    const experienceFilter = $('[data-experience-filter]');
+                    if (topExperience) topExperience.value = 'internship';
+                    if (experienceFilter) experienceFilter.value = 'internship';
+                    $$('[data-job-type]').forEach(input => {
+                        input.checked = input.value === 'internship';
+                    });
+                    localStorage.setItem('onlyfreshers_selected_mode', 'internship');
+                }
                 applyFilters();
             } catch (error) {
                 $('[data-job-list]').innerHTML = '<div class="empty">Jobs load nahi ho pa rahe. Backend API check karein.</div>';
-                $('[data-count]').textContent = 'Showing 0 jobs';
+                $('[data-count]').textContent = 'Showing 0 jobs and internships';
             }
         }
 

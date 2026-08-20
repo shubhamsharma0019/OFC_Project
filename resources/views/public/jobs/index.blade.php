@@ -33,7 +33,7 @@
                     </div>
                 </div>
 
-                <div class="relative flex min-h-[250px] items-center justify-center bg-white px-6 py-7 sm:min-h-[280px] lg:h-full lg:min-h-0">
+                <div class="relative flex min-h-[250px] items-center justify-center px-6 py-7 sm:min-h-[280px] lg:h-full lg:min-h-0">
                     <img src="{{ asset('company-hero.png') }}" alt="Company fresher hiring illustration" class="h-full max-h-[280px] w-full object-contain lg:max-h-[300px]">
                 </div>
             </div>

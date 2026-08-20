@@ -31,7 +31,7 @@
                 <a href="{{ $hero['href'] }}" class="inline-flex h-11 min-w-[132px] items-center justify-center rounded-md bg-[#075fe4] px-6 text-[13px] font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,0.20)] transition hover:bg-[#0554cc]">{{ $hero['button'] }}</a>
             </div>
 
-            <div class="relative flex min-h-[250px] items-center justify-center bg-white px-6 py-7 sm:min-h-[280px] lg:h-full lg:min-h-0">
+            <div class="relative flex min-h-[250px] items-center justify-center px-6 py-7 sm:min-h-[280px] lg:h-full lg:min-h-0">
                 <img src="{{ asset($hero['image']) }}" alt="{{ $hero['title'] }}" class="h-full max-h-[280px] w-full object-contain lg:max-h-[300px]">
             </div>
         </div>

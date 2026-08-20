@@ -91,6 +91,7 @@ Route::view('/certificates/verify', 'public.certificates.verify');
 
 Route::get('/company/dashboard-preview', CompanyDashboardPageController::class);
 Route::get('/company/dashboard', CompanyDashboardPageController::class);
+Route::view('/company/billing', 'company.billing.index');
 
 Route::view('/company/profile', 'company.profile.show');
 Route::view('/company/profile/edit', 'company.profile.edit');

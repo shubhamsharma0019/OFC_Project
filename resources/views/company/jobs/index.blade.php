@@ -1,8 +1,8 @@
 @extends('layouts.company')
 
-@section('title', 'My Jobs - OnlyFreshers')
-@section('pageTitle', 'My Jobs')
-@section('pageSubtitle', 'Manage and view all your posted jobs.')
+@section('title', 'Jobs and Internships - OnlyFreshers')
+@section('pageTitle', 'Jobs and Internships')
+@section('pageSubtitle', 'Manage and view all your posted jobs and internships.')
 
 @php $activePage = 'jobs'; @endphp
 

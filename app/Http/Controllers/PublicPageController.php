@@ -92,8 +92,8 @@ class PublicPageController extends Controller
             ],
             'companyCta' => [
                 'title' => 'Hire Freshers with Confidence',
-                'text' => 'Post jobs, review applications, shortlist candidates, and hire top talent.',
-                'button' => 'Post a Job',
+                'text' => 'Post jobs or internships, review applications, shortlist candidates, and hire top talent.',
+                'button' => 'Post Opportunity',
                 'href' => '/company/post-job',
             ],
             'fastTrackSteps' => [

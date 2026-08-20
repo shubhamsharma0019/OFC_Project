@@ -199,8 +199,8 @@ class CompanyJobController extends Controller
         return response()->json([
             'success' => true,
             'message' => $job->status === 'active'
-                ? 'Job published successfully.'
-                : 'Job saved as draft successfully.',
+                ? 'Opportunity published successfully.'
+                : 'Opportunity saved as draft successfully.',
             'data' => [
                 'job' => $job,
             ],

@@ -94,16 +94,34 @@ class FresherJobApplicationController extends Controller
             ], 422);
         }
 
-        $assessmentSubmitted = AssessmentAttempt::query()
+        $initialAssessment = AssessmentAttempt::query()
             ->where('fresher_profile_id', $fresherProfile->id)
             ->where('assessment_type', 'initial')
             ->where('status', 'submitted')
-            ->exists();
+            ->with('result')
+            ->latest('updated_at')
+            ->first();
 
-        if (! $isFastTrackJob && ! $assessmentSubmitted) {
+        if (! $isFastTrackJob && ! $initialAssessment) {
             return response()->json([
                 'success' => false,
-                'message' => 'Job apply karne se pehle initial assessment complete karein.',
+                'message' => 'Job ya internship apply karne se pehle initial assessment complete karein.',
+            ], 422);
+        }
+
+        $minimumDirectScore = (float) config(
+            'onlyfreshers.assessment.internship_eligibility_score',
+            50
+        );
+
+        if (
+            ! $isFastTrackJob &&
+            (float) ($initialAssessment?->result?->overall_score ?? 0) <
+                $minimumDirectScore
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => "Jobs aur internships apply karne ke liye initial assessment score {$minimumDirectScore}+ hona chahiye.",
             ], 422);
         }
 

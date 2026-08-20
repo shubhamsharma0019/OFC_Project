@@ -31,7 +31,7 @@
                 <a href="{{ $hero['href'] }}" class="inline-flex h-11 min-w-[170px] items-center justify-center rounded-md bg-[#075fe4] px-6 text-[13px] font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,0.20)] transition hover:bg-[#0554cc]">{{ $hero['button'] }}</a>
             </div>
 
-            <div class="relative flex min-h-[250px] items-center justify-center bg-white px-6 py-7 sm:min-h-[280px] lg:h-full lg:min-h-0">
+            <div class="relative flex min-h-[250px] items-center justify-center px-6 py-7 sm:min-h-[280px] lg:h-full lg:min-h-0">
                 <img src="{{ asset($hero['image']) }}" alt="{{ $hero['title'] }}" class="h-full max-h-[280px] w-full object-contain lg:max-h-[300px]">
             </div>
         </div>
@@ -201,39 +201,7 @@
     </section>
 
     <section class="bg-white pb-8">
-        <div class="mx-auto grid w-full max-w-7xl gap-8 px-5 sm:px-6 lg:px-8 xl:grid-cols-[1fr_390px]">
-            <div>
-                <div class="mb-4 flex items-start justify-between gap-4">
-                    <div>
-                        <h2 class="mb-1 text-[22px] font-bold text-[#061942]">{{ $plansHeader['title'] }}</h2>
-                        <p class="text-[12px] font-semibold text-[#34445e]">{{ $plansHeader['text'] }}</p>
-                    </div>
-                    <p class="hidden items-center gap-1.5 text-[12px] font-bold text-[#07518f] sm:flex">
-                        <span class="grid h-4 w-4 place-items-center rounded-sm border border-[#9bb7dc] bg-[#edf5ff] text-[10px]">₹</span>
-                        {{ $plansHeader['emi'] }}
-                    </p>
-                </div>
-
-                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    @foreach ($fastTrackPlans as $plan)
-                        <article class="relative rounded-lg border bg-white px-5 pb-5 pt-4 text-center shadow-[0_6px_18px_rgba(6,25,66,0.05)] {{ $plan['popular'] ? 'border-[#075fe4] ring-1 ring-[#075fe4]' : 'border-[#dce7f8]' }}">
-                            @if ($plan['popular'])
-                                <span class="absolute left-1/2 top-0 inline-flex h-7 min-w-[116px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#075fe4] px-4 text-[11px] font-bold text-white shadow-[0_8px_16px_rgba(7,95,228,0.2)]">{{ $planLabels['popular'] }}</span>
-                            @endif
-                            <h3 class="mb-2 text-[15px] font-bold text-[#061942]">{{ $plan['name'] }}</h3>
-                            <p class="mx-auto mb-3 min-h-[32px] max-w-[175px] text-[11px] font-semibold leading-4 text-[#34445e]">{{ $plan['desc'] }}</p>
-                            <p class="mb-1 text-[25px] font-black leading-none text-[#061942]">₹{{ $plan['price'] }}</p>
-                            <p class="mb-3 text-[10px] font-bold text-[#075fe4]">{{ $planLabels['taxes'] }}</p>
-                            <a href="{{ $planLabels['href'] }}" class="mb-4 inline-flex h-8 min-w-[132px] items-center justify-center rounded-md bg-[#075fe4] px-4 text-[11px] font-bold text-white shadow-[0_8px_15px_rgba(7,95,228,0.18)] transition hover:bg-[#0554cc]">{{ $planLabels['button'] }}</a>
-                            <ul class="grid gap-2 text-left text-[11px] font-semibold text-[#061942]">
-                                @foreach ($plan['items'] as $item)
-                                    <li class="flex items-start gap-2"><span class="font-bold text-[#1a8c62]">✓</span><span>{{ $item }}</span></li>
-                                @endforeach
-                            </ul>
-                        </article>
-                    @endforeach
-                </div>
-            </div>
+        <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
 
             <aside class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_6px_18px_rgba(6,25,66,0.05)]">
                 <h2 class="mb-4 text-[16px] font-bold text-[#061942]">{{ $faqHeader['title'] }}</h2>

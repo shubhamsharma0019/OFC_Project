@@ -4,7 +4,7 @@
     $menuItems = $menuItems ?? [
         ['key' => 'dashboard', 'title' => 'Dashboard', 'url' => '/direct-mode/dashboard', 'icon' => 'home'],
         ['key' => 'profile', 'title' => 'My Profile', 'url' => '/direct-mode/profile', 'icon' => 'user'],
-        ['key' => 'jobs', 'title' => 'Jobs', 'url' => '/direct-mode/jobs', 'icon' => 'briefcase'],
+        ['key' => 'jobs', 'title' => 'Jobs and Internships', 'url' => '/direct-mode/jobs', 'icon' => 'briefcase'],
         ['key' => 'applications', 'title' => 'My Applications', 'url' => '/direct-mode/applications', 'icon' => 'file'],
         ['key' => 'interviews', 'title' => 'Interviews', 'url' => '/direct-mode/interviews', 'icon' => 'clock'],
         ['key' => 'offers', 'title' => 'Offers', 'url' => '/direct-mode/offers', 'icon' => 'trophy'],
@@ -48,7 +48,9 @@
         .shell>.sidebar .brand{height:82px!important;display:flex!important;align-items:center!important;padding:0 34px!important;border-bottom:1px solid #d8e4f7!important}
         .shell>.sidebar .brand img{display:block!important;width:200px!important;max-width:100%!important;height:auto!important;object-fit:contain!important;object-position:left center!important}
         .shell>.sidebar .menu{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow:hidden!important;padding:24px 18px 12px!important;display:grid!important;align-content:start!important;gap:8px!important}
-        .shell>.sidebar .menu-item{min-height:46px!important;height:auto!important;border-radius:8px!important;display:flex!important;align-items:center!important;gap:15px!important;padding:0 18px!important;font-size:14px!important;font-weight:700!important;position:relative!important;color:#06123f!important;white-space:nowrap!important}
+        .shell>.sidebar,
+        .shell>.sidebar *{font-family:Inter,Arial,Helvetica,sans-serif!important}
+        .shell>.sidebar .menu-item{min-height:46px!important;height:auto!important;border-radius:8px!important;display:flex!important;align-items:center!important;gap:15px!important;padding:0 18px!important;font-size:14px!important;font-weight:500!important;position:relative!important;color:#06123f!important;white-space:nowrap!important}
         .shell>.sidebar .menu-item.active{background:#eaf2ff!important;color:#064cff!important}
         .shell>.sidebar .menu-item.active:before{content:""!important;position:absolute!important;left:0!important;top:11px!important;bottom:11px!important;width:3px!important;background:#064cff!important;border-radius:6px!important}
         @media(max-width:900px){

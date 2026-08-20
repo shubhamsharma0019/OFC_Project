@@ -65,7 +65,12 @@ class CompanyDashboardController extends Controller
 
         $recentJobs = Job::query()
             ->where('company_profile_id', $companyProfile->id)
-            ->withCount('applications')
+            ->withCount([
+                'applications',
+                'applications as shortlisted_applications_count' => function ($query) {
+                    $query->where('application_status', 'shortlisted');
+                },
+            ])
             ->latest()
             ->limit(5)
             ->get();
@@ -85,6 +90,20 @@ class CompanyDashboardController extends Controller
             ->latest('applied_at')
             ->limit(5)
             ->get();
+
+        $freeJobPostings = (int) config(
+            'onlyfreshers.company.free_job_postings',
+            3
+        );
+        $directModeFreeResumesPerJob = (int) config(
+            'onlyfreshers.company.direct_mode_free_resumes_per_job',
+            5
+        );
+        $fastTrackFreeResumesPerJob = (int) config(
+            'onlyfreshers.company.fast_track_free_resumes_per_job',
+            2
+        );
+        $usedJobPostings = (clone $jobQuery)->count();
 
         return response()->json([
             'success' => true,
@@ -180,6 +199,35 @@ class CompanyDashboardController extends Controller
                     'scheduled_interviews' =>
                         $upcomingInterviews->count(),
                 ],
+
+                'free_limits' => [
+                    'job_postings' => [
+                        'used' => min($usedJobPostings, $freeJobPostings),
+                        'total' => $freeJobPostings,
+                        'remaining' => max(
+                            0,
+                            $freeJobPostings - $usedJobPostings
+                        ),
+                        'recent_on' => optional(
+                            (clone $jobQuery)->latest()->first()?->created_at
+                        )->format('d M Y'),
+                    ],
+                    'direct_mode_resumes_per_job' => [
+                        'used' => 0,
+                        'total' => $directModeFreeResumesPerJob,
+                        'remaining' => $directModeFreeResumesPerJob,
+                    ],
+                    'fast_track_resumes_per_job' => [
+                        'used' => 0,
+                        'total' => $fastTrackFreeResumesPerJob,
+                        'remaining' => $fastTrackFreeResumesPerJob,
+                    ],
+                ],
+
+                'dashboard_config' => config(
+                    'onlyfreshers.company.dashboard',
+                    []
+                ),
 
                 'upcoming_interviews' => $upcomingInterviews,
 

@@ -1,8 +1,8 @@
 @extends('layouts.company')
 
-@section('title', 'Post a Job - OnlyFreshers')
-@section('pageTitle', 'Post a Job')
-@section('pageSubtitle', 'Fill in the details to post a new job.')
+@section('title', 'Post Opportunity - OnlyFreshers')
+@section('pageTitle', 'Post Opportunity')
+@section('pageSubtitle', 'Fill in the details to post a job or internship.')
 
 @php
     $activePage = 'post-job';
@@ -89,7 +89,7 @@
                 for="jobTitle"
                 class="mb-2 block text-[13px] font-bold text-[#061942]"
             >
-                Job Title
+                Opportunity Title
                 <span class="text-[#ff3045]">*</span>
             </label>
 
@@ -97,7 +97,7 @@
                 id="jobTitle"
                 name="title"
                 type="text"
-                placeholder="Enter job title"
+                placeholder="Enter job or internship title"
                 required
                 class="h-[50px] w-full
                        rounded-lg
@@ -190,6 +190,12 @@
                 @endforeach
 
             </select>
+            <p
+                id="internshipHint"
+                class="mt-2 hidden rounded-lg border border-[#cfe0ff] bg-[#f4f8ff] px-3 py-2 text-[12px] font-medium text-[#075fe4]"
+            >
+                Internship selected: candidates will apply after Initial Assessment. Scores above 50 can access both jobs and internships.
+            </p>
 
         </div>
 
@@ -597,7 +603,7 @@
                    hover:bg-[#0554cc]
                    md:col-span-2"
         >
-            Publish Job
+            Publish Opportunity
         </button>
 
     </form>
@@ -641,6 +647,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const skillsList =
         document.getElementById('skillsList');
+
+    const employmentTypeSelect =
+        document.getElementById('employmentType');
+
+    const jobTitleInput =
+        document.getElementById('jobTitle');
+
+    const locationInput =
+        document.getElementById('location');
+
+    const salaryInput =
+        document.getElementById('salary');
+
+    const internshipHint =
+        document.getElementById('internshipHint');
 
 
     /*
@@ -1018,6 +1039,61 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Internship UI Mode
+    |--------------------------------------------------------------------------
+    */
+
+    function isInternshipSelected() {
+
+        return String(employmentTypeSelect?.value || '')
+            .toLowerCase()
+            .includes('internship');
+    }
+
+    function updateInternshipMode() {
+
+        const internship =
+            isInternshipSelected();
+
+        if (jobTitleInput) {
+            jobTitleInput.placeholder =
+                internship
+                    ? 'Example: Frontend Developer Intern'
+                    : 'Example: Software Developer';
+        }
+
+        if (locationInput) {
+            locationInput.placeholder =
+                internship
+                    ? 'Example: Remote / Noida / Hybrid'
+                    : 'Enter job location';
+        }
+
+        if (salaryInput) {
+            salaryInput.placeholder =
+                internship
+                    ? 'Example: ₹8,000 - ₹15,000 stipend'
+                    : 'Example: 3-5 LPA';
+        }
+
+        if (internshipHint) {
+            internshipHint.classList.toggle(
+                'hidden',
+                !internship
+            );
+        }
+
+        if (publishButton) {
+            publishButton.textContent =
+                internship
+                    ? 'Post Internship'
+                    : 'Publish Opportunity';
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Company Permission
     |--------------------------------------------------------------------------
     */
@@ -1282,14 +1358,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error(
                     validationMessage ||
                     result.message ||
-                    'Unable to save job.'
+                    'Unable to save opportunity.'
                 );
             }
 
 
             showMessage(
                 result.message ||
-                'Job saved successfully.',
+                'Opportunity saved successfully.',
                 'success'
             );
 
@@ -1307,7 +1383,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (error) {
 
             console.error(
-                'Post job error:',
+                'Post opportunity error:',
                 error
             );
 
@@ -1328,7 +1404,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             publishButton.textContent =
-                'Publish Job';
+                'Publish Opportunity';
+
+            updateInternshipMode();
         }
     }
 
@@ -1348,6 +1426,13 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         }
     );
+
+    employmentTypeSelect?.addEventListener(
+        'change',
+        updateInternshipMode
+    );
+
+    updateInternshipMode();
 
 
     /*

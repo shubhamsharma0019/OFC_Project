@@ -40,7 +40,7 @@
     <div id="company-layout" class="h-screen lg:grid lg:grid-cols-[250px_minmax(0,1fr)]">
         <aside
             id="company-sidebar"
-            class="fixed inset-y-0 left-0 z-[1000] flex h-screen w-[280px] max-w-[86vw] -translate-x-[105%] flex-col justify-between overflow-hidden border-r border-[#dce7f8] bg-white px-[18px] pb-7 shadow-[18px_0_36px_rgba(6,25,66,.16)] transition-transform duration-200 ease-out lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none"
+            class="fixed inset-y-0 left-0 z-[1000] flex h-screen w-[280px] max-w-[86vw] -translate-x-[105%] flex-col justify-between overflow-y-auto overflow-x-hidden border-r border-[#dce7f8] bg-white px-[18px] pb-7 shadow-[18px_0_36px_rgba(6,25,66,.16)] transition-transform duration-200 ease-out lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none"
         >
             @include('components.company.sidebar')
         </aside>

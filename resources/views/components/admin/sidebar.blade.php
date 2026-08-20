@@ -37,7 +37,7 @@
 
     <nav class="grid gap-2">
         @foreach ($adminMenuItems as $item)
-            <a href="{{ $item['url'] }}" class="flex min-h-[42px] items-center gap-3.5 rounded-lg px-3 text-sm font-bold {{ ($activePage ?? '') === $item['key'] ? 'border-l-4 border-[#075fe4] bg-[#eaf2ff] text-[#075fe4]' : 'text-[#24344f]' }}">
+            <a href="{{ $item['url'] }}" class="flex min-h-[42px] items-center gap-3.5 rounded-lg px-3 text-sm font-medium {{ ($activePage ?? '') === $item['key'] ? 'border-l-4 border-[#075fe4] bg-[#eaf2ff] text-[#075fe4]' : 'text-[#24344f]' }}">
                 <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#eaf2ff] text-[#075fe4]">
                     <svg class="h-[17px] w-[17px]" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $item['icon'] !!}</svg>
                 </span>
@@ -51,7 +51,7 @@
         <svg class="h-6 w-6" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path></svg>
     </div>
     <div class="min-w-0">
-        <h3 class="mb-1 truncate text-[15px] font-semibold text-[#061942]">Admin Panel</h3>
+        <h3 class="mb-1 truncate text-[15px] font-medium text-[#061942]">Admin Panel</h3>
         <p class="truncate text-[13px] text-[#52607a]">Super Admin</p>
     </div>
     <button id="profileMenuButton" type="button" class="ml-auto flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-lg border border-[#dce7f8] bg-white text-[#075fe4]" aria-label="Open admin menu">
@@ -59,7 +59,7 @@
     </button>
     <div id="profileMenu" class="absolute bottom-[58px] right-0 z-20 hidden w-[168px] rounded-lg border border-[#dce7f8] bg-white p-2 shadow-[0_12px_28px_rgba(6,25,66,.12)]">
         <div class="mb-1.5 border-b border-[#edf2fb] px-2.5 py-2 text-xs text-[#52607a]">admin@ofc.com</div>
-        <a href="/admin/login" id="adminLogout" class="flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] font-bold text-[#ff1f2f] hover:bg-[#fff0f1]">
+        <a href="/admin/login" id="adminLogout" class="flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] font-medium text-[#ff1f2f] hover:bg-[#fff0f1]">
             <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
             Logout
         </a>

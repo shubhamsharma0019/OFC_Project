@@ -62,12 +62,33 @@ class FresherDashboardController extends Controller
         $assessmentResult = $initialAssessment?->result;
         $directModeThreshold = (float) config(
             'onlyfreshers.assessment.direct_mode_threshold',
-            33
+            50
+        );
+        $internshipEligibilityScore = (float) config(
+            'onlyfreshers.assessment.internship_eligibility_score',
+            50
         );
         $overallScore = (float) ($assessmentResult?->overall_score ?? 0);
         $recommendedMode = $assessmentResult
             ? ($overallScore >= $directModeThreshold ? 'direct' : 'fast_track')
             : null;
+        $directCareerEligible =
+            $assessmentResult &&
+            $overallScore >= $internshipEligibilityScore;
+        $freeApplicationCredits = (int) config(
+            'onlyfreshers.direct_mode.free_application_credits',
+            500
+        );
+        $applicationCreditCost = (int) config(
+            'onlyfreshers.direct_mode.application_credit_cost',
+            1
+        );
+        $usedApplicationCredits =
+            (clone $applicationQuery)->count() * $applicationCreditCost;
+        $remainingApplicationCredits = max(
+            0,
+            $freeApplicationCredits - $usedApplicationCredits
+        );
 
         $upcomingInterviews = Interview::query()
             ->whereHas('jobApplication', function ($query) use (
@@ -200,6 +221,13 @@ class FresherDashboardController extends Controller
                     'profile_views' => 0,
                 ],
 
+                'direct_mode_credits' => [
+                    'free' => $freeApplicationCredits,
+                    'used' => $usedApplicationCredits,
+                    'remaining' => $remainingApplicationCredits,
+                    'application_cost' => $applicationCreditCost,
+                ],
+
                 'initial_assessment' => $initialAssessment
                     ? [
                         'attempt_id' => $initialAssessment->id,
@@ -208,7 +236,14 @@ class FresherDashboardController extends Controller
                             $initialAssessment->submitted_at,
                         'result' => $assessmentResult,
                         'direct_mode_threshold' => $directModeThreshold,
+                        'internship_eligibility_score' =>
+                            $internshipEligibilityScore,
                         'recommended_mode' => $recommendedMode,
+                        'eligible_paths' => [
+                            'jobs' => $directCareerEligible,
+                            'internships' => $directCareerEligible,
+                            'fast_track' => true,
+                        ],
                     ]
                     : null,
 

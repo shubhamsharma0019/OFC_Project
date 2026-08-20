@@ -72,6 +72,23 @@ class PublicJobController extends Controller
                     );
                 }
             )
+            ->when(
+                $request->filled('job_type'),
+                function ($query) use ($request) {
+                    $jobType = strtolower(
+                        str_replace(
+                            ['_', '-'],
+                            ' ',
+                            $request->string('job_type')->toString()
+                        )
+                    );
+
+                    $query->whereRaw(
+                        'LOWER(REPLACE(job_type, ?, ?)) = ?',
+                        ['_', ' ', $jobType]
+                    );
+                }
+            )
             ->latest()
             ->get();
 

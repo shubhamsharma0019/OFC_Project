@@ -36,7 +36,7 @@
     <div class="alert" data-alert></div>
     <div class="panel">
         <div class="hero">
-            <div class="hero-title"><h2>Choose Your Flow</h2><p>Complete the initial check and choose Direct Mode or Fast Track Mode.</p></div>
+            <div class="hero-title"><h2>Choose Your Flow</h2><p>Complete the initial check, then choose Jobs, Internships or Fast Track Mode.</p></div>
             <article class="stat"><span class="stat-icon green" data-icon="users"></span><div><h3>Assessments Taken</h3><strong data-stat="taken">0</strong><span data-note="taken">Not started</span></div></article>
             <article class="stat"><span class="stat-icon purple" data-icon="calendar"></span><div><h3>Average Score</h3><strong data-stat="score">0%</strong><span data-note="score">Pending</span></div></article>
             <article class="stat"><span class="stat-icon orange" data-icon="trophy"></span><div><h3>Rank</h3><strong data-stat="rank">Top 100%</strong><span data-note="rank">Start now</span></div></article>
@@ -63,7 +63,8 @@
                         <div class="skill" data-skill="communication"><span>Communication</span><div class="bar"><span style="width:0%"></span></div><strong>0%</strong></div>
                         <button class="outline" type="button" data-start-assessment>Start Assessment</button>
                         <div class="mode-actions" data-mode-actions style="display:none;margin-top:14px;gap:10px;flex-wrap:wrap">
-                            <button class="outline" type="button" data-choose-mode="direct">Continue with Direct Mode</button>
+                            <button class="outline" type="button" data-choose-mode="direct">Continue with Jobs</button>
+                            <button class="outline" type="button" data-choose-mode="internship">Continue with Internships</button>
                             <button class="outline" type="button" data-choose-mode="fast_track">Continue with Fast Track Mode</button>
                         </div>
                     </div>
@@ -167,14 +168,17 @@
         setSkill('aptitude', result?.aptitude_score);
         setSkill('communication', result?.communication_score);
         const recommended = data?.initial_assessment?.recommended_mode || null;
+        const eligiblePaths = data?.initial_assessment?.eligible_paths || {};
         qs('[data-track-title]').textContent = result
-            ? (recommended === 'fast_track' ? 'Fast Track Mode Recommended' : 'Direct Mode Recommended')
+            ? (recommended === 'fast_track' ? 'Fast Track Mode Recommended' : 'Jobs & Internships Unlocked')
             : 'Initial Assessment';
         qs('[data-track-text]').textContent = result
             ? (recommended === 'fast_track'
-                ? 'Your score suggests training first will help you become job-ready faster. You can still choose Direct Mode if you want.'
-                : 'Your score shows you are ready to continue with Direct Mode jobs. You can still choose Fast Track Mode if you want.')
-            : 'Complete your initial assessment to know whether Direct Mode or Fast Track Mode fits you better.';
+                ? 'Your score suggests training first will help you become job-ready faster.'
+                : (eligiblePaths.jobs && eligiblePaths.internships
+                    ? 'Your score is 50+ so you can apply for both fresher jobs and internships.'
+                    : 'Complete your score improvement to unlock jobs and internships.'))
+            : 'Complete your initial assessment to know whether Jobs, Internships or Fast Track Mode fits you better.';
         qs('[data-track-action]').textContent = result ? 'Explore Career Track' : 'Start Assessment';
         renderModeActions(data?.initial_assessment);
     };
@@ -185,12 +189,20 @@
         wrap.style.display = result ? 'flex' : 'none';
         if (!result) return;
         const recommended = assessment?.recommended_mode || 'direct';
+        const eligiblePaths = assessment?.eligible_paths || {};
         qsa('[data-choose-mode]').forEach(button => {
-            const isRecommended = button.dataset.chooseMode === recommended;
-            button.className = isRecommended ? 'primary' : 'outline';
-            button.textContent = button.dataset.chooseMode === 'direct'
-                ? `Continue with Direct Mode${isRecommended ? ' (Recommended)' : ''}`
-                : `Continue with Fast Track Mode${isRecommended ? ' (Recommended)' : ''}`;
+            const mode = button.dataset.chooseMode;
+            const isRecommended = mode === recommended || (recommended === 'direct' && mode === 'internship');
+            const locked = (mode === 'direct' && !eligiblePaths.jobs) || (mode === 'internship' && !eligiblePaths.internships);
+            button.className = isRecommended && !locked ? 'primary' : 'outline';
+            button.disabled = locked;
+            if (mode === 'direct') {
+                button.textContent = locked ? 'Jobs Locked (Score 50+)' : `Continue with Jobs${isRecommended ? ' (Recommended)' : ''}`;
+            } else if (mode === 'internship') {
+                button.textContent = locked ? 'Internships Locked (Score 50+)' : `Continue with Internships${isRecommended ? ' (Recommended)' : ''}`;
+            } else {
+                button.textContent = `Continue with Fast Track Mode${isRecommended ? ' (Recommended)' : ''}`;
+            }
         });
     };
     const renderTabCounts = () => {
@@ -215,7 +227,6 @@
         if (!attempt) return [];
         const result = attempt.result || {};
         return [
-            { name:'Initial Assessment', sub:'Technical, Aptitude, Communication', category:'All', score:result.overall_score, status:attempt.status, date:attempt.submitted_at, icon:'clipboard', tone:'blue' },
             { name:'Technical Assessment', sub:'Technical Skills', category:'technical', score:result.technical_score, status:attempt.status, date:attempt.submitted_at, icon:'code', tone:'blue' },
             { name:'Aptitude Test', sub:'Quantitative & Logical', category:'aptitude', score:result.aptitude_score, status:attempt.status, date:attempt.submitted_at, icon:'plus', tone:'green' },
             { name:'Communication Test', sub:'Verbal & Written', category:'communication', score:result.communication_score, status:attempt.status, date:attempt.submitted_at, icon:'message', tone:'purple' },
@@ -351,23 +362,25 @@
         if (dashboard?.initial_assessment) {
             const recommended = dashboard.initial_assessment.recommended_mode || 'direct';
             const intended = localStorage.getItem('onlyfreshers_intended_mode');
-            const selected = intended === 'fast_track' ? 'fast_track' : recommended;
+            const selected = intended === 'internship'
+                ? 'internship'
+                : (intended === 'fast_track' ? 'fast_track' : recommended);
             localStorage.setItem('onlyfreshers_selected_mode', selected);
             alert('Opening your recommended mode.', 'success');
-            window.location.href = selected === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/dashboard';
+            window.location.href = selected === 'fast_track'
+                ? '/fast-track/dashboard'
+                : (selected === 'internship' ? '/direct-mode/jobs?type=internship' : '/direct-mode/dashboard');
             return;
         }
         startAssessment();
     });
     qsa('[data-choose-mode]').forEach(button => button.addEventListener('click', () => {
-        const recommended = dashboard?.initial_assessment?.recommended_mode || 'direct';
-        const chosen = recommended === 'fast_track' ? 'fast_track' : button.dataset.chooseMode;
+        const chosen = button.dataset.chooseMode;
         localStorage.setItem('onlyfreshers_selected_mode', chosen);
         syncAssessmentChrome();
-        if (recommended === 'fast_track' && button.dataset.chooseMode === 'direct') {
-            alert('Your assessment score is better suited for Fast Track Mode first.', 'success');
-        }
-        window.location.href = chosen === 'fast_track' ? '/fast-track/dashboard' : '/direct-mode/dashboard';
+        window.location.href = chosen === 'fast_track'
+            ? '/fast-track/dashboard'
+            : (chosen === 'internship' ? '/direct-mode/jobs?type=internship' : '/direct-mode/dashboard');
     }));
     qs('[data-submit-assessment]').addEventListener('click', submitAssessment);
     qs('[data-close-runner]').addEventListener('click', () => {

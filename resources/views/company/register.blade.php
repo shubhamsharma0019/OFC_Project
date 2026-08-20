@@ -28,7 +28,7 @@
                 <section class="form-side">
                     <div class="form-shell">
                         <h2>Create Company Account</h2>
-                        <p>Register your company to post jobs and hire freshers.</p>
+                        <p>Register your company to post jobs or internships and hire freshers.</p>
 
                         <div class="tabs">
                             <button class="tab" type="button" onclick="window.location.href='/company/login'"><span data-icon="login"></span>Login</button>

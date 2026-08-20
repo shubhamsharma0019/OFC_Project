@@ -27,6 +27,10 @@ class CompanyDashboardPageController extends Controller
                 'stats' => $this->stats($companyProfile),
                 'activities' => $this->activities($companyProfile),
                 'quickActions' => $this->quickActions(),
+                'dashboardConfig' => config(
+                    'onlyfreshers.company.dashboard',
+                    []
+                ),
             ]);
         } catch (QueryException) {
             return view('company.dashboard', $this->fallbackData());
@@ -178,8 +182,8 @@ class CompanyDashboardPageController extends Controller
     {
         return [
             [
-                'title' => 'Post a New Job',
-                'text' => 'Find the best talent for your company',
+                'title' => 'Post Opportunity',
+                'text' => 'Post a job or internship for freshers',
                 'href' => '/company/post-job',
                 'icon' => 'briefcase',
                 'iconClasses' => 'bg-[#eaf2ff] text-[#075fe4]',
@@ -276,6 +280,10 @@ class CompanyDashboardPageController extends Controller
                 ],
             ],
             'quickActions' => $this->quickActions(),
+            'dashboardConfig' => config(
+                'onlyfreshers.company.dashboard',
+                []
+            ),
         ];
     }
 }

@@ -2,8 +2,8 @@
     $companyMenu = [
         ['title' => 'Dashboard', 'key' => 'dashboard', 'url' => '/company/dashboard', 'icon' => '<path d="M4 11l8-7 8 7"></path><path d="M6 10v9h5v-5h2v5h5v-9"></path>'],
         ['title' => 'My Profile', 'key' => 'profile', 'url' => '/company/profile', 'icon' => '<circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>'],
-        ['title' => 'Post a Job', 'key' => 'post-job', 'url' => '/company/post-job', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M12 11v4M10 13h4"></path>'],
-        ['title' => 'My Jobs', 'key' => 'jobs', 'url' => '/company/jobs', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M4 12h16"></path>'],
+        ['title' => 'Post Opportunity', 'key' => 'post-job', 'url' => '/company/post-job', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M12 11v4M10 13h4"></path>'],
+        ['title' => 'Jobs & Internships', 'key' => 'jobs', 'url' => '/company/jobs', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M4 12h16"></path>'],
         ['title' => 'Applications', 'key' => 'applications', 'url' => '/company/applications', 'icon' => '<path d="M7 3h8l4 4v14H7z"></path><path d="M15 3v5h5M10 13h6M10 17h4"></path>'],
         ['title' => 'Shortlisted', 'key' => 'shortlisted', 'url' => '/company/shortlisted', 'icon' => '<path d="M12 3l2.7 5.4 6 .9-4.3 4.2 1 6-5.4-2.8-5.4 2.8 1-6-4.3-4.2 6-.9z"></path>'],
         ['title' => 'Interviews', 'key' => 'interviews', 'url' => '/company/interviews', 'icon' => '<rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4M16 3v4M4 10h16"></path>'],
@@ -13,7 +13,7 @@
     ];
 @endphp
 
-<div class="company-sidebar-font">
+<div class="company-sidebar-font company-sidebar-main">
     <style>
         .company-sidebar-font,
         .company-sidebar-font * {
@@ -21,14 +21,29 @@
             font-weight: 500 !important;
         }
 
+        .company-sidebar-main {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 12px;
+        }
+
+        .company-sidebar-main::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
         .company-account-block {
-            margin-top: 22px;
-            padding-top: 18px;
+            flex: 0 0 auto;
+            margin-top: 14px;
+            padding-top: 16px;
+            padding-bottom: 16px;
             border-top: 1px solid #e6eefb;
         }
 
         .company-account-card {
-            min-height: 72px;
+            min-height: 68px;
             border-color: #cfe0f8 !important;
             background: linear-gradient(135deg, #ffffff 0%, #f4f8ff 100%) !important;
             box-shadow: 0 14px 30px rgba(6, 25, 66, 0.07) !important;
