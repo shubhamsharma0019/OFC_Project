@@ -75,6 +75,8 @@
     let currentPage = 1;
     let lastPage = 1;
     let total = 0;
+    let filteredTotal = 0;
+    let summary = { total: 0, unread: 0, read: 0, filtered: 0 };
     let searchTimer = null;
 
     if (!token) window.location.href = '/admin/login';
@@ -92,28 +94,20 @@
         return `<article class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_12px_26px_rgba(6,25,66,.05)]"><span class="inline-flex h-10 w-10 items-center justify-center rounded-lg ${tone} [&>svg]:h-5 [&>svg]:w-5">${statIcons[label] || statIcons.Total}</span><p class="mt-4 text-xs text-[#52607a]">${escapeHtml(label)}</p><h2 class="mt-2 text-3xl text-[#061942]">${escapeHtml(value)}</h2></article>`;
     }
     function filteredNotifications() {
-        const query = notificationSearch.value.trim().toLowerCase();
-        const filter = readFilter.value;
-        return notifications.filter((item) => {
-            const title = valueOf(item, ['title', 'heading', 'type'], '');
-            const message = valueOf(item, ['message', 'body', 'description'], '');
-            const haystack = `${title} ${message}`.toLowerCase();
-            const readOk = filter === 'read' ? item.is_read : (filter === 'unread' ? !item.is_read : true);
-            return readOk && (!query || haystack.includes(query));
-        });
+        return notifications;
     }
     function renderStats() {
         notificationStats.innerHTML = [
-            statCard('Total', number(total), 'bg-[#eaf2ff] text-[#075fe4]'),
-            statCard('Unread', number(unreadCount), 'bg-[#fff4df] text-[#b86500]'),
+            statCard('Total', number(summary.total || total), 'bg-[#eaf2ff] text-[#075fe4]'),
+            statCard('Unread', number(summary.unread || unreadCount), 'bg-[#fff4df] text-[#b86500]'),
             statCard('This Page', number(notifications.length), 'bg-[#e8f8ef] text-[#078346]'),
         ].join('');
-        markAllRead.disabled = unreadCount <= 0;
+        markAllRead.disabled = (summary.unread || unreadCount) <= 0;
     }
     function renderRows() {
         renderStats();
         const rows = filteredNotifications();
-        resultText.textContent = `Showing ${number(rows.length)} of ${number(total)} notifications`;
+        resultText.textContent = `Showing ${number(rows.length)} of ${number(filteredTotal || total)} notifications`;
         if (!rows.length) {
             notificationRows.innerHTML = '<tr><td class="px-5 py-5 text-[#52607a]" colspan="6">No notifications found.</td></tr>';
             return;
@@ -136,6 +130,7 @@
         currentPage = paginator.current_page || 1;
         lastPage = paginator.last_page || 1;
         total = paginator.total || notifications.length;
+        filteredTotal = paginator.total || notifications.length;
         pageInfo.textContent = 'Page ' + currentPage + ' of ' + lastPage;
         prevPage.disabled = currentPage <= 1;
         nextPage.disabled = currentPage >= lastPage;
@@ -157,9 +152,20 @@
     async function loadNotifications(page = 1) {
         try {
             await loadUnreadCount();
-            const payload = await requestJson('/api/notifications?' + new URLSearchParams({ page, per_page: 10 }).toString());
+            const params = new URLSearchParams({
+                page,
+                per_page: 10,
+            });
+            if (notificationSearch.value.trim()) params.set('search', notificationSearch.value.trim());
+            if (readFilter.value) params.set('status', readFilter.value);
+
+            const payload = await requestJson('/api/notifications?' + params.toString());
             if (!payload) return;
             const paginator = payload.data?.notifications || {};
+            summary = payload.data?.summary || summary;
+            total = summary.total || paginator.total || 0;
+            filteredTotal = summary.filtered || paginator.total || 0;
+            unreadCount = summary.unread ?? unreadCount;
             notifications = paginator.data || [];
             setPagination(paginator);
             renderRows();
@@ -169,8 +175,8 @@
             resultText.textContent = 'Unable to load notifications';
         }
     }
-    notificationSearch.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(renderRows, 250); });
-    readFilter.addEventListener('change', renderRows);
+    notificationSearch.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadNotifications(1), 300); });
+    readFilter.addEventListener('change', () => loadNotifications(1));
     prevPage.addEventListener('click', () => loadNotifications(Math.max(1, currentPage - 1)));
     nextPage.addEventListener('click', () => loadNotifications(Math.min(lastPage, currentPage + 1)));
     notificationRows.addEventListener('click', async (event) => {

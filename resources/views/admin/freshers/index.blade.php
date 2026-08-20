@@ -15,6 +15,22 @@
         font-family: Inter, Arial, Helvetica, sans-serif !important;
         font-weight: 500 !important;
     }
+
+    @media (max-width: 767px) {
+        .admin-freshers-table-wrap {
+            display: none;
+        }
+
+        .admin-fresher-mobile-list {
+            display: grid;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .admin-fresher-mobile-list {
+            display: none;
+        }
+    }
 </style>
 @endpush
 
@@ -29,13 +45,16 @@
                 <input id="adminSearch" class="h-10 w-full rounded-md border border-[#dce7f8] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search fresher...">
                 <select id="statusFilter" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm text-[#24344f]"><option value="">All Status</option><option value="active">Active</option><option value="blocked">Blocked</option></select>
             </div>
-            <div class="overflow-x-auto">
+            <div class="admin-freshers-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[920px] border-collapse text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#24344f]">
                         <tr><th class="px-5 py-4">Fresher</th><th class="px-5 py-4">Qualification</th><th class="px-5 py-4">City</th><th class="px-5 py-4">Profile</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Actions</th></tr>
                     </thead>
                     <tbody id="adminRows" class="divide-y divide-[#edf2fb] text-[#1b315b]"><tr><td class="px-5 py-5" colspan="6">Loading freshers...</td></tr></tbody>
                 </table>
+            </div>
+            <div id="adminMobileRows" class="admin-fresher-mobile-list gap-3 p-4">
+                <div class="rounded-lg border border-[#edf2fb] p-4 text-sm text-[#52607a]">Loading freshers...</div>
             </div>
             <div id="pagination" class="hidden items-center justify-between border-t border-[#edf2fb] p-4 text-sm text-[#52607a]">
                 <button id="prevPage" class="rounded-md border border-[#dce7f8] px-4 py-2 text-xs font-bold text-[#075fe4]" type="button">Previous</button>
@@ -51,6 +70,7 @@
     const token = localStorage.getItem('ofc_auth_token');
     const fresherStats = document.getElementById('fresherStats');
     const adminRows = document.getElementById('adminRows');
+    const adminMobileRows = document.getElementById('adminMobileRows');
     const adminSearch = document.getElementById('adminSearch');
     const statusFilter = document.getElementById('statusFilter');
     const pagination = document.getElementById('pagination');
@@ -87,7 +107,11 @@
     }
     function renderRows() {
         renderStats();
-        if (!freshers.length) { adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#52607a]" colspan="6">No freshers found.</td></tr>'; return; }
+        if (!freshers.length) {
+            adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#52607a]" colspan="6">No freshers found.</td></tr>';
+            adminMobileRows.innerHTML = '<div class="rounded-lg border border-[#edf2fb] p-4 text-sm text-[#52607a]">No freshers found.</div>';
+            return;
+        }
         adminRows.innerHTML = freshers.map((fresher) => {
             const profile = fresher.fresher_profile || {};
             const completion = profile.profile_completion || 0;
@@ -99,6 +123,35 @@
                 <td class="px-5 py-4"><span class="rounded-md ${badgeClass(fresher.status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(fresher.status)}</span></td>
                 <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-fresher rounded-md border border-[#075fe4] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button" data-id="${fresher.id}">View</button><button class="toggle-status rounded-md border border-[#dce7f8] px-3 py-2 text-xs font-bold text-[#24344f]" type="button" data-id="${fresher.id}" data-status="${fresher.status === 'active' ? 'blocked' : 'active'}">${fresher.status === 'active' ? 'Block' : 'Activate'}</button></div></td>
             </tr>`;
+        }).join('');
+        adminMobileRows.innerHTML = freshers.map((fresher) => {
+            const profile = fresher.fresher_profile || {};
+            const completion = profile.profile_completion || 0;
+            const initial = String(fresher.name || 'F').slice(0, 1).toUpperCase();
+
+            return `<article class="rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_8px_18px_rgba(6,25,66,.04)]">
+                <div class="mb-4 flex items-start gap-3">
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-sm font-bold text-[#075fe4]">${escapeHtml(initial)}</span>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="break-words text-[15px] font-semibold text-[#061942]">${escapeHtml(fresher.name)}</h3>
+                        <p class="mt-1 break-all text-xs text-[#52607a]">${escapeHtml(fresher.email || fresher.mobile || '-')}</p>
+                    </div>
+                    <span class="shrink-0 rounded-md ${badgeClass(fresher.status)} px-2.5 py-1 text-[11px] font-bold capitalize">${escapeHtml(fresher.status)}</span>
+                </div>
+                <div class="grid gap-3 text-xs text-[#52607a]">
+                    <div><span class="font-semibold text-[#061942]">Qualification:</span> ${escapeHtml(profile.qualification || '-')}</div>
+                    <div><span class="font-semibold text-[#061942]">College:</span> ${escapeHtml(profile.college_name || '-')}</div>
+                    <div><span class="font-semibold text-[#061942]">City:</span> ${escapeHtml(profile.city || '-')}</div>
+                    <div>
+                        <div class="mb-1 flex items-center justify-between"><span class="font-semibold text-[#061942]">Profile</span><strong class="text-[#061942]">${completion}%</strong></div>
+                        <div class="h-2 overflow-hidden rounded-full bg-[#eaf2ff]"><div class="h-full rounded-full bg-[#075fe4]" style="width:${completion}%"></div></div>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-2">
+                    <button class="view-fresher h-9 rounded-md border border-[#075fe4] px-3 text-xs font-bold text-[#075fe4]" type="button" data-id="${fresher.id}">View</button>
+                    <button class="toggle-status h-9 rounded-md border border-[#dce7f8] px-3 text-xs font-bold text-[#24344f]" type="button" data-id="${fresher.id}" data-status="${fresher.status === 'active' ? 'blocked' : 'active'}">${fresher.status === 'active' ? 'Block' : 'Activate'}</button>
+                </div>
+            </article>`;
         }).join('');
     }
     function setPagination(paginator) {
@@ -137,14 +190,16 @@
     statusFilter.addEventListener('change', () => loadFreshers(1));
     prevPage.addEventListener('click', () => loadFreshers(Math.max(1, currentPage - 1)));
     nextPage.addEventListener('click', () => loadFreshers(Math.min(lastPage, currentPage + 1)));
-    adminRows.addEventListener('click', async (event) => {
+    async function handleFresherAction(event) {
         const view = event.target.closest('.view-fresher');
         const toggle = event.target.closest('.toggle-status');
         if (view?.dataset.id) { localStorage.setItem('ofc_selected_admin_fresher_id', view.dataset.id); window.location.href = '/admin/freshers/show'; return; }
         if (!toggle?.dataset.id) return;
         toggle.disabled = true;
         try { await updateStatus(toggle.dataset.id, toggle.dataset.status); await loadFreshers(currentPage); } catch (error) { alert(error.message || 'Status update nahi ho paaya.'); toggle.disabled = false; }
-    });
+    }
+    adminRows.addEventListener('click', handleFresherAction);
+    adminMobileRows.addEventListener('click', handleFresherAction);
     loadFreshers();
 </script>
 @endpush

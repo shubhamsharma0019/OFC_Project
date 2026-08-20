@@ -333,17 +333,17 @@
                         </div>
                         <div class="grid gap-5 sm:grid-cols-[120px_minmax(0,1fr)] sm:items-center">
                             <div class="text-center">
-                                <div class="mx-auto grid h-[92px] w-[92px] place-items-center rounded-full bg-[conic-gradient(#075fe4_0_40%,#e4e9f1_40%_100%)]">
-                                    <div class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">40%</div>
+                                <div data-assessment-ring="initial" class="mx-auto grid h-[92px] w-[92px] place-items-center rounded-full bg-[conic-gradient(#075fe4_0_40%,#e4e9f1_40%_100%)]">
+                                    <div data-assessment-overall="initial" class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">40%</div>
                                 </div>
                                 <p class="mt-3 text-[10px] font-bold text-[#34445e]">Overall Score</p>
                             </div>
                             <div class="grid gap-3">
-                                @foreach ([['Technical Skills', 42], ['Aptitude', 38], ['Communication', 45], ['Attitude', 40], ['Problem Solving', 35]] as $score)
+                                @foreach ([['technical', 'Technical Skills', 42], ['aptitude', 'Aptitude', 38], ['communication', 'Communication', 45], ['attitude', 'Attitude', 40], ['problem_solving', 'Problem Solving', 35]] as $score)
                                     <div class="grid grid-cols-[120px_minmax(0,1fr)_34px] items-center gap-3">
-                                        <span class="text-[11px] font-semibold text-[#061942]">{{ $score[0] }}</span>
-                                        <span class="h-1.5 overflow-hidden rounded-full bg-[#e6edf6]"><span class="block h-full rounded-full bg-[#075fe4]" style="width: {{ $score[1] }}%"></span></span>
-                                        <span class="text-right text-[10px] font-bold text-[#34445e]">{{ $score[1] }}%</span>
+                                        <span class="text-[11px] font-semibold text-[#061942]">{{ $score[1] }}</span>
+                                        <span class="h-1.5 overflow-hidden rounded-full bg-[#e6edf6]"><span data-assessment-bar="initial:{{ $score[0] }}" class="block h-full rounded-full bg-[#075fe4]" style="width: {{ $score[2] }}%"></span></span>
+                                        <span data-assessment-score="initial:{{ $score[0] }}" class="text-right text-[10px] font-bold text-[#34445e]">{{ $score[2] }}%</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -359,17 +359,17 @@
                         </div>
                         <div class="grid gap-5 sm:grid-cols-[120px_minmax(0,1fr)] sm:items-center">
                             <div class="text-center">
-                                <div class="mx-auto grid h-[92px] w-[92px] place-items-center rounded-full bg-[#e7ebf1]">
-                                    <div class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">--%</div>
+                                <div data-assessment-ring="final" class="mx-auto grid h-[92px] w-[92px] place-items-center rounded-full bg-[#e7ebf1]">
+                                    <div data-assessment-overall="final" class="grid h-[74px] w-[74px] place-items-center rounded-full bg-[#f4f7fb] text-[23px] font-bold text-[#061942]">--%</div>
                                 </div>
                                 <p class="mt-3 text-[10px] font-bold text-[#34445e]">Overall Score</p>
                             </div>
                             <div class="grid gap-3">
-                                @foreach (['Technical Skills', 'Aptitude', 'Communication', 'Attitude', 'Problem Solving'] as $label)
+                                @foreach ([['technical', 'Technical Skills'], ['aptitude', 'Aptitude'], ['communication', 'Communication'], ['attitude', 'Attitude'], ['problem_solving', 'Problem Solving']] as $score)
                                     <div class="grid grid-cols-[120px_minmax(0,1fr)_18px] items-center gap-3">
-                                        <span class="text-[11px] font-semibold text-[#061942]">{{ $label }}</span>
-                                        <span class="h-1.5 rounded-full bg-[#e6edf6]"></span>
-                                        <span class="text-right text-[10px] font-bold text-[#9aa9bc]">--</span>
+                                        <span class="text-[11px] font-semibold text-[#061942]">{{ $score[1] }}</span>
+                                        <span class="h-1.5 overflow-hidden rounded-full bg-[#e6edf6]"><span data-assessment-bar="final:{{ $score[0] }}" class="block h-full rounded-full bg-[#075fe4]" style="width: 0%"></span></span>
+                                        <span data-assessment-score="final:{{ $score[0] }}" class="text-right text-[10px] font-bold text-[#9aa9bc]">--</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -682,6 +682,41 @@
         }).join('');
     }
 
+    function partnerColor(index) {
+        return ['#176aa6', '#111827', '#2f64b2', '#176aa6', '#25ad82', '#8239d7'][index % 6];
+    }
+
+    function partnerSubtitle(partner) {
+        const firstCourse = Array.isArray(partner.courses) ? partner.courses[0] : null;
+        return partner.tagline ||
+            partner.subtitle ||
+            partner.location ||
+            firstCourse?.category ||
+            `${partner.active_courses_count || 0} Active Courses`;
+    }
+
+    function renderDynamicTrainingPartners(partners) {
+        const target = document.getElementById('dynamicTrainingPartners');
+        if (!target || !Array.isArray(partners) || !partners.length) return;
+
+        target.innerHTML = partners.slice(0, 4).map((partner, index) => {
+            const name = partner.institute_name || partner.user?.name || 'Training Partner';
+            const sub = partnerSubtitle(partner);
+            const rating = partner.rating || partner.average_rating || partner.score || '4.5';
+            const color = partner.brand_color || partner.color || partnerColor(index);
+
+            return `
+                <article class="flex min-h-[94px] flex-col items-center justify-center rounded-lg border border-[#dce7f8] bg-white px-4 py-3 text-center shadow-[0_6px_16px_rgba(6,25,66,0.04)]">
+                    <div class="mb-2 flex min-h-[34px] items-center justify-center gap-1.5">
+                        <span class="text-[22px] font-black leading-none" style="color:${FastTrack.esc(color)}">${FastTrack.esc(name)}</span>
+                    </div>
+                    <p class="mb-2 text-[9px] font-bold uppercase leading-none text-[#6f7d90]">${FastTrack.esc(sub)}</p>
+                    <p class="text-[12px] font-bold text-[#061942]">${FastTrack.esc(rating)} <span class="text-[#f3a51d]">*</span></p>
+                </article>
+            `;
+        }).join('');
+    }
+
     function updateProgramCard(data) {
         const latestEnrollment = data.latest_course_enrollment || null;
         if (!latestEnrollment) return;
@@ -707,6 +742,86 @@
         if (!assessment) return false;
         return ['submitted', 'completed', 'passed'].includes(String(assessment.status || '').toLowerCase()) ||
             !!(assessment.submitted_at || assessment.completed_at || assessment.result);
+    }
+
+    function assessmentResult(assessment) {
+        return assessment?.result || assessment || {};
+    }
+
+    function assessmentValue(result, key) {
+        const aliases = {
+            technical: ['technical_score', 'technical', 'technicalSkills', 'technical_skills'],
+            aptitude: ['aptitude_score', 'aptitude'],
+            communication: ['communication_score', 'communication'],
+            attitude: ['attitude_score', 'attitude'],
+            problem_solving: ['problem_solving_score', 'problemSolving', 'problem_solving'],
+        };
+
+        for (const field of aliases[key] || []) {
+            if (result[field] !== undefined && result[field] !== null && result[field] !== '') {
+                return Number(result[field]);
+            }
+        }
+
+        return null;
+    }
+
+    function assessmentOverall(result) {
+        const value =
+            result.overall_score ??
+            result.percentage ??
+            result.percentage_score ??
+            result.score_percentage ??
+            result.score ??
+            null;
+
+        return value === null || value === '' ? null : Number(value);
+    }
+
+    function setAssessmentMetric(type, key, value, active) {
+        const bar = document.querySelector(`[data-assessment-bar="${type}:${key}"]`);
+        const label = document.querySelector(`[data-assessment-score="${type}:${key}"]`);
+        const safeValue = value === null || Number.isNaN(value) ? null : Math.max(0, Math.min(100, Math.round(value)));
+
+        if (bar) {
+            bar.style.width = active && safeValue !== null ? `${safeValue}%` : '0%';
+            bar.classList.toggle('bg-[#075fe4]', active && safeValue !== null);
+            bar.classList.toggle('bg-[#d8e2f0]', !active || safeValue === null);
+        }
+
+        if (label) {
+            label.textContent = active && safeValue !== null ? `${safeValue}%` : '--';
+            label.classList.toggle('text-[#34445e]', active && safeValue !== null);
+            label.classList.toggle('text-[#9aa9bc]', !active || safeValue === null);
+        }
+    }
+
+    function renderAssessmentCard(type, assessment) {
+        const active = assessmentSubmitted(assessment);
+        const result = assessmentResult(assessment);
+        const overall = active ? assessmentOverall(result) : null;
+        const safeOverall = overall === null || Number.isNaN(overall) ? null : Math.max(0, Math.min(100, Math.round(overall)));
+        const ring = document.querySelector(`[data-assessment-ring="${type}"]`);
+        const score = document.querySelector(`[data-assessment-overall="${type}"]`);
+
+        if (ring) {
+            ring.style.background = active && safeOverall !== null
+                ? `conic-gradient(#075fe4 0 ${safeOverall}%, #e4e9f1 ${safeOverall}% 100%)`
+                : '#e7ebf1';
+        }
+
+        if (score) {
+            score.textContent = active && safeOverall !== null ? `${safeOverall}%` : '--%';
+        }
+
+        ['technical', 'aptitude', 'communication', 'attitude', 'problem_solving'].forEach((key) => {
+            setAssessmentMetric(type, key, assessmentValue(result, key), active);
+        });
+    }
+
+    function renderAssessmentSummary(data) {
+        renderAssessmentCard('initial', data.initial_assessment || data.latest_assessment || data.assessment || data.assessment_result || null);
+        renderAssessmentCard('final', data.final_assessment || data.latest_final_assessment || null);
     }
 
     function progressRow(label, state, percent) {
@@ -889,6 +1004,7 @@
         setDashboardProfileCard(user, profile);
         updateProgramCard(data);
         syncProgramSteps(data);
+        renderAssessmentSummary(data);
 
         localStorage.setItem(
             'ofc_auth_user',
@@ -1212,11 +1328,22 @@
                     courses: []
                 }
             })),
+
+        FastTrack
+            .getJson('/api/training-partners?per_page=4')
+            .catch(() => ({
+                data: {
+                    training_partners: {
+                        data: []
+                    }
+                }
+            })),
     ])
     .then(function (responses) {
         const dashboardResponse = responses[0];
         const profileResponse = responses[2];
         const coursesResponse = responses[3];
+        const partnersResponse = responses[4];
 
         const unread =
             FastTrack.apiData(
@@ -1231,6 +1358,8 @@
         const dashboard = FastTrack.apiData(dashboardResponse) || {};
         const profileData = FastTrack.apiData(profileResponse) || {};
         const courses = FastTrack.apiData(coursesResponse, 'courses') || [];
+        const partnersPaginator = FastTrack.apiData(partnersResponse, 'training_partners') || {};
+        const partners = Array.isArray(partnersPaginator) ? partnersPaginator : (partnersPaginator.data || []);
         dashboard.user = profileData.user || dashboard.user;
         dashboard.profile = Object.assign({}, dashboard.profile || {}, profileData.profile || {});
 
@@ -1241,6 +1370,7 @@
             return;
         }
         renderDynamicCareerTracks(courses);
+        renderDynamicTrainingPartners(partners);
         renderDashboard(dashboard, unread);
     }).catch(renderProfileMissing);
 </script>

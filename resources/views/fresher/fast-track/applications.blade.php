@@ -130,6 +130,20 @@
             : interview.interview_location;
     }
 
+    function interviewDateTime(interview) {
+        if (!interview?.interview_date) return null;
+        const datePart = String(interview.interview_date).split('T')[0];
+        const date = new Date(`${datePart}T${interview.interview_time || '00:00'}`);
+        return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function meetingEnded(interview) {
+        const status = String(interview?.status || '').toLowerCase();
+        if (['completed', 'cancelled'].includes(status)) return true;
+        const date = interviewDateTime(interview);
+        return date ? date.getTime() < Date.now() : false;
+    }
+
     function interviewDetails(application) {
         const interview = application.interview || {};
         if (!interview.id) return '';
@@ -148,7 +162,9 @@
         const buttons = [];
 
         if (status === 'interview_scheduled' && interview.status === 'scheduled' && interview.interview_mode === 'online' && interview.meeting_link) {
-            buttons.push(`<a class="inline-flex h-9 items-center justify-center rounded-md bg-[#075fe4] px-4 text-xs font-bold text-white" href="${FastTrack.esc(interview.meeting_link)}" target="_blank" rel="noopener noreferrer">Join Meet</a>`);
+            buttons.push(meetingEnded(interview)
+                ? '<button class="inline-flex h-9 items-center justify-center rounded-md bg-[#eef2f8] px-4 text-xs font-bold text-[#7a879c]" type="button" disabled aria-disabled="true">Meeting Ended</button>'
+                : `<a class="inline-flex h-9 items-center justify-center rounded-md bg-[#075fe4] px-4 text-xs font-bold text-white" href="${FastTrack.esc(interview.meeting_link)}" target="_blank" rel="noopener noreferrer">Join Meet</a>`);
         }
 
         if (jobId) {

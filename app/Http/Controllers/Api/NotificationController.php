@@ -16,18 +16,48 @@ class NotificationController extends Controller
     {
         $user = $request->user();
 
-        $notifications = Notification::query()
-            ->where('user_id', $user->id)
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:200'],
+            'status' => ['nullable', 'in:read,unread'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+        ]);
+
+        $baseQuery = Notification::query()
+            ->where('user_id', $user->id);
+
+        $notifications = (clone $baseQuery)
+            ->when($validated['search'] ?? null, function ($query, string $search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery
+                        ->where('title', 'like', "%{$search}%")
+                        ->orWhere('message', 'like', "%{$search}%")
+                        ->orWhere('type', 'like', "%{$search}%");
+                });
+            })
+            ->when(($validated['status'] ?? null) === 'read', function ($query) {
+                $query->where('is_read', true);
+            })
+            ->when(($validated['status'] ?? null) === 'unread', function ($query) {
+                $query->where('is_read', false);
+            })
             ->latest()
-            ->paginate(
-                $request->integer('per_page', 10)
-            );
+            ->paginate($validated['per_page'] ?? 10);
 
         return response()->json([
             'success' => true,
             'message' => 'Notifications fetched successfully.',
             'data' => [
                 'notifications' => $notifications,
+                'summary' => [
+                    'total' => (clone $baseQuery)->count(),
+                    'unread' => (clone $baseQuery)
+                        ->where('is_read', false)
+                        ->count(),
+                    'read' => (clone $baseQuery)
+                        ->where('is_read', true)
+                        ->count(),
+                    'filtered' => $notifications->total(),
+                ],
             ],
         ]);
     }

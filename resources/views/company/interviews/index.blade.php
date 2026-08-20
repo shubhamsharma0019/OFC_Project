@@ -141,6 +141,20 @@
     const dateValue = (value) => value ? String(value).slice(0, 10) : '';
     const timeValue = (value) => value ? String(value).slice(0, 5) : '';
 
+    function interviewDateTime(interview) {
+        if (!interview.interview_date) return null;
+        const datePart = String(interview.interview_date).split('T')[0];
+        const date = new Date(`${datePart}T${interview.interview_time || '00:00'}`);
+        return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function meetingEnded(interview) {
+        const status = String(interview.status || '').toLowerCase();
+        if (['completed', 'cancelled'].includes(status)) return true;
+        const date = interviewDateTime(interview);
+        return date ? date.getTime() < Date.now() : false;
+    }
+
     function showMessage(text, type = 'error') {
         message.textContent = text;
         message.className = `mb-4 rounded-lg border px-4 py-3 text-sm font-bold ${type === 'success' ? 'border-[#b9e7c9] bg-[#f1fff5] text-[#138a43]' : 'border-[#ffd1d7] bg-[#fff7f8] text-[#ff3045]'}`;
@@ -265,8 +279,11 @@
             const user = app.fresher_profile?.user || {};
             const job = app.job || {};
             const place = interview.interview_mode === 'online' ? interview.meeting_link : interview.interview_location;
+            const ended = meetingEnded(interview);
             const joinButton = interview.status === 'scheduled' && interview.interview_mode === 'online' && interview.meeting_link
-                ? `<a href="${escapeAttr(interview.meeting_link)}" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg border border-[#075fe4] bg-[#075fe4] px-3 py-2 text-xs font-bold text-white" title="Open Google Meet">Join Meet</a>`
+                ? (ended
+                    ? '<button class="inline-flex rounded-lg border border-[#cfd8eb] bg-[#eef2f8] px-3 py-2 text-xs font-bold text-[#7a879c]" type="button" disabled aria-disabled="true">Meeting Ended</button>'
+                    : `<a href="${escapeAttr(interview.meeting_link)}" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg border border-[#075fe4] bg-[#075fe4] px-3 py-2 text-xs font-bold text-white" title="Open Google Meet">Join Meet</a>`)
                 : '';
             const editButton = interview.status === 'scheduled'
                 ? `<button data-id="${interview.id}" class="edit-interview rounded-lg border border-[#9fc0f5] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button">Edit</button>`

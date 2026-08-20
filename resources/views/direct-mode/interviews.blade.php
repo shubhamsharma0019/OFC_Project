@@ -110,6 +110,13 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             return date ? date < startOfToday() : false;
         }
 
+        function meetingEnded(interview) {
+            const status = String(interview.status || '').toLowerCase();
+            if (['completed', 'cancelled'].includes(status)) return true;
+            const date = interviewDate(interview);
+            return date ? date.getTime() < Date.now() : false;
+        }
+
         function startOfToday() {
             const date = new Date();
             date.setHours(0, 0, 0, 0);
@@ -182,6 +189,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             }
             wrap.innerHTML = items.map(interview => {
                 const join = joinUrl(interview);
+                const ended = meetingEnded(interview);
                 const when = `${formatDate(interviewDate(interview))} at ${formatTime(interview.interview_time)}`;
                 return `
                 <div class="interview" data-job-id="${job(interview).id || ''}">
@@ -190,7 +198,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     <span class="badge">${escapeHtml(titleCase(interview.status || 'scheduled'))}</span>
                     <div class="countdown">Interview in<strong>${escapeHtml(countdown(interview))}</strong></div>
                     <button class="outline" data-detail type="button">View Details</button>
-                    ${join ? `<a class="primary" href="${escapeAttr(join)}" target="_blank" rel="noopener">Join Meeting</a>` : '<button class="primary" data-prepare type="button">Prepare Now</button>'}
+                    ${join ? (ended ? '<button class="primary" type="button" disabled aria-disabled="true" style="opacity:.55;cursor:not-allowed">Meeting Ended</button>' : `<a class="primary" href="${escapeAttr(join)}" target="_blank" rel="noopener">Join Meeting</a>`) : '<button class="primary" data-prepare type="button">Prepare Now</button>'}
                 </div>`;
             }).join('');
             hydrateIcons(wrap);
@@ -339,6 +347,5 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         loadData();
     </script>
 @endpush
-
 
 

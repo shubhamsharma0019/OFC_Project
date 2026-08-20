@@ -49,6 +49,13 @@ class FresherDashboardController extends Controller
             ->latest('updated_at')
             ->first();
 
+        $finalAssessment = AssessmentAttempt::query()
+            ->where('fresher_profile_id', $fresherProfile->id)
+            ->where('assessment_type', 'final')
+            ->with('result')
+            ->latest('updated_at')
+            ->first();
+
         $latestEnrollment = CourseEnrollment::query()
             ->where('fresher_profile_id', $fresherProfile->id)
             ->with([
@@ -244,6 +251,16 @@ class FresherDashboardController extends Controller
                             'internships' => $directCareerEligible,
                             'fast_track' => true,
                         ],
+                    ]
+                    : null,
+
+                'final_assessment' => $finalAssessment
+                    ? [
+                        'attempt_id' => $finalAssessment->id,
+                        'status' => $finalAssessment->status,
+                        'submitted_at' => $finalAssessment->submitted_at,
+                        'completed_at' => $finalAssessment->completed_at,
+                        'result' => $finalAssessment->result,
                     ]
                     : null,
 

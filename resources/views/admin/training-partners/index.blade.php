@@ -15,6 +15,22 @@
         font-family: Inter, Arial, Helvetica, sans-serif !important;
         font-weight: 500 !important;
     }
+
+    @media (max-width: 767px) {
+        .admin-training-partners-table-wrap {
+            display: none;
+        }
+
+        .admin-training-partner-mobile-list {
+            display: grid;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .admin-training-partner-mobile-list {
+            display: none;
+        }
+    }
 </style>
 @endpush
 
@@ -29,11 +45,14 @@
                 <input id="adminSearch" class="h-10 w-full rounded-md border border-[#dce7f8] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search training partner...">
                 <select id="statusFilter" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm text-[#24344f]"><option value="">All Approval</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
             </div>
-            <div class="overflow-x-auto">
+            <div class="admin-training-partners-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[980px] border-collapse text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#24344f]"><tr><th class="px-5 py-4">Institute</th><th class="px-5 py-4">Location</th><th class="px-5 py-4">Contact</th><th class="px-5 py-4">Approval</th><th class="px-5 py-4">User</th><th class="px-5 py-4">Actions</th></tr></thead>
                     <tbody id="adminRows" class="divide-y divide-[#edf2fb] text-[#1b315b]"><tr><td class="px-5 py-5" colspan="6">Loading training partners...</td></tr></tbody>
                 </table>
+            </div>
+            <div id="adminMobileRows" class="admin-training-partner-mobile-list gap-3 p-4">
+                <div class="rounded-lg border border-[#edf2fb] p-4 text-sm text-[#52607a]">Loading training partners...</div>
             </div>
         </div>
     </section>
@@ -44,6 +63,7 @@
     const token = localStorage.getItem('ofc_auth_token');
     const partnerStats = document.getElementById('partnerStats');
     const adminRows = document.getElementById('adminRows');
+    const adminMobileRows = document.getElementById('adminMobileRows');
     const adminSearch = document.getElementById('adminSearch');
     const statusFilter = document.getElementById('statusFilter');
     let partners = [];
@@ -82,7 +102,11 @@
     function renderRows() {
         const rows = filteredPartners();
         renderStats();
-        if (!rows.length) { adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#52607a]" colspan="6">No training partners found.</td></tr>'; return; }
+        if (!rows.length) {
+            adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#52607a]" colspan="6">No training partners found.</td></tr>';
+            adminMobileRows.innerHTML = '<div class="rounded-lg border border-[#edf2fb] p-4 text-sm text-[#52607a]">No training partners found.</div>';
+            return;
+        }
         adminRows.innerHTML = rows.map((partner) => `<tr>
             <td class="px-5 py-4"><strong class="block text-[#061942]">${escapeHtml(partner.institute_name || partner.user?.name || 'Training Partner')}</strong><span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(partner.website || '-')}</span></td>
             <td class="px-5 py-4">${escapeHtml(partner.location || '-')}</td>
@@ -91,6 +115,33 @@
             <td class="px-5 py-4"><span class="rounded-md ${badgeClass(partner.user?.status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(partner.user?.status || '-')}</span></td>
             <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-partner rounded-md border border-[#075fe4] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button" data-id="${partner.id}">View</button><button class="approve-partner rounded-md border border-[#078346] px-3 py-2 text-xs font-bold text-[#078346]" type="button" data-id="${partner.id}">Approve</button><button class="reject-partner rounded-md border border-[#ff1f2f] px-3 py-2 text-xs font-bold text-[#ff1f2f]" type="button" data-id="${partner.id}">Reject</button><button class="toggle-user rounded-md border border-[#dce7f8] px-3 py-2 text-xs font-bold text-[#24344f]" type="button" data-id="${partner.id}" data-status="${partner.user?.status === 'active' ? 'blocked' : 'active'}">${partner.user?.status === 'active' ? 'Block' : 'Activate'}</button></div></td>
         </tr>`).join('');
+        adminMobileRows.innerHTML = rows.map((partner) => {
+            const name = partner.institute_name || partner.user?.name || 'Training Partner';
+            const initial = String(name).slice(0, 1).toUpperCase();
+
+            return `<article class="rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_8px_18px_rgba(6,25,66,.04)]">
+                <div class="mb-4 flex items-start gap-3">
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-sm font-bold text-[#075fe4]">${escapeHtml(initial)}</span>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="break-words text-[15px] font-semibold text-[#061942]">${escapeHtml(name)}</h3>
+                        <p class="mt-1 break-all text-xs text-[#52607a]">${escapeHtml(partner.email || partner.user?.email || '-')}</p>
+                    </div>
+                    <span class="shrink-0 rounded-md ${badgeClass(partner.approval_status)} px-2.5 py-1 text-[11px] font-bold capitalize">${escapeHtml(partner.approval_status)}</span>
+                </div>
+                <div class="grid gap-2 text-xs text-[#52607a]">
+                    <div><span class="font-semibold text-[#061942]">Location:</span> ${escapeHtml(partner.location || '-')}</div>
+                    <div><span class="font-semibold text-[#061942]">Phone:</span> ${escapeHtml(partner.phone || partner.user?.mobile || '-')}</div>
+                    <div><span class="font-semibold text-[#061942]">Website:</span> ${escapeHtml(partner.website || '-')}</div>
+                    <div><span class="font-semibold text-[#061942]">User:</span> <span class="rounded-md ${badgeClass(partner.user?.status)} px-2 py-0.5 text-[11px] font-bold capitalize">${escapeHtml(partner.user?.status || '-')}</span></div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-2">
+                    <button class="view-partner h-9 rounded-md border border-[#075fe4] px-3 text-xs font-bold text-[#075fe4]" type="button" data-id="${partner.id}">View</button>
+                    <button class="approve-partner h-9 rounded-md border border-[#078346] px-3 text-xs font-bold text-[#078346]" type="button" data-id="${partner.id}">Approve</button>
+                    <button class="reject-partner h-9 rounded-md border border-[#ff1f2f] px-3 text-xs font-bold text-[#ff1f2f]" type="button" data-id="${partner.id}">Reject</button>
+                    <button class="toggle-user h-9 rounded-md border border-[#dce7f8] px-3 text-xs font-bold text-[#24344f]" type="button" data-id="${partner.id}" data-status="${partner.user?.status === 'active' ? 'blocked' : 'active'}">${partner.user?.status === 'active' ? 'Block' : 'Activate'}</button>
+                </div>
+            </article>`;
+        }).join('');
     }
     async function requestJson(url, options = {}) {
         const response = await fetch(url, { ...options, headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, ...(options.headers || {}) } });
@@ -107,11 +158,12 @@
             renderRows();
         } catch (error) {
             adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#ff1f2f]" colspan="6">' + escapeHtml(error.message || 'Training partners load nahi ho paaye.') + '</td></tr>';
+            adminMobileRows.innerHTML = '<div class="rounded-lg border border-[#ffd7d7] p-4 text-sm text-[#ff1f2f]">' + escapeHtml(error.message || 'Training partners load nahi ho paaye.') + '</div>';
         }
     }
     adminSearch.addEventListener('input', renderRows);
     statusFilter.addEventListener('change', renderRows);
-    adminRows.addEventListener('click', async (event) => {
+    async function handlePartnerAction(event) {
         const view = event.target.closest('.view-partner');
         const approve = event.target.closest('.approve-partner');
         const reject = event.target.closest('.reject-partner');
@@ -129,7 +181,9 @@
             if (toggle) await requestJson(`/api/admin/training-partners/${id}/user-status`, { method: 'PATCH', body: JSON.stringify({ status: toggle.dataset.status }) });
             await loadPartners();
         } catch (error) { alert(error.message || 'Action failed.'); event.target.disabled = false; }
-    });
+    }
+    adminRows.addEventListener('click', handlePartnerAction);
+    adminMobileRows.addEventListener('click', handlePartnerAction);
     loadPartners();
 </script>
 @endpush

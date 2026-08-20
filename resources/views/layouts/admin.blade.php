@@ -111,7 +111,7 @@
             @hasSection('customTop')
                 @yield('customTop')
             @else
-                <div class="mb-[22px] grid w-full grid-cols-[auto_minmax(0,1fr)] items-start gap-[14px] sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center lg:mb-[26px] lg:flex lg:justify-between">
+                <div class="mb-[22px] grid w-full grid-cols-[auto_minmax(0,1fr)] items-start gap-[10px_14px] sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-[14px] lg:mb-[26px] lg:flex lg:justify-between">
                     <button class="inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-lg border border-[#dce7f8] bg-white text-[#075fe4] lg:hidden" type="button" onclick="toggleAdminSidebar()" aria-label="Open menu">
                         <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
                     </button>
@@ -123,7 +123,7 @@
                         @endif
                     </div>
 
-                    <div class="col-span-2 flex min-w-0 items-center justify-between gap-2.5 sm:col-auto sm:justify-end lg:gap-4">
+                    <div class="col-start-2 row-start-1 flex min-w-0 items-center justify-end gap-2.5 sm:col-auto sm:row-auto lg:gap-4">
                         @yield('topbarExtra')
                         <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-[#075fe4] lg:h-[46px] lg:w-[46px]" aria-hidden="true">
                             <svg class="h-[23px] w-[23px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path></svg>

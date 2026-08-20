@@ -10,7 +10,6 @@
         ['title' => 'Reports', 'icon' => '<path d="M5 19V9"></path><path d="M12 19V5"></path><path d="M19 19v-7"></path><path d="M3 19h18"></path>', 'url' => '/admin/reports', 'key' => 'reports'],
         ['title' => 'Notifications', 'icon' => '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path>', 'url' => '/admin/notifications', 'key' => 'notifications'],
         ['title' => 'Settings', 'icon' => '<circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.4 3a7 7 0 0 0-1.7 1L5 6 3 9.5 5 11a7 7 0 0 0 0 2l-2 1.5L5 18l2.4-1a7 7 0 0 0 1.7 1l.4 3h5l.4-3a7 7 0 0 0 1.7-1L19 18l2-3.5-2-1.5a7 7 0 0 0 .1-1z"></path>', 'url' => '/admin/settings', 'key' => 'settings'],
-        ['title' => 'System Logs', 'icon' => '<path d="M12 3l8 4v6c0 5-3.5 8-8 8s-8-3-8-8V7l8-4z"></path><path d="M9 12h6"></path>', 'url' => '/admin/system-logs', 'key' => 'logs'],
     ];
 @endphp
 

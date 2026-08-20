@@ -39,7 +39,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     </div>
                     <aside class="side">
                         <article class="card side-card"><div class="side-head"><h2>Upcoming Interviews</h2><a href="/direct-mode/interviews">View All</a></div><div data-upcoming-interviews><div class="empty">Loading interviews...</div></div></article>
-                        <article class="card side-card"><div class="side-head"><h2>Recent Notifications</h2><a href="#" data-view-notifications>View All</a></div><div data-notifications><div class="empty">Loading notifications...</div></div><a class="outline" data-all-notifications href="#" style="width:100%;border-color:transparent;color:#064cff">View All Notifications</a></article>
+                        <article class="card side-card"><div class="side-head"><h2>Recent Notifications</h2><a href="#notifications" data-view-notifications>View All</a></div><div data-notifications><div class="empty">Loading notifications...</div></div><a class="outline" data-all-notifications href="#notifications" style="width:100%;border-color:transparent;color:#064cff">View All Notifications</a></article>
                         <article class="card side-card"><h2>Recent Achievements</h2><div class="achievement" data-achievement></div></article>
                     </aside>
                 </div>
@@ -232,8 +232,26 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 wrap.innerHTML = '<div class="empty">No notifications yet.</div>';
                 return;
             }
-            wrap.innerHTML = notes.map(note => `<div class="notice"><span class="small-icon ${note.is_read ? 'blue-soft' : 'orange-soft'}" data-icon="bell"></span><div><h3>${escapeHtml(note.title || 'Notification')}</h3><p>${escapeHtml(note.message || note.body || '')}</p></div><time>${escapeHtml(timeAgo(note.created_at))}</time></div>`).join('');
+            wrap.innerHTML = notes.map(note => `<a class="notice" href="${escapeAttr(notificationHref(note))}"><span class="small-icon ${note.is_read ? 'blue-soft' : 'orange-soft'}" data-icon="bell"></span><div><h3>${escapeHtml(note.title || 'Notification')}</h3><p>${escapeHtml(note.message || note.body || '')}</p></div><time>${escapeHtml(timeAgo(note.created_at))}</time></a>`).join('');
             hydrateIcons(wrap);
+        }
+
+        function notificationHref(note) {
+            const text = `${note.type || ''} ${note.title || ''} ${note.message || note.body || ''}`.toLowerCase();
+            if (text.includes('interview')) return '/direct-mode/interviews';
+            if (text.includes('application')) return '/direct-mode/applications';
+            if (text.includes('offer')) return '/direct-mode/offers';
+            if (text.includes('job')) return '/direct-mode/jobs';
+            return '/direct-mode/activity#notifications';
+        }
+
+        function showAllNotifications() {
+            renderNotifications(state.notifications.length);
+            document.querySelectorAll('[data-view-notifications], [data-all-notifications]').forEach(link => {
+                link.classList.add('is-active');
+                link.setAttribute('aria-current', 'true');
+            });
+            history.replaceState(null, '', '#notifications');
         }
 
         function renderAchievement() {
@@ -302,8 +320,8 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 
         function wireControls() {
             $('[data-view-all-activity]').addEventListener('click', event => { event.preventDefault(); renderTimeline(state.activities.length); });
-            $('[data-view-notifications]').addEventListener('click', event => { event.preventDefault(); renderNotifications(state.notifications.length); });
-            $('[data-all-notifications]').addEventListener('click', event => { event.preventDefault(); renderNotifications(state.notifications.length); });
+            $('[data-view-notifications]').addEventListener('click', event => { event.preventDefault(); showAllNotifications(); });
+            $('[data-all-notifications]').addEventListener('click', event => { event.preventDefault(); showAllNotifications(); });
             $('[data-date-filter]').addEventListener('click', () => {
                 state.dateMode = state.dateMode === 'today' ? 'week' : 'today';
                 $('[data-today-label]').textContent = state.dateMode === 'today' ? new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'This Week';
@@ -355,6 +373,8 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         hydrateIcons();
         updateUserChrome();
         wireControls();
-        loadData();
+        loadData().then(() => {
+            if (window.location.hash === '#notifications') showAllNotifications();
+        });
     </script>
 @endpush
