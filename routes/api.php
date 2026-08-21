@@ -142,6 +142,11 @@ Route::middleware('auth:sanctum')->group(function () {
             '/profile',
             [FresherProfileController::class, 'save']
         );
+
+        Route::post(
+            '/direct-mode/subscribe',
+            [FresherProfileController::class, 'subscribeDirectMode']
+        );
     });
 
     /*
@@ -298,6 +303,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post(
             '/profile',
             [CompanyProfileController::class, 'save']
+        );
+
+        Route::post(
+            '/subscribe',
+            [CompanyProfileController::class, 'subscribe']
         );
     });
 

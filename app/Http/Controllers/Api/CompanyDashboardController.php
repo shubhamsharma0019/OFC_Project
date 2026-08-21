@@ -119,6 +119,14 @@ class CompanyDashboardController extends Controller
                         $companyProfile->approval_status,
                     'rejection_reason' =>
                         $companyProfile->rejection_reason,
+                    'job_credits' => $companyProfile->job_credits,
+                    'job_post_credit_cost' => 50,
+                    'total_job_credits_used' =>
+                        $companyProfile->total_job_credits_used,
+                    'subscription_plan' =>
+                        $companyProfile->subscription_plan,
+                    'subscribed_at' =>
+                        optional($companyProfile->subscribed_at)->toIso8601String(),
                     'website' => $companyProfile->website,
                     'address' => $companyProfile->address,
                 ],
@@ -201,6 +209,13 @@ class CompanyDashboardController extends Controller
                 ],
 
                 'free_limits' => [
+                    'job_credits' => [
+                        'remaining' => (int) $companyProfile->job_credits,
+                        'initial' => 500,
+                        'used' => (int) $companyProfile->total_job_credits_used,
+                        'cost_per_post' => 50,
+                        'can_post' => $companyProfile->job_credits >= 50,
+                    ],
                     'job_postings' => [
                         'used' => min($usedJobPostings, $freeJobPostings),
                         'total' => $freeJobPostings,

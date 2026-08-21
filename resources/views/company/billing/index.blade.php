@@ -68,7 +68,7 @@
                     @endforeach
                 </div>
 
-                <button type="button" class="choose mt-8 h-[58px] w-full rounded-lg {{ $plan['popular'] ? 'border-0 bg-white text-[#075fe4]' : 'border border-[#075fe4] bg-white text-[#075fe4]' }} text-lg font-bold transition hover:shadow-[0_10px_20px_rgba(7,95,228,0.14)]">
+                <button type="button" data-plan="{{ strtolower($plan['name']) }}" class="choose mt-8 h-[58px] w-full rounded-lg {{ $plan['popular'] ? 'border-0 bg-white text-[#075fe4]' : 'border border-[#075fe4] bg-white text-[#075fe4]' }} text-lg font-bold transition hover:shadow-[0_10px_20px_rgba(7,95,228,0.14)]">
                     Choose Plan
                 </button>
             </article>
@@ -119,8 +119,54 @@
     });
 
     document.querySelectorAll('.choose').forEach(function (button) {
-        button.addEventListener('click', function () {
-            alert('Plan selected.');
+        button.addEventListener('click', async function () {
+            const token =
+                localStorage.getItem('ofc_auth_token') ||
+                localStorage.getItem('onlyfreshers_company_token');
+
+            if (!token) {
+                window.location.href = '/company/login';
+                return;
+            }
+
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Activating...';
+
+            try {
+                const response = await fetch('/api/company/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        plan: button.dataset.plan,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || result.success === false) {
+                    throw new Error(result.message || 'Unable to activate plan.');
+                }
+
+                if (result.data?.profile) {
+                    localStorage.setItem(
+                        'ofc_company_profile',
+                        JSON.stringify(result.data.profile)
+                    );
+                }
+
+                alert(result.message || 'Plan activated.');
+                window.location.href = result.data?.redirect_to || '/company/post-job';
+            } catch (error) {
+                alert(error.message || 'Something went wrong.');
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
         });
     });
 </script>

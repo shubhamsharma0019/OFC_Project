@@ -22,6 +22,10 @@ class FresherProfile extends Model
         'skills',
         'resume',
         'profile_completion',
+        'direct_mode_credits',
+        'total_direct_mode_credits_used',
+        'direct_mode_subscribed_at',
+        'direct_mode_subscription_plan',
     ];
 
     protected function casts(): array
@@ -29,6 +33,9 @@ class FresherProfile extends Model
         return [
             'passing_year' => 'integer',
             'profile_completion' => 'integer',
+            'direct_mode_credits' => 'integer',
+            'total_direct_mode_credits_used' => 'integer',
+            'direct_mode_subscribed_at' => 'datetime',
         ];
     }
 

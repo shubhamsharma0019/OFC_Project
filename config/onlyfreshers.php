@@ -7,8 +7,8 @@ return [
     ],
 
     'direct_mode' => [
-        'free_application_credits' => env('OFC_DIRECT_MODE_FREE_APPLICATION_CREDITS', 500),
-        'application_credit_cost' => env('OFC_DIRECT_MODE_APPLICATION_CREDIT_COST', 1),
+        'free_application_credits' => env('OFC_DIRECT_MODE_FREE_APPLICATION_CREDITS', 250),
+        'application_credit_cost' => env('OFC_DIRECT_MODE_APPLICATION_CREDIT_COST', 50),
     ],
 
     'company' => [
@@ -95,6 +95,32 @@ return [
                 ['icon' => 'users', 'title' => 'Trained & Job-Ready Talent', 'text' => 'Hire with confidence'],
                 ['icon' => 'clock', 'title' => 'Save Time & Cost', 'text' => 'Streamlined hiring process'],
             ],
+        ],
+    ],
+
+    'footer' => [
+        'cta' => [
+            'title' => 'Start Your Journey Today!',
+            'text' => 'Whether you choose Direct Mode or Fast Track Mode, OnlyFreshers is here to help you get hired faster.',
+            'icon' => 'rocket',
+        ],
+        'actions' => [
+            [
+                'title' => 'For Freshers',
+                'subtitle' => 'Find Jobs & Programs',
+                'href' => '/direct-mode/register',
+            ],
+            [
+                'title' => 'For Companies',
+                'subtitle' => 'Post Jobs & Hire Talent',
+                'href' => '/company/login',
+            ],
+        ],
+        'stats' => [
+            ['value' => '5000+', 'label' => 'Jobs Listed'],
+            ['value' => '10,000+', 'label' => 'Freshers Hired'],
+            ['value' => '1000+', 'label' => 'Companies'],
+            ['value' => '50+', 'label' => 'Training Partners'],
         ],
     ],
 ];

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class FresherProfileController extends Controller
 {
@@ -145,6 +147,11 @@ class FresherProfileController extends Controller
         $profileData['profile_completion'] =
             $this->calculateProfileCompletion($profileData);
 
+        if (! $existingProfile) {
+            $profileData['direct_mode_credits'] = 250;
+            $profileData['total_direct_mode_credits_used'] = 0;
+        }
+
         $profile = $user->fresherProfile()->updateOrCreate(
             [
                 'user_id' => $user->id,
@@ -159,6 +166,73 @@ class FresherProfileController extends Controller
                 : 'Fresher profile created successfully.',
             'data' => [
                 'profile' => $profile->fresh(),
+            ],
+        ]);
+    }
+
+    public function subscribeDirectMode(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->role !== 'fresher') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sirf fresher Direct Mode credits le sakta hai.',
+            ], 403);
+        }
+
+        $validatedData = $request->validate([
+            'plan' => [
+                'required',
+                Rule::in([
+                    'basic',
+                    'pro',
+                    'premium',
+                    'ultimate',
+                ]),
+            ],
+        ]);
+
+        $profile = $user->fresherProfile;
+
+        if (! $profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pehle fresher profile complete karein.',
+            ], 422);
+        }
+
+        $creditsByPlan = [
+            'basic' => 1000,
+            'pro' => 2500,
+            'premium' => 5000,
+            'ultimate' => 10000,
+        ];
+
+        $profile = DB::transaction(function () use ($profile, $validatedData, $creditsByPlan) {
+            $lockedProfile = $profile->newQuery()
+                ->whereKey($profile->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $lockedProfile->update([
+                'direct_mode_credits' =>
+                    $lockedProfile->direct_mode_credits +
+                    $creditsByPlan[$validatedData['plan']],
+                'direct_mode_subscription_plan' => $validatedData['plan'],
+                'direct_mode_subscribed_at' => now(),
+            ]);
+
+            return $lockedProfile->fresh();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Direct Mode credits activated successfully. You can apply again.',
+            'data' => [
+                'profile' => $profile,
+                'credits_added' => $creditsByPlan[$validatedData['plan']],
+                'redirect_to' => '/direct-mode/jobs',
             ],
         ]);
     }

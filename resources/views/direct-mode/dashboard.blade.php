@@ -1052,7 +1052,7 @@
             </article>
         </aside>
     </section>
-    <section class="credits-pricing-section">
+    <section class="credits-pricing-section" id="credits">
         <div class="credits-pricing-head">
             <h2>Apply More Jobs with Additional Credits</h2>
             <p data-credit-pricing-copy>You get free credits to apply for jobs under Direct Mode. Need more? Choose a plan that suits you.</p>
@@ -1406,11 +1406,11 @@
     };
 
     const creditPlans = [
-        { name: 'Starter', credits: '500', price: '₹0', validity: 'FREE', button: 'Current Plan', current: true, popular: false, features: ['Apply to 500 jobs', 'Valid for 30 days', 'For Direct Mode only'] },
-        { name: 'Basic', credits: '1,000', price: '₹249', validity: 'Valid for 60 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 1,000 jobs', 'Valid for 60 days', 'For Direct Mode only'] },
-        { name: 'Pro', credits: '2,500', price: '₹499', validity: 'Valid for 90 days', button: 'Buy Now', current: false, popular: true, features: ['Apply to 2,500 jobs', 'Valid for 90 days', 'For Direct Mode only', 'Priority Support'] },
-        { name: 'Premium', credits: '5,000', price: '₹899', validity: 'Valid for 120 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 5,000 jobs', 'Valid for 120 days', 'For Direct Mode only', 'Priority Support'] },
-        { name: 'Ultimate', credits: '10,000', price: '₹1,499', validity: 'Valid for 180 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 10,000 jobs', 'Valid for 180 days', 'For Direct Mode only', 'Priority Support'] },
+        { key: 'starter', name: 'Starter', credits: '250', price: '₹0', validity: 'FREE', button: 'Current Plan', current: true, popular: false, features: ['Apply to 5 jobs', '50 credits per application', 'For Direct Mode only'] },
+        { key: 'basic', name: 'Basic', credits: '1,000', price: '₹249', validity: 'Valid for 60 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 20 jobs', 'Valid for 60 days', 'For Direct Mode only'] },
+        { key: 'pro', name: 'Pro', credits: '2,500', price: '₹499', validity: 'Valid for 90 days', button: 'Buy Now', current: false, popular: true, features: ['Apply to 50 jobs', 'Valid for 90 days', 'For Direct Mode only', 'Priority Support'] },
+        { key: 'premium', name: 'Premium', credits: '5,000', price: '₹899', validity: 'Valid for 120 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 100 jobs', 'Valid for 120 days', 'For Direct Mode only', 'Priority Support'] },
+        { key: 'ultimate', name: 'Ultimate', credits: '10,000', price: '₹1,499', validity: 'Valid for 180 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 200 jobs', 'Valid for 180 days', 'For Direct Mode only', 'Priority Support'] },
     ];
 
     const renderCreditPlans = () => {
@@ -1421,10 +1421,51 @@
             <h3>${esc(plan.name)}</h3>
             <div class="credits-amount"><strong>${esc(plan.credits)}</strong><span>Credits</span></div>
             <div class="credits-price"><strong>${esc(plan.price)}</strong><span>${esc(plan.validity)}</span></div>
-            <a class="credits-plan-btn ${plan.current ? 'current' : ''}" href="/direct-mode/jobs">${esc(plan.button)}</a>
+            <button class="credits-plan-btn ${plan.current ? 'current' : ''}" data-credit-plan="${esc(plan.key)}" type="button" ${plan.current ? 'disabled' : ''}>${esc(plan.button)}</button>
             <ul class="credits-features">${plan.features.map(feature => `<li><b>&#10003;</b>${esc(feature)}</li>`).join('')}</ul>
         </article>`).join('');
+        box.querySelectorAll('[data-credit-plan]:not([disabled])').forEach(button => {
+            button.addEventListener('click', () => buyDirectModeCredits(button));
+        });
     };
+
+    async function buyDirectModeCredits(button) {
+        if (!token) {
+            window.location.href = '/direct-mode/login';
+            return;
+        }
+
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Activating...';
+
+        try {
+            const response = await fetch('/api/fresher/direct-mode/subscribe', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ plan: button.dataset.creditPlan }),
+            });
+            const payload = await response.json();
+
+            if (!response.ok || payload.success === false) {
+                throw new Error(payload.message || 'Credits activate nahi ho paaye.');
+            }
+
+            if (payload.data?.profile) {
+                localStorage.setItem('onlyfreshers_profile', JSON.stringify(payload.data.profile));
+            }
+
+            window.location.href = payload.data?.redirect_to || '/direct-mode/jobs';
+        } catch (error) {
+            showError(error.message || 'Something went wrong.');
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
 
     const showError = message => {
         const box = qs('[data-dashboard-error]');

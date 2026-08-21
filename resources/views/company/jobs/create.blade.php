@@ -68,6 +68,14 @@
         class="mb-4 hidden rounded-lg border px-4 py-3 text-sm font-bold"
     ></div>
 
+    <div
+        id="creditNotice"
+        class="mb-5 rounded-lg border border-[#cfe0ff] bg-[#f4f8ff] px-4 py-3 text-sm font-bold text-[#075fe4]"
+    >
+        You get 500 free company credits. Publishing one opportunity uses 50 credits.
+        <span id="creditBalanceText">Checking balance...</span>
+    </div>
+
 
     {{-- Job Form --}}
     <form
@@ -663,6 +671,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const internshipHint =
         document.getElementById('internshipHint');
 
+    const creditBalanceText =
+        document.getElementById('creditBalanceText');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -864,6 +875,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     ? 'border-[#b9e7c9] bg-[#f1fff5] text-[#138a43]'
                     : 'border-[#ffd1d7] bg-[#fff7f8] text-[#ff3045]'
             }`;
+    }
+
+    function redirectToBilling(message) {
+
+        showMessage(
+            message ||
+            'Your credits are over. Please choose a subscription plan to post more opportunities.'
+        );
+
+        setTimeout(
+            () => {
+                window.location.href =
+                    '/company/billing';
+            },
+            900
+        );
     }
 
 
@@ -1192,6 +1219,14 @@ document.addEventListener('DOMContentLoaded', function () {
             JSON.stringify(profile)
         );
 
+        const remainingCredits =
+            Number(profile.job_credits ?? 500);
+
+        if (creditBalanceText) {
+            creditBalanceText.textContent =
+                `Current balance: ${remainingCredits} credits.`;
+        }
+
 
         document.dispatchEvent(
             new CustomEvent(
@@ -1230,6 +1265,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
             window.location.href =
                 '/company/approval/rejected';
+
+            return false;
+        }
+
+        if (remainingCredits < 50) {
+            if (publishButton) {
+                publishButton.disabled = true;
+                publishButton.textContent = 'Upgrade to Post';
+            }
+
+            redirectToBilling(
+                'Your free credits are over. Choose a subscription plan to post more opportunities.'
+            );
 
             return false;
         }
@@ -1337,6 +1385,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 window.location.href =
                     '/company/login';
+
+                return;
+            }
+
+            if (response.status === 402) {
+                redirectToBilling(
+                    result?.message ||
+                    'Your credits are over. Please choose a subscription plan.'
+                );
 
                 return;
             }

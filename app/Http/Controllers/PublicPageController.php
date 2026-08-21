@@ -263,7 +263,7 @@ class PublicPageController extends Controller
             'hero' => [
                 'eyebrow' => 'Direct Mode',
                 'title' => 'Apply to Jobs Directly',
-                'text' => 'Get 500 free application credits and apply to fresher jobs with your profile and initial assessment.',
+                'text' => 'Get 250 free application credits and apply to fresher jobs with your profile and initial assessment.',
                 'button' => 'Apply Now',
                 'href' => '/direct-mode/register',
                 'image' => 'direct-mode-hero.png',
@@ -275,9 +275,9 @@ class PublicPageController extends Controller
                 'href' => '/direct-mode',
             ],
             'directStats' => [
-                ['icon' => 'users', 'value' => '500', 'label' => 'Free Credits Available'],
+                ['icon' => 'users', 'value' => '250', 'label' => 'Free Credits Available'],
                 ['icon' => 'chart', 'value' => '0', 'label' => 'Applications Used'],
-                ['icon' => 'chart', 'value' => '500', 'label' => 'Applications Remaining'],
+                ['icon' => 'chart', 'value' => '250', 'label' => 'Credits Remaining'],
                 ['icon' => 'plus', 'value' => '', 'label' => 'Purchase Credits To Apply More'],
             ],
             'directJobs' => $jobs->isNotEmpty()
@@ -304,7 +304,7 @@ class PublicPageController extends Controller
             'jobLabels' => [
                 'match' => 'Initial Track Match',
                 'apply' => 'Apply Now',
-                'credit' => '1 Credit',
+                'credit' => '50 Credits',
                 'apply_href' => '/direct-mode/login',
             ],
             'tipsPanel' => [
@@ -330,7 +330,7 @@ class PublicPageController extends Controller
             ],
             'creditsHeader' => [
                 'title' => 'Apply More Jobs with Additional Credits',
-                'text' => 'You get 500 FREE credits to apply for jobs under Direct Mode. Need more? Choose a plan that suits you.',
+                'text' => 'You get 250 FREE credits to apply for jobs under Direct Mode. Each application uses 50 credits. Need more? Choose a plan that suits you.',
             ],
             'planLabels' => [
                 'popular' => 'Popular',
@@ -973,11 +973,11 @@ class PublicPageController extends Controller
     private function creditPlans(): array
     {
         return [
-            ['name' => 'Starter', 'credits' => '500', 'price' => '₹0', 'period' => 'FREE', 'button' => 'Current Plan', 'popular' => false, 'items' => ['Apply to 500 jobs', 'Valid for 30 days', 'For Direct Mode only']],
-            ['name' => 'Basic', 'credits' => '1,000', 'price' => '₹249', 'period' => 'Valid for 60 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 1,000 jobs', 'Valid for 60 days', 'For Direct Mode only']],
-            ['name' => 'Pro', 'credits' => '2,500', 'price' => '₹499', 'period' => 'Valid for 90 days', 'button' => 'Buy Now', 'popular' => true, 'items' => ['Apply to 2,500 jobs', 'Valid for 90 days', 'For Direct Mode only', 'Priority Support']],
-            ['name' => 'Premium', 'credits' => '5,000', 'price' => '₹899', 'period' => 'Valid for 120 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 5,000 jobs', 'Valid for 120 days', 'For Direct Mode only', 'Priority Support']],
-            ['name' => 'Ultimate', 'credits' => '10,000', 'price' => '₹1,499', 'period' => 'Valid for 180 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 10,000 jobs', 'Valid for 180 days', 'For Direct Mode only', 'Priority Support']],
+            ['name' => 'Starter', 'credits' => '250', 'price' => '₹0', 'period' => 'FREE', 'button' => 'Current Plan', 'popular' => false, 'items' => ['Apply to 5 jobs', '50 credits per application', 'For Direct Mode only']],
+            ['name' => 'Basic', 'credits' => '1,000', 'price' => '₹249', 'period' => 'Valid for 60 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 20 jobs', 'Valid for 60 days', 'For Direct Mode only']],
+            ['name' => 'Pro', 'credits' => '2,500', 'price' => '₹499', 'period' => 'Valid for 90 days', 'button' => 'Buy Now', 'popular' => true, 'items' => ['Apply to 50 jobs', 'Valid for 90 days', 'For Direct Mode only', 'Priority Support']],
+            ['name' => 'Premium', 'credits' => '5,000', 'price' => '₹899', 'period' => 'Valid for 120 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 100 jobs', 'Valid for 120 days', 'For Direct Mode only', 'Priority Support']],
+            ['name' => 'Ultimate', 'credits' => '10,000', 'price' => '₹1,499', 'period' => 'Valid for 180 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 200 jobs', 'Valid for 180 days', 'For Direct Mode only', 'Priority Support']],
         ];
     }
 

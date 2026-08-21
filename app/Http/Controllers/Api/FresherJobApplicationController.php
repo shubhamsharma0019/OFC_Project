@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssessmentAttempt;
+use App\Models\FresherProfile;
 use App\Models\Job;
 use App\Models\JobApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FresherJobApplicationController extends Controller
 {
+    private const INITIAL_DIRECT_MODE_CREDITS = 250;
+    private const DIRECT_MODE_APPLICATION_CREDIT_COST = 50;
+
     /**
      * Logged-in fresher ki saari applications return karega.
      */
@@ -154,19 +159,72 @@ class FresherJobApplicationController extends Controller
             ], 422);
         }
 
-        $application = JobApplication::create([
-            'job_id' => $job->id,
-            'fresher_profile_id' => $fresherProfile->id,
-            'application_status' => 'applied',
-            'applied_at' => now(),
-        ]);
+        $application = DB::transaction(function () use ($fresherProfile, $job, $isFastTrackJob) {
+            $lockedProfile = FresherProfile::query()
+                ->whereKey($fresherProfile->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $alreadyApplied = JobApplication::query()
+                ->where('job_id', $job->id)
+                ->where('fresher_profile_id', $lockedProfile->id)
+                ->exists();
+
+            if ($alreadyApplied) {
+                abort(response()->json([
+                    'success' => false,
+                    'message' => 'Aap is job ke liye pehle hi apply kar chuke hain.',
+                ], 422));
+            }
+
+            if (! $isFastTrackJob) {
+                $this->chargeDirectModeCredits($lockedProfile);
+            }
+
+            return JobApplication::create([
+                'job_id' => $job->id,
+                'fresher_profile_id' => $lockedProfile->id,
+                'application_status' => 'applied',
+                'applied_at' => now(),
+            ]);
+        });
 
         return response()->json([
             'success' => true,
-            'message' => 'Job application submitted successfully.',
+            'message' => $isFastTrackJob
+                ? 'Job application submitted successfully.'
+                : 'Job application submitted successfully. 50 credits deducted.',
             'data' => [
                 'application' => $application,
+                'credits' => [
+                    'remaining' => $fresherProfile->fresh()->direct_mode_credits,
+                    'cost' => self::DIRECT_MODE_APPLICATION_CREDIT_COST,
+                ],
             ],
         ], 201);
+    }
+
+    private function chargeDirectModeCredits(FresherProfile $fresherProfile): void
+    {
+        if ($fresherProfile->direct_mode_credits === null) {
+            $fresherProfile->direct_mode_credits = self::INITIAL_DIRECT_MODE_CREDITS;
+        }
+
+        if ($fresherProfile->direct_mode_credits < self::DIRECT_MODE_APPLICATION_CREDIT_COST) {
+            abort(response()->json([
+                'success' => false,
+                'message' => 'Aapke Direct Mode credits khatam ho gaye hain. Apply karne ke liye subscription plan choose karein.',
+                'data' => [
+                    'redirect_to' => '/direct-mode/dashboard#credits',
+                    'credits' => [
+                        'remaining' => $fresherProfile->direct_mode_credits,
+                        'required' => self::DIRECT_MODE_APPLICATION_CREDIT_COST,
+                    ],
+                ],
+            ], 402));
+        }
+
+        $fresherProfile->decrement('direct_mode_credits', self::DIRECT_MODE_APPLICATION_CREDIT_COST);
+        $fresherProfile->increment('total_direct_mode_credits_used', self::DIRECT_MODE_APPLICATION_CREDIT_COST);
     }
 }

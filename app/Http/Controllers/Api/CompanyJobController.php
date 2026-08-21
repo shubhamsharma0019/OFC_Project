@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\CompanyProfile;
 use App\Models\Job;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class CompanyJobController extends Controller
 {
+    private const INITIAL_JOB_CREDITS = 500;
+    private const JOB_POST_CREDIT_COST = 50;
+
     /**
      * Logged-in company ki apni jobs return karega.
      */
@@ -194,15 +199,30 @@ class CompanyJobController extends Controller
         $validatedData['status'] =
             $validatedData['status'] ?? 'draft';
 
-        $job = Job::create($validatedData);
+        $job = DB::transaction(function () use ($companyProfile, $validatedData) {
+            $lockedProfile = CompanyProfile::query()
+                ->whereKey($companyProfile->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($validatedData['status'] === 'active') {
+                $this->chargeJobPostCredits($lockedProfile);
+            }
+
+            return Job::create($validatedData);
+        });
 
         return response()->json([
             'success' => true,
             'message' => $job->status === 'active'
-                ? 'Opportunity published successfully.'
+                ? 'Opportunity published successfully. 50 credits deducted.'
                 : 'Opportunity saved as draft successfully.',
             'data' => [
                 'job' => $job,
+                'credits' => [
+                    'remaining' => $companyProfile->fresh()->job_credits,
+                    'cost' => self::JOB_POST_CREDIT_COST,
+                ],
             ],
         ], 201);
     }
@@ -322,7 +342,22 @@ class CompanyJobController extends Controller
             ],
         ]);
 
-        $job->update($validatedData);
+        DB::transaction(function () use ($companyProfile, $job, $validatedData) {
+            $lockedProfile = CompanyProfile::query()
+                ->whereKey($companyProfile->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $isPublishing =
+                ($validatedData['status'] ?? null) === 'active' &&
+                $job->status !== 'active';
+
+            if ($isPublishing) {
+                $this->chargeJobPostCredits($lockedProfile);
+            }
+
+            $job->update($validatedData);
+        });
 
         return response()->json([
             'success' => true,
@@ -377,9 +412,20 @@ class CompanyJobController extends Controller
             ],
         ]);
 
-        $job->update([
-            'status' => $validatedData['status'],
-        ]);
+        DB::transaction(function () use ($companyProfile, $job, $validatedData) {
+            $lockedProfile = CompanyProfile::query()
+                ->whereKey($companyProfile->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($validatedData['status'] === 'active' && $job->status !== 'active') {
+                $this->chargeJobPostCredits($lockedProfile);
+            }
+
+            $job->update([
+                'status' => $validatedData['status'],
+            ]);
+        });
 
         return response()->json([
             'success' => true,
@@ -388,5 +434,29 @@ class CompanyJobController extends Controller
                 'job' => $job->fresh(),
             ],
         ]);
+    }
+
+    private function chargeJobPostCredits(CompanyProfile $companyProfile): void
+    {
+        if ($companyProfile->job_credits === null) {
+            $companyProfile->job_credits = self::INITIAL_JOB_CREDITS;
+        }
+
+        if ($companyProfile->job_credits < self::JOB_POST_CREDIT_COST) {
+            abort(response()->json([
+                'success' => false,
+                'message' => 'Aapke free credits khatam ho gaye hain. Job post karne ke liye subscription plan choose karein.',
+                'data' => [
+                    'redirect_to' => '/company/billing',
+                    'credits' => [
+                        'remaining' => $companyProfile->job_credits,
+                        'required' => self::JOB_POST_CREDIT_COST,
+                    ],
+                ],
+            ], 402));
+        }
+
+        $companyProfile->decrement('job_credits', self::JOB_POST_CREDIT_COST);
+        $companyProfile->increment('total_job_credits_used', self::JOB_POST_CREDIT_COST);
     }
 }

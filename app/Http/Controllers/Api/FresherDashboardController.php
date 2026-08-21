@@ -84,18 +84,14 @@ class FresherDashboardController extends Controller
             $overallScore >= $internshipEligibilityScore;
         $freeApplicationCredits = (int) config(
             'onlyfreshers.direct_mode.free_application_credits',
-            500
+            250
         );
         $applicationCreditCost = (int) config(
             'onlyfreshers.direct_mode.application_credit_cost',
-            1
+            50
         );
-        $usedApplicationCredits =
-            (clone $applicationQuery)->count() * $applicationCreditCost;
-        $remainingApplicationCredits = max(
-            0,
-            $freeApplicationCredits - $usedApplicationCredits
-        );
+        $usedApplicationCredits = (int) $fresherProfile->total_direct_mode_credits_used;
+        $remainingApplicationCredits = (int) $fresherProfile->direct_mode_credits;
 
         $upcomingInterviews = Interview::query()
             ->whereHas('jobApplication', function ($query) use (
@@ -149,6 +145,10 @@ class FresherDashboardController extends Controller
                     'skills' => $fresherProfile->skills,
                     'resume_uploaded' =>
                         !empty($fresherProfile->resume),
+                    'direct_mode_subscription_plan' =>
+                        $fresherProfile->direct_mode_subscription_plan,
+                    'direct_mode_subscribed_at' =>
+                        optional($fresherProfile->direct_mode_subscribed_at)->toIso8601String(),
                 ],
 
                 'statistics' => [
@@ -233,6 +233,8 @@ class FresherDashboardController extends Controller
                     'used' => $usedApplicationCredits,
                     'remaining' => $remainingApplicationCredits,
                     'application_cost' => $applicationCreditCost,
+                    'can_apply' =>
+                        $remainingApplicationCredits >= $applicationCreditCost,
                 ],
 
                 'initial_assessment' => $initialAssessment

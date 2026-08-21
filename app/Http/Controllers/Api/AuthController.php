@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -67,7 +68,21 @@ class AuthController extends Controller
             $user->fresherProfile()->create([
                 'phone' => $validatedData['mobile'] ?? null,
                 'profile_completion' => filled($validatedData['mobile'] ?? null) ? 13 : 0,
+                'direct_mode_credits' => 250,
+                'total_direct_mode_credits_used' => 0,
             ]);
+        }
+
+        if ($user->role === 'company') {
+            $companyProfile = $user->companyProfile()->create([
+                'company_name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'phone' => $validatedData['mobile'] ?? null,
+                'job_credits' => 500,
+                'total_job_credits_used' => 0,
+            ]);
+
+            $this->notifyAdminsAboutCompanyRegistration($companyProfile->company_name);
         }
 
         $token = $user
@@ -229,5 +244,22 @@ class AuthController extends Controller
             'admin' => '/admin/dashboard',
             default => '/',
         };
+    }
+
+    private function notifyAdminsAboutCompanyRegistration(string $companyName): void
+    {
+        User::query()
+            ->where('role', 'admin')
+            ->where('status', 'active')
+            ->pluck('id')
+            ->each(function (int $adminId) use ($companyName) {
+                Notification::create([
+                    'user_id' => $adminId,
+                    'type' => 'company_registration',
+                    'title' => 'New Company Registration',
+                    'message' => "{$companyName} has registered and is waiting for approval.",
+                    'is_read' => false,
+                ]);
+            });
     }
 }

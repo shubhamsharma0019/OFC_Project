@@ -2357,13 +2357,13 @@ document.addEventListener(
 
 
                         setAlert(
-                            'Company account created successfully. Redirecting...',
+                            'Company account created successfully. Your free credits are ready.',
                             'success'
                         );
 
 
                         window.location.href =
-                            '/company/profile';
+                            '/company/credits-welcome';
 
                         return;
                     }

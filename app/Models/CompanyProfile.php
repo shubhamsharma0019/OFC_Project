@@ -23,6 +23,16 @@ class CompanyProfile extends Model
         'description',
         'approval_status',
         'rejection_reason',
+        'job_credits',
+        'total_job_credits_used',
+        'subscribed_at',
+        'subscription_plan',
+    ];
+
+    protected $casts = [
+        'job_credits' => 'integer',
+        'total_job_credits_used' => 'integer',
+        'subscribed_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

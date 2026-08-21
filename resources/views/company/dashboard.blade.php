@@ -1342,6 +1342,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const jobPostings =
             limits.job_postings || {};
 
+        const jobCredits =
+            limits.job_credits || {};
+
         const directMode =
             limits.direct_mode_resumes_per_job || {};
 
@@ -1350,14 +1353,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const cards = [
             {
-                title: 'Free Opportunity Postings',
-                value: `${jobPostings.used ?? statistics.total_jobs ?? 0} / ${jobPostings.total ?? 0}`,
-                note: 'Used',
-                sub: jobPostings.recent_on ? `Recent on ${jobPostings.recent_on}` : 'No recent posting',
+                title: 'Job Credits',
+                value: Number(jobCredits.remaining ?? 500).toLocaleString('en-IN'),
+                note: 'Remaining',
+                sub: `${Number(jobCredits.cost_per_post ?? 50).toLocaleString('en-IN')} credits per post`,
                 icon: 'file',
                 classes: 'bg-[#eaf2ff] text-[#075fe4]',
+                href: '/company/billing',
+                link: Number(jobCredits.remaining ?? 500) < Number(jobCredits.cost_per_post ?? 50)
+                    ? 'Buy Credits ->'
+                    : ''
+            },
+            {
+                title: 'Credits Used',
+                value: Number(jobCredits.used ?? 0).toLocaleString('en-IN'),
+                note: `${statistics.total_jobs ?? 0} posts created`,
+                sub: jobPostings.recent_on ? `Recent on ${jobPostings.recent_on}` : 'No recent posting',
+                icon: 'briefcase',
+                classes: 'bg-[#f0edff] text-[#6c50ff]',
                 href: '/company/jobs',
-                link: ''
+                link: 'View Jobs ->'
             },
             {
                 title: 'Direct Mode',
@@ -1370,22 +1385,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 link: ''
             },
             {
-                title: 'Fast Track Mode',
-                value: `${fastTrack.remaining ?? fastTrack.total ?? 0} / ${fastTrack.total ?? 0}`,
-                note: 'Free Resumes',
-                sub: 'Per Job Posting',
-                icon: 'users',
-                classes: 'bg-[#e8fbf3] text-[#00ad6f]',
-                href: '/fast-track/dashboard',
-                link: ''
-            },
-            {
                 title: 'Total Active Opportunities',
                 value: statistics.active_jobs ?? 0,
                 note: '',
                 sub: '',
                 icon: 'briefcase',
-                classes: 'bg-[#f0edff] text-[#6c50ff]',
+                classes: 'bg-[#e8fbf3] text-[#00ad6f]',
                 href: '/company/jobs',
                 link: 'View All ->'
             }
@@ -1467,8 +1472,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const cta =
             dashboardConfig?.cta || {};
 
-        const remainingFreePosts =
-            limits?.job_postings?.remaining ?? 0;
+        const remainingCredits =
+            Number(limits?.job_credits?.remaining ?? 500);
+
+        const postCost =
+            Number(limits?.job_credits?.cost_per_post ?? 50);
 
         const ctaTitle =
             document.querySelector('[data-company-cta-title]');
@@ -1478,16 +1486,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (ctaTitle) {
             ctaTitle.textContent =
-                remainingFreePosts > 0
-                    ? (cta.available_title || 'Free opportunity postings available')
-                    : (cta.title || "You've used all your free opportunity postings!");
+                remainingCredits >= postCost
+                    ? 'Job credits available'
+                    : "You've used all your job credits!";
         }
 
         if (ctaText) {
             ctaText.textContent =
-                remainingFreePosts > 0
-                    ? (cta.available_text || 'Use your free postings to reach verified fresher talent.')
-                    : (cta.text || 'Post more jobs or internships and connect with more talented freshers.');
+                remainingCredits >= postCost
+                    ? `You have ${remainingCredits.toLocaleString('en-IN')} credits left. Each published opportunity uses ${postCost.toLocaleString('en-IN')} credits.`
+                    : 'Choose a subscription plan to continue posting jobs and internships.';
         }
 
         const resumePacks =

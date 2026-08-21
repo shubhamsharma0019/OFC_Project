@@ -421,9 +421,19 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             try {
                 const response = await fetch(`/api/fresher/jobs/${jobId}/apply`, { method: 'POST', headers: apiHeaders(), body: '{}' });
                 const payload = await response.json();
+                if (response.status === 402) {
+                    showAlert(payload.message || 'Direct Mode credits khatam ho gaye hain.', 'error');
+                    setTimeout(() => {
+                        window.location.href = payload.data?.redirect_to || '/direct-mode/dashboard#credits';
+                    }, 900);
+                    return;
+                }
                 if (!response.ok || payload.success === false) throw new Error(payload.message || 'Application submit nahi ho payi.');
                 state.applications.unshift({ job_id: jobId, ...(payload.data?.application || {}) });
-                showAlert('Application submit ho gayi. My Applications page par status track hoga.');
+                const remainingCredits = payload.data?.credits?.remaining;
+                showAlert(remainingCredits === undefined
+                    ? 'Application submit ho gayi. My Applications page par status track hoga.'
+                    : `Application submit ho gayi. ${remainingCredits} Direct Mode credits remaining.`);
                 renderJobs();
             } catch (error) {
                 showAlert(error.message, 'error');

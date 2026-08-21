@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class CompanyProfileController extends Controller
 {
@@ -140,12 +144,21 @@ class CompanyProfileController extends Controller
         $profileData['approval_status'] = 'pending';
         $profileData['rejection_reason'] = null;
 
+        if (! $existingProfile) {
+            $profileData['job_credits'] = 500;
+            $profileData['total_job_credits_used'] = 0;
+        }
+
         $profile = $user->companyProfile()->updateOrCreate(
             [
                 'user_id' => $user->id,
             ],
             $profileData
         );
+
+        if (! $existingProfile) {
+            $this->notifyAdminsAboutCompanyRegistration($profile->company_name);
+        }
 
         return response()->json([
             'success' => true,
@@ -154,6 +167,86 @@ class CompanyProfileController extends Controller
                 : 'Company profile created successfully.',
             'data' => [
                 'profile' => $profile->fresh(),
+            ],
+        ]);
+    }
+
+    private function notifyAdminsAboutCompanyRegistration(string $companyName): void
+    {
+        User::query()
+            ->where('role', 'admin')
+            ->where('status', 'active')
+            ->pluck('id')
+            ->each(function (int $adminId) use ($companyName) {
+                Notification::create([
+                    'user_id' => $adminId,
+                    'type' => 'company_registration',
+                    'title' => 'New Company Registration',
+                    'message' => "{$companyName} has registered and is waiting for approval.",
+                    'is_read' => false,
+                ]);
+            });
+    }
+
+    public function subscribe(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->role !== 'company') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sirf company subscription le sakti hai.',
+            ], 403);
+        }
+
+        $validatedData = $request->validate([
+            'plan' => [
+                'required',
+                Rule::in([
+                    'basic',
+                    'premium',
+                    'enterprise',
+                ]),
+            ],
+        ]);
+
+        $profile = $user->companyProfile;
+
+        if (! $profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pehle company profile complete karein.',
+            ], 422);
+        }
+
+        $creditsByPlan = [
+            'basic' => 500,
+            'premium' => 2500,
+            'enterprise' => 5000,
+        ];
+
+        $profile = DB::transaction(function () use ($profile, $validatedData, $creditsByPlan) {
+            $lockedProfile = $profile->newQuery()
+                ->whereKey($profile->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $lockedProfile->update([
+                'job_credits' => $lockedProfile->job_credits + $creditsByPlan[$validatedData['plan']],
+                'subscription_plan' => $validatedData['plan'],
+                'subscribed_at' => now(),
+            ]);
+
+            return $lockedProfile->fresh();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subscription activated successfully. You can post jobs again.',
+            'data' => [
+                'profile' => $profile,
+                'credits_added' => $creditsByPlan[$validatedData['plan']],
+                'redirect_to' => '/company/post-job',
             ],
         ]);
     }
