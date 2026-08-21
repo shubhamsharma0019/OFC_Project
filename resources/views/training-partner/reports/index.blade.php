@@ -29,12 +29,128 @@
         font-size: 14px;
         font-weight: 600;
     }
+
+    @media (max-width: 640px) {
+        .training-reports-page {
+            overflow: hidden;
+        }
+
+        .training-reports-head h1 {
+            font-size: 23px;
+            line-height: 1.15;
+        }
+
+        .training-reports-head a,
+        .training-reports-toolbar input {
+            width: 100%;
+        }
+
+        #reportStats {
+            gap: 12px;
+        }
+
+        #reportStats article {
+            padding: 16px;
+        }
+
+        .report-chart {
+            min-height: 220px;
+            padding: 10px;
+        }
+
+        .report-chart svg {
+            height: 210px;
+        }
+
+        .report-chart-empty {
+            min-height: 210px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .training-payments-table-wrap {
+            overflow-x: visible;
+        }
+
+        .training-payments-table-wrap table,
+        .training-payments-table-wrap thead,
+        .training-payments-table-wrap tbody,
+        .training-payments-table-wrap tr,
+        .training-payments-table-wrap th,
+        .training-payments-table-wrap td {
+            display: block;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .training-payments-table-wrap table {
+            min-width: 0;
+        }
+
+        .training-payments-table-wrap thead {
+            display: none;
+        }
+
+        .training-payments-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fbff;
+        }
+
+        .training-payments-table-wrap tbody tr {
+            overflow: hidden;
+            border: 1px solid #dddff0;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 10px 22px rgba(50, 35, 120, .06);
+        }
+
+        .training-payments-table-wrap tbody td {
+            display: grid;
+            grid-template-columns: minmax(86px, 34%) minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+            padding: 11px 14px;
+            border-bottom: 1px solid #eef2f8;
+            word-break: break-word;
+        }
+
+        .training-payments-table-wrap tbody td::before {
+            content: attr(data-label);
+            font-size: 11px;
+            font-weight: 800;
+            color: #526287;
+            text-transform: uppercase;
+        }
+
+        .training-payments-table-wrap tbody td:first-child,
+        .training-payments-table-wrap tbody td[colspan] {
+            display: block;
+        }
+
+        .training-payments-table-wrap tbody td:first-child::before,
+        .training-payments-table-wrap tbody td[colspan]::before {
+            display: none;
+        }
+
+        .training-payments-table-wrap tbody td:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .training-payments-table-wrap tbody td {
+            grid-template-columns: 1fr;
+            gap: 5px;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-    <section class="grid gap-5">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <section class="training-reports-page grid gap-5">
+        <div class="training-reports-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Reports</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">Track and analyze performance of courses, learners and revenue.</p>
@@ -48,7 +164,7 @@
 
         <div class="grid gap-5 xl:grid-cols-[1.25fr_.75fr]">
             <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="training-reports-toolbar flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-lg font-bold text-[#071544]">Enrollment Trend</h2>
                     <input id="courseSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search course...">
                 </div>
@@ -68,7 +184,7 @@
 
         <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
             <div class="border-b border-[#e7ebf5] p-4"><h2 class="text-lg font-bold text-[#071544]">Recent Payments</h2></div>
-            <div class="overflow-x-auto">
+            <div class="training-payments-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[900px] text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Student</th><th class="px-5 py-4">Course</th><th class="px-5 py-4">Transaction</th><th class="px-5 py-4">Amount</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Date</th></tr></thead>
                     <tbody id="paymentTable" class="divide-y divide-[#e7ebf5] text-[#26375f]"><tr><td class="px-5 py-5" colspan="6">Loading payments...</td></tr></tbody>
@@ -234,17 +350,17 @@
     function renderPayments(rows) {
         if (!rows.length) { paymentTable.innerHTML = '<tr><td class="px-5 py-5 text-[#526287]" colspan="6">No payments found.</td></tr>'; return; }
         paymentTable.innerHTML = rows.map((payment) => `<tr>
-            <td class="px-5 py-4">
+            <td class="px-5 py-4" data-label="Student">
                 <div class="flex items-center gap-3">
                     <span class="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[#dce7f8] bg-[#eef5ff]"><img class="h-full w-full object-cover" src="${escapeHtml(avatarUrl(payment))}" alt="${escapeHtml(studentName(payment))}"></span>
                     <strong class="block truncate text-[#071544]">${escapeHtml(studentName(payment))}</strong>
                 </div>
             </td>
-            <td class="px-5 py-4">${escapeHtml(courseNameFromPayment(payment))}</td>
-            <td class="px-5 py-4 text-xs text-[#526287]">${escapeHtml(payment.transaction_id || '-')}</td>
-            <td class="px-5 py-4 font-bold text-[#071544]">${money(payment.amount)}</td>
-            <td class="px-5 py-4"><span class="rounded-md ${badgeClass(payment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(payment.payment_status))}</span></td>
-            <td class="px-5 py-4">${formatDate(payment.payment_date)}</td>
+            <td class="px-5 py-4" data-label="Course">${escapeHtml(courseNameFromPayment(payment))}</td>
+            <td class="px-5 py-4 text-xs text-[#526287]" data-label="Transaction">${escapeHtml(payment.transaction_id || '-')}</td>
+            <td class="px-5 py-4 font-bold text-[#071544]" data-label="Amount">${money(payment.amount)}</td>
+            <td class="px-5 py-4" data-label="Status"><span class="rounded-md ${badgeClass(payment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(payment.payment_status))}</span></td>
+            <td class="px-5 py-4" data-label="Date">${formatDate(payment.payment_date)}</td>
         </tr>`).join('');
     }
     async function loadReports() {

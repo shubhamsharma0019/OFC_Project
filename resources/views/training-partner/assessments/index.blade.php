@@ -6,9 +6,139 @@
     $activePage = 'assessments';
 @endphp
 
+@push('styles')
+<style>
+    @media (max-width: 640px) {
+        .training-assessments-page {
+            gap: 14px !important;
+            overflow-x: hidden;
+        }
+
+        .training-assessments-head {
+            gap: 12px !important;
+        }
+
+        .training-assessments-head h1 {
+            font-size: 23px !important;
+        }
+
+        .training-assessments-head a {
+            width: 100%;
+        }
+
+        #assessmentStats {
+            gap: 12px !important;
+        }
+
+        #assessmentStats article {
+            padding: 14px !important;
+        }
+
+        #assessmentStats article > span {
+            height: 42px !important;
+            width: 42px !important;
+        }
+
+        #assessmentStats h2 {
+            font-size: 22px !important;
+            line-height: 1.15 !important;
+        }
+
+        .training-assessments-toolbar {
+            padding: 14px !important;
+        }
+
+        .training-assessments-toolbar input,
+        .training-assessments-toolbar select {
+            width: 100%;
+            max-width: none !important;
+        }
+
+        .training-assessments-table-wrap {
+            overflow: visible !important;
+        }
+
+        .training-assessments-table-wrap table,
+        .training-assessments-table-wrap thead,
+        .training-assessments-table-wrap tbody,
+        .training-assessments-table-wrap tr,
+        .training-assessments-table-wrap td {
+            display: block;
+            width: 100%;
+        }
+
+        .training-assessments-table-wrap table {
+            min-width: 0 !important;
+        }
+
+        .training-assessments-table-wrap thead {
+            display: none;
+        }
+
+        .training-assessments-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fbff;
+        }
+
+        .training-assessments-table-wrap tr {
+            overflow: hidden;
+            border: 1px solid #dddff0;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 10px 22px rgba(50, 35, 120, .05);
+        }
+
+        .training-assessments-table-wrap td {
+            display: grid;
+            grid-template-columns: minmax(86px, 33%) minmax(0, 1fr);
+            gap: 10px;
+            align-items: start;
+            border-bottom: 1px solid #e7ebf5;
+            padding: 10px 12px !important;
+            font-size: 12px !important;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .training-assessments-table-wrap td:last-child {
+            border-bottom: 0;
+        }
+
+        .training-assessments-table-wrap td::before {
+            content: attr(data-label);
+            color: #526287;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .training-assessments-table-wrap td:first-child {
+            display: block;
+            padding: 12px !important;
+        }
+
+        .training-assessments-table-wrap td:first-child::before,
+        .training-assessments-table-wrap td[colspan]::before {
+            display: none;
+        }
+
+        .training-assessments-table-wrap td[colspan] {
+            display: block;
+            text-align: center;
+        }
+
+        .training-assessment-action {
+            width: 100%;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="grid gap-5">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <section class="training-assessments-page grid gap-5">
+        <div class="training-assessments-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Assessments</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">View final assessment attempts and results for your enrolled students.</p>
@@ -21,11 +151,11 @@
         </div>
 
         <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-            <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="training-assessments-toolbar flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <input id="assessmentSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search student or course...">
                 <select id="assessmentFilter" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option value="all">All Results</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="pending">Pending Result</option><option value="in_progress">In Progress</option></select>
             </div>
-            <div class="overflow-x-auto">
+            <div class="training-assessments-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[1060px] text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Student</th><th class="px-5 py-4">Course</th><th class="px-5 py-4">Attempt</th><th class="px-5 py-4">Score</th><th class="px-5 py-4">Result</th><th class="px-5 py-4">Certificate</th><th class="px-5 py-4">Action</th></tr></thead>
                     <tbody id="assessmentTable" class="divide-y divide-[#e7ebf5] text-[#26375f]"><tr><td class="px-5 py-5" colspan="7">Loading assessments...</td></tr></tbody>
@@ -85,13 +215,13 @@
             const status = resultStatus(item);
             const cert = item.course_enrollment?.certificate;
             return `<tr>
-                <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(studentName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(studentEmail(item))}</span></td>
-                <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(courseName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(item.course_enrollment?.course?.training_mode || '')}</span></td>
-                <td class="px-5 py-4"><span class="rounded-md ${badgeClass(item.status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(item.status))}</span><span class="mt-2 block text-xs text-[#526287]">${formatDate(item.submitted_at || item.started_at)}</span></td>
-                <td class="px-5 py-4"><strong class="text-[#071544]">${item.result?.overall_score ?? '-'}</strong><span class="text-xs text-[#526287]"> / 100</span></td>
-                <td class="px-5 py-4"><span class="rounded-md ${badgeClass(status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(status))}</span></td>
-                <td class="px-5 py-4"><span class="rounded-md ${badgeClass(cert ? 'generated' : 'pending')} px-3 py-1 text-xs font-bold">${cert ? 'Generated' : 'Pending'}</span></td>
-                <td class="px-5 py-4"><button class="view-enrollment rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${item.course_enrollment_id || item.course_enrollment?.id || ''}">Progress</button></td>
+                <td class="px-5 py-4" data-label="Student"><strong class="block text-[#071544]">${escapeHtml(studentName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(studentEmail(item))}</span></td>
+                <td class="px-5 py-4" data-label="Course"><strong class="block text-[#071544]">${escapeHtml(courseName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(item.course_enrollment?.course?.training_mode || '')}</span></td>
+                <td class="px-5 py-4" data-label="Attempt"><span class="rounded-md ${badgeClass(item.status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(item.status))}</span><span class="mt-2 block text-xs text-[#526287]">${formatDate(item.submitted_at || item.started_at)}</span></td>
+                <td class="px-5 py-4" data-label="Score"><strong class="text-[#071544]">${item.result?.overall_score ?? '-'}</strong><span class="text-xs text-[#526287]"> / 100</span></td>
+                <td class="px-5 py-4" data-label="Result"><span class="rounded-md ${badgeClass(status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(status))}</span></td>
+                <td class="px-5 py-4" data-label="Certificate"><span class="rounded-md ${badgeClass(cert ? 'generated' : 'pending')} px-3 py-1 text-xs font-bold">${cert ? 'Generated' : 'Pending'}</span></td>
+                <td class="px-5 py-4" data-label="Action"><button class="training-assessment-action view-enrollment rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${item.course_enrollment_id || item.course_enrollment?.id || ''}">Progress</button></td>
             </tr>`;
         }).join('');
     }

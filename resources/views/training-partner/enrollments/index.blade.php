@@ -6,9 +6,149 @@
     $activePage = 'enrollments';
 @endphp
 
+@push('styles')
+<style>
+    @media (max-width: 640px) {
+        .training-enrollments-page {
+            gap: 14px !important;
+            overflow-x: hidden;
+        }
+
+        .training-enrollments-head {
+            gap: 12px !important;
+        }
+
+        .training-enrollments-head h1 {
+            font-size: 23px !important;
+        }
+
+        .training-enrollments-head a {
+            width: 100%;
+        }
+
+        #enrollmentStats {
+            gap: 12px !important;
+        }
+
+        #enrollmentStats article {
+            padding: 14px !important;
+        }
+
+        #enrollmentStats article > span {
+            height: 42px !important;
+            width: 42px !important;
+        }
+
+        #enrollmentStats h2 {
+            font-size: 22px !important;
+            line-height: 1.15 !important;
+        }
+
+        .training-enrollments-toolbar {
+            padding: 14px !important;
+        }
+
+        .training-enrollments-toolbar input,
+        .training-enrollments-toolbar select {
+            width: 100%;
+            max-width: none !important;
+        }
+
+        .training-enrollments-table-wrap {
+            overflow: visible !important;
+        }
+
+        .training-enrollments-table-wrap table,
+        .training-enrollments-table-wrap thead,
+        .training-enrollments-table-wrap tbody,
+        .training-enrollments-table-wrap tr,
+        .training-enrollments-table-wrap td {
+            display: block;
+            width: 100%;
+        }
+
+        .training-enrollments-table-wrap table {
+            min-width: 0 !important;
+        }
+
+        .training-enrollments-table-wrap thead {
+            display: none;
+        }
+
+        .training-enrollments-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fbff;
+        }
+
+        .training-enrollments-table-wrap tr {
+            overflow: hidden;
+            border: 1px solid #dddff0;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 10px 22px rgba(50, 35, 120, .05);
+        }
+
+        .training-enrollments-table-wrap td {
+            display: grid;
+            grid-template-columns: minmax(86px, 33%) minmax(0, 1fr);
+            gap: 10px;
+            align-items: start;
+            border-bottom: 1px solid #e7ebf5;
+            padding: 10px 12px !important;
+            font-size: 12px !important;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .training-enrollments-table-wrap td:last-child {
+            border-bottom: 0;
+        }
+
+        .training-enrollments-table-wrap td::before {
+            content: attr(data-label);
+            color: #526287;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .training-enrollments-table-wrap td:first-child {
+            display: block;
+            padding: 12px !important;
+        }
+
+        .training-enrollments-table-wrap td:first-child::before,
+        .training-enrollments-table-wrap td[colspan]::before {
+            display: none;
+        }
+
+        .training-enrollments-table-wrap td[colspan] {
+            display: block;
+            text-align: center;
+        }
+
+        .training-enrollment-progress {
+            width: 100% !important;
+        }
+
+        .training-enrollment-actions {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px !important;
+        }
+
+        .training-enrollment-actions button {
+            width: 100%;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="grid gap-5">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <section class="training-enrollments-page grid gap-5">
+        <div class="training-enrollments-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Enrollments</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">View and manage student enrollments in your courses.</p>
@@ -21,11 +161,11 @@
         </div>
 
         <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-            <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="training-enrollments-toolbar flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <input id="enrollmentSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search student or course...">
                 <select id="trainingFilter" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option value="all">All Training</option><option value="not_started">Not Started</option><option value="in_progress">In Progress</option><option value="completed">Completed</option></select>
             </div>
-            <div class="overflow-x-auto">
+            <div class="training-enrollments-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[1040px] text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Student</th><th class="px-5 py-4">Course</th><th class="px-5 py-4">Enrollment</th><th class="px-5 py-4">Payment</th><th class="px-5 py-4">Training</th><th class="px-5 py-4">Progress</th><th class="px-5 py-4">Action</th></tr></thead>
                     <tbody id="enrollmentTable" class="divide-y divide-[#e7ebf5] text-[#26375f]">
@@ -100,18 +240,18 @@
             const progress = progressPercent(enrollment);
             return `
                 <tr>
-                    <td class="px-5 py-4">
+                    <td class="px-5 py-4" data-label="Student">
                         <div class="flex items-center gap-3">
                             <span class="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[#dce7f8] bg-[#eef5ff]"><img class="h-full w-full object-cover" src="${escapeHtml(avatarUrl(enrollment))}" alt="${escapeHtml(studentName(enrollment))}"></span>
                             <span class="min-w-0"><strong class="block truncate text-[#071544]">${escapeHtml(studentName(enrollment))}</strong><span class="mt-1 block truncate text-xs text-[#526287]">${escapeHtml(studentEmail(enrollment))}</span></span>
                         </div>
                     </td>
-                    <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(enrollment.course?.course_name || '-')}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(enrollment.course?.training_mode || '')}</span></td>
-                    <td class="px-5 py-4"><span class="rounded-md ${badgeClass('enrollment', enrollment.enrollment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.enrollment_status))}</span><span class="mt-2 block text-xs text-[#526287]">${formatDate(enrollment.enrollment_date)}</span></td>
-                    <td class="px-5 py-4"><span class="rounded-md ${badgeClass('payment', enrollment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.payment_status))}</span></td>
-                    <td class="px-5 py-4"><span class="rounded-md ${badgeClass('training', enrollment.training_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.training_status))}</span></td>
-                    <td class="px-5 py-4"><div class="mb-1 flex justify-between text-xs font-bold"><span>${progress}%</span></div><div class="h-2 w-28 overflow-hidden rounded-full bg-[#f0eaff]"><div class="h-full rounded-full bg-[#6a2df0]" style="width:${progress}%"></div></div></td>
-                    <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-enrollment rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${enrollment.id}">View</button><button class="progress-enrollment rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f] disabled:cursor-not-allowed disabled:opacity-50" type="button" data-id="${enrollment.id}" data-payment="${escapeHtml(enrollment.payment_status)}" ${enrollment.payment_status !== 'paid' ? 'disabled title="Payment pending"' : ''}>Progress</button></div></td>
+                    <td class="px-5 py-4" data-label="Course"><strong class="block text-[#071544]">${escapeHtml(enrollment.course?.course_name || '-')}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(enrollment.course?.training_mode || '')}</span></td>
+                    <td class="px-5 py-4" data-label="Enrollment"><span class="rounded-md ${badgeClass('enrollment', enrollment.enrollment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.enrollment_status))}</span><span class="mt-2 block text-xs text-[#526287]">${formatDate(enrollment.enrollment_date)}</span></td>
+                    <td class="px-5 py-4" data-label="Payment"><span class="rounded-md ${badgeClass('payment', enrollment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.payment_status))}</span></td>
+                    <td class="px-5 py-4" data-label="Training"><span class="rounded-md ${badgeClass('training', enrollment.training_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(enrollment.training_status))}</span></td>
+                    <td class="px-5 py-4" data-label="Progress"><div class="mb-1 flex justify-between text-xs font-bold"><span>${progress}%</span></div><div class="training-enrollment-progress h-2 w-28 overflow-hidden rounded-full bg-[#f0eaff]"><div class="h-full rounded-full bg-[#6a2df0]" style="width:${progress}%"></div></div></td>
+                    <td class="px-5 py-4" data-label="Action"><div class="training-enrollment-actions flex flex-wrap gap-2"><button class="view-enrollment rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${enrollment.id}">View</button><button class="progress-enrollment rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f] disabled:cursor-not-allowed disabled:opacity-50" type="button" data-id="${enrollment.id}" data-payment="${escapeHtml(enrollment.payment_status)}" ${enrollment.payment_status !== 'paid' ? 'disabled title="Payment pending"' : ''}>Progress</button></div></td>
                 </tr>
             `;
         }).join('');

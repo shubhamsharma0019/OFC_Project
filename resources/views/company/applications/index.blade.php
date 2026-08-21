@@ -6,9 +6,125 @@
 
 @php $activePage = 'applications'; @endphp
 
+@push('styles')
+<style>
+    @media (max-width: 640px) {
+        .company-applications-page {
+            padding: 14px !important;
+        }
+
+        .company-applications-filters {
+            gap: 10px !important;
+            margin-bottom: 14px !important;
+        }
+
+        .company-applications-filters select,
+        .company-applications-filters input,
+        .company-applications-filters button {
+            width: 100%;
+        }
+
+        .company-applications-table-wrap {
+            overflow: visible !important;
+            border: 0 !important;
+        }
+
+        .company-applications-table-wrap table,
+        .company-applications-table-wrap thead,
+        .company-applications-table-wrap tbody,
+        .company-applications-table-wrap tr,
+        .company-applications-table-wrap td {
+            display: block;
+            width: 100%;
+        }
+
+        .company-applications-table-wrap table {
+            min-width: 0 !important;
+        }
+
+        .company-applications-table-wrap thead {
+            display: none;
+        }
+
+        .company-applications-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+        }
+
+        .company-applications-table-wrap tr {
+            overflow: hidden;
+            border: 1px solid #dce7f8 !important;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 10px 22px rgba(6, 25, 66, .05);
+        }
+
+        .company-applications-table-wrap td {
+            display: grid;
+            grid-template-columns: minmax(82px, 32%) minmax(0, 1fr);
+            gap: 10px;
+            align-items: start;
+            border-bottom: 1px solid #edf2fb;
+            padding: 10px 12px !important;
+            font-size: 12px !important;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .company-applications-table-wrap td:last-child {
+            border-bottom: 0;
+        }
+
+        .company-applications-table-wrap td::before {
+            content: attr(data-label);
+            color: #52607a;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .company-applications-table-wrap td:first-child {
+            display: block;
+            padding: 12px !important;
+        }
+
+        .company-applications-table-wrap td:first-child::before,
+        .company-applications-table-wrap td[colspan]::before {
+            display: none;
+        }
+
+        .company-applications-table-wrap td[colspan] {
+            display: block;
+            text-align: center;
+        }
+
+        .company-application-action {
+            display: inline-flex;
+            min-height: 34px;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #075fe4;
+            border-radius: 8px;
+            color: #075fe4 !important;
+            font-size: 13px !important;
+            font-weight: 700;
+        }
+
+        .company-application-action::after {
+            content: 'View';
+        }
+
+        .company-application-action {
+            font-size: 0 !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,0.04)] sm:p-[26px]">
-        <div class="mb-[26px] grid grid-cols-1 gap-[18px] lg:grid-cols-[170px_170px_minmax(0,1fr)_120px]">
+    <section class="company-applications-page rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,0.04)] sm:p-[26px]">
+        <div class="company-applications-filters mb-[26px] grid grid-cols-1 gap-[18px] lg:grid-cols-[170px_170px_minmax(0,1fr)_120px]">
             <select id="jobFilter" class="h-[42px] rounded-lg border border-[#dce7f8] bg-white px-4 text-[13px] text-[#24344f] outline-none focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
                 <option value="all">All Jobs</option>
             </select>
@@ -30,7 +146,7 @@
             </button>
         </div>
 
-        <div class="overflow-x-auto rounded-lg border border-[#dce7f8]">
+        <div class="company-applications-table-wrap overflow-x-auto rounded-lg border border-[#dce7f8]">
             <table class="min-w-[900px] w-full border-collapse">
                 <thead>
                     <tr class="border-b border-[#dce7f8]">
@@ -159,7 +275,7 @@
 
             return `
                 <tr class="border-b border-[#edf2fb] last:border-b-0">
-                    <td class="px-5 py-[18px] align-middle text-[13px]">
+                    <td class="px-5 py-[18px] align-middle text-[13px]" data-label="Candidate">
                         <div class="flex items-center gap-3.5">
                             <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-xs font-bold text-[#075fe4]">${escapeHtml(initials(user.name))}</div>
                             <div class="min-w-0">
@@ -168,22 +284,22 @@
                             </div>
                         </div>
                     </td>
-                    <td class="px-5 py-[18px] align-middle text-[13px]">
+                    <td class="px-5 py-[18px] align-middle text-[13px]" data-label="Job Role">
                         <div>
                             <h3 class="mb-1.5 break-words text-[13px] font-bold text-[#061942]">${escapeHtml(job.title || '-')}</h3>
                             <p class="text-xs text-[#52607a]">${escapeHtml(formatStatus(job.hiring_mode))}</p>
                         </div>
                     </td>
-                    <td class="px-5 py-[18px] align-middle text-[13px] text-[#24344f]">
+                    <td class="px-5 py-[18px] align-middle text-[13px] text-[#24344f]" data-label="Profile">
                         <div class="break-words">${escapeHtml(profile.qualification || '-')}</div>
                         <div class="mt-1 text-xs text-[#52607a]">${escapeHtml(profile.city || '')}</div>
                     </td>
-                    <td class="px-5 py-[18px] align-middle text-[13px]">
+                    <td class="px-5 py-[18px] align-middle text-[13px]" data-label="Status">
                         <span class="inline-flex h-[30px] min-w-[68px] items-center justify-center rounded-lg px-3 text-xs font-bold ${statusClasses[status] || statusClasses.applied}">${escapeHtml(formatStatus(status))}</span>
                     </td>
-                    <td class="px-5 py-[18px] align-middle text-[13px] text-[#24344f]">${formatDate(app.applied_at || app.created_at)}</td>
-                    <td class="px-5 py-[18px] align-middle text-[13px]">
-                        <a href="/company/applications/show" data-application-id="${app.id}" class="application-link text-[22px] leading-none text-[#061942]" aria-label="View application details">&#8942;</a>
+                    <td class="px-5 py-[18px] align-middle text-[13px] text-[#24344f]" data-label="Applied">${formatDate(app.applied_at || app.created_at)}</td>
+                    <td class="px-5 py-[18px] align-middle text-[13px]" data-label="Action">
+                        <a href="/company/applications/show" data-application-id="${app.id}" class="application-link company-application-action text-[22px] leading-none text-[#061942]" aria-label="View application details">&#8942;</a>
                     </td>
                 </tr>
             `;

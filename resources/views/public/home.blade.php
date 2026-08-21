@@ -2,6 +2,171 @@
 
 @section('title', 'OnlyFreshers')
 
+@push('styles')
+<style>
+    @media (max-width: 640px) {
+        .home-hero {
+            width: 100% !important;
+            max-width: 100vw !important;
+            padding-top: 12px !important;
+            padding-bottom: 0 !important;
+            background: linear-gradient(180deg, #fff 0%, #f3f8ff 100%) !important;
+            overflow-x: hidden !important;
+        }
+
+        .home-hero-inner {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 14px !important;
+            padding: 18px 14px 0 !important;
+            text-align: center !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+
+        .home-hero-inner > div:first-child {
+            width: 100% !important;
+            max-width: calc(100vw - 28px) !important;
+            min-width: 0 !important;
+            overflow: visible !important;
+        }
+
+        .home-hero-title-desktop {
+            display: none !important;
+        }
+
+        .home-hero-title-mobile {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding-left: 4px !important;
+            padding-right: 4px !important;
+            text-align: center !important;
+        }
+
+        .home-hero h1 {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            white-space: normal !important;
+            word-break: keep-all !important;
+            overflow-wrap: normal !important;
+            text-wrap: auto;
+            font-size: 22px !important;
+            line-height: 1.12 !important;
+        }
+
+        .home-hero h1 span {
+            display: block !important;
+            white-space: normal !important;
+            word-break: keep-all !important;
+            overflow-wrap: normal !important;
+        }
+
+        .home-hero p {
+            width: 100% !important;
+            max-width: calc(100vw - 28px) !important;
+            white-space: normal !important;
+            overflow-wrap: break-word !important;
+            font-size: 11px !important;
+            line-height: 1.45 !important;
+        }
+
+        .home-hero-actions {
+            width: 100%;
+        }
+
+        .home-hero-actions a {
+            width: 100%;
+            min-width: 0 !important;
+        }
+
+        .home-hero-media {
+            width: 100% !important;
+            max-width: calc(100vw - 28px) !important;
+            min-height: 260px !important;
+            align-items: end !important;
+            overflow: hidden !important;
+        }
+
+        .home-hero-media > img {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            max-height: 285px !important;
+            object-position: bottom center !important;
+        }
+
+        #homeStats {
+            bottom: 14px !important;
+            left: 50% !important;
+            width: calc(100vw - 46px) !important;
+            max-width: calc(100vw - 46px) !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 8px !important;
+            padding: 9px !important;
+        }
+
+        #homeStats article {
+            gap: 7px !important;
+            min-width: 0 !important;
+        }
+
+        #homeStats article > span:first-child {
+            width: 30px !important;
+            height: 30px !important;
+        }
+
+        #homeStats strong {
+            font-size: 12px !important;
+        }
+
+        #homeStats small {
+            font-size: 8px !important;
+        }
+
+        .home-mode-card {
+            padding: 14px !important;
+        }
+
+        .home-mode-card ul {
+            text-align: left !important;
+        }
+
+        .home-mode-card .home-mode-panel {
+            width: 100% !important;
+        }
+
+        .home-steps-scroll {
+            overflow: visible !important;
+        }
+
+        .home-steps-row {
+            display: grid !important;
+            min-width: 0 !important;
+            grid-template-columns: minmax(0, 1fr) !important;
+            gap: 14px !important;
+        }
+
+        .home-steps-row > span {
+            display: none !important;
+        }
+
+        .home-step-card {
+            width: 100% !important;
+            grid-template-columns: 54px minmax(0, 1fr) !important;
+        }
+
+        .home-company-grid article {
+            min-height: 0 !important;
+            padding: 16px !important;
+        }
+    }
+    </style>
+@endpush
+
 @php
     $activePage = 'home';
     $homeStats = array_merge([
@@ -19,23 +184,26 @@
 @endphp
 
 @section('content')
-    <section class="relative overflow-hidden bg-[linear-gradient(90deg,#ffffff_0%,#ffffff_42%,#f3f8ff_64%,#e9f3ff_100%)] pb-10 pt-5">
+    <section class="home-hero relative overflow-hidden bg-[linear-gradient(90deg,#ffffff_0%,#ffffff_42%,#f3f8ff_64%,#e9f3ff_100%)] pb-10 pt-5">
         <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,rgba(233,243,255,0)_0%,rgba(247,251,255,0.72)_42%,#f7fbff_100%)]"></div>
         <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(90deg,#f7fbff_0%,rgba(247,251,255,0.92)_34%,rgba(233,243,255,0.82)_68%,#e9f3ff_100%)]"></div>
         <div class="pointer-events-none absolute -left-24 top-1/2 hidden h-[260px] w-[360px] -translate-y-1/2 rounded-full bg-[#dcecff]/55 blur-3xl lg:block"></div>
         <div class="pointer-events-none absolute left-0 top-0 hidden h-full w-[46%] bg-[radial-gradient(circle_at_12%_18%,rgba(207,228,255,0.38)_0%,rgba(244,249,255,0.36)_30%,rgba(255,255,255,0)_68%)] lg:block"></div>
         <div class="pointer-events-none absolute inset-y-0 right-0 hidden w-[58%] bg-[radial-gradient(circle_at_88%_8%,#cfe4ff_0%,#dcecff_28%,rgba(233,243,255,0.72)_48%,rgba(255,255,255,0)_78%)] lg:block"></div>
         <div class="pointer-events-none absolute inset-y-0 left-[38%] hidden w-[28%] bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(207,228,255,0.24),rgba(233,243,255,0))] blur-xl lg:block"></div>
-        <div class="relative mx-auto grid w-full max-w-7xl items-center gap-5 px-5 py-5 text-center sm:px-6 lg:min-h-[285px] lg:grid-cols-[0.9fr_1.18fr] lg:gap-3 lg:px-8 lg:py-0 lg:text-left">
+        <div class="home-hero-inner relative mx-auto grid w-full max-w-7xl items-center gap-5 px-5 py-5 text-center sm:px-6 lg:min-h-[285px] lg:grid-cols-[0.9fr_1.18fr] lg:gap-3 lg:px-8 lg:py-0 lg:text-left">
             <div class="relative z-10">
-                <h1 class="m-0 font-['Inter'] text-[31px] font-medium leading-[1.04] text-[#061942] sm:text-[42px] lg:text-[44px] xl:text-[49px]">
+                <h1 class="home-hero-title-desktop m-0 font-['Inter'] text-[31px] font-medium leading-[1.04] text-[#061942] sm:text-[42px] lg:text-[44px] xl:text-[49px]">
                     {{ $hero['title'] }} <span class="text-[#075fe4]">{{ $hero['highlight'] }}</span>
+                </h1>
+                <h1 class="home-hero-title-mobile m-0 hidden font-['Inter'] font-medium text-[#061942]">
+                    Bridging Fresh<br>Talent With<br><span class="text-[#075fe4]">Great Opportunities</span>
                 </h1>
                 <p class="mx-auto my-4 max-w-[520px] text-[13px] font-semibold leading-[1.45] text-[#34445e] sm:text-sm lg:mx-0">
                     {{ $hero['text'] }}
                 </p>
 
-                <div class="flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+                <div class="home-hero-actions flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
                     <a href="{{ $hero['primary']['href'] }}" class="inline-flex h-10 min-w-[155px] items-center justify-center gap-2 rounded-md border border-[#075fe4] bg-[#075fe4] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#003f9e]">
                         <span class="[&>svg]:h-4 [&>svg]:w-4">@include('components.public.icon', ['name' => $hero['primary']['icon']])</span>
                         {{ $hero['primary']['label'] }}
@@ -47,7 +215,7 @@
                 </div>
             </div>
 
-            <div class="relative z-10 flex min-h-[245px] items-end justify-center overflow-visible lg:min-h-[285px] lg:justify-end">
+            <div class="home-hero-media relative z-10 flex min-h-[245px] items-end justify-center overflow-visible lg:min-h-[285px] lg:justify-end">
                 <img src="{{ asset($hero['image']) }}" alt="{{ $hero['highlight'] }}" class="block h-auto max-h-[292px] w-full max-w-[700px] object-contain object-bottom lg:mr-[-28px] lg:max-h-[305px] xl:mr-[-46px]">
                 <div id="homeStats" class="absolute bottom-4 left-1/2 grid w-[min(95%,590px)] -translate-x-1/2 grid-cols-2 gap-2 rounded-lg border border-[#dce7f8] bg-white/90 p-2.5 text-left shadow-[0_12px_26px_rgba(6,25,66,0.16)] backdrop-blur sm:grid-cols-4 lg:left-[56%]">
                     @foreach ($statCards as $statCard)
@@ -74,7 +242,7 @@
             </div>
 
             <div class="grid gap-5 lg:grid-cols-2">
-                <a href="/direct-mode" class="group relative grid overflow-hidden rounded-xl border border-[#dce7f8] bg-[linear-gradient(135deg,#ffffff,#f7fbff)] p-4 shadow-[0_16px_36px_rgba(6,25,66,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_46px_rgba(6,25,66,0.12)] focus:outline-none focus:ring-2 focus:ring-[#075fe4] focus:ring-offset-2 md:min-h-[218px] md:grid-cols-[132px_minmax(0,1fr)_260px] md:items-center md:gap-4">
+                <a href="/direct-mode" class="home-mode-card group relative grid overflow-hidden rounded-xl border border-[#dce7f8] bg-[linear-gradient(135deg,#ffffff,#f7fbff)] p-4 shadow-[0_16px_36px_rgba(6,25,66,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_46px_rgba(6,25,66,0.12)] focus:outline-none focus:ring-2 focus:ring-[#075fe4] focus:ring-offset-2 md:min-h-[218px] md:grid-cols-[132px_minmax(0,1fr)_260px] md:items-center md:gap-4">
                     <div class="flex justify-center md:justify-start">
                         <div class="flex h-[104px] w-[104px] items-center justify-center rounded-full bg-[#eaf2ff] text-[#075fe4] ring-6 ring-[#f4f8ff] [&>svg]:h-14 [&>svg]:w-14">@include('components.public.icon', ['name' => 'briefcase'])</div>
                     </div>
@@ -88,7 +256,7 @@
                         </ul>
                         <span class="mt-3 inline-flex h-9 min-w-[170px] items-center justify-center rounded-md border border-[#8eb4ef] bg-white text-sm font-bold text-[#075fe4] shadow-[0_8px_18px_rgba(7,95,228,0.08)]">Explore Jobs</span>
                     </div>
-                    <div class="mt-4 min-w-0 rounded-lg border border-[#e0e9f7] bg-white/80 p-3 text-left md:mt-0">
+                    <div class="home-mode-panel mt-4 min-w-0 rounded-lg border border-[#e0e9f7] bg-white/80 p-3 text-left md:mt-0">
                         <h4 class="mb-2 font-['Inter'] text-sm font-medium text-[#075fe4]">Initial Track Analysis</h4>
                         <div class="grid gap-2 text-[11px] font-semibold text-[#293850]">
                             @foreach ($directAnalysis as $row)
@@ -100,7 +268,7 @@
                     </div>
                 </a>
 
-                <a href="/fast-track" class="group relative grid overflow-hidden rounded-xl border border-[#f5d4ba] bg-[linear-gradient(135deg,#ffffff,#fff8f0)] p-4 shadow-[0_16px_36px_rgba(80,40,0,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_46px_rgba(80,40,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#f37a22] focus:ring-offset-2 md:min-h-[218px] md:grid-cols-[132px_minmax(0,1fr)_260px] md:items-center md:gap-4">
+                <a href="/fast-track" class="home-mode-card group relative grid overflow-hidden rounded-xl border border-[#f5d4ba] bg-[linear-gradient(135deg,#ffffff,#fff8f0)] p-4 shadow-[0_16px_36px_rgba(80,40,0,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_46px_rgba(80,40,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#f37a22] focus:ring-offset-2 md:min-h-[218px] md:grid-cols-[132px_minmax(0,1fr)_260px] md:items-center md:gap-4">
                     <div class="flex justify-center md:justify-start">
                         <div class="flex h-[104px] w-[104px] items-center justify-center rounded-full bg-[#fff0e2] text-[#f37a22] ring-6 ring-[#fff8f0] [&>svg]:h-14 [&>svg]:w-14">@include('components.public.icon', ['name' => 'rocket'])</div>
                     </div>
@@ -114,7 +282,7 @@
                         </ul>
                         <span class="mt-2.5 inline-flex h-9 min-w-[220px] items-center justify-center rounded-md border border-[#f2b17e] bg-white text-sm font-bold text-[#f37a22] shadow-[0_8px_18px_rgba(243,122,34,0.08)]">Explore Fast Track Program</span>
                     </div>
-                    <div class="mt-4 min-w-0 rounded-lg border border-[#f7dcc6] bg-white/80 p-3 text-left md:mt-0">
+                    <div class="home-mode-panel mt-4 min-w-0 rounded-lg border border-[#f7dcc6] bg-white/80 p-3 text-left md:mt-0">
                         <h4 class="mb-2 font-['Inter'] text-sm font-medium text-[#f37a22]">Assessment Overview</h4>
                         <div class="mb-2 grid grid-cols-[1fr_48px_16px_48px] gap-2 text-[10px] font-black text-[#536484]"><span></span><span>Initial</span><span></span><span>Final</span></div>
                         <div class="grid gap-2 text-[11px] font-semibold text-[#293850]">
@@ -129,10 +297,10 @@
 
             <div class="mt-12 bg-white px-0 pb-2 pt-0">
                 <h2 class="mb-6 text-center font-['Inter'] text-[20px] font-semibold leading-tight text-[#061942]">How Fast Track Mode Works</h2>
-                <div class="overflow-x-auto px-0 py-2">
-                    <div class="flex min-w-[1500px] items-start justify-center gap-0 xl:min-w-0">
+                <div class="home-steps-scroll overflow-x-auto px-0 py-2">
+                    <div class="home-steps-row flex min-w-[1500px] items-start justify-center gap-0 xl:min-w-0">
                         @foreach ($fastTrackSteps as $index => $step)
-                            <article class="grid w-[216px] shrink-0 grid-cols-[64px_minmax(0,1fr)] items-start gap-3 text-left xl:w-auto xl:flex-1">
+                            <article class="home-step-card grid w-[216px] shrink-0 grid-cols-[64px_minmax(0,1fr)] items-start gap-3 text-left xl:w-auto xl:flex-1">
                                 <span class="flex h-[60px] w-[60px] items-center justify-center rounded-full bg-[#eef5ff] text-[#075fe4] ring-4 ring-[#f8fbff] [&>svg]:h-8 [&>svg]:w-8">
                                     @include('components.public.icon', ['name' => $step['icon']])
                                 </span>
@@ -155,7 +323,7 @@
                 </div>
             </div>
 
-            <div class="mt-12 grid overflow-hidden rounded-xl border border-[#d8eee8] bg-[#f8fffc] shadow-[0_12px_30px_rgba(16,90,72,0.06)] lg:grid-cols-[1.2fr_1.25fr_1.25fr_1.05fr_1.35fr]">
+            <div class="home-company-grid mt-12 grid overflow-hidden rounded-xl border border-[#d8eee8] bg-[#f8fffc] shadow-[0_12px_30px_rgba(16,90,72,0.06)] lg:grid-cols-[1.2fr_1.25fr_1.25fr_1.05fr_1.35fr]">
                 <article class="grid min-h-[168px] grid-cols-[70px_minmax(0,1fr)] gap-5 border-b border-[#d8eee8] p-6 lg:border-b-0 lg:border-r">
                     <span class="flex h-16 w-16 items-center justify-center rounded-full bg-[#dff6ef] text-[#0b8b67] [&>svg]:h-9 [&>svg]:w-9">@include('components.public.icon', ['name' => 'company'])</span>
                     <span>

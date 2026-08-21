@@ -32,6 +32,44 @@
         #company-layout #chatAvatar {
             box-shadow: 0 14px 28px rgba(7, 95, 228, 0.16);
         }
+
+        @media (max-width: 640px) {
+            #company-layout .company-topbar-header {
+                position: relative;
+                grid-template-columns: auto minmax(0, 1fr) auto;
+                align-items: center;
+                min-height: 64px;
+            }
+
+            #company-layout .company-page-title {
+                grid-column: 1 / -1;
+                grid-row: 2;
+                padding-top: 4px;
+            }
+
+            #company-layout .company-topbar-actions {
+                grid-column: 3;
+                grid-row: 1;
+                width: auto !important;
+                justify-content: flex-end !important;
+                gap: 8px;
+            }
+
+            #company-layout .company-notification-link {
+                order: 3;
+            }
+
+            #company-layout .company-topbar-profile {
+                order: 2;
+                border-left: 0 !important;
+                padding-left: 0 !important;
+            }
+
+            #company-layout #company-topbar-name,
+            #company-layout .company-topbar-profile p {
+                display: none !important;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -54,7 +92,7 @@
         ></button>
 
         <main class="h-screen min-w-0 overflow-y-auto px-3 pb-6 sm:px-[18px] sm:pb-[30px] lg:px-[38px] lg:pb-[38px]">
-            <header class="mb-[22px] grid min-h-[78px] grid-cols-[auto_minmax(0,1fr)] items-start gap-3 pt-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-[14px] sm:pt-0 lg:mb-7 lg:flex lg:min-h-[100px] lg:items-center lg:justify-between lg:gap-6">
+            <header class="company-topbar-header mb-[22px] grid min-h-[78px] grid-cols-[auto_minmax(0,1fr)] items-start gap-3 pt-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-[14px] sm:pt-0 lg:mb-7 lg:flex lg:min-h-[100px] lg:items-center lg:justify-between lg:gap-6">
                 <button
                     class="inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-lg border border-[#dce7f8] bg-white text-[#061942] lg:hidden"
                     type="button"
@@ -68,7 +106,7 @@
                     </svg>
                 </button>
 
-                <div class="min-w-0">
+                <div class="company-page-title min-w-0">
                     <h1 class="mb-1 text-[22px] font-bold leading-tight text-[#061942] sm:text-2xl lg:mb-2.5 lg:text-[26px]">
                         {{ $pageTitle }}
                     </h1>
@@ -80,10 +118,10 @@
                     @endif
                 </div>
 
-                <div class="col-span-2 flex w-full items-center justify-between gap-2 sm:col-auto sm:w-auto sm:justify-end lg:gap-[18px]">
+                <div class="company-topbar-actions col-span-2 flex w-full items-center justify-between gap-2 sm:col-auto sm:w-auto sm:justify-end lg:gap-[18px]">
                     <a
                         href="/company/notifications"
-                        class="relative inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-white text-[#061942] shadow-[0_8px_18px_rgba(6,25,66,.05)] lg:h-[42px] lg:w-[42px]"
+                        class="company-notification-link relative inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-white text-[#061942] shadow-[0_8px_18px_rgba(6,25,66,.05)] lg:h-[42px] lg:w-[42px]"
                         aria-label="Notifications"
                     >
                         <svg class="h-[23px] w-[23px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -97,7 +135,7 @@
                         >0</span>
                     </a>
 
-                    <div class="relative flex items-center gap-2.5 sm:border-l sm:border-[#dce7f8] sm:pl-3 lg:gap-[14px] lg:pl-[22px]">
+                    <div class="company-topbar-profile relative flex items-center gap-2.5 sm:border-l sm:border-[#dce7f8] sm:pl-3 lg:gap-[14px] lg:pl-[22px]">
                         <div
                             id="company-topbar-initial"
                             data-company-initial

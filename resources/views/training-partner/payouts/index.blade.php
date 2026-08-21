@@ -31,12 +31,131 @@
         font-size: 14px;
         font-weight: 600;
     }
+
+    @media (max-width: 640px) {
+        .training-payouts-page {
+            overflow: hidden;
+        }
+
+        .training-payouts-head h1 {
+            font-size: 23px;
+            line-height: 1.15;
+        }
+
+        .training-payouts-head a,
+        .training-payouts-toolbar input,
+        .training-payouts-toolbar select,
+        .training-payouts-filter {
+            width: 100%;
+        }
+
+        #payoutStats {
+            gap: 12px;
+        }
+
+        #payoutStats article,
+        .training-payouts-summary {
+            padding: 16px;
+        }
+
+        .payout-chart {
+            min-height: 210px;
+            padding: 10px;
+        }
+
+        .payout-chart svg {
+            height: 200px;
+        }
+
+        .payout-chart-empty {
+            min-height: 200px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .training-payouts-table-wrap {
+            overflow-x: visible;
+        }
+
+        .training-payouts-table-wrap table,
+        .training-payouts-table-wrap thead,
+        .training-payouts-table-wrap tbody,
+        .training-payouts-table-wrap tr,
+        .training-payouts-table-wrap th,
+        .training-payouts-table-wrap td {
+            display: block;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .training-payouts-table-wrap table {
+            min-width: 0;
+        }
+
+        .training-payouts-table-wrap thead {
+            display: none;
+        }
+
+        .training-payouts-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fbff;
+        }
+
+        .training-payouts-table-wrap tbody tr {
+            overflow: hidden;
+            border: 1px solid #dddff0;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 10px 22px rgba(50, 35, 120, .06);
+        }
+
+        .training-payouts-table-wrap tbody td {
+            display: grid;
+            grid-template-columns: minmax(86px, 34%) minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+            padding: 11px 14px;
+            border-bottom: 1px solid #eef2f8;
+            word-break: break-word;
+        }
+
+        .training-payouts-table-wrap tbody td::before {
+            content: attr(data-label);
+            font-size: 11px;
+            font-weight: 800;
+            color: #526287;
+            text-transform: uppercase;
+        }
+
+        .training-payouts-table-wrap tbody td:first-child,
+        .training-payouts-table-wrap tbody td[colspan] {
+            display: block;
+        }
+
+        .training-payouts-table-wrap tbody td:first-child::before,
+        .training-payouts-table-wrap tbody td[colspan]::before {
+            display: none;
+        }
+
+        .training-payouts-table-wrap tbody td:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .training-payouts-table-wrap tbody td {
+            grid-template-columns: 1fr;
+            gap: 5px;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-    <section class="grid gap-5">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <section class="training-payouts-page grid gap-5">
+        <div class="training-payouts-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Payouts</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">Track earnings, payout history and payment details.</p>
@@ -49,7 +168,7 @@
         </div>
 
         <div class="grid gap-5 xl:grid-cols-[.85fr_1.15fr]">
-            <article class="rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <article class="training-payouts-summary rounded-lg border border-[#dddff0] bg-white p-5 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
                 <h2 class="mb-4 text-lg font-bold text-[#071544]">Monthly Payouts</h2>
                 <div id="payoutTrendChart" class="payout-chart">
                     <div class="payout-chart-empty">Loading payout chart...</div>
@@ -58,14 +177,14 @@
             </article>
 
             <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-                <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="training-payouts-toolbar flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-lg font-bold text-[#071544]">Payment Details</h2>
-                    <div class="flex flex-col gap-2 sm:flex-row">
+                    <div class="training-payouts-filter flex flex-col gap-2 sm:flex-row">
                         <input id="payoutSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:w-64" type="search" placeholder="Search student or course...">
                         <select id="payoutFilter" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option value="all">All Status</option><option value="success">Success</option><option value="pending">Pending</option><option value="failed">Failed</option></select>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
+                <div class="training-payouts-table-wrap overflow-x-auto">
                     <table class="w-full min-w-[920px] text-left text-sm">
                         <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Student</th><th class="px-5 py-4">Course</th><th class="px-5 py-4">Gross</th><th class="px-5 py-4">Fee</th><th class="px-5 py-4">Net</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Date</th></tr></thead>
                         <tbody id="payoutTable" class="divide-y divide-[#e7ebf5] text-[#26375f]"><tr><td class="px-5 py-5" colspan="7">Loading payouts...</td></tr></tbody>
@@ -180,13 +299,13 @@
         const rows = filteredPayments();
         if (!rows.length) { payoutTable.innerHTML = '<tr><td class="px-5 py-5 text-[#526287]" colspan="7">No payout records found.</td></tr>'; return; }
         payoutTable.innerHTML = rows.map((payment) => `<tr>
-            <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(studentName(payment))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(payment.transaction_id || '-')}</span></td>
-            <td class="px-5 py-4">${escapeHtml(courseName(payment))}</td>
-            <td class="px-5 py-4 font-bold text-[#071544]">${money(payment.amount)}</td>
-            <td class="px-5 py-4">${money(payment.platform_fee)}</td>
-            <td class="px-5 py-4 font-bold text-[#071544]">${money(payment.net_amount)}</td>
-            <td class="px-5 py-4"><span class="rounded-md ${badgeClass(payment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(payment.payment_status))}</span></td>
-            <td class="px-5 py-4">${formatDate(payment.payment_date)}</td>
+            <td class="px-5 py-4" data-label="Student"><strong class="block text-[#071544]">${escapeHtml(studentName(payment))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(payment.transaction_id || '-')}</span></td>
+            <td class="px-5 py-4" data-label="Course">${escapeHtml(courseName(payment))}</td>
+            <td class="px-5 py-4 font-bold text-[#071544]" data-label="Gross">${money(payment.amount)}</td>
+            <td class="px-5 py-4" data-label="Fee">${money(payment.platform_fee)}</td>
+            <td class="px-5 py-4 font-bold text-[#071544]" data-label="Net">${money(payment.net_amount)}</td>
+            <td class="px-5 py-4" data-label="Status"><span class="rounded-md ${badgeClass(payment.payment_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(payment.payment_status))}</span></td>
+            <td class="px-5 py-4" data-label="Date">${formatDate(payment.payment_date)}</td>
         </tr>`).join('');
     }
     async function loadPayouts() {

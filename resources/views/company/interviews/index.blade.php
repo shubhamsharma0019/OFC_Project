@@ -6,10 +6,151 @@
 
 @php $activePage = 'interviews'; @endphp
 
+@push('styles')
+<style>
+    @media (max-width: 640px) {
+        .company-interviews-page {
+            padding: 14px !important;
+        }
+
+        .company-interviews-head {
+            gap: 12px !important;
+            margin-bottom: 14px !important;
+        }
+
+        .company-interview-tabs {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px !important;
+            width: 100%;
+        }
+
+        .company-interview-tabs .interview-tab {
+            border: 1px solid #dce7f8 !important;
+            border-radius: 8px;
+            padding: 9px 8px !important;
+            background: #fff;
+            font-size: 11px !important;
+            text-align: center;
+        }
+
+        .company-interview-tabs .interview-tab.text-\[\#075fe4\] {
+            border-color: #075fe4 !important;
+            background: #eaf2ff;
+        }
+
+        .company-interviews-head > a,
+        .company-interviews-filters select,
+        .company-interviews-filters input,
+        .company-interviews-filters button {
+            width: 100% !important;
+        }
+
+        .company-interviews-filters {
+            gap: 10px !important;
+            margin-bottom: 14px !important;
+        }
+
+        .company-interviews-table-wrap {
+            overflow: visible !important;
+            border: 0 !important;
+        }
+
+        .company-interviews-table-wrap table,
+        .company-interviews-table-wrap thead,
+        .company-interviews-table-wrap tbody,
+        .company-interviews-table-wrap tr,
+        .company-interviews-table-wrap td {
+            display: block;
+            width: 100%;
+        }
+
+        .company-interviews-table-wrap table {
+            min-width: 0 !important;
+        }
+
+        .company-interviews-table-wrap thead {
+            display: none;
+        }
+
+        .company-interviews-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+        }
+
+        .company-interviews-table-wrap tr {
+            overflow: hidden;
+            border: 1px solid #dce7f8 !important;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 10px 22px rgba(6, 25, 66, .05);
+        }
+
+        .company-interviews-table-wrap td {
+            display: grid;
+            grid-template-columns: minmax(82px, 32%) minmax(0, 1fr);
+            gap: 10px;
+            align-items: start;
+            border-bottom: 1px solid #edf2fb;
+            padding: 10px 12px !important;
+            font-size: 12px !important;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .company-interviews-table-wrap td:last-child {
+            border-bottom: 0;
+        }
+
+        .company-interviews-table-wrap td::before {
+            content: attr(data-label);
+            color: #52607a;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .company-interviews-table-wrap td:first-child {
+            display: block;
+            padding: 12px !important;
+        }
+
+        .company-interviews-table-wrap td:first-child::before,
+        .company-interviews-table-wrap td[colspan]::before {
+            display: none;
+        }
+
+        .company-interviews-table-wrap td[colspan] {
+            display: block;
+            text-align: center;
+        }
+
+        .company-interview-actions {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px !important;
+        }
+
+        .company-interview-actions a,
+        .company-interview-actions button {
+            min-height: 34px;
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #editInterviewModal {
+            align-items: flex-start !important;
+            overflow-y: auto;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,0.04)] sm:p-6">
-        <div class="mb-[22px] flex flex-col gap-[18px] border-b border-[#dce7f8] pb-3.5 xl:flex-row xl:items-center xl:justify-between">
-            <div class="flex flex-wrap gap-x-6 gap-y-2 xl:gap-x-[34px]" role="tablist" aria-label="Interview status tabs">
+    <section class="company-interviews-page rounded-lg border border-[#dce7f8] bg-white p-5 shadow-[0_10px_24px_rgba(6,25,66,0.04)] sm:p-6">
+        <div class="company-interviews-head mb-[22px] flex flex-col gap-[18px] border-b border-[#dce7f8] pb-3.5 xl:flex-row xl:items-center xl:justify-between">
+            <div class="company-interview-tabs flex flex-wrap gap-x-6 gap-y-2 xl:gap-x-[34px]" role="tablist" aria-label="Interview status tabs">
                 <button class="interview-tab border-b-[3px] border-[#075fe4] px-3.5 py-2.5 text-[13px] font-semibold text-[#075fe4]" data-status="all" type="button">All Interviews (<span id="allCount">0</span>)</button>
                 <button class="interview-tab border-b-[3px] border-transparent px-3.5 py-2.5 text-[13px] font-semibold text-[#24344f]" data-status="scheduled" type="button">Scheduled (<span id="scheduledCount">0</span>)</button>
                 <button class="interview-tab border-b-[3px] border-transparent px-3.5 py-2.5 text-[13px] font-semibold text-[#24344f]" data-status="completed" type="button">Completed (<span id="completedCount">0</span>)</button>
@@ -19,7 +160,7 @@
             <a href="/company/applications" class="inline-flex h-[42px] w-[180px] items-center justify-center rounded-lg border border-[#9fc0f5] bg-white text-[13px] font-bold text-[#075fe4] transition hover:bg-[#f5f9ff]">Applications</a>
         </div>
 
-        <div class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_190px_120px]">
+        <div class="company-interviews-filters mb-6 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_190px_120px]">
             <input id="searchInput" type="search" placeholder="Search by candidate name or job role..." class="h-[42px] rounded-lg border border-[#dce7f8] bg-white px-4 text-[13px] text-[#24344f] outline-none placeholder:text-[#8a96aa] focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
             <select id="jobFilter" class="h-[42px] rounded-lg border border-[#dce7f8] bg-white px-4 text-[13px] text-[#24344f] outline-none focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
                 <option value="all">All Jobs</option>
@@ -29,7 +170,7 @@
 
         <p id="interviewMessage" class="mb-4 hidden rounded-lg border px-4 py-3 text-sm font-bold"></p>
 
-        <div class="overflow-x-auto rounded-lg border border-[#dce7f8]">
+        <div class="company-interviews-table-wrap overflow-x-auto rounded-lg border border-[#dce7f8]">
             <table class="min-w-[980px] w-full border-collapse">
                 <thead>
                     <tr class="border-b border-[#dce7f8]">
@@ -291,7 +432,7 @@
 
             return `
                 <tr class="border-b border-[#edf2fb] last:border-b-0">
-                    <td class="px-4 py-4 align-middle text-[13px]">
+                    <td class="px-4 py-4 align-middle text-[13px]" data-label="Candidate">
                         <div class="flex items-center gap-3">
                             <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-xs font-bold text-[#075fe4]">${escapeHtml(initials(user.name))}</div>
                             <div class="min-w-0">
@@ -300,20 +441,20 @@
                             </div>
                         </div>
                     </td>
-                    <td class="px-4 py-4 align-middle text-[13px] text-[#061942]">${escapeHtml(job.title || '-')}</td>
-                    <td class="px-4 py-4 align-middle text-[13px]"><div class="font-bold text-[#061942]">${escapeHtml(formatStatus(interview.interview_mode))}</div><div class="mt-1 max-w-[220px] break-all text-xs text-[#52607a]">${escapeHtml(place || '-')}</div></td>
-                    <td class="px-4 py-4 align-middle text-[13px] text-[#061942]"><div class="mb-1.5">${formatDate(interview.interview_date)}</div><span>${escapeHtml(interview.interview_time || '-')}</span></td>
-                    <td class="px-4 py-4 align-middle text-[13px]"><span class="inline-flex h-[30px] min-w-[72px] items-center justify-center rounded-lg px-2.5 text-xs font-bold ${statusClasses[interview.status] || statusClasses.scheduled}">${escapeHtml(formatStatus(interview.status))}</span></td>
-                    <td class="px-4 py-4 align-middle text-[13px]">
+                    <td class="px-4 py-4 align-middle text-[13px] text-[#061942]" data-label="Job Role">${escapeHtml(job.title || '-')}</td>
+                    <td class="px-4 py-4 align-middle text-[13px]" data-label="Mode"><div class="font-bold text-[#061942]">${escapeHtml(formatStatus(interview.interview_mode))}</div><div class="mt-1 max-w-[220px] break-all text-xs text-[#52607a]">${escapeHtml(place || '-')}</div></td>
+                    <td class="px-4 py-4 align-middle text-[13px] text-[#061942]" data-label="Date & Time"><div class="mb-1.5">${formatDate(interview.interview_date)}</div><span>${escapeHtml(interview.interview_time || '-')}</span></td>
+                    <td class="px-4 py-4 align-middle text-[13px]" data-label="Status"><span class="inline-flex h-[30px] min-w-[72px] items-center justify-center rounded-lg px-2.5 text-xs font-bold ${statusClasses[interview.status] || statusClasses.scheduled}">${escapeHtml(formatStatus(interview.status))}</span></td>
+                    <td class="px-4 py-4 align-middle text-[13px]" data-label="Action">
                         ${interview.status === 'scheduled' ? `
-                            <div class="flex flex-wrap gap-2">
+                            <div class="company-interview-actions flex flex-wrap gap-2">
                                 ${editButton}
                                 ${joinButton}
                                 <button data-id="${interview.id}" data-status="completed" data-application-status="hired" class="status-action rounded-lg border border-[#b9e7c9] px-3 py-2 text-xs font-bold text-[#138a43]" type="button">Hire</button>
                                 <button data-id="${interview.id}" data-status="completed" data-application-status="rejected" class="status-action rounded-lg border border-[#ffd1d7] px-3 py-2 text-xs font-bold text-[#ff3045]" type="button">Reject</button>
                                 <button data-id="${interview.id}" data-status="cancelled" class="status-action rounded-lg border border-[#dce7f8] px-3 py-2 text-xs font-bold text-[#52607a]" type="button">Cancel</button>
                             </div>
-                        ` : (editButton || joinButton ? `<div class="flex flex-wrap gap-2">${editButton}${joinButton}</div>` : '-')}
+                        ` : (editButton || joinButton ? `<div class="company-interview-actions flex flex-wrap gap-2">${editButton}${joinButton}</div>` : '-')}
                     </td>
                 </tr>
             `;

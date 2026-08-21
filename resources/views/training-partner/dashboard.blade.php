@@ -6,12 +6,144 @@
     $activePage = 'dashboard';
 @endphp
 
+@push('styles')
+<style>
+    @media (max-width: 640px) {
+        .training-partner-dashboard-page,
+        .training-partner-dashboard-page * {
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .training-partner-dashboard-page {
+            overflow-x: hidden;
+        }
+
+        .training-partner-dashboard-title h1 {
+            font-size: 24px !important;
+            line-height: 1.15 !important;
+        }
+
+        .training-partner-welcome-card {
+            align-items: center;
+            padding: 16px !important;
+            text-align: center;
+        }
+
+        #partnerLogoAvatar {
+            height: 76px !important;
+            width: 76px !important;
+            border-radius: 16px !important;
+        }
+
+        #welcomeName {
+            font-size: 22px !important;
+        }
+
+        #partnerLocation {
+            justify-content: center;
+        }
+
+        #dashboardStats {
+            gap: 12px !important;
+        }
+
+        #dashboardStats article {
+            min-height: 0 !important;
+            grid-template-columns: 48px minmax(0, 1fr) !important;
+            gap: 12px !important;
+            padding: 14px !important;
+        }
+
+        #dashboardStats article > span {
+            height: 44px !important;
+            width: 44px !important;
+            border-radius: 12px !important;
+        }
+
+        #dashboardStats h2 {
+            font-size: 24px !important;
+        }
+
+        .training-partner-main-grid {
+            gap: 14px !important;
+        }
+
+        .training-partner-panel {
+            padding: 16px !important;
+        }
+
+        .training-partner-panel-head {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 12px !important;
+        }
+
+        .training-partner-panel-head > div {
+            gap: 10px !important;
+        }
+
+        .training-partner-panel-head > a,
+        .training-partner-panel-head > select {
+            width: 100%;
+        }
+
+        #recentActivity::before {
+            display: none;
+        }
+
+        #recentActivity > div {
+            grid-template-columns: 44px minmax(0, 1fr) !important;
+            gap: 10px !important;
+        }
+
+        #recentActivity time {
+            grid-column: 2 !important;
+        }
+
+        .training-partner-performance-metrics {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .training-partner-performance-metrics > div {
+            border-right: 0 !important;
+        }
+
+        .training-partner-quick-actions {
+            padding: 16px !important;
+        }
+
+        .training-partner-quick-actions-grid {
+            grid-template-columns: minmax(0, 1fr) !important;
+            gap: 12px !important;
+        }
+
+        .training-partner-quick-actions-grid a {
+            grid-template-columns: 46px minmax(0, 1fr) 18px !important;
+            padding: 14px !important;
+        }
+
+        .training-partner-quick-actions-grid a > span:first-child {
+            height: 46px !important;
+            width: 46px !important;
+            border-radius: 12px !important;
+        }
+
+        #enrollmentTrendChart {
+            height: 160px !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-    <div class="mb-6">
+    <section class="training-partner-dashboard-page">
+    <div class="training-partner-dashboard-title mb-6">
         <h1 class="mb-2.5 text-[30px] font-extrabold leading-tight text-[#0a1748]">Training Partner Dashboard</h1>
     </div>
 
-    <article class="mb-[18px] flex flex-col gap-5 rounded-[10px] border border-[#d8cdfa] bg-[#f3edff] px-6 py-6 shadow-[0_12px_26px_rgba(50,35,120,.05)] md:flex-row md:items-center md:px-8">
+    <article class="training-partner-welcome-card mb-[18px] flex flex-col gap-5 rounded-[10px] border border-[#d8cdfa] bg-[#f3edff] px-6 py-6 shadow-[0_12px_26px_rgba(50,35,120,.05)] md:flex-row md:items-center md:px-8">
         <div
             id="partnerLogoAvatar"
             class="grid h-[96px] w-[96px] shrink-0 place-items-center overflow-hidden rounded-[18px] border-2 border-white bg-gradient-to-br from-[#7b45ee] to-[#0ea5a8] bg-cover bg-center bg-no-repeat text-2xl font-black text-white shadow-[0_10px_22px_rgba(50,35,120,.14)]"
@@ -60,9 +192,9 @@
         <article class="rounded-[10px] border border-[#dddff0] bg-white p-6 text-sm text-[#526287] shadow-[0_12px_26px_rgba(50,35,120,.05)] md:col-span-2 xl:col-span-4">Loading dashboard...</article>
     </section>
 
-    <section class="mb-[18px] grid grid-cols-1 gap-[18px] xl:grid-cols-[1fr_1.14fr]">
-        <article class="rounded-[10px] border border-[#dddff0] bg-white p-6 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-            <div class="mb-[18px] flex items-center justify-between gap-4">
+    <section class="training-partner-main-grid mb-[18px] grid grid-cols-1 gap-[18px] xl:grid-cols-[1fr_1.14fr]">
+        <article class="training-partner-panel rounded-[10px] border border-[#dddff0] bg-white p-6 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <div class="training-partner-panel-head mb-[18px] flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3.5">
                     <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1]">RA</span>
                     <h2 class="m-0 text-[17px] font-extrabold text-[#0a1748]">Recent Activity</h2>
@@ -74,8 +206,8 @@
             </div>
         </article>
 
-        <article class="rounded-[10px] border border-[#dddff0] bg-white p-6 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-            <div class="mb-[18px] flex items-center justify-between gap-4">
+        <article class="training-partner-panel rounded-[10px] border border-[#dddff0] bg-white p-6 shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+            <div class="training-partner-panel-head mb-[18px] flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3.5">
                     <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[#5b2ce1]">
                         <svg class="h-5 w-5 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"></path><path d="m9 12 2 2 4-5"></path></svg>
@@ -92,7 +224,7 @@
                 <svg class="h-[190px] w-full" id="enrollmentTrendChart" viewBox="0 0 620 190" preserveAspectRatio="none"></svg>
             </div>
 
-            <div class="mt-3.5 grid overflow-hidden rounded-[9px] border border-[#dddff0] md:grid-cols-3">
+            <div class="training-partner-performance-metrics mt-3.5 grid overflow-hidden rounded-[9px] border border-[#dddff0] md:grid-cols-3">
                 <div class="grid grid-cols-[50px_minmax(0,1fr)] items-center gap-3 border-b border-[#dddff0] p-4 md:border-b-0 md:border-r">
                     <span class="inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1]">PE</span>
                     <div class="min-w-0"><strong id="paidEnrollments" class="text-[15px] font-extrabold text-[#0a1748]">0</strong><p class="my-[3px] text-[11px] text-[#526287]">Paid Enrollments</p></div>
@@ -109,18 +241,19 @@
         </article>
     </section>
 
-    <article class="mt-[18px] rounded-[10px] border border-[#dddff0] bg-white p-[22px] shadow-[0_12px_26px_rgba(50,35,120,.05)]">
+    <article class="training-partner-quick-actions mt-[18px] rounded-[10px] border border-[#dddff0] bg-white p-[22px] shadow-[0_12px_26px_rgba(50,35,120,.05)]">
         <div class="mb-4 flex items-center gap-3.5">
             <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1]">QA</span>
             <h2 class="m-0 text-[17px] font-extrabold text-[#0a1748]">Quick Actions</h2>
         </div>
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="training-partner-quick-actions-grid grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
             <a class="grid grid-cols-[56px_minmax(0,1fr)_22px] items-center gap-3 rounded-[9px] border border-[#dddff0] bg-white p-[18px] text-inherit no-underline" href="/training-partner/add-course"><span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#7b45ee] text-[28px] font-black text-white">+</span><div class="min-w-0"><h3 class="mb-1.5 text-sm font-extrabold text-[#0a1748]">Add New Course</h3><p class="m-0 text-xs leading-normal text-[#526287]">Create and publish a new course</p></div><span class="text-[22px] font-black text-[#5b2ce1]">›</span></a>
             <a class="grid grid-cols-[56px_minmax(0,1fr)_22px] items-center gap-3 rounded-[9px] border border-[#dddff0] bg-white p-[18px] text-inherit no-underline" href="/training-partner/courses"><span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1]">CR</span><div class="min-w-0"><h3 class="mb-1.5 text-sm font-extrabold text-[#0a1748]">My Courses</h3><p class="m-0 text-xs leading-normal text-[#526287]">Manage courses and status</p></div><span class="text-[22px] font-black text-[#5b2ce1]">›</span></a>
             <a class="grid grid-cols-[56px_minmax(0,1fr)_22px] items-center gap-3 rounded-[9px] border border-[#dddff0] bg-white p-[18px] text-inherit no-underline" href="/training-partner/enrollments"><span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1]">EN</span><div class="min-w-0"><h3 class="mb-1.5 text-sm font-extrabold text-[#0a1748]">View Enrollments</h3><p class="m-0 text-xs leading-normal text-[#526287]">See students and progress</p></div><span class="text-[22px] font-black text-[#5b2ce1]">›</span></a>
             <a class="grid grid-cols-[56px_minmax(0,1fr)_22px] items-center gap-3 rounded-[9px] border border-[#dddff0] bg-white p-[18px] text-inherit no-underline" href="/training-partner/certificates"><span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-[#f0eaff] text-[11px] font-black text-[#5b2ce1]">CT</span><div class="min-w-0"><h3 class="mb-1.5 text-sm font-extrabold text-[#0a1748]">Certificates</h3><p class="m-0 text-xs leading-normal text-[#526287]">Generate and view certificates</p></div><span class="text-[22px] font-black text-[#5b2ce1]">›</span></a>
         </div>
     </article>
+    </section>
 @endsection
 
 @push('scripts')

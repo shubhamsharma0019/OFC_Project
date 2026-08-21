@@ -6,9 +6,135 @@
     $activePage = 'certificates';
 @endphp
 
+@push('styles')
+<style>
+    @media (max-width: 640px) {
+        .training-certificates-page {
+            overflow: hidden;
+        }
+
+        .training-certificates-head h1 {
+            font-size: 23px;
+            line-height: 1.15;
+        }
+
+        .training-certificates-head a,
+        .training-certificates-toolbar input,
+        .training-certificates-toolbar select {
+            width: 100%;
+        }
+
+        #certificateStats {
+            gap: 12px;
+        }
+
+        #certificateStats article {
+            padding: 16px;
+        }
+
+        .training-certificates-table-wrap {
+            overflow-x: visible;
+        }
+
+        .training-certificates-table-wrap table,
+        .training-certificates-table-wrap thead,
+        .training-certificates-table-wrap tbody,
+        .training-certificates-table-wrap tr,
+        .training-certificates-table-wrap th,
+        .training-certificates-table-wrap td {
+            display: block;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .training-certificates-table-wrap table {
+            min-width: 0;
+        }
+
+        .training-certificates-table-wrap thead {
+            display: none;
+        }
+
+        .training-certificates-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fbff;
+        }
+
+        .training-certificates-table-wrap tbody tr {
+            overflow: hidden;
+            border: 1px solid #dddff0;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 10px 22px rgba(50, 35, 120, .06);
+        }
+
+        .training-certificates-table-wrap tbody td {
+            display: grid;
+            grid-template-columns: minmax(86px, 34%) minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+            padding: 11px 14px;
+            border-bottom: 1px solid #eef2f8;
+            word-break: break-word;
+        }
+
+        .training-certificates-table-wrap tbody td::before {
+            content: attr(data-label);
+            font-size: 11px;
+            font-weight: 800;
+            color: #526287;
+            text-transform: uppercase;
+        }
+
+        .training-certificates-table-wrap tbody td:first-child,
+        .training-certificates-table-wrap tbody td[colspan] {
+            display: block;
+        }
+
+        .training-certificates-table-wrap tbody td:first-child::before,
+        .training-certificates-table-wrap tbody td[colspan]::before {
+            display: none;
+        }
+
+        .training-certificates-table-wrap tbody td:last-child {
+            border-bottom: 0;
+        }
+
+        .training-certificate-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            width: 100%;
+        }
+
+        .training-certificate-actions button,
+        .training-certificate-actions a {
+            display: inline-flex;
+            width: 100%;
+            min-height: 38px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .training-certificates-table-wrap tbody td {
+            grid-template-columns: 1fr;
+            gap: 5px;
+        }
+
+        .training-certificate-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="grid gap-5">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <section class="training-certificates-page grid gap-5">
+        <div class="training-certificates-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Certificates</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">Manage and view certificates issued by your institute.</p>
@@ -21,11 +147,11 @@
         </div>
 
         <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-            <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="training-certificates-toolbar flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <input id="certificateSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search student, course or certificate...">
                 <select id="certificateFilter" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option value="all">All Certificates</option><option value="eligible">Ready to Generate</option><option value="generated">Generated</option><option value="pass">Passed</option><option value="high_score">High Score 80+</option></select>
             </div>
-            <div class="overflow-x-auto">
+            <div class="training-certificates-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[1040px] text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Certificate</th><th class="px-5 py-4">Student</th><th class="px-5 py-4">Course</th><th class="px-5 py-4">Score</th><th class="px-5 py-4">Completion</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Action</th></tr></thead>
                     <tbody id="certificateTable" class="divide-y divide-[#e7ebf5] text-[#26375f]"><tr><td class="px-5 py-5" colspan="7">Loading certificates...</td></tr></tbody>
@@ -87,13 +213,13 @@
         renderStats();
         if (!rows.length) { certificateTable.innerHTML = '<tr><td class="px-5 py-5 text-[#526287]" colspan="7">No certificates found.</td></tr>'; return; }
         certificateTable.innerHTML = rows.map((item) => `<tr>
-            <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(item.certificate_number || 'Ready to generate')}</strong><span class="mt-1 block text-xs text-[#526287]">${isGenerated(item) ? `Issued ${formatDate(item.created_at)}` : 'Final assessment passed'}</span></td>
-            <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(studentName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(studentEmail(item))}</span></td>
-            <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(courseName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(enrollment(item)?.course?.training_mode || '')}</span></td>
-            <td class="px-5 py-4"><strong class="text-[#071544]">${resultData(item)?.overall_score ?? '-'}</strong><span class="text-xs text-[#526287]"> / 100</span></td>
-            <td class="px-5 py-4">${formatDate(item.completion_date || enrollment(item)?.training_progress?.completion_date)}</td>
-            <td class="px-5 py-4"><span class="rounded-md ${isGenerated(item) ? 'bg-[#e2f9ea] text-[#05843e]' : 'bg-[#fff0de] text-[#d06d00]'} px-3 py-1 text-xs font-bold">${isGenerated(item) ? 'Generated' : 'Pending'}</span></td>
-            <td class="px-5 py-4"><div class="flex flex-wrap gap-2">${isGenerated(item) ? `<button class="view-certificate rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${item.id}">View</button>${item.certificate_url ? `<a class="rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" href="${escapeHtml(item.certificate_url)}" target="_blank" rel="noopener">Open File</a>` : ''}` : `<button class="generate-certificate rounded-md bg-[#5b20e6] px-3 py-2 text-xs font-bold text-white disabled:opacity-60" type="button" data-enrollment-id="${enrollment(item)?.id || item.course_enrollment_id || ''}">Generate</button>`}</div></td>
+            <td class="px-5 py-4" data-label="Certificate"><strong class="block text-[#071544]">${escapeHtml(item.certificate_number || 'Ready to generate')}</strong><span class="mt-1 block text-xs text-[#526287]">${isGenerated(item) ? `Issued ${formatDate(item.created_at)}` : 'Final assessment passed'}</span></td>
+            <td class="px-5 py-4" data-label="Student"><strong class="block text-[#071544]">${escapeHtml(studentName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(studentEmail(item))}</span></td>
+            <td class="px-5 py-4" data-label="Course"><strong class="block text-[#071544]">${escapeHtml(courseName(item))}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(enrollment(item)?.course?.training_mode || '')}</span></td>
+            <td class="px-5 py-4" data-label="Score"><strong class="text-[#071544]">${resultData(item)?.overall_score ?? '-'}</strong><span class="text-xs text-[#526287]"> / 100</span></td>
+            <td class="px-5 py-4" data-label="Completion">${formatDate(item.completion_date || enrollment(item)?.training_progress?.completion_date)}</td>
+            <td class="px-5 py-4" data-label="Status"><span class="rounded-md ${isGenerated(item) ? 'bg-[#e2f9ea] text-[#05843e]' : 'bg-[#fff0de] text-[#d06d00]'} px-3 py-1 text-xs font-bold">${isGenerated(item) ? 'Generated' : 'Pending'}</span></td>
+            <td class="px-5 py-4" data-label="Action"><div class="training-certificate-actions flex flex-wrap gap-2">${isGenerated(item) ? `<button class="view-certificate rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${item.id}">View</button>${item.certificate_url ? `<a class="rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" href="${escapeHtml(item.certificate_url)}" target="_blank" rel="noopener">Open File</a>` : ''}` : `<button class="generate-certificate rounded-md bg-[#5b20e6] px-3 py-2 text-xs font-bold text-white disabled:opacity-60" type="button" data-enrollment-id="${enrollment(item)?.id || item.course_enrollment_id || ''}">Generate</button>`}</div></td>
         </tr>`).join('');
     }
     async function loadCertificates() {

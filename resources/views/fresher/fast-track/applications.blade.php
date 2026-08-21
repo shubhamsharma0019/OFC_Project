@@ -15,12 +15,147 @@
         background: #f4f7fb;
         color: #7b8aa8;
     }
+
+    @media (max-width: 640px) {
+        .fast-track-applications-page {
+            gap: 14px;
+        }
+
+        .fast-track-applications-head {
+            gap: 12px !important;
+        }
+
+        .fast-track-applications-head h1 {
+            font-size: 23px !important;
+        }
+
+        .fast-track-applications-head a {
+            width: 100%;
+        }
+
+        #applicationStats {
+            gap: 12px !important;
+        }
+
+        #applicationStats article {
+            grid-template-columns: 46px minmax(0, 1fr) !important;
+            gap: 12px !important;
+            padding: 14px !important;
+        }
+
+        #applicationStats article > span {
+            height: 42px !important;
+            width: 42px !important;
+            border-radius: 10px !important;
+        }
+
+        #applicationStats h2 {
+            font-size: 22px !important;
+            line-height: 1.15 !important;
+        }
+
+        .fast-track-applications-toolbar {
+            padding: 14px !important;
+        }
+
+        .fast-track-applications-toolbar select,
+        .fast-track-applications-toolbar input {
+            width: 100%;
+        }
+
+        .fast-track-applications-table-wrap {
+            overflow: visible !important;
+        }
+
+        .fast-track-applications-table-wrap table,
+        .fast-track-applications-table-wrap thead,
+        .fast-track-applications-table-wrap tbody,
+        .fast-track-applications-table-wrap tr,
+        .fast-track-applications-table-wrap td {
+            display: block;
+            width: 100%;
+        }
+
+        .fast-track-applications-table-wrap table {
+            min-width: 0 !important;
+        }
+
+        .fast-track-applications-table-wrap thead {
+            display: none;
+        }
+
+        .fast-track-applications-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+            padding: 12px;
+            background: #f7fbff;
+        }
+
+        .fast-track-applications-table-wrap tr {
+            overflow: hidden;
+            border: 1px solid #dce7f8;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 10px 22px rgba(6, 25, 66, .05);
+        }
+
+        .fast-track-applications-table-wrap td {
+            display: grid;
+            grid-template-columns: minmax(82px, 32%) minmax(0, 1fr);
+            gap: 10px;
+            align-items: start;
+            border-bottom: 1px solid #edf2fb !important;
+            padding: 10px 12px !important;
+            font-size: 12px !important;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .fast-track-applications-table-wrap td:last-child {
+            border-bottom: 0 !important;
+        }
+
+        .fast-track-applications-table-wrap td::before {
+            content: attr(data-label);
+            color: #52607a;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .fast-track-applications-table-wrap td:first-child {
+            display: block;
+            padding: 12px !important;
+        }
+
+        .fast-track-applications-table-wrap td:first-child::before,
+        .fast-track-applications-table-wrap td[colspan]::before {
+            display: none;
+        }
+
+        .fast-track-applications-table-wrap td[colspan] {
+            display: block;
+            text-align: center;
+        }
+
+        .fast-track-application-actions {
+            display: grid !important;
+            grid-template-columns: 1fr;
+            gap: 8px !important;
+        }
+
+        .fast-track-application-actions a,
+        .fast-track-application-actions button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-    <section class="space-y-5">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <section class="fast-track-applications-page space-y-5">
+        <div class="fast-track-applications-head flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h1 class="text-[27px] font-bold leading-tight text-[#061942]">Applications</h1>
                 <p class="mt-2 text-sm font-medium text-[#334b83]">Track Fast Track job applications and interview status.</p>
@@ -33,7 +168,7 @@
         </div>
 
         <article class="overflow-hidden rounded-lg border border-[#dce7f8] bg-white shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-            <div class="flex flex-col gap-3 border-b border-[#e6eef8] p-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="fast-track-applications-toolbar flex flex-col gap-3 border-b border-[#e6eef8] p-4 lg:flex-row lg:items-center lg:justify-between">
                 <input id="applicationSearch" class="h-10 w-full rounded-md border border-[#cfe0ff] bg-white px-4 text-sm text-[#334b83] outline-none placeholder:text-[#6f7ea0] lg:max-w-sm" type="search" placeholder="Search job, company or location...">
                 <div class="flex flex-col gap-3 sm:flex-row">
                     <select id="applicationModeFilter" class="h-10 rounded-md border border-[#cfe0ff] bg-white px-3 text-sm text-[#334b83]">
@@ -44,7 +179,7 @@
                     </select>
                 </div>
             </div>
-            <div class="overflow-x-auto">
+            <div class="fast-track-applications-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[900px] border-collapse text-sm">
                     <thead>
                         <tr class="text-left text-[#334b83]">
@@ -171,7 +306,7 @@
             buttons.push(`<a class="inline-flex h-9 items-center justify-center rounded-md border border-[#075fe4] px-4 text-xs font-bold text-[#075fe4]" href="/jobs/show?job=${FastTrack.esc(jobId)}">View Job</a>`);
         }
 
-        return buttons.length ? `<div class="flex flex-wrap gap-2">${buttons.join('')}</div>` : '-';
+        return buttons.length ? `<div class="fast-track-application-actions flex flex-wrap gap-2">${buttons.join('')}</div>` : '-';
     }
 
     function statCard(icon, label, value, hint) {
@@ -245,18 +380,18 @@
             const mode = applicationMode(application);
             const jobId = job.id || application.job_id || '';
             return `<tr>
-                <td class="border-b border-[#e6eef8] px-4 py-4">
+                <td class="border-b border-[#e6eef8] px-4 py-4" data-label="Job">
                     <strong class="font-bold text-[#061942]">${FastTrack.esc(job.title || application.job_title || 'Fast Track Job')}</strong>
                     <br><span class="text-xs text-[#536484]">${FastTrack.esc(job.location || '-')} ${job.salary ? ' - ' + FastTrack.esc(job.salary) : ''}</span>
                 </td>
-                <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]">${FastTrack.esc(companyName(application))}</td>
-                <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]">${FastTrack.date(application.applied_at || application.created_at)}</td>
-                <td class="border-b border-[#e6eef8] px-4 py-4">
+                <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]" data-label="Company">${FastTrack.esc(companyName(application))}</td>
+                <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]" data-label="Applied On">${FastTrack.date(application.applied_at || application.created_at)}</td>
+                <td class="border-b border-[#e6eef8] px-4 py-4" data-label="Status">
                     <span class="inline-flex rounded-md ${statusBadgeClass(status)} px-3 py-1.5 text-xs font-bold">${FastTrack.esc(FastTrack.statusText(status))}</span>
                     ${interviewDetails(application)}
                 </td>
-                <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]">${FastTrack.esc(FastTrack.statusText(mode))}</td>
-                <td class="border-b border-[#e6eef8] px-4 py-4">${applicationActions(application, jobId)}</td>
+                <td class="border-b border-[#e6eef8] px-4 py-4 text-[#334b83]" data-label="Mode">${FastTrack.esc(FastTrack.statusText(mode))}</td>
+                <td class="border-b border-[#e6eef8] px-4 py-4" data-label="Action">${applicationActions(application, jobId)}</td>
             </tr>`;
         }).join('');
     }

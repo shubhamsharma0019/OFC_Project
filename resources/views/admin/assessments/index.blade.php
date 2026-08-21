@@ -15,6 +15,169 @@
         font-family: Inter, Arial, Helvetica, sans-serif !important;
         font-weight: 500 !important;
     }
+
+    @media (max-width: 640px) {
+        .admin-assessments-page {
+            gap: 14px;
+        }
+
+        .admin-assessments-page #assessmentStats {
+            gap: 12px;
+        }
+
+        .admin-assessments-page #assessmentStats article {
+            padding: 16px !important;
+        }
+
+        .admin-assessments-page #assessmentStats h2 {
+            font-size: 24px !important;
+            line-height: 1.15 !important;
+        }
+
+        .admin-assessments-page .admin-assessments-toolbar {
+            padding: 14px !important;
+        }
+
+        .admin-assessments-page .admin-assessments-filters,
+        .admin-assessments-page .admin-assessments-filters select {
+            width: 100%;
+        }
+
+        .admin-assessments-page .admin-assessments-table-wrap {
+            overflow: visible !important;
+        }
+
+        .admin-assessments-page table,
+        .admin-assessments-page thead,
+        .admin-assessments-page tbody,
+        .admin-assessments-page tr,
+        .admin-assessments-page td {
+            display: block;
+            width: 100%;
+        }
+
+        .admin-assessments-page table {
+            min-width: 0 !important;
+        }
+
+        .admin-assessments-page thead {
+            display: none;
+        }
+
+        .admin-assessments-page tbody {
+            padding: 10px;
+            background: #f7fbff;
+        }
+
+        .admin-assessments-page tbody tr {
+            border: 1px solid #d9e6f8;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 8px 18px rgba(6, 25, 66, .06);
+            overflow: hidden;
+        }
+
+        .admin-assessments-page tbody tr + tr {
+            margin-top: 10px;
+        }
+
+        .admin-assessments-page tbody td {
+            display: grid;
+            grid-template-columns: minmax(72px, 30%) minmax(0, 1fr);
+            gap: 8px;
+            align-items: start;
+            border-bottom: 0;
+            padding: 3px 12px !important;
+            color: #1b315b;
+            font-size: 10.5px !important;
+            line-height: 1.35;
+            word-break: break-word;
+        }
+
+        .admin-assessments-page tbody td:first-child {
+            display: grid;
+            grid-template-columns: 28px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 9px;
+            padding-top: 12px !important;
+            padding-bottom: 7px !important;
+        }
+
+        .admin-assessments-page tbody td::before {
+            content: attr(data-label);
+            color: #061942;
+            font-size: 10px;
+            font-weight: 600 !important;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .admin-assessments-page tbody td:first-child::before {
+            display: none;
+        }
+
+        .admin-assessments-page .admin-assessment-avatar {
+            display: grid;
+            width: 28px;
+            height: 28px;
+            place-items: center;
+            border-radius: 999px;
+            background: #eef5ff;
+            color: #075fe4;
+            font-size: 10px;
+            font-weight: 600 !important;
+            text-transform: uppercase;
+        }
+
+        .admin-assessments-page .admin-assessment-title {
+            min-width: 0;
+        }
+
+        .admin-assessments-page .admin-assessment-title strong {
+            overflow: hidden;
+            font-size: 12px !important;
+            line-height: 1.2;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .admin-assessments-page .admin-assessment-title span,
+        .admin-assessments-page .admin-assessment-muted {
+            overflow: hidden;
+            color: #52607a;
+            font-size: 9px !important;
+            line-height: 1.3;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .admin-assessments-page .admin-assessment-status {
+            border-radius: 4px;
+            padding: 4px 7px !important;
+            font-size: 9px !important;
+            line-height: 1;
+        }
+
+        .admin-assessments-page tbody td[colspan] {
+            display: block;
+            padding: 14px !important;
+            font-size: 12px !important;
+        }
+
+        .admin-assessments-page tbody td[colspan]::before {
+            display: none;
+        }
+
+        .admin-assessments-page #pagination {
+            gap: 10px;
+            padding: 12px !important;
+        }
+
+        .admin-assessments-page #pagination button {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+    }
 </style>
 @endpush
 
@@ -29,15 +192,15 @@
         </div>
 
         <div class="rounded-lg border border-[#dce7f8] bg-white shadow-[0_12px_26px_rgba(6,25,66,.05)]">
-            <div class="flex flex-col gap-3 border-b border-[#edf2fb] p-4 xl:flex-row xl:items-center xl:justify-between">
+            <div class="admin-assessments-toolbar flex flex-col gap-3 border-b border-[#edf2fb] p-4 xl:flex-row xl:items-center xl:justify-between">
                 <input id="adminSearch" class="h-10 w-full rounded-md border border-[#dce7f8] px-3 text-sm outline-none xl:max-w-xs" type="search" placeholder="Search learner, course or partner...">
-                <div class="grid gap-2 sm:grid-cols-3">
+                <div class="admin-assessments-filters grid gap-2 sm:grid-cols-3">
                     <select id="typeFilter" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm text-[#24344f]"><option value="">All Types</option><option value="initial">Initial</option><option value="final">Final</option></select>
                     <select id="statusFilter" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm text-[#24344f]"><option value="">All Status</option><option value="in_progress">In Progress</option><option value="submitted">Submitted</option></select>
                     <select id="resultFilter" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm text-[#24344f]"><option value="">All Results</option><option value="pass">Pass</option><option value="fail">Fail</option></select>
                 </div>
             </div>
-            <div class="overflow-x-auto">
+            <div class="admin-assessments-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[1060px] border-collapse text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#24344f]">
                         <tr><th class="px-5 py-4">Learner</th><th class="px-5 py-4">Course</th><th class="px-5 py-4">Type</th><th class="px-5 py-4">Score</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Submitted</th></tr>
@@ -117,12 +280,12 @@
             const score = attempt.result?.overall_score ?? '-';
             const result = attempt.result?.result || attempt.status;
             return `<tr>
-                <td class="px-5 py-4"><div class="flex items-center gap-3"><span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-sm font-black text-[#075fe4]">${escapeHtml(initials(user.name))}</span><div><strong class="block text-[#061942]">${escapeHtml(user.name || 'Learner')}</strong><span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(user.email || '-')}</span></div></div></td>
-                <td class="px-5 py-4"><strong class="block text-[#061942]">${escapeHtml(course.course_name || 'Direct Assessment')}</strong><span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(partner.institute_name || course.category || '-')}</span></td>
-                <td class="px-5 py-4 capitalize">${escapeHtml(label(attempt.assessment_type))}</td>
-                <td class="px-5 py-4 font-bold text-[#061942]">${escapeHtml(score)}${score === '-' ? '' : '/100'}<span class="mt-1 block text-xs font-medium text-[#52607a]">${escapeHtml(attempt.result?.recommended_track || '')}</span></td>
-                <td class="px-5 py-4"><span class="rounded-md ${badgeClass(result)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(label(result))}</span></td>
-                <td class="px-5 py-4">${escapeHtml(formatDate(attempt.submitted_at || attempt.started_at))}</td>
+                <td class="px-5 py-4" data-label="Learner"><span class="admin-assessment-avatar">${escapeHtml(initials(user.name))}</span><span class="admin-assessment-title"><strong class="block text-[#061942]">${escapeHtml(user.name || 'Learner')}</strong><span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(user.email || '-')}</span></span><span class="admin-assessment-status rounded-md ${badgeClass(result)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(label(result))}</span></td>
+                <td class="px-5 py-4" data-label="Course"><strong class="block text-[#061942]">${escapeHtml(course.course_name || 'Direct Assessment')}</strong><span class="admin-assessment-muted mt-1 block text-xs text-[#52607a]">${escapeHtml(partner.institute_name || course.category || '-')}</span></td>
+                <td class="px-5 py-4 capitalize" data-label="Type">${escapeHtml(label(attempt.assessment_type))}</td>
+                <td class="px-5 py-4 font-bold text-[#061942]" data-label="Score">${escapeHtml(score)}${score === '-' ? '' : '/100'}<span class="admin-assessment-muted mt-1 block text-xs font-medium text-[#52607a]">${escapeHtml(attempt.result?.recommended_track || '')}</span></td>
+                <td class="px-5 py-4" data-label="Status"><span class="rounded-md ${badgeClass(result)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(label(result))}</span></td>
+                <td class="px-5 py-4" data-label="Submitted">${escapeHtml(formatDate(attempt.submitted_at || attempt.started_at))}</td>
             </tr>`;
         }).join('');
     }

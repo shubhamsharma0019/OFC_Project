@@ -15,6 +15,197 @@
         font-family: Inter, Arial, Helvetica, sans-serif !important;
         font-weight: 500 !important;
     }
+
+    @media (max-width: 640px) {
+        .admin-jobs-page {
+            gap: 14px;
+        }
+
+        .admin-jobs-page #jobStats {
+            gap: 12px;
+        }
+
+        .admin-jobs-page #jobStats article {
+            padding: 16px !important;
+        }
+
+        .admin-jobs-page #jobStats h2 {
+            font-size: 24px !important;
+            line-height: 1.15 !important;
+        }
+
+        .admin-jobs-page .admin-jobs-toolbar {
+            padding: 14px !important;
+        }
+
+        .admin-jobs-page .admin-jobs-filters,
+        .admin-jobs-page .admin-jobs-filters select {
+            width: 100%;
+        }
+
+        .admin-jobs-page .admin-jobs-table-wrap {
+            overflow: visible !important;
+        }
+
+        .admin-jobs-page table,
+        .admin-jobs-page thead,
+        .admin-jobs-page tbody,
+        .admin-jobs-page tr,
+        .admin-jobs-page td {
+            display: block;
+            width: 100%;
+        }
+
+        .admin-jobs-page table {
+            min-width: 0 !important;
+        }
+
+        .admin-jobs-page thead {
+            display: none;
+        }
+
+        .admin-jobs-page tbody {
+            padding: 10px;
+            background: #f7fbff;
+        }
+
+        .admin-jobs-page tbody tr {
+            border: 1px solid #d9e6f8;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 8px 18px rgba(6, 25, 66, .06);
+            overflow: hidden;
+        }
+
+        .admin-jobs-page tbody tr + tr {
+            margin-top: 10px;
+        }
+
+        .admin-jobs-page tbody td {
+            display: grid;
+            grid-template-columns: minmax(72px, 30%) minmax(0, 1fr);
+            gap: 8px;
+            align-items: start;
+            border-bottom: 0;
+            padding: 3px 12px !important;
+            color: #1b315b;
+            font-size: 10.5px !important;
+            line-height: 1.35;
+            word-break: break-word;
+        }
+
+        .admin-jobs-page tbody td:first-child {
+            display: grid;
+            grid-template-columns: 28px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 9px;
+            padding-top: 12px !important;
+            padding-bottom: 7px !important;
+        }
+
+        .admin-jobs-page tbody td::before {
+            content: attr(data-label);
+            color: #061942;
+            font-size: 10px;
+            font-weight: 600 !important;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .admin-jobs-page tbody td:first-child::before,
+        .admin-jobs-page tbody td[data-label="Actions"]::before {
+            display: none;
+        }
+
+        .admin-jobs-page .admin-job-avatar {
+            display: grid;
+            width: 28px;
+            height: 28px;
+            place-items: center;
+            border-radius: 999px;
+            background: #eef5ff;
+            color: #075fe4;
+            font-size: 11px;
+            font-weight: 600 !important;
+            text-transform: uppercase;
+        }
+
+        .admin-jobs-page .admin-job-title {
+            min-width: 0;
+        }
+
+        .admin-jobs-page .admin-job-title strong {
+            overflow: hidden;
+            font-size: 12px !important;
+            line-height: 1.2;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .admin-jobs-page .admin-job-title span,
+        .admin-jobs-page .admin-job-muted {
+            overflow: hidden;
+            color: #52607a;
+            font-size: 9px !important;
+            line-height: 1.3;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .admin-jobs-page .admin-job-status {
+            border-radius: 4px;
+            padding: 4px 7px !important;
+            font-size: 9px !important;
+            line-height: 1;
+        }
+
+        .admin-jobs-page tbody td[data-label="Status"] {
+            display: none;
+        }
+
+        .admin-jobs-page tbody td[colspan] {
+            display: block;
+            padding: 14px !important;
+            font-size: 12px !important;
+        }
+
+        .admin-jobs-page tbody td[colspan]::before {
+            display: none;
+        }
+
+        .admin-jobs-page tbody td[data-label="Actions"] {
+            display: block;
+            padding: 10px 12px 12px !important;
+        }
+
+        .admin-jobs-page .admin-job-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+        }
+
+        .admin-jobs-page .admin-job-actions button {
+            min-height: 32px;
+            width: 100%;
+            padding: 7px 8px !important;
+            font-size: 10px !important;
+        }
+
+        .admin-jobs-page .admin-job-actions button:first-child {
+            grid-column: 1 / -1;
+        }
+
+        .admin-jobs-page #pagination {
+            gap: 10px;
+            padding: 12px !important;
+        }
+
+        .admin-jobs-page #pagination button {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+    }
 </style>
 @endpush
 
@@ -25,14 +216,14 @@
         </div>
 
         <div class="rounded-lg border border-[#dce7f8] bg-white shadow-[0_12px_26px_rgba(6,25,66,.05)]">
-            <div class="flex flex-col gap-3 border-b border-[#edf2fb] p-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="admin-jobs-toolbar flex flex-col gap-3 border-b border-[#edf2fb] p-4 lg:flex-row lg:items-center lg:justify-between">
                 <input id="adminSearch" class="h-10 w-full rounded-md border border-[#dce7f8] px-3 text-sm outline-none lg:max-w-xs" type="search" placeholder="Search job...">
-                <div class="flex flex-col gap-2 sm:flex-row">
+                <div class="admin-jobs-filters flex flex-col gap-2 sm:flex-row">
                     <select id="statusFilter" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm text-[#24344f]"><option value="">All Status</option><option value="draft">Draft</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="removed">Removed</option></select>
                     <select id="modeFilter" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm text-[#24344f]"><option value="">All Modes</option><option value="direct">Direct</option><option value="fast_track">Fast Track</option></select>
                 </div>
             </div>
-            <div class="overflow-x-auto">
+            <div class="admin-jobs-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[1040px] border-collapse text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#24344f]"><tr><th class="px-5 py-4">Job</th><th class="px-5 py-4">Company</th><th class="px-5 py-4">Type</th><th class="px-5 py-4">Mode</th><th class="px-5 py-4">Applications</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Actions</th></tr></thead>
                     <tbody id="adminRows" class="divide-y divide-[#edf2fb] text-[#1b315b]"><tr><td class="px-5 py-5" colspan="7">Loading jobs...</td></tr></tbody>
@@ -88,13 +279,13 @@
         renderStats();
         if (!jobs.length) { adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#52607a]" colspan="7">No jobs found.</td></tr>'; return; }
         adminRows.innerHTML = jobs.map((job) => `<tr>
-            <td class="px-5 py-4"><strong class="block text-[#061942]">${escapeHtml(job.title)}</strong><span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(job.location || '-')} - Last ${escapeHtml(job.application_last_date || '-')}</span></td>
-            <td class="px-5 py-4">${escapeHtml(job.company_profile?.company_name || '-')}<span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(job.company_profile?.user?.email || '')}</span></td>
-            <td class="px-5 py-4 capitalize">${escapeHtml(statusText(job.job_type))}<span class="mt-1 block text-xs text-[#52607a]">${number(job.openings)} openings</span></td>
-            <td class="px-5 py-4 capitalize">${escapeHtml(statusText(job.hiring_mode))}</td>
-            <td class="px-5 py-4 font-bold text-[#061942]">${number(job.applications_count)}</td>
-            <td class="px-5 py-4"><span class="rounded-md ${badgeClass(job.status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(job.status))}</span></td>
-            <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-job rounded-md border border-[#075fe4] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button" data-id="${job.id}">View</button><button class="status-job rounded-md border border-[#078346] px-3 py-2 text-xs font-bold text-[#078346]" type="button" data-id="${job.id}" data-status="active">Activate</button><button class="status-job rounded-md border border-[#ff1f2f] px-3 py-2 text-xs font-bold text-[#ff1f2f]" type="button" data-id="${job.id}" data-status="removed">Remove</button></div></td>
+            <td class="px-5 py-4" data-label="Job"><span class="admin-job-avatar">${escapeHtml(String(job.title || 'J').slice(0, 1))}</span><span class="admin-job-title"><strong class="block text-[#061942]">${escapeHtml(job.title)}</strong><span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(job.company_profile?.user?.email || job.location || '-')}</span></span><span class="admin-job-status rounded-md ${badgeClass(job.status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(job.status))}</span></td>
+            <td class="px-5 py-4" data-label="Company">${escapeHtml(job.company_profile?.company_name || '-')}<span class="admin-job-muted mt-1 block text-xs text-[#52607a]">${escapeHtml(job.location || '-')}</span></td>
+            <td class="px-5 py-4 capitalize" data-label="Type">${escapeHtml(statusText(job.job_type))}<span class="admin-job-muted mt-1 block text-xs text-[#52607a]">${number(job.openings)} openings</span></td>
+            <td class="px-5 py-4 capitalize" data-label="Mode">${escapeHtml(statusText(job.hiring_mode))}</td>
+            <td class="px-5 py-4 font-bold text-[#061942]" data-label="Applications">${number(job.applications_count)}</td>
+            <td class="px-5 py-4" data-label="Last Date">${escapeHtml(job.application_last_date || '-')}</td>
+            <td class="px-5 py-4" data-label="Actions"><div class="admin-job-actions flex flex-wrap gap-2"><button class="view-job rounded-md border border-[#075fe4] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button" data-id="${job.id}">View</button><button class="status-job rounded-md border border-[#078346] px-3 py-2 text-xs font-bold text-[#078346]" type="button" data-id="${job.id}" data-status="active">Activate</button><button class="status-job rounded-md border border-[#ff1f2f] px-3 py-2 text-xs font-bold text-[#ff1f2f]" type="button" data-id="${job.id}" data-status="removed">Remove</button></div></td>
         </tr>`).join('');
     }
     function setPagination(paginator) {

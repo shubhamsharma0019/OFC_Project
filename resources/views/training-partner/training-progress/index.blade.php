@@ -6,9 +6,149 @@
     $activePage = 'progress';
 @endphp
 
+@push('styles')
+<style>
+    @media (max-width: 640px) {
+        .training-progress-page {
+            gap: 14px !important;
+            overflow-x: hidden;
+        }
+
+        .training-progress-head {
+            gap: 12px !important;
+        }
+
+        .training-progress-head h1 {
+            font-size: 23px !important;
+        }
+
+        .training-progress-head a {
+            width: 100%;
+        }
+
+        #progressStats {
+            gap: 12px !important;
+        }
+
+        #progressStats article {
+            padding: 14px !important;
+        }
+
+        #progressStats article > span {
+            height: 42px !important;
+            width: 42px !important;
+        }
+
+        #progressStats h2 {
+            font-size: 22px !important;
+            line-height: 1.15 !important;
+        }
+
+        .training-progress-toolbar {
+            padding: 14px !important;
+        }
+
+        .training-progress-toolbar input,
+        .training-progress-toolbar select {
+            width: 100%;
+            max-width: none !important;
+        }
+
+        .training-progress-table-wrap {
+            overflow: visible !important;
+        }
+
+        .training-progress-table-wrap table,
+        .training-progress-table-wrap thead,
+        .training-progress-table-wrap tbody,
+        .training-progress-table-wrap tr,
+        .training-progress-table-wrap td {
+            display: block;
+            width: 100%;
+        }
+
+        .training-progress-table-wrap table {
+            min-width: 0 !important;
+        }
+
+        .training-progress-table-wrap thead {
+            display: none;
+        }
+
+        .training-progress-table-wrap tbody {
+            display: grid;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fbff;
+        }
+
+        .training-progress-table-wrap tr {
+            overflow: hidden;
+            border: 1px solid #dddff0;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 10px 22px rgba(50, 35, 120, .05);
+        }
+
+        .training-progress-table-wrap td {
+            display: grid;
+            grid-template-columns: minmax(86px, 33%) minmax(0, 1fr);
+            gap: 10px;
+            align-items: start;
+            border-bottom: 1px solid #e7ebf5;
+            padding: 10px 12px !important;
+            font-size: 12px !important;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .training-progress-table-wrap td:last-child {
+            border-bottom: 0;
+        }
+
+        .training-progress-table-wrap td::before {
+            content: attr(data-label);
+            color: #526287;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .training-progress-table-wrap td:first-child {
+            display: block;
+            padding: 12px !important;
+        }
+
+        .training-progress-table-wrap td:first-child::before,
+        .training-progress-table-wrap td[colspan]::before {
+            display: none;
+        }
+
+        .training-progress-table-wrap td[colspan] {
+            display: block;
+            text-align: center;
+        }
+
+        .training-progress-bar {
+            width: 100% !important;
+        }
+
+        .training-progress-actions {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px !important;
+        }
+
+        .training-progress-actions button {
+            width: 100%;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-    <section class="grid gap-5">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <section class="training-progress-page grid gap-5">
+        <div class="training-progress-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h1 class="mb-2 text-2xl font-bold text-[#071544]">Training Progress</h1>
                 <p class="text-sm leading-relaxed text-[#526287]">Track overall learning progress across courses and students.</p>
@@ -21,11 +161,11 @@
         </div>
 
         <article class="overflow-hidden rounded-lg border border-[#dddff0] bg-white shadow-[0_12px_26px_rgba(50,35,120,.05)]">
-            <div class="flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="training-progress-toolbar flex flex-col gap-3 border-b border-[#e7ebf5] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <input id="progressSearch" class="h-10 w-full rounded-md border border-[#cfd8eb] px-3 text-sm outline-none sm:max-w-xs" type="search" placeholder="Search student or course...">
                 <select id="progressFilter" class="h-10 rounded-md border border-[#cfd8eb] px-3 text-sm"><option value="all">All Progress</option><option value="not_started">Not Started</option><option value="in_progress">In Progress</option><option value="completed">Completed</option></select>
             </div>
-            <div class="overflow-x-auto">
+            <div class="training-progress-table-wrap overflow-x-auto">
                 <table class="w-full min-w-[1000px] text-left text-sm">
                     <thead class="bg-[#fbfdff] text-xs font-bold text-[#071544]"><tr><th class="px-5 py-4">Student</th><th class="px-5 py-4">Course</th><th class="px-5 py-4">Training Status</th><th class="px-5 py-4">Progress</th><th class="px-5 py-4">Remark</th><th class="px-5 py-4">Updated</th><th class="px-5 py-4">Action</th></tr></thead>
                     <tbody id="progressTable" class="divide-y divide-[#e7ebf5] text-[#26375f]"><tr><td class="px-5 py-5" colspan="7">Loading progress...</td></tr></tbody>
@@ -88,18 +228,18 @@
         progressTable.innerHTML = rows.map((item) => {
             const progress = progressPercent(item);
             return `<tr>
-                <td class="px-5 py-4">
+                <td class="px-5 py-4" data-label="Student">
                     <div class="flex items-center gap-3">
                         <span class="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[#dce7f8] bg-[#eef5ff]"><img class="h-full w-full object-cover" src="${escapeHtml(avatarUrl(item))}" alt="${escapeHtml(studentName(item))}"></span>
                         <span class="min-w-0"><strong class="block truncate text-[#071544]">${escapeHtml(studentName(item))}</strong><span class="mt-1 block truncate text-xs text-[#526287]">${escapeHtml(studentEmail(item))}</span></span>
                     </div>
                 </td>
-                <td class="px-5 py-4"><strong class="block text-[#071544]">${escapeHtml(item.course?.course_name || '-')}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(item.course?.training_mode || '')}</span></td>
-                <td class="px-5 py-4"><span class="rounded-md ${badgeClass(item.training_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(item.training_status))}</span></td>
-                <td class="px-5 py-4"><div class="mb-1 text-xs font-bold text-[#071544]">${progress}%</div><div class="h-2 w-32 overflow-hidden rounded-full bg-[#f0eaff]"><div class="h-full rounded-full bg-[#6a2df0]" style="width:${progress}%"></div></div></td>
-                <td class="max-w-[260px] px-5 py-4 text-xs text-[#526287]">${escapeHtml(item.training_progress?.short_remark || '-')}</td>
-                <td class="px-5 py-4 text-xs text-[#526287]">${formatDate(item.training_progress?.updated_at || item.updated_at)}</td>
-                <td class="px-5 py-4"><div class="flex flex-wrap gap-2"><button class="view-progress rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" type="button" data-id="${item.id}">View</button><button class="edit-progress rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${item.id}">Edit</button></div></td>
+                <td class="px-5 py-4" data-label="Course"><strong class="block text-[#071544]">${escapeHtml(item.course?.course_name || '-')}</strong><span class="mt-1 block text-xs text-[#526287]">${escapeHtml(item.course?.training_mode || '')}</span></td>
+                <td class="px-5 py-4" data-label="Status"><span class="rounded-md ${badgeClass(item.training_status)} px-3 py-1 text-xs font-bold capitalize">${escapeHtml(statusText(item.training_status))}</span></td>
+                <td class="px-5 py-4" data-label="Progress"><div class="mb-1 text-xs font-bold text-[#071544]">${progress}%</div><div class="training-progress-bar h-2 w-32 overflow-hidden rounded-full bg-[#f0eaff]"><div class="h-full rounded-full bg-[#6a2df0]" style="width:${progress}%"></div></div></td>
+                <td class="max-w-[260px] px-5 py-4 text-xs text-[#526287]" data-label="Remark">${escapeHtml(item.training_progress?.short_remark || '-')}</td>
+                <td class="px-5 py-4 text-xs text-[#526287]" data-label="Updated">${formatDate(item.training_progress?.updated_at || item.updated_at)}</td>
+                <td class="px-5 py-4" data-label="Action"><div class="training-progress-actions flex flex-wrap gap-2"><button class="view-progress rounded-md border border-[#cfd8eb] px-3 py-2 text-xs font-bold text-[#26375f]" type="button" data-id="${item.id}">View</button><button class="edit-progress rounded-md border border-[#5b20e6] px-3 py-2 text-xs font-bold text-[#5b20e6]" type="button" data-id="${item.id}">Edit</button></div></td>
             </tr>`;
         }).join('');
     }

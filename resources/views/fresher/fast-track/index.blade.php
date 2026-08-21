@@ -121,6 +121,137 @@
             padding: 18px;
         }
     }
+
+    @media (max-width: 640px) {
+        .fast-track-dashboard-shell,
+        .fast-track-dashboard-shell * {
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .fast-track-dashboard-shell {
+            overflow-x: hidden;
+        }
+
+        .fast-track-dashboard-shell h1 {
+            font-size: 24px !important;
+            line-height: 1.15 !important;
+        }
+
+        .fast-track-dashboard-shell h2 {
+            font-size: 20px !important;
+            line-height: 1.2 !important;
+        }
+
+        .dashboard-welcome-card {
+            padding: 16px !important;
+            text-align: center;
+        }
+
+        #dashboardProfileAvatar {
+            margin-left: auto;
+            margin-right: auto;
+            height: 74px !important;
+            width: 74px !important;
+        }
+
+        #welcomeName {
+            font-size: 22px !important;
+        }
+
+        #dashboardProfileLocation {
+            justify-content: center;
+        }
+
+        .fast-track-program-panel {
+            padding: 16px !important;
+        }
+
+        #fastTrackProgramSteps {
+            gap: 14px !important;
+        }
+
+        .fast-track-program-step {
+            display: grid !important;
+            grid-template-columns: 48px minmax(0, 1fr);
+            align-items: start;
+            border: 1px solid #dce7f8;
+            border-radius: 10px;
+            background: #fff;
+            padding: 12px;
+            text-align: left !important;
+        }
+
+        .fast-track-step-marker {
+            height: 42px !important;
+            width: 42px !important;
+        }
+
+        .fast-track-program-step p {
+            max-width: none !important;
+        }
+
+        .fast-track-section-head {
+            flex-direction: column;
+            align-items: stretch !important;
+        }
+
+        .fast-track-section-head a {
+            display: inline-flex !important;
+            width: 100%;
+            justify-content: center;
+            border: 1px solid #9fc1f8;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        #dynamicCareerTracks {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        #dynamicCareerTracks article {
+            padding: 16px !important;
+        }
+
+        .fast-track-current-program,
+        .fast-track-assessment-summary,
+        .fast-track-partners-grid,
+        .fast-track-benefits-grid {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .fast-track-current-program > *,
+        .fast-track-assessment-summary > *,
+        .fast-track-partners-grid > *,
+        .fast-track-benefits-grid > * {
+            border-left: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        #programProgressRows > div,
+        .fast-track-timeline-row,
+        .fast-track-score-row {
+            grid-template-columns: minmax(0, 1fr) !important;
+            gap: 6px !important;
+            align-items: start !important;
+        }
+
+        .fast-track-dashboard-shell [class*="grid-cols-["] {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .fast-track-dashboard-shell [class*="min-w-["] {
+            min-width: 0 !important;
+        }
+
+        .fast-track-dashboard-shell a[class*="h-"],
+        .fast-track-dashboard-shell button[class*="h-"] {
+            min-height: 38px;
+            height: auto;
+        }
+    }
 </style>
 @endpush
 
@@ -185,7 +316,7 @@
             <div id="latestTrainingCard"></div>
         </div>
 
-        <section class="rounded-lg bg-white px-5 py-7 shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:px-6">
+        <section class="fast-track-program-panel rounded-lg bg-white px-5 py-7 shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:px-6">
             <div class="mb-7">
                 <h2 class="mb-1 text-[26px] font-bold leading-tight text-[#061942]">Fast Track Program</h2>
                 <p class="text-[13px] font-semibold text-[#34445e]">Get trained by verified training partners, improve your skills and get access to better job opportunities.</p>
@@ -212,7 +343,7 @@
                 @endforeach
             </div>
 
-            <div class="mb-4 flex items-end justify-between gap-4">
+            <div class="fast-track-section-head mb-4 flex items-end justify-between gap-4">
                 <div>
                     <h2 class="mb-1 text-[20px] font-bold text-[#061942]">Explore Career Tracks</h2>
                     <p class="text-[13px] font-semibold text-[#34445e]">Choose a career track that matches your interest and career goals.</p>
@@ -240,7 +371,7 @@
             </div>
 
             <article class="mt-10 rounded-xl border border-[#dce7f8] bg-white px-5 py-5 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
-                <div class="grid gap-6 xl:grid-cols-[1.05fr_.95fr_1.25fr] xl:divide-x xl:divide-[#e6eef9]">
+                <div class="fast-track-current-program grid gap-6 xl:grid-cols-[1.05fr_.95fr_1.25fr] xl:divide-x xl:divide-[#e6eef9]">
                     <section class="xl:pr-6">
                         <h2 class="mb-4 text-[16px] font-bold text-[#075fe4]">Your Current Program</h2>
                         <div class="rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_6px_16px_rgba(6,25,66,0.04)]">
