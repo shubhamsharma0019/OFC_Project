@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AssessmentResult;
 use App\Models\Certificate;
 use App\Models\CourseEnrollment;
+use App\Models\Notification;
 use App\Models\TrainingPartnerProfile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -160,6 +161,16 @@ class TrainingPartnerCertificateController extends Controller
             'courseEnrollment.course.trainingPartnerProfile',
             'finalAssessmentResult',
         ]);
+
+        if ($certificate->fresherProfile?->user_id) {
+            Notification::create([
+                'user_id' => $certificate->fresherProfile->user_id,
+                'type' => 'certificate',
+                'title' => 'Certificate Generated',
+                'message' => "Your certificate for {$certificate->courseEnrollment->course->course_name} has been generated.",
+                'is_read' => false,
+            ]);
+        }
 
         return response()->json([
             'success' => true,

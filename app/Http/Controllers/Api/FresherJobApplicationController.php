@@ -7,6 +7,7 @@ use App\Models\AssessmentAttempt;
 use App\Models\FresherProfile;
 use App\Models\Job;
 use App\Models\JobApplication;
+use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -188,6 +189,25 @@ class FresherJobApplicationController extends Controller
                 'applied_at' => now(),
             ]);
         });
+
+        $job->loadMissing('companyProfile.user');
+        if ($job->companyProfile?->user_id) {
+            Notification::create([
+                'user_id' => $job->companyProfile->user_id,
+                'type' => 'job_application',
+                'title' => 'New Job Application',
+                'message' => ($user->name ?? 'A fresher') . " applied for {$job->title}.",
+                'is_read' => false,
+            ]);
+        }
+
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => 'job_application',
+            'title' => 'Application Submitted',
+            'message' => "Your application for {$job->title} has been submitted successfully.",
+            'is_read' => false,
+        ]);
 
         return response()->json([
             'success' => true,

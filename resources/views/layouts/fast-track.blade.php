@@ -54,9 +54,9 @@
                 </button>
 
                 <div class="ml-auto flex items-center gap-3">
-                    <button class="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#dce7f8] bg-white text-[#061942] shadow-sm" type="button" aria-label="Notifications">
+                    <button class="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#dce7f8] bg-white text-[#061942] shadow-sm" type="button" data-ofc-notification-trigger aria-label="Notifications">
                         <svg class="h-5 w-5 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
-                        <span id="fastTrackNotificationCount" class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#ff335f] px-1 text-xs font-bold text-white">{{ $student['notifications'] }}</span>
+                        <span id="fastTrackNotificationCount" data-ofc-notification-badge class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#ff335f] px-1 text-xs font-bold text-white">{{ $student['notifications'] }}</span>
                     </button>
 
                     <div class="relative flex items-center gap-3">
@@ -123,6 +123,7 @@
             });
         }
     </script>
+    @include('components.common.notification-popup')
     <script src="/js/fast-track-dynamic.js"></script>
     @stack('scripts')
 </body>

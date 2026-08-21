@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseEnrollment;
+use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -79,7 +80,25 @@ class FresherCourseEnrollmentController extends Controller
         ]);
 
         $enrollment->load([
-            'course.trainingPartnerProfile:id,institute_name,institute_logo,location,approval_status',
+            'course.trainingPartnerProfile:id,user_id,institute_name,institute_logo,location,approval_status',
+        ]);
+
+        if ($enrollment->course?->trainingPartnerProfile?->user_id) {
+            Notification::create([
+                'user_id' => $enrollment->course->trainingPartnerProfile->user_id,
+                'type' => 'course_enrollment',
+                'title' => 'New Course Enrollment',
+                'message' => ($user->name ?? 'A fresher') . " enrolled in {$course->course_name}.",
+                'is_read' => false,
+            ]);
+        }
+
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => 'course_enrollment',
+            'title' => 'Enrollment Created',
+            'message' => "Your enrollment for {$course->course_name} has been created. Complete payment to start training.",
+            'is_read' => false,
         ]);
 
         return response()->json([

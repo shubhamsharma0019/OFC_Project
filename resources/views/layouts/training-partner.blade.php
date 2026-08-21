@@ -125,9 +125,9 @@
                 </button>
 
                 <div class="relative ml-auto flex min-w-0 items-center gap-2.5">
-                    <button class="relative h-[34px] w-[34px] text-[#071544] [&>svg]:h-[21px] [&>svg]:w-[21px] [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]" type="button" aria-label="Notifications">
+                    <button class="relative h-[34px] w-[34px] text-[#071544] [&>svg]:h-[21px] [&>svg]:w-[21px] [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]" type="button" data-ofc-notification-trigger aria-label="Notifications">
                         <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
-                        <span id="trainingPartnerNotificationBadge" class="absolute -right-0 -top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#5b20e6] text-[10px] font-extrabold text-white">{{ $partner['notifications'] }}</span>
+                        <span id="trainingPartnerNotificationBadge" data-ofc-notification-badge class="absolute -right-0 -top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#5b20e6] text-[10px] font-extrabold text-white">{{ $partner['notifications'] }}</span>
                     </button>
                     <div data-training-partner-initial class="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-[#e9edf8] text-[11px] font-black text-[#5b20e6] md:h-10 md:w-10 md:text-[13px]">TP</div>
                     <div class="min-w-0">
@@ -254,6 +254,7 @@
         syncTrainingPartnerChrome();
         document.addEventListener('training-partner-profile-loaded', (event) => syncTrainingPartnerChrome(event.detail));
     </script>
+    @include('components.common.notification-popup')
     @stack('scripts')
 </body>
 </html>

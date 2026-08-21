@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CourseEnrollment;
+use App\Models\Notification;
 use App\Models\Payment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ class FresherCoursePaymentController extends Controller
             ], 422);
         }
 
-        $courseEnrollment->load('course');
+        $courseEnrollment->load('course.trainingPartnerProfile');
 
         if (!$courseEnrollment->course) {
             return response()->json([
@@ -122,6 +123,27 @@ class FresherCoursePaymentController extends Controller
         $message = $validated['payment_status'] === 'success'
             ? 'Course payment completed successfully.'
             : 'Course payment failed.';
+
+        $freshEnrollment = $result['enrollment']->loadMissing('course.trainingPartnerProfile');
+        if ($validated['payment_status'] === 'success') {
+            Notification::create([
+                'user_id' => $user->id,
+                'type' => 'course_payment',
+                'title' => 'Payment Successful',
+                'message' => "Your payment for {$freshEnrollment->course->course_name} is successful. Training can now start.",
+                'is_read' => false,
+            ]);
+
+            if ($freshEnrollment->course?->trainingPartnerProfile?->user_id) {
+                Notification::create([
+                    'user_id' => $freshEnrollment->course->trainingPartnerProfile->user_id,
+                    'type' => 'course_payment',
+                    'title' => 'Course Payment Received',
+                    'message' => ($user->name ?? 'A fresher') . " completed payment for {$freshEnrollment->course->course_name}.",
+                    'is_read' => false,
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => $validated['payment_status'] === 'success',

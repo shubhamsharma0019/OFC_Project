@@ -5,31 +5,65 @@
 @push('styles')
 <style>
     @media (max-width: 640px) {
-        .home-hero {
+        html:has(.home-hero),
+        body:has(.home-hero) {
             width: 100% !important;
-            max-width: 100vw !important;
-            padding-top: 12px !important;
-            padding-bottom: 0 !important;
-            background: linear-gradient(180deg, #fff 0%, #f3f8ff 100%) !important;
+            max-width: 100% !important;
             overflow-x: hidden !important;
+        }
+
+        body:has(.home-hero) #public-site,
+        body:has(.home-hero) main {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+
+        body:has(.home-hero) main > section,
+        body:has(.home-hero) main > section > div {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+
+        body:has(.home-hero) header,
+        body:has(.home-hero) footer {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+
+        body:has(.home-hero) header > div,
+        body:has(.home-hero) footer > div {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        body:has(.home-hero) img,
+        body:has(.home-hero) svg {
+            max-width: 100% !important;
+        }
+
+        .home-hero {
+            padding: 0 !important;
+            background: linear-gradient(180deg, #fff 0%, #f3f8ff 100%) !important;
+            overflow: hidden !important;
         }
 
         .home-hero-inner {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 14px !important;
-            padding: 18px 14px 0 !important;
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) !important;
+            gap: 16px !important;
+            padding: 22px 14px 0 !important;
             text-align: center !important;
             width: 100% !important;
-            max-width: 100vw !important;
-            overflow-x: hidden !important;
+            max-width: 100% !important;
         }
 
-        .home-hero-inner > div:first-child {
+        .home-hero-inner > * {
             width: 100% !important;
-            max-width: calc(100vw - 28px) !important;
+            max-width: 100% !important;
             min-width: 0 !important;
-            overflow: visible !important;
         }
 
         .home-hero-title-desktop {
@@ -38,72 +72,73 @@
 
         .home-hero-title-mobile {
             display: block !important;
+            margin: 0 auto !important;
             width: 100% !important;
-            max-width: 100% !important;
-            padding-left: 4px !important;
-            padding-right: 4px !important;
-            text-align: center !important;
-        }
-
-        .home-hero h1 {
-            margin-left: auto !important;
-            margin-right: auto !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            white-space: normal !important;
-            word-break: keep-all !important;
-            overflow-wrap: normal !important;
-            text-wrap: auto;
-            font-size: 22px !important;
+            max-width: 310px !important;
+            font-size: clamp(24px, 7.2vw, 30px) !important;
             line-height: 1.12 !important;
+            letter-spacing: 0 !important;
+            text-align: center !important;
+            white-space: normal !important;
+            word-break: normal !important;
+            overflow-wrap: anywhere !important;
         }
 
-        .home-hero h1 span {
-            display: block !important;
+        .home-hero-title-mobile span {
+            display: inline !important;
             white-space: normal !important;
-            word-break: keep-all !important;
-            overflow-wrap: normal !important;
+            overflow-wrap: anywhere !important;
         }
 
         .home-hero p {
-            width: 100% !important;
-            max-width: calc(100vw - 28px) !important;
-            white-space: normal !important;
-            overflow-wrap: break-word !important;
-            font-size: 11px !important;
-            line-height: 1.45 !important;
+            margin: 14px auto 16px !important;
+            max-width: 320px !important;
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+            overflow-wrap: anywhere !important;
         }
 
         .home-hero-actions {
-            width: 100%;
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+            width: 100% !important;
+            max-width: 340px !important;
+            margin: 0 auto !important;
         }
 
         .home-hero-actions a {
-            width: 100%;
+            width: 100% !important;
             min-width: 0 !important;
+            height: 44px !important;
         }
 
         .home-hero-media {
             width: 100% !important;
-            max-width: calc(100vw - 28px) !important;
-            min-height: 260px !important;
-            align-items: end !important;
+            max-width: 100% !important;
+            min-height: 285px !important;
+            margin: 0 auto !important;
+            padding: 0 0 24px !important;
+            align-items: flex-end !important;
             overflow: hidden !important;
         }
 
         .home-hero-media > img {
             width: 100% !important;
             max-width: 100% !important;
+            height: auto !important;
             margin-left: 0 !important;
-            max-height: 285px !important;
+            margin-right: 0 !important;
+            max-height: 300px !important;
+            object-fit: contain !important;
             object-position: bottom center !important;
         }
 
         #homeStats {
-            bottom: 14px !important;
+            bottom: 12px !important;
             left: 50% !important;
-            width: calc(100vw - 46px) !important;
-            max-width: calc(100vw - 46px) !important;
+            width: calc(100% - 24px) !important;
+            max-width: 360px !important;
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             gap: 8px !important;
             padding: 9px !important;
@@ -162,6 +197,90 @@
         .home-company-grid article {
             min-height: 0 !important;
             padding: 16px !important;
+        }
+
+        .home-company-grid {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .home-company-grid article,
+        .home-company-grid article > span,
+        .home-mode-card,
+        .home-mode-panel {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+        }
+
+        .home-mode-card {
+            grid-template-columns: minmax(0, 1fr) !important;
+            text-align: center !important;
+            overflow: hidden !important;
+        }
+
+        .home-mode-panel [class*="grid-cols-"] {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .home-mode-panel b,
+        .home-mode-panel span {
+            overflow-wrap: anywhere !important;
+        }
+
+        .home-company-grid article {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .home-company-grid article:last-child {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+
+        .home-company-grid article:nth-child(3) > div,
+        .home-company-grid article:nth-child(3) [class*="grid-cols-"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+        }
+
+        .home-company-grid article:nth-child(3) [class*="grid-cols-"] {
+            grid-template-columns: minmax(0, 1fr) !important;
+            gap: 6px !important;
+        }
+
+        .home-company-grid article:nth-child(3) [class*="grid-cols-"] > span,
+        .home-company-grid article:nth-child(3) [class*="grid-cols-"] > b {
+            text-align: left !important;
+        }
+
+        .home-company-grid article:nth-child(3) [class*="grid-cols-"] > span:empty {
+            display: none !important;
+        }
+
+        .home-company-grid article:nth-child(3) [class*="grid-cols-"] > b {
+            word-break: break-word !important;
+        }
+
+        .home-company-grid article:nth-child(3) .flex.justify-between {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            gap: 6px !important;
+            text-align: center !important;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .home-hero-title-mobile {
+            max-width: 250px !important;
+            font-size: 24px !important;
+        }
+
+        #homeStats {
+            width: calc(100% - 18px) !important;
+        }
+
+        #homeStats article {
+            gap: 6px !important;
         }
     }
     </style>

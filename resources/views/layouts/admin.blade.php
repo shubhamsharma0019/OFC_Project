@@ -125,6 +125,10 @@
 
                     <div class="col-start-2 row-start-1 flex min-w-0 items-center justify-end gap-2.5 sm:col-auto sm:row-auto lg:gap-4">
                         @yield('topbarExtra')
+                        <button class="relative inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-white text-[#075fe4] shadow-[0_8px_18px_rgba(6,25,66,.05)] lg:h-[46px] lg:w-[46px]" type="button" data-ofc-notification-trigger aria-label="Notifications">
+                            <svg class="h-[23px] w-[23px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+                            <span data-ofc-notification-badge class="absolute right-[3px] top-[3px] grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#ff3045] px-1 text-[10px] font-bold text-white">0</span>
+                        </button>
                         <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-[#075fe4] lg:h-[46px] lg:w-[46px]" aria-hidden="true">
                             <svg class="h-[23px] w-[23px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path></svg>
                         </div>
@@ -169,6 +173,7 @@
             backdrop.classList.toggle('hidden');
         }
     </script>
+    @include('components.common.notification-popup')
     @stack('scripts')
 </body>
 </html>

@@ -121,6 +121,7 @@
                 <div class="company-topbar-actions col-span-2 flex w-full items-center justify-between gap-2 sm:col-auto sm:w-auto sm:justify-end lg:gap-[18px]">
                     <a
                         href="/company/notifications"
+                        data-ofc-notification-trigger
                         class="company-notification-link relative inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-white text-[#061942] shadow-[0_8px_18px_rgba(6,25,66,.05)] lg:h-[42px] lg:w-[42px]"
                         aria-label="Notifications"
                     >
@@ -131,6 +132,7 @@
 
                         <span
                             data-company-notification-count
+                            data-ofc-notification-badge
                             class="absolute right-[5px] top-1 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-[#ff3045] text-[11px] font-bold text-white"
                         >0</span>
                     </a>
@@ -359,6 +361,7 @@
         });
     </script>
 
+    @include('components.common.notification-popup')
     @stack('scripts')
 </body>
 

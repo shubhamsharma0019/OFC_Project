@@ -903,6 +903,225 @@
             grid-template-columns: 1fr !important;
         }
     }
+    @media (max-width: 640px) {
+        .dashboard {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            padding: 12px !important;
+        }
+
+        .dashboard .direct-credit-hero,
+        .dashboard .direct-apply-strip,
+        .dashboard .direct-jobs-widget,
+        .dashboard .credits-pricing-section,
+        .dashboard .card,
+        .dashboard .section,
+        .dashboard .direct-job-board,
+        .dashboard .track-analysis-panel,
+        .dashboard .application-tips-panel {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .dashboard .direct-credit-hero {
+            grid-template-columns: 1fr !important;
+            gap: 12px;
+            padding: 12px;
+        }
+
+        .dashboard .direct-credit-hero .direct-hero-profile {
+            display: grid;
+            justify-items: center;
+            gap: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .dashboard .direct-credit-hero .direct-hero-avatar {
+            width: 72px;
+            height: 72px;
+        }
+
+        .dashboard .direct-credit-hero .direct-hero-profile h1 {
+            font-size: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .dashboard .direct-credit-hero .direct-hero-info {
+            grid-template-columns: 1fr !important;
+            gap: 12px;
+            padding: 14px;
+        }
+
+        .dashboard .direct-credit-hero .credit-mini {
+            justify-content: center;
+            text-align: left;
+        }
+
+        .dashboard .direct-credit-hero .apply-copy {
+            border-left: 0;
+            border-top: 1px solid #dfe8f7;
+            padding: 12px 0 0;
+            text-align: center;
+        }
+
+        .dashboard .direct-credit-hero .apply-copy p {
+            max-width: none;
+        }
+
+        .dashboard .direct-apply-strip,
+        .dashboard .direct-job-board,
+        .dashboard .credits-pricing-section {
+            padding: 14px;
+        }
+
+        .dashboard .direct-apply-head {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .dashboard .direct-apply-head h2,
+        .dashboard .credits-pricing-head h2 {
+            font-size: 18px;
+            line-height: 1.25;
+        }
+
+        .dashboard .direct-help-btn,
+        .dashboard .load-more-wrap a,
+        .dashboard .analysis-cta,
+        .dashboard .hero-btn {
+            width: 100%;
+        }
+
+        .dashboard .direct-credit-row {
+            grid-template-columns: 1fr !important;
+        }
+
+        .dashboard .direct-credit-cell {
+            grid-template-columns: 42px minmax(0, 1fr);
+            min-height: 72px;
+            padding: 13px 14px;
+            border-right: 0;
+            border-bottom: 1px solid #dce7f8;
+        }
+
+        .dashboard .direct-credit-cell:last-child {
+            border-bottom: 0;
+        }
+
+        .dashboard .direct-credit-icon {
+            width: 42px;
+            height: 42px;
+        }
+
+        .dashboard .direct-job-filters {
+            grid-template-columns: 1fr !important;
+        }
+
+        .dashboard .direct-filter-control {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .dashboard .direct-job-card {
+            grid-template-columns: 48px minmax(0, 1fr) !important;
+            gap: 12px;
+            align-items: start;
+            padding: 13px;
+        }
+
+        .dashboard .direct-company-logo {
+            width: 48px;
+            height: 48px;
+            font-size: 15px;
+        }
+
+        .dashboard .direct-match-stack,
+        .dashboard .direct-job-action,
+        .dashboard .bookmark-icon {
+            grid-column: 2;
+            justify-items: start;
+            align-self: start;
+        }
+
+        .dashboard .direct-match-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .dashboard .direct-job-action {
+            width: 100%;
+        }
+
+        .dashboard .direct-job-action a {
+            width: 100%;
+            max-width: 180px;
+        }
+
+        .dashboard .load-more-wrap {
+            display: grid;
+            gap: 10px;
+        }
+
+        .dashboard .load-more-wrap a {
+            margin-left: 0 !important;
+        }
+
+        .dashboard .radar-wrap {
+            width: min(190px, 100%);
+        }
+
+        .dashboard .match-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            justify-items: center;
+            text-align: center;
+        }
+
+        .dashboard .credits-plan-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px;
+        }
+
+        .dashboard .credits-plan-card {
+            min-height: 0;
+            padding: 18px 16px 16px;
+        }
+
+        .dashboard .credits-trust-row {
+            display: grid;
+            justify-content: stretch;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .dashboard .credits-trust-row span {
+            justify-content: center;
+            border-right: 0;
+            padding: 0;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .dashboard .direct-job-card {
+            grid-template-columns: 1fr !important;
+        }
+
+        .dashboard .direct-match-stack,
+        .dashboard .direct-job-action,
+        .dashboard .bookmark-icon {
+            grid-column: auto;
+        }
+
+        .dashboard .direct-credit-hero .credit-mini {
+            display: grid;
+            justify-items: center;
+            text-align: center;
+        }
+    }
 </style>
 @endpush
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
+use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -133,7 +134,7 @@ class CompanyApplicationController extends Controller
             ], 422);
         }
 
-        $jobApplication->load('job');
+        $jobApplication->load(['job', 'fresherProfile.user']);
 
         if (
             $jobApplication->job->company_profile_id
@@ -167,6 +168,17 @@ class CompanyApplicationController extends Controller
             'application_status' =>
                 $validatedData['application_status'],
         ]);
+
+        if ($jobApplication->fresherProfile?->user_id) {
+            $statusLabel = str_replace('_', ' ', $validatedData['application_status']);
+            Notification::create([
+                'user_id' => $jobApplication->fresherProfile->user_id,
+                'type' => 'application_status',
+                'title' => 'Application Status Updated',
+                'message' => "Your application for {$jobApplication->job->title} is now {$statusLabel}.",
+                'is_read' => false,
+            ]);
+        }
 
         return response()->json([
             'success' => true,

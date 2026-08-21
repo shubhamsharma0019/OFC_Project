@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
@@ -18,30 +19,57 @@ class AuthController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
+        $request->merge([
+            'name' => trim((string) $request->input('name')),
+            'email' => strtolower(trim((string) $request->input('email'))),
+            'mobile' => preg_replace('/\D+/', '', (string) $request->input('mobile')),
+        ]);
+
         $validatedData = $request->validate([
             'name' => [
                 'required',
                 'string',
+                'min:2',
                 'max:255',
+                'regex:/^[a-zA-Z\s.\'-]+$/',
             ],
 
             'email' => [
                 'required',
-                'email',
+                'email:rfc',
                 'max:255',
-                'unique:users,email',
+                Rule::unique('users', 'email'),
             ],
 
             'mobile' => [
-                'nullable',
-                'string',
-                'max:20',
+                'required',
+                'digits_between:10,15',
+                Rule::unique('users', 'mobile'),
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $existsInProfiles = \App\Models\FresherProfile::query()
+                        ->where('phone', $value)
+                        ->exists()
+                        || \App\Models\CompanyProfile::query()
+                            ->where('phone', $value)
+                            ->exists()
+                        || \App\Models\TrainingPartnerProfile::query()
+                            ->where('phone', $value)
+                            ->exists();
+
+                    if ($existsInProfiles) {
+                        $fail('This mobile number is already registered with another account.');
+                    }
+                },
             ],
 
             'password' => [
                 'required',
                 'string',
-                'min:8',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+                'regex:/^\S+$/',
                 'confirmed',
             ],
 
@@ -53,6 +81,18 @@ class AuthController extends Controller
                     'training_partner',
                 ]),
             ],
+        ], [
+            'name.regex' => 'Name may only contain letters, spaces, dot, apostrophe and hyphen.',
+            'email.unique' => 'This email is already registered. Please login with this email or use another email.',
+            'mobile.required' => 'Mobile number is required.',
+            'mobile.digits_between' => 'Mobile number must be between 10 and 15 digits.',
+            'mobile.unique' => 'This mobile number is already registered with another account.',
+            'password.min' => 'Password must be at least 8 characters.',
+            'password.mixed' => 'Password must include uppercase and lowercase letters.',
+            'password.numbers' => 'Password must include at least one number.',
+            'password.symbols' => 'Password must include at least one special character.',
+            'password.regex' => 'Password must not contain spaces.',
+            'password.confirmed' => 'Password confirmation does not match.',
         ]);
 
         $user = User::create([

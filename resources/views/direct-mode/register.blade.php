@@ -2034,6 +2034,36 @@ document.addEventListener(
 
 
             if (
+                values.email &&
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())
+            ) {
+
+                setFieldError(
+                    'email',
+                    'Please enter a valid email address.'
+                );
+
+                valid =
+                    false;
+            }
+
+
+            if (
+                values.phone &&
+                !/^\d{10,15}$/.test(String(values.phone).replace(/\D+/g, ''))
+            ) {
+
+                setFieldError(
+                    'phone',
+                    'Mobile number must be 10 to 15 digits.'
+                );
+
+                valid =
+                    false;
+            }
+
+
+            if (
                 values.password &&
                 values.password.length < 8
             ) {
@@ -2041,6 +2071,21 @@ document.addEventListener(
                 setFieldError(
                     'password',
                     'Password must be at least 8 characters.'
+                );
+
+                valid =
+                    false;
+            }
+
+
+            if (
+                values.password &&
+                !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S{8,}$/.test(values.password)
+            ) {
+
+                setFieldError(
+                    'password',
+                    'Password must have uppercase, lowercase, number, special character and no spaces.'
                 );
 
                 valid =

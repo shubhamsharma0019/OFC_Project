@@ -43,6 +43,9 @@
         .top-user-head small{margin-top:4px;color:#526287;font-size:12px}
         .top-user-menu a,.top-user-menu button{width:100%;height:42px;border:0;background:#fff;display:flex;align-items:center;gap:10px;padding:0 14px;color:#06123f;font-size:13px;font-weight:800;cursor:pointer;text-align:left}
         .top-user-menu a:hover,.top-user-menu button:hover{background:#f7fbff;color:#064cff}
+        .mobile-nav-toggle{display:none;width:42px;height:42px;align-items:center;justify-content:center;border:1px solid #cbd8ee;border-radius:9px;background:#fff;color:#06123f;cursor:pointer}
+        .mobile-nav-toggle svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+        .mobile-direct-nav{display:none}
         .shell{height:100vh!important;min-height:0!important;overflow:hidden!important;grid-template-columns:250px minmax(0,1fr)!important}
         .shell>.sidebar{position:sticky!important;top:0!important;height:100vh!important;min-width:0!important;overflow:hidden!important;background:#fff!important;border-right:1px solid #d8e4f7!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important}
         .shell>.sidebar .brand{height:82px!important;display:flex!important;align-items:center!important;padding:0 34px!important;border-bottom:1px solid #d8e4f7!important}
@@ -59,14 +62,22 @@
             .shell>.sidebar{display:none!important}
             .shell,.main,.topbar{width:100%!important;max-width:100%!important;min-width:0!important}
             .main{height:100vh!important;overflow-y:auto!important;grid-template-rows:auto minmax(0,max-content)!important}
-            .topbar{height:auto!important;min-height:74px!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:auto auto!important;gap:12px 14px!important;padding:12px 14px!important}
+            .topbar{height:auto!important;min-height:74px!important;grid-template-columns:42px minmax(0,1fr) auto!important;grid-template-rows:auto auto!important;gap:12px 14px!important;padding:12px 14px!important}
             .topbar>div:first-child{display:none!important}
+            .mobile-nav-toggle{display:inline-flex!important;grid-column:1!important;grid-row:1!important}
             .search-wrap{grid-column:1 / -1!important;grid-row:2!important;width:100%!important;justify-self:stretch!important}
             .search-top{width:100%!important;max-width:100%!important;min-width:0!important}
             .search-panel{top:52px!important}
-            .top-user{grid-column:1 / -1!important;grid-row:1!important;justify-self:end!important;gap:12px!important}
+            .top-user{grid-column:3!important;grid-row:1!important;justify-self:end!important;gap:12px!important}
             .top-avatar{width:42px!important;height:42px!important;flex-basis:42px!important;border-width:4px!important}
             .top-user-menu{top:54px!important;right:0!important}
+            .mobile-direct-nav{display:none;position:sticky;top:0;z-index:19;border-bottom:1px solid #d8e4f7;background:#fff;padding:10px 12px;box-shadow:0 16px 28px rgba(6,25,66,.08)}
+            .mobile-direct-nav.show{display:block}
+            .mobile-direct-nav nav{display:grid;grid-template-columns:1fr;gap:8px}
+            .mobile-direct-nav a{min-height:42px;border:1px solid #d8e4f7;border-radius:9px;background:#fff;display:flex;align-items:center;gap:12px;padding:0 13px;color:#06123f;font-size:13px;font-weight:800}
+            .mobile-direct-nav a.active{border-color:#9fc1f8;background:#eaf2ff;color:#064cff}
+            .mobile-direct-nav .icon{width:20px;height:20px}
+            .mobile-direct-nav .icon svg{width:20px;height:20px}
             .page,.assess-page{width:100%!important;max-width:100%!important;min-width:0!important;padding-left:14px!important;padding-right:14px!important;overflow-x:hidden}
             .welcome{width:100%!important;max-width:100%!important;min-width:0!important;margin-left:0!important;margin-right:0!important}
             .layout,.content-grid,.hero,.metrics,.stats,.settings-body,.offer-grid,.chart-wrap,.page-grid{width:100%!important;max-width:100%!important;min-width:0!important;grid-template-columns:minmax(0,1fr)!important}
@@ -80,6 +91,7 @@
         @media(max-width:520px){
             .topbar{padding:10px 12px!important}
             .top-user{gap:9px!important}
+            .mobile-nav-toggle{width:38px!important;height:38px!important}
             .top-bell{margin-right:2px!important}
             .top-avatar{width:38px!important;height:38px!important;flex-basis:38px!important}
             .top-user-menu{width:min(230px,calc(100vw - 24px))!important}
@@ -111,12 +123,15 @@
         <main class="main">
             <header class="topbar">
                 <div></div>
+                <button class="mobile-nav-toggle" type="button" data-mobile-nav-toggle aria-label="Open navigation" aria-expanded="false">
+                    <svg viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg>
+                </button>
                 <div class="search-wrap" data-direct-search>
                     <label class="search-top"><span class="icon" data-icon="search"></span><input type="search" placeholder="Search jobs, companies, skills..." data-global-search autocomplete="off"></label>
                     <div class="search-panel" data-search-results></div>
                 </div>
                 <div class="top-user">
-                    <button class="top-bell" type="button" aria-label="Notifications"><b>{{ $user['notifications'] }}</b><span class="icon" data-icon="bell"></span></button>
+                    <button class="top-bell" type="button" data-ofc-notification-trigger aria-label="Notifications"><b data-ofc-notification-badge>{{ $user['notifications'] }}</b><span class="icon" data-icon="bell"></span></button>
                     <div class="top-avatar" style="background-image:url('{{ $user['avatar'] }}')"></div>
                     <strong data-top-user-name>{{ $user['name'] }}</strong>
                     <button class="icon" type="button" data-user-menu-toggle aria-label="Open user menu" style="border:0;background:transparent;color:inherit;cursor:pointer"><span data-icon="chevron"></span></button>
@@ -131,6 +146,20 @@
                     </div>
                 </div>
             </header>
+            <div class="mobile-direct-nav" data-mobile-direct-nav>
+                <nav>
+                    @foreach ($menuItems as $item)
+                        <a class="{{ ($activePage ?? '') === $item['key'] ? 'active' : '' }}" href="{{ $item['url'] }}">
+                            @if ($item['key'] === 'offers')
+                                <span class="icon"><svg viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M5 5H3v3a4 4 0 0 0 4 4"></path><path d="M19 5h2v3a4 4 0 0 1-4 4"></path></svg></span>
+                            @else
+                                <span class="icon" data-icon="{{ $item['icon'] }}"></span>
+                            @endif
+                            {{ $item['title'] }}
+                        </a>
+                    @endforeach
+                </nav>
+            </div>
             @yield('content')
             
         </main>
@@ -155,6 +184,7 @@
         });
         document.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=window.directModeIcons[el.dataset.icon]||el.innerHTML});
     </script>
+    @include('components.common.notification-popup')
     @stack('scripts')
     <script>
         document.querySelectorAll('.sidebar [data-icon], .topbar [data-icon]').forEach(el => {
@@ -176,6 +206,8 @@
             const unreadBadge = document.querySelector('.top-bell b');
             const userMenu = document.querySelector('[data-user-menu]');
             const userMenuToggle = document.querySelector('[data-user-menu-toggle]');
+            const mobileNav = document.querySelector('[data-mobile-direct-nav]');
+            const mobileNavToggle = document.querySelector('[data-mobile-nav-toggle]');
             const icon = name => window.directModeIcons?.[name] || '';
             const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
             const setUnreadBadge = count => {
@@ -300,28 +332,27 @@
                 });
             }
 
-            document.querySelector('.top-bell')?.addEventListener('click', async () => {
-                setUnreadBadge(0);
-                if (token) {
-                    try {
-                        await fetch('/api/notifications/read-all', {
-                            method: 'PATCH',
-                            headers: { ...headers, 'Content-Type': 'application/json' },
-                            body: '{}',
-                        });
-                    } catch (error) {}
-                }
-                window.location.href = '/direct-mode/activity';
-            });
-
             userMenuToggle?.addEventListener('click', event => {
                 event.stopPropagation();
                 userMenu?.classList.toggle('show');
+                mobileNav?.classList.remove('show');
+                mobileNavToggle?.setAttribute('aria-expanded', 'false');
+            });
+
+            mobileNavToggle?.addEventListener('click', event => {
+                event.stopPropagation();
+                const isOpen = mobileNav?.classList.toggle('show');
+                mobileNavToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                userMenu?.classList.remove('show');
             });
 
             document.addEventListener('click', event => {
                 if (!event.target.closest('.top-user')) {
                     userMenu?.classList.remove('show');
+                }
+                if (!event.target.closest('[data-mobile-direct-nav]') && !event.target.closest('[data-mobile-nav-toggle]')) {
+                    mobileNav?.classList.remove('show');
+                    mobileNavToggle?.setAttribute('aria-expanded', 'false');
                 }
             });
 

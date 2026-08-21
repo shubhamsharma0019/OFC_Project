@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CourseEnrollment;
+use App\Models\Notification;
 use App\Models\TrainingPartnerProfile;
 use App\Models\TrainingProgress;
 use Illuminate\Http\JsonResponse;
@@ -128,7 +129,7 @@ class TrainingPartnerProgressController extends Controller
             ], 403);
         }
 
-        $courseEnrollment->load('course');
+        $courseEnrollment->load(['course', 'fresherProfile.user']);
 
         if (
             !$courseEnrollment->course ||
@@ -223,6 +224,24 @@ class TrainingPartnerProgressController extends Controller
                 'enrollment' => $courseEnrollment->fresh(),
             ];
         });
+
+        if ($courseEnrollment->fresherProfile?->user_id) {
+            $courseName = $courseEnrollment->course?->course_name ?? 'your course';
+            $title = $currentStatus === 'completed'
+                ? 'Training Completed'
+                : 'Training Progress Updated';
+            $message = $currentStatus === 'completed'
+                ? "Your training for {$courseName} is completed. You can proceed with the final assessment."
+                : "Your training progress for {$courseName} is now {$progressPercentage}%.";
+
+            Notification::create([
+                'user_id' => $courseEnrollment->fresherProfile->user_id,
+                'type' => 'training_progress',
+                'title' => $title,
+                'message' => $message,
+                'is_read' => false,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
