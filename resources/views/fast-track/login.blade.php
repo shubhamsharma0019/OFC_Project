@@ -67,7 +67,7 @@
 
                 <button class="h-12 w-full rounded-lg bg-[#075fe4] text-base font-bold text-white shadow-[0_9px_18px_rgba(7,95,228,.2)] transition hover:bg-[#064fc0]" type="submit">Login</button>
 
-                <p class="mt-6 text-center text-sm text-[#071743]">Don't have an account? <a class="font-bold text-[#075fe4]" href="/fast-track/register">Register</a></p>
+                <p class="mt-6 text-center text-sm text-[#071743]">Fast Track access starts after completing the assessment.</p>
             </form>
         </section>
     </main>

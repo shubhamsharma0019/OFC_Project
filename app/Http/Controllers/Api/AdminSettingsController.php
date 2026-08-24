@@ -62,7 +62,7 @@ class AdminSettingsController extends Controller
         if (!empty($validated['password']) && !Hash::check($validated['current_password'], $admin->password)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Current password incorrect hai.',
+                'message' => 'The current password is incorrect.',
             ], 422);
         }
 

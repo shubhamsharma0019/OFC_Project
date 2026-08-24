@@ -48,10 +48,10 @@
 
 @push('scripts')
 <script>
-    const token = localStorage.getItem('ofc_auth_token');
+    const token = localStorage.getItem('ofc_training_partner_token') || localStorage.getItem('ofc_auth_token') || '';
 
     if (!token) {
-        window.location.href = '/training-partner/login';
+        window.location.replace('/training-partner/login');
     }
 
     function setText(id, value) {
@@ -69,7 +69,7 @@
             });
 
             if (response.status === 401) {
-                window.location.href = '/training-partner/login';
+                window.location.replace('/training-partner/login');
                 return;
             }
 
@@ -78,15 +78,15 @@
             localStorage.setItem('ofc_training_partner_profile', JSON.stringify(profile));
 
             if (!profile) {
-                window.location.href = '/training-partner/profile/edit';
+                if (window.location.pathname !== '/training-partner/profile/edit') window.location.replace('/training-partner/profile/edit');
                 return;
             }
             if (profile.approval_status === 'approved') {
-                window.location.href = '/training-partner/dashboard';
+                if (window.location.pathname !== '/training-partner/dashboard') window.location.replace('/training-partner/dashboard');
                 return;
             }
             if (profile.approval_status === 'rejected') {
-                window.location.href = '/training-partner/approval/rejected';
+                if (window.location.pathname !== '/training-partner/approval/rejected') window.location.replace('/training-partner/approval/rejected');
                 return;
             }
 
@@ -98,7 +98,7 @@
             setText('statusText', 'Your profile is submitted and waiting for admin approval. After approval you can manage courses, enrollments, progress and certificates.');
             document.getElementById('approvalBadge').textContent = profile.approval_status || 'pending';
         } catch (error) {
-            setText('statusText', 'Approval status load nahi ho paaya. Please refresh karke check karein.');
+            setText('statusText', 'Approval status could not be loaded. Please refresh and check again.');
         }
     }
 

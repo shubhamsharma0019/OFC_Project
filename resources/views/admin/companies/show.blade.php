@@ -65,7 +65,7 @@
             if (!payload) return;
             renderCompany(payload.data.company);
         } catch (error) {
-            detailAlert.textContent = error.message || 'Company detail load nahi ho paayi.';
+            detailAlert.textContent = error.message || 'Company details could not be loaded.';
             detailAlert.classList.remove('hidden');
             companyDetail.innerHTML = '';
         }

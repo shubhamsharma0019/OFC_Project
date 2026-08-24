@@ -231,6 +231,22 @@
             </a>
 
 
+            <button
+                id="jobStatusAction"
+                type="button"
+                class="hidden h-10
+                       items-center justify-center
+                       rounded-lg
+                       border
+                       text-sm font-bold
+                       transition
+                       disabled:cursor-not-allowed
+                       disabled:opacity-70"
+            >
+                Deactivate Job
+            </button>
+
+
             <a
                 href="/company/jobs"
                 class="inline-flex h-10
@@ -285,6 +301,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const content =
         document.getElementById('jobContent');
+
+    const jobStatusAction =
+        document.getElementById('jobStatusAction');
 
 
     /*
@@ -352,6 +371,102 @@ document.addEventListener('DOMContentLoaded', function () {
                 /\b\w/g,
                 letter => letter.toUpperCase()
             );
+    }
+
+    function configureStatusAction(job) {
+
+        if (!jobStatusAction) {
+            return;
+        }
+
+        const currentStatus =
+            job.status || 'inactive';
+
+        const nextStatus =
+            currentStatus === 'active'
+                ? 'inactive'
+                : 'active';
+
+        jobStatusAction.textContent =
+            currentStatus === 'active'
+                ? 'Deactivate Job'
+                : 'Activate Job';
+
+        jobStatusAction.dataset.status =
+            nextStatus;
+
+        jobStatusAction.className =
+            currentStatus === 'active'
+                ? 'flex h-10 items-center justify-center rounded-lg border border-[#ff3045] text-sm font-bold text-[#ff3045] transition hover:bg-[#fff7f8] disabled:cursor-not-allowed disabled:opacity-70'
+                : 'flex h-10 items-center justify-center rounded-lg border border-[#00a65a] text-sm font-bold text-[#00a65a] transition hover:bg-[#f1fff5] disabled:cursor-not-allowed disabled:opacity-70';
+    }
+
+    async function changeJobStatus(status) {
+
+        jobStatusAction.disabled =
+            true;
+
+        jobStatusAction.textContent =
+            status === 'inactive'
+                ? 'Deactivating...'
+                : 'Activating...';
+
+        const response =
+            await fetch(
+                `/api/company/jobs/${jobId}/status`,
+                {
+                    method: 'PATCH',
+
+                    headers: {
+                        Accept:
+                            'application/json',
+
+                        'Content-Type':
+                            'application/json',
+
+                        Authorization:
+                            `Bearer ${token}`
+                    },
+
+                    body:
+                        JSON.stringify({
+                            status
+                        })
+                }
+            );
+
+        let result = {};
+
+        try {
+            result =
+                await response.json();
+        } catch (error) {}
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+
+            clearCompanyAuthentication();
+
+            window.location.href =
+                '/company/login';
+
+            return;
+        }
+
+        if (
+            !response.ok ||
+            result.success === false
+        ) {
+
+            throw new Error(
+                result.message ||
+                'Unable to update job status.'
+            );
+        }
+
+        await loadJobDetails();
     }
 
 
@@ -931,6 +1046,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
+        | Activate / Deactivate Job
+        */
+
+        configureStatusAction(job);
+
+
+        /*
         | Show Content
         */
 
@@ -969,6 +1091,37 @@ document.addEventListener('DOMContentLoaded', function () {
                     'rounded-lg border border-[#ffd1d7] bg-[#fff7f8] p-5 text-sm font-bold text-[#ff3045]';
             }
         );
+
+    if (jobStatusAction) {
+
+        jobStatusAction.addEventListener(
+            'click',
+            async function () {
+
+                const status =
+                    jobStatusAction.dataset.status;
+
+                if (!status) {
+                    return;
+                }
+
+                try {
+
+                    await changeJobStatus(status);
+
+                } catch (error) {
+
+                    alert(
+                        error.message ||
+                        'Unable to update job status.'
+                    );
+
+                    await loadJobDetails()
+                        .catch(() => {});
+                }
+            }
+        );
+    }
 
 });
 </script>

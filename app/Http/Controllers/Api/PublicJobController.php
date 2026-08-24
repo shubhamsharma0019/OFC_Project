@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class PublicJobController extends Controller
 {
     /**
-     * Public website aur freshers ke liye active jobs list.
+     * Active jobs list for the public website and freshers.
      */
     public function index(Request $request): JsonResponse
     {
@@ -109,7 +109,7 @@ class PublicJobController extends Controller
         if ($job->status !== 'active') {
             return response()->json([
                 'success' => false,
-                'message' => 'Job available nahi hai.',
+                'message' => 'This job is not available.',
             ], 404);
         }
 
@@ -119,7 +119,7 @@ class PublicJobController extends Controller
         ) {
             return response()->json([
                 'success' => false,
-                'message' => 'Is job ki application date expire ho chuki hai.',
+                'message' => 'The application date for this job has expired.',
             ], 404);
         }
 
@@ -138,7 +138,7 @@ class PublicJobController extends Controller
         ) {
             return response()->json([
                 'success' => false,
-                'message' => 'Is job ki hiring complete ho chuki hai.',
+                'message' => 'Hiring for this job has been completed.',
             ], 404);
         }
 

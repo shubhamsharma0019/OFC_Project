@@ -242,6 +242,8 @@ class CompanyInterviewController extends Controller
 
         $interview->load([
             'jobApplication.job',
+            'jobApplication.job.companyProfile',
+            'jobApplication.fresherProfile.user',
         ]);
 
         if (
@@ -416,12 +418,39 @@ class CompanyInterviewController extends Controller
                 'application_status' =>
                     $validatedData['application_status'],
             ]);
+
+            if ($interview->jobApplication->fresherProfile?->user_id) {
+                $statusLabel = str_replace('_', ' ', $validatedData['application_status']);
+                $jobTitle = $interview->jobApplication->job?->title ?? 'your applied role';
+                $companyName = $interview->jobApplication->job?->companyProfile?->company_name ?? 'Company';
+
+                Notification::create([
+                    'user_id' => $interview->jobApplication->fresherProfile->user_id,
+                    'type' => 'interview',
+                    'title' => 'Interview Completed',
+                    'message' => "{$companyName} marked your interview for {$jobTitle} as completed. Your application status is now {$statusLabel}.",
+                    'is_read' => false,
+                ]);
+            }
         }
 
         if ($validatedData['status'] === 'cancelled') {
             $interview->jobApplication->update([
                 'application_status' => 'shortlisted',
             ]);
+
+            if ($interview->jobApplication->fresherProfile?->user_id) {
+                $jobTitle = $interview->jobApplication->job?->title ?? 'your applied role';
+                $companyName = $interview->jobApplication->job?->companyProfile?->company_name ?? 'Company';
+
+                Notification::create([
+                    'user_id' => $interview->jobApplication->fresherProfile->user_id,
+                    'type' => 'interview',
+                    'title' => 'Interview Cancelled',
+                    'message' => "{$companyName} cancelled your interview for {$jobTitle}. Your application is back to shortlisted status.",
+                    'is_read' => false,
+                ]);
+            }
         }
 
         return response()->json([

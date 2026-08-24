@@ -80,8 +80,8 @@
                 <div class="intro">
                     <div class="avatar-wrap"><div class="profile-avatar" data-profile-avatar></div><button class="camera" type="button" data-pick-photo><span class="icon" data-icon="camera"></span></button></div>
                     <div class="identity">
-                        <h3><span data-profile-name>Ananya Gupta</span> <span class="verified">&#10003;</span></h3>
-                        <p><span data-profile-qualification>B.Tech Computer Science</span>&nbsp; | &nbsp;<span data-profile-role>Fresher</span></p>
+                        <h3><span data-profile-name>Fresher</span> <span class="verified">&#10003;</span></h3>
+                        <p><span data-profile-qualification>Qualification not added</span>&nbsp; | &nbsp;<span data-profile-role>Fresher</span></p>
                         <span class="status-pill"><span class="dot"></span><span data-work-status>Open to Work</span></span>
                     </div>
                     <button class="outline edit-photo" type="button" data-pick-photo><span class="icon" data-icon="camera"></span>Edit Photo</button>
@@ -89,15 +89,15 @@
                 <div class="form" data-profile-form>
                     <input class="hidden-file" type="file" accept="image/*" data-photo-input>
                     <input class="hidden-file" type="file" accept=".pdf,.doc,.docx" data-resume-input>
-                    <div class="group" data-section="personal-info"><label>Full Name</label><div class="field"><span class="icon" data-icon="user"></span><input name="name" type="text" value="Ananya Gupta" autocomplete="name" placeholder="Enter full name"></div></div>
-                    <div class="group" data-section="personal-info"><label>Location</label><div class="field"><span class="icon" data-icon="pin"></span><input name="city" type="text" value="Bangalore, Karnataka" placeholder="City, State"><span class="chev icon" data-icon="chevron"></span></div></div>
-                    <div class="group" data-section="personal-info"><label>Email Address</label><div class="field"><span class="icon" data-icon="mail"></span><input name="email" type="email" value="ananya@example.com" readonly></div></div>
-                    <div class="group" data-section="education"><label>Qualification</label><div class="field"><span class="icon" data-icon="cap"></span><input name="qualification" type="text" value="B.Tech (Computer Science)" placeholder="Highest qualification"><span class="chev icon" data-icon="chevron"></span></div></div>
-                    <div class="group" data-section="personal-info"><label>Phone Number</label><div class="field"><span class="icon" data-icon="phone"></span><input name="phone" type="tel" value="9876543210" autocomplete="tel" placeholder="Mobile number"></div></div>
-                    <div class="group" data-section="education"><label>Passing Year</label><div class="field"><span class="icon" data-icon="calendar"></span><input name="passing_year" type="number" min="1900" max="2100" value="2024" placeholder="YYYY"><span class="chev icon" data-icon="chevron"></span></div></div>
-                    <div class="group" data-section="personal-info"><label>Date of Birth</label><div class="field"><span class="icon" data-icon="calendar"></span><input name="date_of_birth" type="text" value="12 Mar 2003" placeholder="DD Mon YYYY"></div></div>
-                    <div class="group" data-section="skills"><label>Preferred Job Role</label><div class="field"><span class="icon" data-icon="briefcase"></span><input name="preferred_role" type="text" value="Full Stack Developer" placeholder="Preferred job role"><span class="chev icon" data-icon="chevron"></span></div></div>
-                    <div class="group about" data-section="personal-info"><label>About Me</label><div class="field"><textarea name="about" maxlength="500" placeholder="Write a short professional summary">Passionate about web development and problem solving. Eager to start my career in a growth-focused organization where I can apply my skills and learn new technologies.</textarea><span class="count" data-about-count>0/500</span></div></div>
+                    <div class="group" data-section="personal-info"><label>Full Name</label><div class="field"><span class="icon" data-icon="user"></span><input name="name" type="text" value="" autocomplete="name" placeholder="Enter full name"></div></div>
+                    <div class="group" data-section="personal-info"><label>Location</label><div class="field"><span class="icon" data-icon="pin"></span><input name="city" type="text" value="" placeholder="City, State"><span class="chev icon" data-icon="chevron"></span></div></div>
+                    <div class="group" data-section="personal-info"><label>Email Address</label><div class="field"><span class="icon" data-icon="mail"></span><input name="email" type="email" value="" readonly></div></div>
+                    <div class="group" data-section="education"><label>Qualification</label><div class="field"><span class="icon" data-icon="cap"></span><input name="qualification" type="text" value="" placeholder="Highest qualification"><span class="chev icon" data-icon="chevron"></span></div></div>
+                    <div class="group" data-section="personal-info"><label>Phone Number</label><div class="field"><span class="icon" data-icon="phone"></span><input name="phone" type="tel" value="" autocomplete="tel" placeholder="Mobile number"></div></div>
+                    <div class="group" data-section="education"><label>Passing Year</label><div class="field"><span class="icon" data-icon="calendar"></span><input name="passing_year" type="number" min="1900" max="2100" value="" placeholder="YYYY"><span class="chev icon" data-icon="chevron"></span></div></div>
+                    <div class="group" data-section="personal-info"><label>Date of Birth</label><div class="field"><span class="icon" data-icon="calendar"></span><input name="date_of_birth" type="text" value="" placeholder="DD Mon YYYY"></div></div>
+                    <div class="group" data-section="skills"><label>Preferred Job Role</label><div class="field"><span class="icon" data-icon="briefcase"></span><input name="preferred_role" type="text" value="" placeholder="Preferred job role"><span class="chev icon" data-icon="chevron"></span></div></div>
+                    <div class="group about" data-section="personal-info"><label>About Me</label><div class="field"><textarea name="about" maxlength="500" placeholder="Write a short professional summary"></textarea><span class="count" data-about-count>0/500</span></div></div>
                     <div class="group hidden" data-section="education"><label>College Name</label><div class="field"><span class="icon" data-icon="cap"></span><input name="college_name" type="text" placeholder="College or institute name"></div></div>
                     <div class="group hidden wide" data-section="skills"><label>Skills</label><div class="field"><span class="icon" data-icon="activity"></span><input name="skills" type="text" placeholder="Example: HTML, CSS, JavaScript, Laravel"></div></div>
                     <div class="group hidden wide" data-section="experience"><label>Work Experience</label><div class="field"><span class="icon" data-icon="briefcase"></span><input name="work_experience" type="text" placeholder="Internship, project, or fresher experience"></div></div>
@@ -156,8 +156,8 @@
         star:'<svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"></path></svg>',
     });
     document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = window.directModeIcons[el.dataset.icon] || el.innerHTML; });
-    const token = localStorage.getItem('onlyfreshers_token');
-    const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || 'null');
+    const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token') || '';
+    const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || localStorage.getItem('ofc_fresher_user') || localStorage.getItem('ofc_auth_user') || 'null');
     const draftKey = 'onlyfreshers_direct_profile_extra';
     let profileSnapshot = null;
     let selectedPhoto = null;
@@ -204,12 +204,6 @@
             mark.innerHTML = isDone ? '&#10003;' : '';
         });
     };
-    const isProfileReadyForAssessment = profile => Boolean(
-        profile?.phone &&
-        profile?.qualification &&
-        profile?.skills &&
-        profile?.resume
-    );
     const setResume = (profile, extras) => {
         const resume = resumeRemoved ? null : (selectedResume?.name || extras.resume_name || profile?.resume);
         setText('[data-resume-name]', resume ? String(resume).split('/').pop() : 'No resume uploaded');
@@ -337,10 +331,6 @@
             resumeRemoved = false;
             showAlert('Profile updated successfully.', 'success');
             await load();
-            const updatedProfile = json.data?.profile || {};
-            if (isProfileReadyForAssessment(updatedProfile)) {
-                window.location.href = '/direct-mode/flow-selection';
-            }
         } catch (error) {
             showAlert(error.message);
         } finally {
@@ -358,7 +348,7 @@
             setTopAvatar(previewUrl);
         }
     });
-    qs('[data-pick-resume]').addEventListener('click', () => qs('[data-resume-input]').click());
+    qsa('[data-pick-resume]').forEach(btn => btn.addEventListener('click', () => qs('[data-resume-input]').click()));
     qs('[data-resume-input]').addEventListener('change', event => {
         selectedResume = event.target.files[0] || null;
         resumeRemoved = false;

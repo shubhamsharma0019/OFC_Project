@@ -53,10 +53,10 @@
 
 @push('scripts')
 <script>
-    const token = localStorage.getItem('ofc_auth_token');
+    const token = localStorage.getItem('ofc_training_partner_token') || localStorage.getItem('ofc_auth_token') || '';
 
     if (!token) {
-        window.location.href = '/training-partner/login';
+        window.location.replace('/training-partner/login');
     }
 
     function setText(id, value) {
@@ -74,7 +74,7 @@
             });
 
             if (response.status === 401) {
-                window.location.href = '/training-partner/login';
+                window.location.replace('/training-partner/login');
                 return;
             }
 
@@ -83,15 +83,15 @@
             localStorage.setItem('ofc_training_partner_profile', JSON.stringify(profile));
 
             if (!profile) {
-                window.location.href = '/training-partner/profile/edit';
+                if (window.location.pathname !== '/training-partner/profile/edit') window.location.replace('/training-partner/profile/edit');
                 return;
             }
             if (profile.approval_status === 'approved') {
-                window.location.href = '/training-partner/dashboard';
+                if (window.location.pathname !== '/training-partner/dashboard') window.location.replace('/training-partner/dashboard');
                 return;
             }
             if (profile.approval_status !== 'rejected') {
-                window.location.href = '/training-partner/approval/pending';
+                if (window.location.pathname !== '/training-partner/approval/pending') window.location.replace('/training-partner/approval/pending');
                 return;
             }
 
@@ -100,10 +100,10 @@
             setText('email', profile.email);
             setText('location', profile.location);
             setText('updatedAt', profile.updated_at ? new Date(profile.updated_at).toLocaleDateString('en-IN') : '-');
-            setText('rejectionReason', profile.rejection_reason || 'Admin ne specific reason add nahi kiya hai. Please profile details verify karke dobara submit karein.');
+            setText('rejectionReason', profile.rejection_reason || 'Admin has not added a specific reason. Please verify your profile details and submit again.');
             document.getElementById('approvalBadge').textContent = profile.approval_status;
         } catch (error) {
-            setText('rejectionReason', 'Approval status load nahi ho paaya. Please refresh karke check karein.');
+            setText('rejectionReason', 'Approval status could not be loaded. Please refresh and check again.');
         }
     }
 

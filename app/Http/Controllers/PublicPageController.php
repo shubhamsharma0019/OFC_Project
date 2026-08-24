@@ -79,7 +79,7 @@ class PublicPageController extends Controller
                 ['label' => 'Overall Match', 'initial' => '***--', 'final' => '*****'],
             ],
             'candidateReport' => [
-                'name' => 'Ananya Gupta',
+                'name' => 'Sample Candidate',
                 'course' => 'B.Tech - IT',
                 'rows' => [
                     ['Technical Skills', '55%', '82%', 'label' => 'Technical Skills', 'initial' => '55%', 'final' => '82%'],
@@ -110,7 +110,7 @@ class PublicPageController extends Controller
                 'Final assessment & certification',
                 'Job-ready candidates with improved skills & attitude',
             ],
-            'trainingPartnerLogos' => $this->partnerNames($trainingPartners),
+            'trainingPartnerLogos' => $this->partnerLogos($trainingPartners),
         ]);
     }
 
@@ -819,11 +819,19 @@ class PublicPageController extends Controller
             ->latest();
     }
 
-    private function partnerNames(Collection $partners): array
+    private function partnerLogos(Collection $partners): array
     {
         return $partners->isNotEmpty()
-            ? $partners->map(fn ($partner) => $partner->institute_name ?: 'Partner')->values()->all()
-            : ['EXCELR', 'ENLITE', 'TecnMinds', 'iNeuron', 'Besant', 'TTA'];
+            ? $partners->map(fn ($partner) => [
+                'name' => $partner->institute_name ?: 'Partner',
+                'logo_url' => $partner->institute_logo ? asset('storage/' . ltrim($partner->institute_logo, '/')) : null,
+            ])->values()->all()
+            : collect(['EXCELR', 'ENLITE', 'TecnMinds', 'iNeuron', 'Besant', 'TTA'])
+                ->map(fn ($name) => [
+                    'name' => $name,
+                    'logo_url' => null,
+                ])
+                ->all();
     }
 
     private function skills(?string $value): array

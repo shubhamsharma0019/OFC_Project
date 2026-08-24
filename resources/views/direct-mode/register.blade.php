@@ -116,6 +116,16 @@
                     return null;
                 }
             };
+            if (localStorage.getItem('ofc_fresher_logged_out') || sessionStorage.getItem('ofc_fresher_logged_out')) {
+                [
+                    'onlyfreshers_token',
+                    'onlyfreshers_user',
+                    'ofc_fresher_token',
+                    'ofc_fresher_user',
+                    'ofc_auth_token',
+                    'ofc_auth_user',
+                ].forEach(key => localStorage.removeItem(key));
+            }
             const sessions = [
                 {
                     role: 'company',
@@ -2531,14 +2541,20 @@ document.addEventListener(
                     );
 
 
+                    localStorage.setItem(
+                        'onlyfreshers_selected_mode',
+                        'direct'
+                    );
+
+
                     setAlert(
-                        'Account created successfully. Starting initial assessment...',
+                        'Account created successfully. Redirecting to dashboard...',
                         'success'
                     );
 
 
                     window.location.href =
-                        '/direct-mode/flow-selection';
+                        '/direct-mode/dashboard';
 
 
                 } catch (error) {

@@ -95,7 +95,7 @@
         ></button>
 
         <main class="h-screen min-w-0 overflow-y-auto px-3 pb-6 sm:px-[18px] sm:pb-[30px] lg:px-[38px] lg:pb-[38px]">
-            <header class="company-topbar-header mb-[22px] grid min-h-[78px] grid-cols-[auto_minmax(0,1fr)] items-start gap-3 pt-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-[14px] sm:pt-0 lg:mb-7 lg:flex lg:min-h-[100px] lg:items-center lg:justify-between lg:gap-6">
+            <header class="company-topbar-header mb-[22px] grid min-h-[78px] grid-cols-[auto_minmax(0,1fr)] items-start gap-3 pt-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-[14px] sm:pt-0 lg:mb-7 lg:grid lg:min-h-[100px] lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6">
                 <button
                     class="inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-lg border border-[#dce7f8] bg-white text-[#061942] lg:hidden"
                     type="button"
@@ -109,7 +109,7 @@
                     </svg>
                 </button>
 
-                <div class="company-page-title min-w-0">
+                <div class="company-page-title min-w-0 lg:col-start-1">
                     <h1 class="mb-1 text-[22px] font-bold leading-tight text-[#061942] sm:text-2xl lg:mb-2.5 lg:text-[26px]">
                         {{ $pageTitle }}
                     </h1>
@@ -121,7 +121,7 @@
                     @endif
                 </div>
 
-                <div class="company-topbar-actions col-span-2 flex w-full items-center justify-between gap-2 sm:col-auto sm:w-auto sm:justify-end lg:gap-[18px]">
+                <div class="company-topbar-actions col-span-2 flex w-full items-center justify-between gap-2 sm:col-auto sm:w-auto sm:justify-end lg:col-start-2 lg:w-[260px] lg:justify-end lg:gap-[18px]">
                     <a
                         href="/company/notifications"
                         data-ofc-notification-trigger
@@ -136,8 +136,8 @@
                         <span
                             data-company-notification-count
                             data-ofc-notification-badge
-                            class="absolute right-[5px] top-1 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-[#ff3045] text-[11px] font-bold text-white"
-                        >0</span>
+                            class="absolute right-[5px] top-1 hidden h-[17px] w-[17px] items-center justify-center rounded-full bg-[#ff3045] text-[11px] font-bold text-white"
+                        ></span>
                     </a>
 
                     <div class="company-topbar-profile relative flex items-center gap-2.5 sm:border-l sm:border-[#dce7f8] sm:pl-3 lg:gap-[14px] lg:pl-[22px]">
@@ -289,7 +289,8 @@
                     const count = Number(payload?.data?.unread_count || 0);
 
                     document.querySelectorAll('[data-company-notification-count]').forEach(badge => {
-                        badge.textContent = count;
+                        badge.textContent = count > 0 ? count : '';
+                        badge.style.display = count > 0 ? 'flex' : 'none';
                         badge.classList.toggle('hidden', count === 0);
                     });
                 } catch (error) {
@@ -308,8 +309,10 @@
                     'onlyfreshers_company_token',
                     'onlyfreshers_company_user'
                 ].forEach(key => localStorage.removeItem(key));
+                sessionStorage.setItem('ofc_logged_out', '1');
+                localStorage.setItem('ofc_logged_out', '1');
 
-                window.location.replace('/company/login');
+                window.location.replace('/');
 
                 if (token) {
                     try {

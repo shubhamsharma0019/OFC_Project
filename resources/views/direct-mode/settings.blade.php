@@ -1,5 +1,5 @@
 @php
-    $user = $user ?? ['name' => 'Ananya Gupta', 'avatar' => '/student.svg', 'notifications' => 3];
+    $user = $user ?? ['name' => 'Fresher', 'avatar' => '/student.svg', 'notifications' => 0];
 @endphp
 
 @php $activePage = 'settings'; @endphp
@@ -169,7 +169,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     ${field('Confirm Password', 'confirm_password', '', '')}
                     <div class="save-row"><button class="primary" data-password-save type="button">Update Password</button></div>
                 </div>`;
-            $('[data-password-save]').addEventListener('click', () => showAlert('Password update ke liye backend endpoint required hai.', 'error'));
+            $('[data-password-save]').addEventListener('click', () => showAlert('A backend endpoint is required to update the password.', 'error'));
         }
 
         function renderLinked() {
@@ -181,7 +181,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         function renderDeactivate() {
             $('[data-panel-root]').innerHTML = `
                 <div class="toggle-row"><div><h3>Deactivate Account</h3><p>Your profile and applications will be hidden until you reactivate.</p></div><button class="outline danger" data-deactivate type="button">Deactivate</button></div>`;
-            $('[data-deactivate]').addEventListener('click', () => showAlert('Account deactivation endpoint backend me add karna hoga.', 'error'));
+            $('[data-deactivate]').addEventListener('click', () => showAlert('A backend endpoint is required to deactivate the account.', 'error'));
         }
 
         function renderSide() {
@@ -204,7 +204,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         async function saveProfile() {
             const data = readInputs();
             if (!token) {
-                showAlert('Profile save karne ke liye login required hai.', 'error');
+                showAlert('Please log in before saving your profile.', 'error');
                 return;
             }
             try {
@@ -221,10 +221,10 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     }),
                 });
                 const payload = await response.json();
-                if (!response.ok || payload.success === false) throw new Error(payload.message || 'Profile save nahi hua.');
+                if (!response.ok || payload.success === false) throw new Error(payload.message || 'Profile could not be saved.');
                 localStorage.setItem('onlyfreshers_user', JSON.stringify(state.user));
                 state.editing = false;
-                showAlert('Settings save ho gayi.');
+                showAlert('Settings saved successfully.');
                 await loadData();
             } catch (error) {
                 showAlert(error.message, 'error');

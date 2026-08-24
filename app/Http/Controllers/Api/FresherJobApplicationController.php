@@ -27,7 +27,7 @@ class FresherJobApplicationController extends Controller
         if ($user->role !== 'fresher') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sirf fresher apni applications dekh sakta hai.',
+                'message' => 'Only freshers can view their applications.',
             ], 403);
         }
 
@@ -36,7 +36,7 @@ class FresherJobApplicationController extends Controller
         if (! $fresherProfile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Fresher profile nahi mili.',
+                'message' => 'Fresher profile could not be found.',
             ], 422);
         }
 
@@ -71,7 +71,7 @@ class FresherJobApplicationController extends Controller
         if ($user->role !== 'fresher') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sirf fresher job ke liye apply kar sakta hai.',
+                'message' => 'Only freshers can apply for jobs.',
             ], 403);
         }
 
@@ -80,7 +80,7 @@ class FresherJobApplicationController extends Controller
         if (! $fresherProfile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pehle fresher profile complete karein.',
+                'message' => 'Please complete your fresher profile first.',
             ], 422);
         }
 
@@ -95,8 +95,8 @@ class FresherJobApplicationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $isFastTrackJob
-                    ? 'Job apply karne se pehle profile details aur skills complete karein.'
-                    : 'Job apply karne se pehle profile details, skills aur resume complete karein.',
+                    ? 'Please complete your profile details and skills before applying.'
+                    : 'Please complete your profile details, skills, and resume before applying.',
             ], 422);
         }
 
@@ -111,7 +111,7 @@ class FresherJobApplicationController extends Controller
         if (! $isFastTrackJob && ! $initialAssessment) {
             return response()->json([
                 'success' => false,
-                'message' => 'Job ya internship apply karne se pehle initial assessment complete karein.',
+                'message' => 'Please complete the initial assessment before applying for jobs or internships.',
             ], 422);
         }
 
@@ -127,14 +127,14 @@ class FresherJobApplicationController extends Controller
         ) {
             return response()->json([
                 'success' => false,
-                'message' => "Jobs aur internships apply karne ke liye initial assessment score {$minimumDirectScore}+ hona chahiye.",
+                'message' => "An initial assessment score of {$minimumDirectScore}+ is required to apply for jobs and internships.",
             ], 422);
         }
 
         if ($job->status !== 'active') {
             return response()->json([
                 'success' => false,
-                'message' => 'Ye job abhi active nahi hai.',
+                'message' => 'This job is not active right now.',
             ], 422);
         }
 
@@ -144,7 +144,7 @@ class FresherJobApplicationController extends Controller
         ) {
             return response()->json([
                 'success' => false,
-                'message' => 'Is job ki application last date expire ho chuki hai.',
+                'message' => 'The last date to apply for this job has expired.',
             ], 422);
         }
 
@@ -156,7 +156,7 @@ class FresherJobApplicationController extends Controller
         if ($alreadyApplied) {
             return response()->json([
                 'success' => false,
-                'message' => 'Aap is job ke liye pehle hi apply kar chuke hain.',
+                'message' => 'You have already applied for this job.',
             ], 422);
         }
 
@@ -174,7 +174,7 @@ class FresherJobApplicationController extends Controller
             if ($alreadyApplied) {
                 abort(response()->json([
                     'success' => false,
-                    'message' => 'Aap is job ke liye pehle hi apply kar chuke hain.',
+                    'message' => 'You have already applied for this job.',
                 ], 422));
             }
 
@@ -233,7 +233,7 @@ class FresherJobApplicationController extends Controller
         if ($fresherProfile->direct_mode_credits < self::DIRECT_MODE_APPLICATION_CREDIT_COST) {
             abort(response()->json([
                 'success' => false,
-                'message' => 'Aapke Direct Mode credits khatam ho gaye hain. Apply karne ke liye subscription plan choose karein.',
+                'message' => 'Your Direct Mode credits are over. Please choose a subscription plan to apply.',
                 'data' => [
                     'redirect_to' => '/direct-mode/dashboard#credits',
                     'credits' => [

@@ -158,8 +158,8 @@
             companies = payload.data?.companies || [];
             renderRows();
         } catch (error) {
-            adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#ff1f2f]" colspan="6">' + escapeHtml(error.message || 'Companies load nahi ho paayi.') + '</td></tr>';
-            adminMobileRows.innerHTML = '<div class="rounded-lg border border-[#ffd7d7] p-4 text-sm text-[#ff1f2f]">' + escapeHtml(error.message || 'Companies load nahi ho paayi.') + '</div>';
+            adminRows.innerHTML = '<tr><td class="px-5 py-5 text-[#ff1f2f]" colspan="6">' + escapeHtml(error.message || 'Companies could not be loaded.') + '</td></tr>';
+            adminMobileRows.innerHTML = '<div class="rounded-lg border border-[#ffd7d7] p-4 text-sm text-[#ff1f2f]">' + escapeHtml(error.message || 'Companies could not be loaded.') + '</div>';
         }
     }
     adminSearch.addEventListener('input', renderRows);

@@ -30,6 +30,11 @@
             <h3 class="mb-2 mt-6 font-bold">Skills</h3>
             <div id="candidateSkills" class="flex flex-wrap gap-2"></div>
 
+            <h3 class="mb-2 mt-6 font-bold">Resume</h3>
+            <div id="candidateResume" class="rounded-lg border border-[#dce7f8] bg-[#f8fbff] p-4 text-sm text-[#52607a]">
+                Loading resume...
+            </div>
+
             <h3 class="mb-2 mt-6 font-bold">Profile Completion</h3>
             <p id="profileCompletion" class="text-sm leading-relaxed text-[#24344f]">-</p>
         </div>
@@ -86,6 +91,15 @@
     const formatDate = (value) => value ? new Date(value).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
     const initials = (name) => String(name || 'C').split(' ').map((part) => part.charAt(0)).join('').slice(0, 2).toUpperCase();
     const setText = (id, value) => document.getElementById(id).textContent = value || '-';
+    const fileName = (path) => String(path || '').split('/').pop() || 'Resume';
+    const storageUrl = (path) => {
+        const value = String(path || '').trim();
+        if (!value) return '';
+        if (/^(https?:)?\/\//.test(value) || value.startsWith('/')) return value;
+        return `/storage/${value}`;
+    };
+    const resumeOpenUrl = (path) => `/company/resumes/open?path=${encodeURIComponent(path)}`;
+    const resumeDownloadUrl = (path) => `/company/resumes/download?path=${encodeURIComponent(path)}`;
 
     function showActionMessage(text, type = 'error') {
         actionMessage.textContent = text;
@@ -163,6 +177,21 @@
         document.getElementById('candidateSkills').innerHTML = skills.length
             ? skills.map((skill) => `<span class="rounded-lg bg-[#eaf2ff] px-3 py-2 text-xs font-bold text-[#075fe4]">${escapeHtml(skill)}</span>`).join('')
             : '<span class="text-sm text-[#52607a]">No skills added.</span>';
+
+        const resumeBox = document.getElementById('candidateResume');
+        const resumeUrl = storageUrl(profile.resume);
+        resumeBox.innerHTML = resumeUrl
+            ? `<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="min-w-0">
+                        <p class="break-all font-bold text-[#061942]">${escapeHtml(fileName(profile.resume))}</p>
+                        <p class="mt-1 text-xs text-[#52607a]">Candidate resume uploaded with this profile.</p>
+                    </div>
+                    <div class="flex shrink-0 flex-wrap gap-2">
+                        <a href="${escapeHtml(resumeOpenUrl(profile.resume))}" target="_blank" rel="noopener" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#075fe4] px-4 text-sm font-bold text-white">Open</a>
+                        <a href="${escapeHtml(resumeDownloadUrl(profile.resume))}" class="inline-flex h-10 items-center justify-center rounded-lg border border-[#9fc0f5] bg-white px-4 text-sm font-bold text-[#075fe4]">Download</a>
+                    </div>
+                </div>`
+            : '<span class="text-sm text-[#52607a]">No resume uploaded by this candidate.</span>';
 
         renderActions(status, application);
     }

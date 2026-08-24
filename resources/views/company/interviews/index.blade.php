@@ -421,10 +421,9 @@
             const job = app.job || {};
             const place = interview.interview_mode === 'online' ? interview.meeting_link : interview.interview_location;
             const ended = meetingEnded(interview);
-            const joinButton = interview.status === 'scheduled' && interview.interview_mode === 'online' && interview.meeting_link
-                ? (ended
-                    ? '<button class="inline-flex rounded-lg border border-[#cfd8eb] bg-[#eef2f8] px-3 py-2 text-xs font-bold text-[#7a879c]" type="button" disabled aria-disabled="true">Meeting Ended</button>'
-                    : `<a href="${escapeAttr(interview.meeting_link)}" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg border border-[#075fe4] bg-[#075fe4] px-3 py-2 text-xs font-bold text-white" title="Open Google Meet">Join Meet</a>`)
+            const displayStatus = ended && interview.status === 'scheduled' ? 'meeting_completed' : interview.status;
+            const joinButton = interview.status === 'scheduled' && !ended && interview.interview_mode === 'online' && interview.meeting_link
+                ? `<a href="${escapeAttr(interview.meeting_link)}" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg border border-[#075fe4] bg-[#075fe4] px-3 py-2 text-xs font-bold text-white" title="Open Google Meet">Join Meet</a>`
                 : '';
             const editButton = interview.status === 'scheduled'
                 ? `<button data-id="${interview.id}" class="edit-interview rounded-lg border border-[#9fc0f5] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button">Edit</button>`
@@ -444,7 +443,7 @@
                     <td class="px-4 py-4 align-middle text-[13px] text-[#061942]" data-label="Job Role">${escapeHtml(job.title || '-')}</td>
                     <td class="px-4 py-4 align-middle text-[13px]" data-label="Mode"><div class="font-bold text-[#061942]">${escapeHtml(formatStatus(interview.interview_mode))}</div><div class="mt-1 max-w-[220px] break-all text-xs text-[#52607a]">${escapeHtml(place || '-')}</div></td>
                     <td class="px-4 py-4 align-middle text-[13px] text-[#061942]" data-label="Date & Time"><div class="mb-1.5">${formatDate(interview.interview_date)}</div><span>${escapeHtml(interview.interview_time || '-')}</span></td>
-                    <td class="px-4 py-4 align-middle text-[13px]" data-label="Status"><span class="inline-flex h-[30px] min-w-[72px] items-center justify-center rounded-lg px-2.5 text-xs font-bold ${statusClasses[interview.status] || statusClasses.scheduled}">${escapeHtml(formatStatus(interview.status))}</span></td>
+                    <td class="px-4 py-4 align-middle text-[13px]" data-label="Status"><span class="inline-flex h-[30px] min-w-[72px] items-center justify-center rounded-lg px-2.5 text-xs font-bold ${ended ? statusClasses.completed : (statusClasses[interview.status] || statusClasses.scheduled)}">${escapeHtml(formatStatus(displayStatus))}</span></td>
                     <td class="px-4 py-4 align-middle text-[13px]" data-label="Action">
                         ${interview.status === 'scheduled' ? `
                             <div class="company-interview-actions flex flex-wrap gap-2">

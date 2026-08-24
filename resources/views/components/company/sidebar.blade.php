@@ -73,9 +73,7 @@
                 <span>{{ $item['title'] }}</span>
 
                 @if (isset($item['badge']))
-                    <span data-company-notification-count class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ff3045] px-1 text-xs font-bold text-white">
-                        {{ $item['badge'] }}
-                    </span>
+                    <span data-company-notification-count class="ml-auto hidden h-5 min-w-5 items-center justify-center rounded-full bg-[#ff3045] px-1 text-xs font-bold text-white"></span>
                 @endif
             </a>
         @endforeach

@@ -1,6 +1,6 @@
 
 @php
-    $user = $user ?? ['name' => 'Ananya Gupta', 'avatar' => '/student.svg', 'notifications' => 3];
+    $user = $user ?? ['name' => 'Fresher', 'avatar' => '/student.svg', 'notifications' => 0];
     $menuItems = $menuItems ?? [
         ['key' => 'dashboard', 'title' => 'Dashboard', 'url' => '/direct-mode/dashboard', 'icon' => 'home'],
         ['key' => 'profile', 'title' => 'My Profile', 'url' => '/direct-mode/profile', 'icon' => 'user'],
@@ -111,7 +111,7 @@
                 <a class="brand" href="/"><img src="/ofclogo1.svg" alt="OnlyFreshers" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span style="display:none;align-items:center;gap:10px;color:#075fe4;font-size:22px;font-weight:800"><b style="display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#075fe4;color:#fff;font-size:16px">OF</b>OnlyFreshers</span></a>
                 <nav class="menu">
                     @foreach ($menuItems as $item)
-                        <a class="menu-item {{ ($activePage ?? '') === $item['key'] ? 'active' : '' }}" href="{{ $item['url'] }}">
+                        <a class="menu-item {{ ($activePage ?? '') === $item['key'] ? 'active' : '' }}" href="{{ $item['key'] === 'logout' ? '/' : $item['url'] }}" @if ($item['key'] === 'logout') data-direct-logout @endif>
                             @if ($item['key'] === 'offers')
                                 <span class="icon"><svg viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M5 5H3v3a4 4 0 0 0 4 4"></path><path d="M19 5h2v3a4 4 0 0 1-4 4"></path></svg></span>
                             @else
@@ -152,7 +152,7 @@
             <div class="mobile-direct-nav" data-mobile-direct-nav>
                 <nav>
                     @foreach ($menuItems as $item)
-                        <a class="{{ ($activePage ?? '') === $item['key'] ? 'active' : '' }}" href="{{ $item['url'] }}">
+                        <a class="{{ ($activePage ?? '') === $item['key'] ? 'active' : '' }}" href="{{ $item['key'] === 'logout' ? '/' : $item['url'] }}" @if ($item['key'] === 'logout') data-direct-logout @endif>
                             @if ($item['key'] === 'offers')
                                 <span class="icon"><svg viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M5 5H3v3a4 4 0 0 0 4 4"></path><path d="M19 5h2v3a4 4 0 0 1-4 4"></path></svg></span>
                             @else
@@ -395,27 +395,49 @@
                 }
             });
 
-            document.querySelector('[data-direct-logout]')?.addEventListener('click', async () => {
+            function directModeLogout(event) {
+                event?.preventDefault();
+                const logoutToken = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token') || token;
                 [
                     'onlyfreshers_token',
                     'onlyfreshers_user',
+                    'onlyfreshers_mode',
+                    'onlyfreshers_direct_profile_extra',
+                    'onlyfreshers_settings_prefs',
+                    'onlyfreshers_offer_statuses',
+                    'onlyfreshers_saved_jobs',
+                    'onlyfreshers_saved_searches',
                     'ofc_fresher_token',
                     'ofc_fresher_user',
                     'ofc_auth_token',
                     'ofc_auth_user',
+                    'fast_track_course_id',
                 ].forEach(key => localStorage.removeItem(key));
-                window.location.replace('/direct-mode/login');
+                sessionStorage.setItem('ofc_logged_out', '1');
+                localStorage.setItem('ofc_logged_out', '1');
+                sessionStorage.setItem('ofc_fresher_logged_out', '1');
+                localStorage.setItem('ofc_fresher_logged_out', '1');
                 try {
-                    if (token) {
-                        await fetch('/api/auth/logout', {
+                    if (logoutToken) {
+                        fetch('/api/auth/logout', {
                             method: 'POST',
-                            headers: { ...headers, 'Content-Type': 'application/json' },
+                            keepalive: true,
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${logoutToken}`,
+                            },
                             body: '{}',
-                        });
+                        }).catch(() => {});
                     }
                 } catch (error) {
                     // Local logout should still continue when the token has already expired.
                 }
+                window.location.replace('/');
+            }
+
+            document.querySelectorAll('[data-direct-logout]').forEach(logout => {
+                logout.addEventListener('click', directModeLogout);
             });
 
             loadTopbar();

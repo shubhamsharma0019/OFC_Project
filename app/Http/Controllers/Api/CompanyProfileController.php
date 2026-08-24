@@ -23,7 +23,7 @@ class CompanyProfileController extends Controller
         if ($user->role !== 'company') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sirf company is API ko access kar sakti hai.',
+                'message' => 'Only companies can access this API.',
             ], 403);
         }
 
@@ -51,18 +51,11 @@ class CompanyProfileController extends Controller
         if ($user->role !== 'company') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sirf company apni profile save kar sakti hai.',
+                'message' => 'Only companies can save their profile.',
             ], 403);
         }
 
         $existingProfile = $user->companyProfile;
-
-        if ($existingProfile?->approval_status === 'approved') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Approved company profile ko directly update nahi kiya ja sakta.',
-            ], 422);
-        }
 
         $validatedData = $request->validate([
             'company_name' => [
@@ -138,10 +131,9 @@ class CompanyProfileController extends Controller
             $validatedData
         );
 
-        /*
-         * Rejected profile edit hone ke baad dobara pending ho jayegi.
-         */
-        $profileData['approval_status'] = 'pending';
+        $profileData['approval_status'] = $existingProfile?->approval_status === 'approved'
+            ? 'approved'
+            : 'pending';
         $profileData['rejection_reason'] = null;
 
         if (! $existingProfile) {
@@ -195,7 +187,7 @@ class CompanyProfileController extends Controller
         if ($user->role !== 'company') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sirf company subscription le sakti hai.',
+                'message' => 'Only companies can purchase subscriptions.',
             ], 403);
         }
 

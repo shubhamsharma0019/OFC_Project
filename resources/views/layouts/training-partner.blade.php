@@ -1,5 +1,5 @@
 @php
-    $partner = $partner ?? ['name' => 'CodeAcademy', 'role' => 'Training Partner', 'notifications' => 3];
+    $partner = $partner ?? ['name' => 'Training Partner', 'role' => 'Training Partner', 'notifications' => 0];
     $menuItems = $menuItems ?? [
         ['key' => 'dashboard', 'title' => 'Dashboard', 'icon' => '<path d="M4 11l8-7 8 7"></path><path d="M6 10v9h5v-5h2v5h5v-9"></path>', 'url' => '/training-partner/dashboard'],
         ['key' => 'profile', 'title' => 'My Profile', 'icon' => '<circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>', 'url' => '/training-partner/profile'],
@@ -205,7 +205,8 @@
                 localStorage.removeItem('ofc_auth_token');
                 localStorage.removeItem('ofc_auth_user');
                 localStorage.removeItem('ofc_training_partner_profile');
-                window.location.href = '/training-partner/login';
+                window.location.replace('/training-partner/login');
+                return;
             }
 
             localStorage.setItem('ofc_auth_token', token);
@@ -221,6 +222,7 @@
             if (!token || user?.role !== 'training_partner') {
                 ['ofc_auth_token', 'ofc_auth_user', 'ofc_training_partner_token', 'ofc_training_partner_user', 'ofc_training_partner_profile'].forEach(key => localStorage.removeItem(key));
                 window.location.replace('/training-partner/login');
+                return;
             }
         });
 
@@ -248,7 +250,9 @@
         document.getElementById('trainingPartnerLogout')?.addEventListener('click', async () => {
             const token = localStorage.getItem('ofc_training_partner_token') || localStorage.getItem('ofc_auth_token');
             ['ofc_auth_token', 'ofc_auth_user', 'ofc_training_partner_token', 'ofc_training_partner_user', 'ofc_training_partner_profile'].forEach(key => localStorage.removeItem(key));
-            window.location.replace('/training-partner/login');
+            sessionStorage.setItem('ofc_logged_out', '1');
+            localStorage.setItem('ofc_logged_out', '1');
+            window.location.replace('/');
             if (token) {
                 try {
                     await fetch('/api/auth/logout', {

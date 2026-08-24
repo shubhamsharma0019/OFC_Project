@@ -1,5 +1,5 @@
 @php
-    $user = $user ?? ['name' => 'Ananya Gupta', 'avatar' => '/student.svg', 'notifications' => 3];
+    $user = $user ?? ['name' => 'Fresher', 'avatar' => '/student.svg', 'notifications' => 0];
     $menuItems = $menuItems ?? [
         ['key' => 'dashboard', 'title' => 'Dashboard', 'icon' => 'home', 'url' => '/direct-mode/dashboard'],
         ['key' => 'profile', 'title' => 'My Profile', 'icon' => 'user', 'url' => '/direct-mode/profile'],
@@ -413,7 +413,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 
         async function applyToJob(jobId, button) {
             if (!token) {
-                showAlert('Apply karne ke liye pehle login karein.', 'error');
+                showAlert('Please log in before applying.', 'error');
                 return;
             }
             button.disabled = true;
@@ -422,18 +422,18 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 const response = await fetch(`/api/fresher/jobs/${jobId}/apply`, { method: 'POST', headers: apiHeaders(), body: '{}' });
                 const payload = await response.json();
                 if (response.status === 402) {
-                    showAlert(payload.message || 'Direct Mode credits khatam ho gaye hain.', 'error');
+                    showAlert(payload.message || 'Your Direct Mode credits are over.', 'error');
                     setTimeout(() => {
                         window.location.href = payload.data?.redirect_to || '/direct-mode/dashboard#credits';
                     }, 900);
                     return;
                 }
-                if (!response.ok || payload.success === false) throw new Error(payload.message || 'Application submit nahi ho payi.');
+                if (!response.ok || payload.success === false) throw new Error(payload.message || 'Application could not be submitted.');
                 state.applications.unshift({ job_id: jobId, ...(payload.data?.application || {}) });
                 const remainingCredits = payload.data?.credits?.remaining;
                 showAlert(remainingCredits === undefined
-                    ? 'Application submit ho gayi. My Applications page par status track hoga.'
-                    : `Application submit ho gayi. ${remainingCredits} Direct Mode credits remaining.`);
+                    ? 'Application submitted successfully. You can track the status on the My Applications page.'
+                    : `Application submitted successfully. ${remainingCredits} Direct Mode credits remaining.`);
                 renderJobs();
             } catch (error) {
                 showAlert(error.message, 'error');
@@ -543,7 +543,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 }
                 applyFilters();
             } catch (error) {
-                $('[data-job-list]').innerHTML = '<div class="empty">Jobs load nahi ho pa rahe. Backend API check karein.</div>';
+                $('[data-job-list]').innerHTML = '<div class="empty">Jobs could not be loaded. Please check the backend API.</div>';
                 $('[data-count]').textContent = 'Showing 0 jobs and internships';
             }
         }

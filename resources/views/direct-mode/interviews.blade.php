@@ -1,5 +1,5 @@
 @php
-    $user = $user ?? ['name' => 'Ananya Gupta', 'avatar' => '/student.svg', 'notifications' => 3];
+    $user = $user ?? ['name' => 'Fresher', 'avatar' => '/student.svg', 'notifications' => 0];
 @endphp
 
 @php $activePage = 'interviews'; @endphp
@@ -56,7 +56,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         const icons={home:'<svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg>',user:'<svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle></svg>',clipboard:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 7h6M9 12h6"></path></svg>',briefcase:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>',file:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path></svg>',clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>',chart:'<svg viewBox="0 0 24 24"><path d="M3 17 9 11l4 4 8-8"></path><path d="M14 7h7v7"></path></svg>',activity:'<svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>',settings:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4 1.7 1.7 0 0 0 14 21h-4a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3 14v-4a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3h4a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9 1.7 1.7 0 0 0 21 10v4a1.7 1.7 0 0 0-1.6 1Z"></path></svg>',logout:'<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5M21 12H9"></path></svg>',search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>',chevron:'<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>',calendar:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>','check-square':'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="m9 12 2 2 4-4"></path></svg>',x:'<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>',video:'<svg viewBox="0 0 24 24"><path d="M16 13 22 17V7l-6 4Z"></path><rect x="2" y="6" width="14" height="12" rx="2"></rect></svg>',building:'<svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5h10v16M15 9h4v12M8 8h3M8 12h3M8 16h3"></path></svg>',book:'<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5Z"></path></svg>',trophy:'<svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M5 5H3v3a4 4 0 0 0 4 4M19 5h2v3a4 4 0 0 1-4 4"></path></svg>'};
         const $ = (selector) => document.querySelector(selector);
         const $$ = (selector) => Array.from(document.querySelectorAll(selector));
-        const token = localStorage.getItem('onlyfreshers_token') || '';
+        const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token') || '';
         let authUser = {};
         try { authUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || '{}'); } catch (error) { authUser = {}; }
         const state = { interviews: [], applications: [], calendarDate: new Date() };
@@ -100,14 +100,14 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const date = interviewDate(interview);
             const status = String(interview.status || '').toLowerCase();
             if (['completed', 'cancelled'].includes(status)) return false;
-            return !date || date >= startOfToday();
+            return !date || date.getTime() >= Date.now();
         }
 
         function isPast(interview) {
             const status = String(interview.status || '').toLowerCase();
             if (['completed', 'cancelled'].includes(status)) return true;
             const date = interviewDate(interview);
-            return date ? date < startOfToday() : false;
+            return date ? date.getTime() < Date.now() : false;
         }
 
         function meetingEnded(interview) {
@@ -152,9 +152,18 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         }
 
         function joinUrl(interview) {
+            if (meetingEnded(interview)) return '';
             const value = String(interview.meeting_link || '').trim();
             if (!/^https?:\/\/meet\.google\.com\/[a-z0-9-]+(?:[\/?#].*)?$/i.test(value)) return '';
             return value;
+        }
+
+        function interviewStatusLabel(interview) {
+            const status = String(interview.status || '').toLowerCase();
+            if (status === 'completed') return 'Completed';
+            if (status === 'cancelled') return 'Cancelled';
+            if (meetingEnded(interview)) return 'Meeting Completed';
+            return titleCase(status || 'scheduled');
         }
 
         function render() {
@@ -189,16 +198,15 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             }
             wrap.innerHTML = items.map(interview => {
                 const join = joinUrl(interview);
-                const ended = meetingEnded(interview);
                 const when = `${formatDate(interviewDate(interview))} at ${formatTime(interview.interview_time)}`;
                 return `
                 <div class="interview" data-job-id="${job(interview).id || ''}">
                     <div class="logo navy">${logoHtml(interview)}</div>
                     <div class="info"><h3>${escapeHtml(job(interview).title || 'Interview')}</h3><p>${escapeHtml(companyName(interview))}</p><div class="meta"><span><span class="icon" data-icon="calendar"></span>${escapeHtml(formatDate(interviewDate(interview)))}</span><span><span class="icon" data-icon="clock"></span>${escapeHtml(formatTime(interview.interview_time))}</span><span><span class="icon" data-icon="video"></span>${escapeHtml(modeLabel(interview))}</span></div><div class="join-note">Scheduled for ${escapeHtml(when)}. Join on time from the button.</div><div class="people">Interviewers:<span class="face">${escapeHtml(companyName(interview)[0] || 'C')}</span><span class="face">HR</span></div></div>
-                    <span class="badge">${escapeHtml(titleCase(interview.status || 'scheduled'))}</span>
+                    <span class="badge">${escapeHtml(interviewStatusLabel(interview))}</span>
                     <div class="countdown">Interview in<strong>${escapeHtml(countdown(interview))}</strong></div>
                     <button class="outline" data-detail type="button">View Details</button>
-                    ${join ? (ended ? '<button class="primary" type="button" disabled aria-disabled="true" style="opacity:.55;cursor:not-allowed">Meeting Ended</button>' : `<a class="primary" href="${escapeAttr(join)}" target="_blank" rel="noopener">Join Meeting</a>`) : '<button class="primary" data-prepare type="button">Prepare Now</button>'}
+                    ${join ? `<a class="primary" href="${escapeAttr(join)}" target="_blank" rel="noopener">Join Meeting</a>` : '<button class="primary" data-prepare type="button">Prepare Now</button>'}
                 </div>`;
             }).join('');
             hydrateIcons(wrap);
@@ -216,7 +224,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 <div class="past-row" data-job-id="${job(interview).id || ''}">
                     <div class="logo navy">${logoHtml(interview)}</div>
                     <div class="info"><h3>${escapeHtml(job(interview).title || 'Interview')}</h3><p>${escapeHtml(companyName(interview))}</p><div class="meta"><span><span class="icon" data-icon="calendar"></span>${escapeHtml(formatDate(interviewDate(interview)))}</span><span><span class="icon" data-icon="clock"></span>${escapeHtml(formatTime(interview.interview_time))}</span><span><span class="icon" data-icon="video"></span>${escapeHtml(modeLabel(interview))}</span></div></div>
-                    <span class="badge">${escapeHtml(titleCase(interview.status || 'Completed'))}</span>
+                    <span class="badge">${escapeHtml(interviewStatusLabel(interview))}</span>
                     <button class="outline" data-feedback type="button">View Feedback</button>
                 </div>`).join('');
             hydrateIcons(wrap);
@@ -286,7 +294,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 const dashboard = await fetch('/api/fresher/dashboard', { headers: headers() });
                 const applications = await fetch('/api/fresher/applications', { headers: headers() }).then(response => response.json()).catch(() => ({}));
                 const payload = await dashboard.json();
-                if (payload.success === false) throw new Error(payload.message || 'Dashboard load nahi hua.');
+                if (payload.success === false) throw new Error(payload.message || 'Dashboard could not be loaded.');
                 const data = payload.data || {};
                 state.applications = applications.data?.applications || data.recent_applications || [];
                 const upcoming = data.upcoming_interviews || [];
@@ -347,5 +355,3 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         loadData();
     </script>
 @endpush
-
-

@@ -5,8 +5,14 @@
             'ofc_auth_user',
             'onlyfreshers_token',
             'onlyfreshers_user',
+            'ofc_fresher_token',
+            'ofc_fresher_user',
             'onlyfreshers_company_token',
             'onlyfreshers_company_user',
+            'ofc_company_token',
+            'ofc_company_user',
+            'ofc_training_partner_token',
+            'ofc_training_partner_user',
             'onlyFreshersAdminLogin',
         ]);
 
@@ -21,6 +27,12 @@
             : original.getItem(key);
 
         localStorage.setItem = (key, value) => {
+            if (key.includes('token')) {
+                sessionStorage.removeItem('ofc_logged_out');
+                original.removeItem('ofc_logged_out');
+                sessionStorage.removeItem('ofc_fresher_logged_out');
+                original.removeItem('ofc_fresher_logged_out');
+            }
             if (scopedKeys.has(key)) sessionStorage.setItem(key, value);
             original.setItem(key, value);
         };

@@ -1,5 +1,5 @@
 @php
-    $user = $user ?? ['name' => 'Ananya Gupta', 'avatar' => '/student.svg', 'notifications' => 3];
+    $user = $user ?? ['name' => 'Fresher', 'avatar' => '/student.svg', 'notifications' => 0];
 @endphp
 
 @php $activePage = 'activity'; @endphp

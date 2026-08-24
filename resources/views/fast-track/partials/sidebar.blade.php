@@ -70,7 +70,7 @@
             'key' => 'logout',
             'title' => 'Logout',
             'icon' => '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path>',
-            'url' => '/fast-track/login'
+            'url' => '/'
         ],
     ];
 @endphp
@@ -134,6 +134,7 @@
 
                 <a
                     href="{{ $item['url'] }}"
+                    @if ($item['key'] === 'logout') data-fast-track-logout @endif
                     class="
                         fast-track-sidebar-link
                         flex min-h-10 items-center gap-3 rounded-lg px-3 py-1.5

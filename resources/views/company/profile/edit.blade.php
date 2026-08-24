@@ -137,8 +137,9 @@
                 throw new Error(validationMessage || result.message || 'Profile save failed.');
             }
 
-            localStorage.setItem('ofc_company_profile', JSON.stringify(result.data.profile));
-            showMessage('Profile saved and submitted for admin approval.', 'success');
+            const profile = result.data.profile;
+            localStorage.setItem('ofc_company_profile', JSON.stringify(profile));
+            showMessage(profile?.approval_status === 'approved' ? 'Profile saved successfully.' : 'Profile saved and submitted for admin approval.', 'success');
             setTimeout(() => window.location.href = '/company/profile', 700);
         } catch (error) {
             showMessage(error.message || 'Something went wrong.');

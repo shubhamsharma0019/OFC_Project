@@ -232,7 +232,7 @@
                     @endforeach
                 </div>
 
-                <a href="/fast-track/register" class="relative inline-flex h-12 items-center justify-center rounded-xl bg-[#075fe4] px-8 text-sm font-bold text-white shadow-[0_14px_28px_rgba(7,95,228,0.24)] transition hover:-translate-y-0.5 hover:bg-[#0554cc]">
+                <a href="/direct-mode/flow-selection" class="relative inline-flex h-12 items-center justify-center rounded-xl bg-[#075fe4] px-8 text-sm font-bold text-white shadow-[0_14px_28px_rgba(7,95,228,0.24)] transition hover:-translate-y-0.5 hover:bg-[#0554cc]">
                     Start Your Fast Track Journey ->
                 </a>
             </div>

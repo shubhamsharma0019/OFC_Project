@@ -98,7 +98,7 @@ class AdminCompanyController extends Controller
         if ($companyProfile->approval_status === 'approved') {
             return response()->json([
                 'success' => false,
-                'message' => 'Company pehle se approved hai.',
+                'message' => 'Company is already approved.',
                 'data' => [
                     'company' => $companyProfile->load('user'),
                 ],

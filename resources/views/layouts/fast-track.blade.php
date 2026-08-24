@@ -71,7 +71,7 @@
 
                         <div id="fastTrackUserMenu" class="absolute right-0 top-[calc(100%+12px)] hidden w-44 rounded-lg border border-[#dce7f8] bg-white py-2 shadow-xl">
                             <a class="block px-4 py-2 text-sm font-semibold text-[#061942] hover:bg-[#eff5ff]" href="/fast-track/profile">My Profile</a>
-                            <a id="fastTrackLogout" class="block px-4 py-2 text-sm font-semibold text-[#061942] hover:bg-[#eff5ff]" href="/fast-track/login">Logout</a>
+                            <a id="fastTrackLogout" data-fast-track-logout class="block px-4 py-2 text-sm font-semibold text-[#061942] hover:bg-[#eff5ff]" href="/">Logout</a>
                         </div>
                     </div>
                 </div>
@@ -112,10 +112,18 @@
             }
         });
 
-        document.getElementById('fastTrackLogout')?.addEventListener('click', function (event) {
+        function logoutFastTrack(event) {
             event.preventDefault();
             ['ofc_auth_token', 'ofc_auth_user', 'ofc_fresher_token', 'ofc_fresher_user', 'onlyfreshers_token', 'onlyfreshers_user', 'fast_track_course_id'].forEach((key) => localStorage.removeItem(key));
-            window.location.replace('/fast-track/login');
+            sessionStorage.setItem('ofc_logged_out', '1');
+            localStorage.setItem('ofc_logged_out', '1');
+            sessionStorage.setItem('ofc_fresher_logged_out', '1');
+            localStorage.setItem('ofc_fresher_logged_out', '1');
+            window.location.replace('/');
+        }
+
+        document.querySelectorAll('[data-fast-track-logout]').forEach((item) => {
+            item.addEventListener('click', logoutFastTrack);
         });
 
         function toggleFastTrackSidebar() {

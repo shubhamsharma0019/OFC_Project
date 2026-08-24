@@ -1671,7 +1671,7 @@
             const payload = await response.json();
 
             if (!response.ok || payload.success === false) {
-                throw new Error(payload.message || 'Credits activate nahi ho paaye.');
+                throw new Error(payload.message || 'Credits could not be activated.');
             }
 
             if (payload.data?.profile) {

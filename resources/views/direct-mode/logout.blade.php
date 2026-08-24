@@ -6,7 +6,7 @@
         'loginUrl' => url('/direct-mode/login'),
         'homeUrl' => url('/'),
         'logoutEndpoint' => url('/api/auth/logout'),
-        'redirectDelay' => 900,
+        'redirectDelay' => 0,
         'tokenKeys' => ['onlyfreshers_token', 'ofc_fresher_token', 'ofc_auth_token'],
         'userKeys' => ['onlyfreshers_user', 'ofc_fresher_user', 'ofc_auth_user'],
         'clearKeys' => [
@@ -29,8 +29,8 @@
             'initialCopy' => 'Please wait while we safely end your Direct Mode session.',
             'initialCopyWithName' => 'Please wait while we safely end {name} Direct Mode session.',
             'successTitle' => 'Logged out successfully',
-            'successCopy' => 'Redirecting you to the Direct Mode login page.',
-            'noSessionCopy' => 'Your session is already cleared. Redirecting you to login.',
+            'successCopy' => 'Redirecting you to the website.',
+            'noSessionCopy' => 'Your session is already cleared. Redirecting you to the website.',
         ],
     ];
 @endphp
@@ -83,14 +83,20 @@
             copyEl.textContent = logoutPage.messages.initialCopyWithName.replace('{name}', `${userName}'s`);
         }
 
-        const clearSession = () => logoutPage.clearKeys.forEach(key => localStorage.removeItem(key));
+        const clearSession = () => {
+            logoutPage.clearKeys.forEach(key => localStorage.removeItem(key));
+            sessionStorage.setItem('ofc_logged_out', '1');
+            localStorage.setItem('ofc_logged_out', '1');
+            sessionStorage.setItem('ofc_fresher_logged_out', '1');
+            localStorage.setItem('ofc_fresher_logged_out', '1');
+        };
         const finish = (message = logoutPage.messages.successCopy) => {
             clearSession();
             if (titleEl) titleEl.textContent = logoutPage.messages.successTitle;
             if (copyEl) copyEl.textContent = message;
             if (loaderEl) loaderEl.style.display = 'none';
             if (actionsEl) actionsEl.hidden = false;
-            setTimeout(() => window.location.replace(logoutPage.loginUrl), Number(logoutPage.redirectDelay || 900));
+            setTimeout(() => window.location.replace(logoutPage.homeUrl), Number(logoutPage.redirectDelay || 0));
         };
 
         (async () => {

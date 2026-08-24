@@ -21,7 +21,7 @@ class FresherProfileController extends Controller
         if ($user->role !== 'fresher') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sirf fresher is API ko access kar sakta hai.',
+                'message' => 'Only freshers can access this API.',
             ], 403);
         }
 
@@ -31,7 +31,7 @@ class FresherProfileController extends Controller
             'success' => true,
             'message' => $profile
                 ? 'Fresher profile fetched successfully.'
-                : 'Fresher profile abhi complete nahi hai.',
+                : 'Fresher profile is not complete yet.',
             'data' => [
                 'user' => $user,
                 'profile' => $profile,
@@ -49,7 +49,7 @@ class FresherProfileController extends Controller
         if ($user->role !== 'fresher') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sirf fresher apni profile save kar sakta hai.',
+                'message' => 'Only freshers can save their profile.',
             ], 403);
         }
 
@@ -177,7 +177,7 @@ class FresherProfileController extends Controller
         if ($user->role !== 'fresher') {
             return response()->json([
                 'success' => false,
-                'message' => 'Sirf fresher Direct Mode credits le sakta hai.',
+                'message' => 'Only freshers can activate Direct Mode credits.',
             ], 403);
         }
 
@@ -198,7 +198,7 @@ class FresherProfileController extends Controller
         if (! $profile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pehle fresher profile complete karein.',
+                'message' => 'Please complete your fresher profile first.',
             ], 422);
         }
 

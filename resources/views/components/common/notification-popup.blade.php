@@ -64,7 +64,7 @@
     };
     const setBadges = count => {
         document.querySelectorAll('[data-ofc-notification-badge], [data-company-notification-count], #trainingPartnerNotificationBadge, #fastTrackNotificationCount, .top-bell b').forEach(badge => {
-            badge.textContent = count;
+            badge.textContent = count > 0 ? count : '';
             badge.style.display = count > 0 ? 'grid' : 'none';
             badge.classList.toggle('hidden', count === 0);
         });

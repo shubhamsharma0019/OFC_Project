@@ -89,12 +89,22 @@
     }
 
     if (adminLogout) {
-        adminLogout.addEventListener('click', async function () {
+        adminLogout.addEventListener('click', async function (event) {
+            event.preventDefault();
             const token = localStorage.getItem('ofc_auth_token');
+            localStorage.removeItem('ofc_auth_token');
+            localStorage.removeItem('ofc_auth_user');
+            localStorage.removeItem('onlyFreshersAdminLogin');
+            sessionStorage.setItem('ofc_logged_out', '1');
+            localStorage.setItem('ofc_logged_out', '1');
+            document.documentElement.classList.add('admin-auth-pending');
+            window.location.replace('/');
+
             if (token) {
                 try {
-                    await fetch('/api/auth/logout', {
+                    fetch('/api/auth/logout', {
                         method: 'POST',
+                        keepalive: true,
                         headers: {
                             'Accept': 'application/json',
                             'Authorization': 'Bearer ' + token,
@@ -102,9 +112,6 @@
                     });
                 } catch (error) {}
             }
-            localStorage.removeItem('ofc_auth_token');
-            localStorage.removeItem('ofc_auth_user');
-            localStorage.removeItem('onlyFreshersAdminLogin');
         });
     }
 </script>

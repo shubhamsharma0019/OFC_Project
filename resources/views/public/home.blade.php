@@ -494,7 +494,16 @@
 
                 <article class="grid grid-cols-2 gap-2 p-4 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                     @foreach ($trainingPartnerLogos as $partnerLogo)
-                        <span class="flex min-h-[48px] items-center justify-center rounded-md border border-[#d8eee8] bg-white px-2 text-center font-['Inter'] text-sm font-semibold text-[#35516f]">{{ $partnerLogo }}</span>
+                        <span class="grid min-h-[120px] grid-rows-[64px_34px] items-center justify-items-center gap-2 rounded-md border border-[#d8eee8] bg-white px-2 py-3 text-center font-['Inter'] text-sm font-semibold text-[#35516f]">
+                            <span class="flex h-16 w-full items-center justify-center">
+                                @if (!empty($partnerLogo['logo_url']))
+                                    <img src="{{ $partnerLogo['logo_url'] }}" alt="{{ $partnerLogo['name'] }} logo" class="max-h-14 max-w-full object-contain">
+                                @else
+                                    <span class="text-lg font-black text-[#0b8b67]">{{ Str::of($partnerLogo['name'])->substr(0, 2)->upper() }}</span>
+                                @endif
+                            </span>
+                            <span class="line-clamp-2 min-h-[34px] leading-tight">{{ $partnerLogo['name'] }}</span>
+                        </span>
                     @endforeach
                 </article>
             </div>

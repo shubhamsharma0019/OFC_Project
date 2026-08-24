@@ -258,10 +258,12 @@
 
 @push('scripts')
 <script>
-    const token = localStorage.getItem('ofc_auth_token');
+    const token = localStorage.getItem('ofc_training_partner_token') || localStorage.getItem('ofc_auth_token') || '';
     let dashboardData = null;
 
-    if (!token) window.location.href = '/training-partner/login';
+    if (!token && window.location.pathname !== '/training-partner/login') {
+        window.location.replace('/training-partner/login');
+    }
 
     function escapeHtml(value) {
         return String(value || '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]);
@@ -404,10 +406,14 @@
     async function loadDashboard() {
         try {
             const response = await fetch('/api/training-partner/dashboard', { headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
-            if (response.status === 401) { window.location.href = '/training-partner/login'; return; }
-            if (response.status === 404) { window.location.href = '/training-partner/profile/edit'; return; }
+            if (response.status === 401) { window.location.replace('/training-partner/login'); return; }
+            if (response.status === 404 && window.location.pathname !== '/training-partner/profile/edit') { window.location.replace('/training-partner/profile/edit'); return; }
             const payload = await response.json();
-            if (response.status === 403) { window.location.href = (payload.data?.approval_status === 'rejected') ? '/training-partner/approval/rejected' : '/training-partner/approval/pending'; return; }
+            if (response.status === 403) {
+                const target = (payload.data?.approval_status === 'rejected') ? '/training-partner/approval/rejected' : '/training-partner/approval/pending';
+                if (window.location.pathname !== target) window.location.replace(target);
+                return;
+            }
             if (!response.ok || !payload.success) throw new Error(payload.message || 'Dashboard load nahi ho paaya.');
             dashboardData = payload.data || {};
             renderDashboard(dashboardData);

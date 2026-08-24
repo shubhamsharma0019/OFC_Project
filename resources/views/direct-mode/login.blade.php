@@ -1,6 +1,6 @@
 @php
     $isCompanyAuth = request()->is('company/*');
-    $isTrainingPartnerAuth = request()->is('training-partner/*');
+    $isTrainingPartnerAuth = request()->is('training-partner/*') || request()->is('training-partners/*') || request()->is('traning-partner/*');
 
     $registerUrl = $isCompanyAuth
         ? '/company/register'
@@ -28,7 +28,7 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-auth-role="{{ $isCompanyAuth ? 'company' : ($isTrainingPartnerAuth ? 'training_partner' : 'fresher') }}">
 
 <head>
 
@@ -51,6 +51,16 @@
                     return null;
                 }
             };
+            if (localStorage.getItem('ofc_fresher_logged_out') || sessionStorage.getItem('ofc_fresher_logged_out')) {
+                [
+                    'onlyfreshers_token',
+                    'onlyfreshers_user',
+                    'ofc_fresher_token',
+                    'ofc_fresher_user',
+                    'ofc_auth_token',
+                    'ofc_auth_user',
+                ].forEach(key => localStorage.removeItem(key));
+            }
             const sessions = [
                 {
                     role: 'company',
@@ -71,10 +81,11 @@
                     url: '/direct-mode/dashboard',
                 },
             ];
+            const intendedRole = document.documentElement.dataset.authRole || 'fresher';
             const sharedToken = localStorage.getItem('ofc_auth_token');
             const sharedUser = parseJson(localStorage.getItem('ofc_auth_user'));
-            const activeSession = sessions.find(item => item.token && item.user?.role === item.role) ||
-                (sharedToken && sharedUser ? sessions.find(item => item.role === sharedUser.role) : null);
+            const activeSession = sessions.find(item => item.role === intendedRole && item.token && item.user?.role === item.role) ||
+                (sharedToken && sharedUser?.role === intendedRole ? sessions.find(item => item.role === sharedUser.role) : null);
 
             if (activeSession) {
                 window.location.replace(activeSession.url);
@@ -1936,87 +1947,10 @@ document.addEventListener(
                     |--------------------------------------------------------------------------
                     */
 
-                    const dashboardResponse =
-                        await fetch(
-                            '/api/fresher/dashboard',
-                            {
-                                headers: {
-                                    Accept:
-                                        'application/json',
-
-                                    Authorization:
-                                        `Bearer ${token}`
-                                }
-                            }
-                        );
-
-
-                    const dashboardPayload =
-                        await dashboardResponse
-                            .json()
-                            .catch(
-                                function () {
-                                    return {};
-                                }
-                            );
-
-
-                    const assessment =
-                        dashboardPayload
-                            ?.data
-                            ?.initial_assessment;
-
-
-                    if (
-                        !dashboardResponse.ok
-                    ) {
-
-                        window.location.href =
-                            '/direct-mode/flow-selection';
-
-                        return;
-                    }
-
-
-                    if (
-                        !assessment ||
-                        assessment.status !==
-                            'submitted'
-                    ) {
-
-                        localStorage.removeItem(
-                            'onlyfreshers_selected_mode'
-                        );
-
-                        window.location.href =
-                            '/direct-mode/flow-selection';
-
-                        return;
-                    }
-
-
                     const selectedMode =
                         localStorage.getItem(
                             'onlyfreshers_selected_mode'
                         );
-
-
-                    if (
-                        assessment.recommended_mode ===
-                        'fast_track'
-                    ) {
-
-                        localStorage.setItem(
-                            'onlyfreshers_selected_mode',
-                            'fast_track'
-                        );
-
-
-                        window.location.href =
-                            '/fast-track/dashboard';
-
-                        return;
-                    }
 
 
                     if (
@@ -2031,17 +1965,10 @@ document.addEventListener(
                     }
 
 
-                    if (
-                        selectedMode !==
+                    localStorage.setItem(
+                        'onlyfreshers_selected_mode',
                         'direct'
-                    ) {
-
-                        window.location.href =
-                            '/direct-mode/flow-selection';
-
-                        return;
-                    }
-
+                    );
 
                     window.location.href =
                         '/direct-mode/dashboard';

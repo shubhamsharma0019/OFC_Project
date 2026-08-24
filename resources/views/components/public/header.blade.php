@@ -74,6 +74,26 @@
             }
         };
 
+        if (localStorage.getItem('ofc_logged_out') || sessionStorage.getItem('ofc_logged_out') || localStorage.getItem('ofc_fresher_logged_out') || sessionStorage.getItem('ofc_fresher_logged_out')) {
+            [
+                'onlyfreshers_token',
+                'onlyfreshers_user',
+                'ofc_fresher_token',
+                'ofc_fresher_user',
+                'onlyfreshers_company_token',
+                'onlyfreshers_company_user',
+                'ofc_company_token',
+                'ofc_company_user',
+                'ofc_company_profile',
+                'ofc_training_partner_token',
+                'ofc_training_partner_user',
+                'ofc_training_partner_profile',
+                'ofc_auth_token',
+                'ofc_auth_user',
+                'onlyFreshersAdminLogin',
+            ].forEach(key => localStorage.removeItem(key));
+        }
+
         const sessions = [
             {
                 role: 'company',

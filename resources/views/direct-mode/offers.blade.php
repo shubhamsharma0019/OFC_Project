@@ -1,5 +1,5 @@
 @php
-    $user = $user ?? ['name' => 'Ananya Gupta', 'avatar' => '/student.svg', 'notifications' => 3];
+    $user = $user ?? ['name' => 'Fresher', 'avatar' => '/student.svg', 'notifications' => 0];
 @endphp
 
 @php $activePage = 'offers'; @endphp
@@ -251,13 +251,13 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         }
 
         function bindOfferActions(root) {
-            root.querySelector('[data-download]')?.addEventListener('click', () => showAlert('Offer letter document backend me upload hote hi download available hoga.'));
-            root.querySelector('[data-more-time]')?.addEventListener('click', () => showAlert('More time request company ko send karne ke liye backend endpoint required hai.'));
+            root.querySelector('[data-download]')?.addEventListener('click', () => showAlert('Download will be available after the offer letter is uploaded.'));
+            root.querySelector('[data-more-time]')?.addEventListener('click', () => showAlert('A backend endpoint is required to send more-time requests to the company.'));
             root.querySelector('[data-accept]')?.addEventListener('click', event => {
                 const appId = event.currentTarget.closest('[data-app-id]').dataset.appId;
                 state.localStatuses[appId] = 'accepted';
                 localStorage.setItem('onlyfreshers_offer_statuses', JSON.stringify(state.localStatuses));
-                showAlert('Offer accepted locally. Backend accept-offer API add hote hi server me sync hoga.');
+                showAlert('Offer accepted locally. It will sync with the server when the accept-offer API is available.');
                 render();
             });
         }
@@ -277,13 +277,13 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         async function loadOffers() {
             if (!token) {
                 render();
-                $('[data-active-offer]').innerHTML = '<article class="offer-card"><div class="empty">Offers dekhne ke liye pehle login karein.</div></article>';
+                $('[data-active-offer]').innerHTML = '<article class="offer-card"><div class="empty">Please log in to view offers.</div></article>';
                 return;
             }
             try {
                 const response = await fetch('/api/fresher/applications', { headers: headers() });
                 const payload = await response.json();
-                if (!response.ok || payload.success === false) throw new Error(payload.message || 'Offers load nahi ho pa rahe.');
+                if (!response.ok || payload.success === false) throw new Error(payload.message || 'Offers could not be loaded.');
                 state.applications = payload.data?.applications || [];
                 render();
             } catch (error) {

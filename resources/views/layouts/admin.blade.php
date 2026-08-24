@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="admin-auth-pending">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +8,40 @@
     <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'OnlyFreshers Admin')</title>
     @include('components.common.auth-storage')
+    <script>
+        (function guardAdminBeforePaint() {
+            if (window.location.pathname === '/admin/login') {
+                document.documentElement.classList.remove('admin-auth-pending');
+                return;
+            }
+
+            const token = localStorage.getItem('ofc_auth_token');
+            const adminLogin = localStorage.getItem('onlyFreshersAdminLogin');
+            let user = null;
+
+            try {
+                user = JSON.parse(localStorage.getItem('ofc_auth_user') || 'null');
+            } catch (error) {
+                user = null;
+            }
+
+            if (!token || adminLogin !== 'yes' || user?.role !== 'admin') {
+                localStorage.removeItem('ofc_auth_token');
+                localStorage.removeItem('ofc_auth_user');
+                localStorage.removeItem('onlyFreshersAdminLogin');
+                window.location.replace('/admin/login');
+                return;
+            }
+
+            document.documentElement.classList.remove('admin-auth-pending');
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        html.admin-auth-pending body {
+            visibility: hidden;
+        }
+
         #admin-layout,
         #admin-layout * {
             font-family: Inter, Arial, Helvetica, sans-serif !important;
@@ -130,7 +162,7 @@
                         @yield('topbarExtra')
                         <button class="relative inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-white text-[#075fe4] shadow-[0_8px_18px_rgba(6,25,66,.05)] lg:h-[46px] lg:w-[46px]" type="button" data-ofc-notification-trigger aria-label="Notifications">
                             <svg class="h-[23px] w-[23px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
-                            <span data-ofc-notification-badge class="absolute right-[3px] top-[3px] grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#ff3045] px-1 text-[10px] font-bold text-white">0</span>
+                            <span data-ofc-notification-badge class="hidden absolute right-[3px] top-[3px] h-[18px] min-w-[18px] place-items-center rounded-full bg-[#ff3045] px-1 text-[10px] font-bold text-white"></span>
                         </button>
                         <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-[#eaf2ff] text-[#075fe4] lg:h-[46px] lg:w-[46px]" aria-hidden="true">
                             <svg class="h-[23px] w-[23px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path></svg>
@@ -166,6 +198,7 @@
         })();
 
         window.addEventListener('pageshow', function () {
+            document.documentElement.classList.add('admin-auth-pending');
             const token = localStorage.getItem('ofc_auth_token');
             const adminLogin = localStorage.getItem('onlyFreshersAdminLogin');
             let user = null;
@@ -177,7 +210,10 @@
                 localStorage.removeItem('ofc_auth_user');
                 localStorage.removeItem('onlyFreshersAdminLogin');
                 window.location.replace('/admin/login');
+                return;
             }
+
+            document.documentElement.classList.remove('admin-auth-pending');
         });
 
         function toggleAdminSidebar() {

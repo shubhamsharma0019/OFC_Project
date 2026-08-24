@@ -191,15 +191,14 @@
         localStorage.setItem('ofc_company_profile', JSON.stringify(profile || null));
         document.dispatchEvent(new CustomEvent('company-profile-loaded', { detail: profile }));
 
-        const approved = status === 'approved';
         document.querySelectorAll('.settings-input').forEach((input) => {
-            input.disabled = approved;
-            input.classList.toggle('bg-[#f5f7fb]', approved);
+            input.disabled = false;
+            input.classList.remove('bg-[#f5f7fb]');
         });
-        saveButton.disabled = approved;
-        document.getElementById('profileRuleText').textContent = approved
-            ? 'Your profile is approved. Direct edits are blocked by backend approval flow. Use profile edit/reapproval flow when admin module is ready.'
-            : 'You can save changes. After saving, profile approval status will become pending for admin review.';
+        saveButton.disabled = false;
+        document.getElementById('profileRuleText').textContent = status === 'approved'
+            ? 'Your profile is approved. You can still update your company details.'
+            : 'You can save changes. New or rejected profiles will be sent for admin review.';
     }
 
     async function loadSettings() {

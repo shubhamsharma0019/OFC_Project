@@ -163,7 +163,7 @@ class AuthController extends Controller
         ])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Email ya password incorrect hai.',
+                'message' => 'The email or password is incorrect.',
             ], 401);
         }
 
@@ -174,7 +174,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Aapka account blocked hai.',
+                'message' => 'Your account has been blocked.',
             ], 403);
         }
 
@@ -228,7 +228,7 @@ class AuthController extends Controller
         if (! Hash::check($validatedData['current_password'], $user->password)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Current password incorrect hai.',
+                'message' => 'The current password is incorrect.',
             ], 422);
         }
 
@@ -268,7 +268,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'All devices se logout successful.',
+            'message' => 'Logged out from all devices successfully.',
         ]);
     }
 

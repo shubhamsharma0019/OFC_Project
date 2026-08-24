@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CompanyDashboardPageController;
 use App\Http\Controllers\PublicPageController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', [PublicPageController::class, 'home']);
 
@@ -19,7 +21,7 @@ Route::view('/jobs/show', 'public.jobs.show');
 Route::get('/fast-track', [PublicPageController::class, 'fastTrack']);
 Route::view('/fast-track/how-it-works', 'public.fast-track.how-it-works');
 Route::view('/fast-track/login', 'fast-track.login');
-Route::view('/fast-track/register', 'fast-track.register');
+Route::redirect('/fast-track/register', '/direct-mode/flow-selection');
 
 Route::get('/direct-mode', [PublicPageController::class, 'directMode']);
 Route::view('/direct-mode/login', 'direct-mode.login');
@@ -108,6 +110,36 @@ Route::view('/company/jobs/preview', 'company.jobs.preview');
 
 Route::view('/company/applications', 'company.applications.index');
 Route::view('/company/applications/show', 'company.applications.show');
+Route::get('/company/resumes/open', function (Request $request) {
+    $path = trim((string) $request->query('path', ''));
+
+    abort_if($path === '' || str_contains($path, '..') || ! str_starts_with($path, 'fresher/resumes/'), 404);
+    abort_unless(Storage::disk('public')->exists($path), 404);
+
+    $absolutePath = Storage::disk('public')->path($path);
+    $fileName = basename($path);
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $contentTypes = [
+        'pdf' => 'application/pdf',
+        'doc' => 'application/msword',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+
+    return response()->file($absolutePath, [
+        'Content-Type' => $contentTypes[$extension] ?? 'application/octet-stream',
+        'Content-Disposition' => 'inline; filename="' . addslashes($fileName) . '"',
+        'Cache-Control' => 'private, max-age=0, must-revalidate',
+        'Pragma' => 'public',
+    ]);
+});
+Route::get('/company/resumes/download', function (Request $request) {
+    $path = trim((string) $request->query('path', ''));
+
+    abort_if($path === '' || str_contains($path, '..') || ! str_starts_with($path, 'fresher/resumes/'), 404);
+    abort_unless(Storage::disk('public')->exists($path), 404);
+
+    return Storage::disk('public')->download($path);
+});
 Route::view('/company/shortlisted', 'company.applications.shortlisted');
 
 Route::view('/company/interviews', 'company.interviews.index');
