@@ -21,6 +21,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Training Partner')</title>
     @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -84,7 +87,7 @@
 <body class="h-auto min-h-screen overflow-x-hidden bg-[#f8faff] font-sans font-medium text-[#071544] md:h-screen md:overflow-hidden">
     <div id="training-partner-layout" class="layout group min-h-screen overflow-visible md:grid md:h-screen md:grid-cols-[270px_minmax(0,1fr)] md:overflow-hidden">
         <aside id="training-partner-sidebar" class="fixed left-0 top-0 z-[1000] flex h-screen w-[286px] max-w-[86vw] -translate-x-[105%] flex-col overflow-y-auto overflow-x-hidden border-r border-[#dfe4f2] bg-white shadow-[18px_0_38px_rgba(34,23,91,0.18)] transition-transform duration-200 group-[.sidebar-open]:translate-x-0 md:sticky md:top-0 md:z-auto md:w-[270px] md:max-w-none md:translate-x-0 md:shadow-none">
-            <a class="flex h-[68px] shrink-0 items-center border-b border-[#dfe4f2] px-5" href="/training-partner/dashboard">
+            <a class="flex h-[68px] shrink-0 items-center border-b border-[#dfe4f2] px-5" href="/">
                 @if (file_exists(public_path('ofclogo1.svg')))
                     <img src="/ofclogo1.svg" alt="OnlyFreshers" class="block max-h-[42px] w-[188px] object-contain object-left">
                 @else
@@ -209,6 +212,18 @@
             localStorage.setItem('ofc_auth_user', JSON.stringify(user));
         })();
 
+        window.addEventListener('pageshow', function () {
+            const token = localStorage.getItem('ofc_training_partner_token') || localStorage.getItem('ofc_auth_token');
+            let user = null;
+            try {
+                user = JSON.parse(localStorage.getItem('ofc_training_partner_user') || localStorage.getItem('ofc_auth_user') || 'null');
+            } catch (error) {}
+            if (!token || user?.role !== 'training_partner') {
+                ['ofc_auth_token', 'ofc_auth_user', 'ofc_training_partner_token', 'ofc_training_partner_user', 'ofc_training_partner_profile'].forEach(key => localStorage.removeItem(key));
+                window.location.replace('/training-partner/login');
+            }
+        });
+
         function toggleTrainingSidebar() {
             document.querySelector('.layout').classList.toggle('sidebar-open');
         }
@@ -232,6 +247,8 @@
 
         document.getElementById('trainingPartnerLogout')?.addEventListener('click', async () => {
             const token = localStorage.getItem('ofc_training_partner_token') || localStorage.getItem('ofc_auth_token');
+            ['ofc_auth_token', 'ofc_auth_user', 'ofc_training_partner_token', 'ofc_training_partner_user', 'ofc_training_partner_profile'].forEach(key => localStorage.removeItem(key));
+            window.location.replace('/training-partner/login');
             if (token) {
                 try {
                     await fetch('/api/auth/logout', {
@@ -243,12 +260,6 @@
                     });
                 } catch (error) {}
             }
-            localStorage.removeItem('ofc_auth_token');
-            localStorage.removeItem('ofc_auth_user');
-            localStorage.removeItem('ofc_training_partner_token');
-            localStorage.removeItem('ofc_training_partner_user');
-            localStorage.removeItem('ofc_training_partner_profile');
-            window.location.href = '/training-partner/login';
         });
 
         syncTrainingPartnerChrome();

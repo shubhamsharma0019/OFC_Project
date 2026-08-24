@@ -8,6 +8,9 @@ Route::get('/', [PublicPageController::class, 'home']);
 
 Route::get('/about', [PublicPageController::class, 'about']);
 
+Route::view('/login', 'auth.role-selection', ['mode' => 'login']);
+Route::view('/register', 'auth.role-selection', ['mode' => 'register']);
+
 Route::get('/job', [PublicPageController::class, 'companies']);
 Route::get('/jobs', [PublicPageController::class, 'companies']);
 Route::view('/job/show', 'public.jobs.show');

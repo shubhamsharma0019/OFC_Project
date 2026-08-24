@@ -33,9 +33,9 @@
             @endforeach
         </nav>
 
-        <div class="hidden items-center gap-3 lg:flex">
-            <a href="/direct-mode/login" class="inline-flex h-10 items-center justify-center rounded-lg border border-[#bcd2f2] bg-white px-5 text-sm font-bold text-[#075fe4] transition hover:bg-[#f5f9ff]">Login</a>
-            <a href="/direct-mode/register" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#0554cc]">Register</a>
+        <div class="hidden items-center gap-3 lg:flex" data-public-auth-actions>
+            <a href="/login" data-public-login class="inline-flex h-10 items-center justify-center rounded-lg border border-[#bcd2f2] bg-white px-5 text-sm font-bold text-[#075fe4] transition hover:bg-[#f5f9ff]">Login</a>
+            <a href="/register" data-public-register class="inline-flex h-10 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white shadow-[0_8px_18px_rgba(7,95,228,0.18)] transition hover:bg-[#0554cc]">Register</a>
         </div>
     </div>
 </header>
@@ -57,9 +57,65 @@
             @endforeach
         </nav>
 
-        <div class="mt-auto grid gap-3 border-t border-[#dce7f8] px-5 py-5">
-            <a href="/direct-mode/login" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#bcd2f2] bg-white px-5 text-sm font-bold text-[#075fe4]">Login</a>
-            <a href="/direct-mode/register" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white">Register</a>
+        <div class="mt-auto grid gap-3 border-t border-[#dce7f8] px-5 py-5" data-public-auth-actions>
+            <a href="/login" data-public-login class="inline-flex h-11 items-center justify-center rounded-lg border border-[#bcd2f2] bg-white px-5 text-sm font-bold text-[#075fe4]">Login</a>
+            <a href="/register" data-public-register class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white">Register</a>
         </div>
     </div>
 </div>
+
+<script>
+    (() => {
+        const parseJson = value => {
+            try {
+                return JSON.parse(value || 'null');
+            } catch (error) {
+                return null;
+            }
+        };
+
+        const sessions = [
+            {
+                role: 'company',
+                token: localStorage.getItem('ofc_company_token') || localStorage.getItem('onlyfreshers_company_token'),
+                user: parseJson(localStorage.getItem('ofc_company_user')) || parseJson(localStorage.getItem('onlyfreshers_company_user')),
+                href: '/company/profile',
+                fallback: 'Company Profile',
+            },
+            {
+                role: 'training_partner',
+                token: localStorage.getItem('ofc_training_partner_token'),
+                user: parseJson(localStorage.getItem('ofc_training_partner_user')),
+                href: '/training-partner/profile',
+                fallback: 'Profile',
+            },
+            {
+                role: 'fresher',
+                token: localStorage.getItem('ofc_fresher_token') || localStorage.getItem('onlyfreshers_token'),
+                user: parseJson(localStorage.getItem('ofc_fresher_user')) || parseJson(localStorage.getItem('onlyfreshers_user')),
+                href: '/direct-mode/profile',
+                fallback: 'Profile',
+            },
+        ];
+
+        const sharedUser = parseJson(localStorage.getItem('ofc_auth_user'));
+        const sharedToken = localStorage.getItem('ofc_auth_token');
+        const session = sessions.find(item => item.token && item.user?.role === item.role) ||
+            (sharedToken && sharedUser ? sessions.find(item => item.role === sharedUser.role) : null);
+
+        if (!session) return;
+
+        const name = String((session.user || sharedUser || {}).name || '').trim();
+        const label = name ? name.split(/\s+/)[0] : session.fallback;
+
+        document.querySelectorAll('[data-public-login]').forEach(link => {
+            link.href = session.href;
+            link.textContent = label;
+        });
+
+        document.querySelectorAll('[data-public-register]').forEach(link => {
+            link.href = session.role === 'company' ? '/company/dashboard' : (session.role === 'training_partner' ? '/training-partner/dashboard' : '/direct-mode/dashboard');
+            link.textContent = 'Dashboard';
+        });
+    })();
+</script>

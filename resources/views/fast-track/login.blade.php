@@ -19,7 +19,9 @@
         <section class="relative grid min-h-[520px] overflow-hidden rounded-[28px] lg:min-h-[570px] lg:grid-rows-[auto_1fr]">
 
             <div class="relative z-10 flex flex-col">
-                <img class="h-auto w-[225px] max-w-full lg:w-[238px]" src="/ofclogo1.svg" alt="OnlyFreshers">
+                <a href="/" class="inline-flex">
+                    <img class="h-auto w-[225px] max-w-full lg:w-[238px]" src="/ofclogo1.svg" alt="OnlyFreshers">
+                </a>
 
                 <div class="relative z-20 mt-[56px] max-w-[520px] lg:mt-[72px]">
                     <h1 class="mb-4 text-[40px] leading-[1.12] text-[#061942] lg:text-[48px]">Welcome to <span class="text-[#075fe4]">OnlyFreshers</span></h1>

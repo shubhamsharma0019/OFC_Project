@@ -39,6 +39,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>{{ $logoutPage['messages']['initialTitle'] }} - {{ $logoutPage['brandName'] }}</title>
     @include('components.common.auth-storage')
     <style>
@@ -95,18 +98,18 @@
                 finish(logoutPage.messages.noSessionCopy);
                 return;
             }
+            clearSession();
             try {
-                await fetch(logoutPage.logoutEndpoint, {
+                fetch(logoutPage.logoutEndpoint, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
-                });
+                }).catch(() => {});
             } catch (error) {
-            } finally {
-                finish();
             }
+            finish();
         })();
     </script>
 </body>

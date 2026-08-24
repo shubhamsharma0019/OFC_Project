@@ -9,6 +9,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Company Dashboard - OnlyFreshers')</title>
     @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -296,6 +299,17 @@
 
             async function logoutCompany() {
                 const token = getCompanyToken();
+                [
+                    'ofc_auth_token',
+                    'ofc_auth_user',
+                    'ofc_company_token',
+                    'ofc_company_user',
+                    'ofc_company_profile',
+                    'onlyfreshers_company_token',
+                    'onlyfreshers_company_user'
+                ].forEach(key => localStorage.removeItem(key));
+
+                window.location.replace('/company/login');
 
                 if (token) {
                     try {
@@ -309,18 +323,26 @@
                     } catch (error) {
                     }
                 }
+            }
 
-                [
-                    'ofc_auth_token',
-                    'ofc_auth_user',
-                    'ofc_company_token',
-                    'ofc_company_user',
-                    'ofc_company_profile',
-                    'onlyfreshers_company_token',
-                    'onlyfreshers_company_user'
-                ].forEach(key => localStorage.removeItem(key));
+            function guardCompanySession() {
+                const token = getCompanyToken();
+                const user = parseLocalStorage('onlyfreshers_company_user') ||
+                    parseLocalStorage('ofc_company_user') ||
+                    parseLocalStorage('ofc_auth_user');
 
-                window.location.href = '/company/login';
+                if (!token || user?.role !== 'company') {
+                    [
+                        'ofc_auth_token',
+                        'ofc_auth_user',
+                        'ofc_company_token',
+                        'ofc_company_user',
+                        'ofc_company_profile',
+                        'onlyfreshers_company_token',
+                        'onlyfreshers_company_user'
+                    ].forEach(key => localStorage.removeItem(key));
+                    window.location.replace('/company/login');
+                }
             }
 
             function bindMenu(buttonId, menuId) {
@@ -350,6 +372,7 @@
 
             document.getElementById('company-topbar-logout')?.addEventListener('click', logoutCompany);
             document.getElementById('company-sidebar-logout')?.addEventListener('click', logoutCompany);
+            window.addEventListener('pageshow', guardCompanySession);
 
             document.addEventListener('company-profile-loaded', function (event) {
                 syncCompanyChrome(event.detail);

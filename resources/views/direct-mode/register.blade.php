@@ -107,6 +107,45 @@
     <title>{{ $pageTitle }} - OnlyFreshers</title>
 
     @include('components.common.auth-storage')
+    <script>
+        (() => {
+            const parseJson = value => {
+                try {
+                    return JSON.parse(value || 'null');
+                } catch (error) {
+                    return null;
+                }
+            };
+            const sessions = [
+                {
+                    role: 'company',
+                    token: localStorage.getItem('ofc_company_token') || localStorage.getItem('onlyfreshers_company_token'),
+                    user: parseJson(localStorage.getItem('ofc_company_user')) || parseJson(localStorage.getItem('onlyfreshers_company_user')),
+                    url: '/company/dashboard',
+                },
+                {
+                    role: 'training_partner',
+                    token: localStorage.getItem('ofc_training_partner_token'),
+                    user: parseJson(localStorage.getItem('ofc_training_partner_user')),
+                    url: '/training-partner/dashboard',
+                },
+                {
+                    role: 'fresher',
+                    token: localStorage.getItem('ofc_fresher_token') || localStorage.getItem('onlyfreshers_token'),
+                    user: parseJson(localStorage.getItem('ofc_fresher_user')) || parseJson(localStorage.getItem('onlyfreshers_user')),
+                    url: '/direct-mode/dashboard',
+                },
+            ];
+            const sharedToken = localStorage.getItem('ofc_auth_token');
+            const sharedUser = parseJson(localStorage.getItem('ofc_auth_user'));
+            const activeSession = sessions.find(item => item.token && item.user?.role === item.role) ||
+                (sharedToken && sharedUser ? sessions.find(item => item.role === sharedUser.role) : null);
+
+            if (activeSession) {
+                window.location.replace(activeSession.url);
+            }
+        })();
+    </script>
 
     <style>
 

@@ -23,7 +23,7 @@
 
 <div class="admin-sidebar-font flex min-h-full flex-col justify-between">
 <div>
-    <a href="/admin/dashboard" class="mb-6 flex h-12 items-center">
+    <a href="/" class="mb-6 flex h-12 items-center">
         @if (file_exists(public_path('ofclogo1.svg')))
             <img src="/ofclogo1.svg" alt="OnlyFreshers Logo" class="block max-h-11 w-[190px] object-contain object-left">
         @else

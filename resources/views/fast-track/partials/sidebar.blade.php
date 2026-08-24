@@ -118,7 +118,7 @@
 >
     <div class="fast-track-sidebar-inner flex min-h-0 flex-1 flex-col px-5 py-5">
 
-        <a href="/fast-track/dashboard" class="fast-track-logo-link mb-5 flex h-14 items-center">
+        <a href="/" class="fast-track-logo-link mb-5 flex h-14 items-center">
             <img
                 src="/ofclogo1.svg"
                 alt="OnlyFreshers"

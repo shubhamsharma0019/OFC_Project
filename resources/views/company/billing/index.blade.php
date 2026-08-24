@@ -7,9 +7,9 @@
     $activePage = 'billing';
 
     $plans = [
-        ['name' => 'Basic', 'monthly' => 'Rs. 1,999', 'yearly' => 'Rs. 19,999', 'popular' => false, 'features' => ['10 Job Postings', 'Basic Search Access', 'Email Support']],
-        ['name' => 'Premium', 'monthly' => 'Rs. 4,999', 'yearly' => 'Rs. 49,999', 'popular' => true, 'features' => ['Unlimited Job Postings', 'Access to Fresh Candidates', 'Priority Support']],
-        ['name' => 'Enterprise', 'monthly' => 'Rs. 9,999', 'yearly' => 'Rs. 99,999', 'popular' => false, 'features' => ['50 Job Postings', 'Dedicated Account Manager', 'Custom Reports']],
+        ['name' => 'Basic', 'monthly' => 'Rs. 499', 'yearly' => 'Rs. 4,999', 'popular' => false, 'features' => ['10 Job Postings', 'Basic Search Access', 'Email Support']],
+        ['name' => 'Premium', 'monthly' => 'Rs. 799', 'yearly' => 'Rs. 7,999', 'popular' => true, 'features' => ['Unlimited Job Postings', 'Access to Fresh Candidates', 'Priority Support']],
+        ['name' => 'Enterprise', 'monthly' => 'Rs. 999', 'yearly' => 'Rs. 9,999', 'popular' => false, 'features' => ['50 Job Postings', 'Dedicated Account Manager', 'Custom Reports']],
     ];
 
     $benefits = [

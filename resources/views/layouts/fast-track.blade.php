@@ -6,6 +6,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Fast Track')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -96,6 +99,24 @@
                 window.location.href = '/fast-track/login';
             }
         })();
+
+        window.addEventListener('pageshow', function () {
+            const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token');
+            let user = null;
+            try {
+                user = JSON.parse(localStorage.getItem('onlyfreshers_user') || localStorage.getItem('ofc_fresher_user') || localStorage.getItem('ofc_auth_user') || 'null');
+            } catch (error) {}
+            if (!token || user?.role !== 'fresher') {
+                ['ofc_auth_token', 'ofc_auth_user', 'ofc_fresher_token', 'ofc_fresher_user', 'onlyfreshers_token', 'onlyfreshers_user', 'fast_track_course_id'].forEach((key) => localStorage.removeItem(key));
+                window.location.replace('/fast-track/login');
+            }
+        });
+
+        document.getElementById('fastTrackLogout')?.addEventListener('click', function (event) {
+            event.preventDefault();
+            ['ofc_auth_token', 'ofc_auth_user', 'ofc_fresher_token', 'ofc_fresher_user', 'onlyfreshers_token', 'onlyfreshers_user', 'fast_track_course_id'].forEach((key) => localStorage.removeItem(key));
+            window.location.replace('/fast-track/login');
+        });
 
         function toggleFastTrackSidebar() {
             const sidebar = document.getElementById('fastTrackSidebar');

@@ -18,7 +18,9 @@
     <main class="fast-track-auth grid min-h-screen grid-cols-1 items-center gap-[30px] overflow-hidden bg-[radial-gradient(circle_at_38%_60%,rgba(7,95,228,0.12)_0_310px,transparent_312px),linear-gradient(130deg,#ffffff,#dfeeff)] px-[18px] py-[18px] lg:grid-cols-[1.05fr_.95fr] lg:gap-[42px] lg:px-[52px] lg:py-5">
         <section class="relative grid min-h-[520px] overflow-hidden rounded-[28px] lg:min-h-[570px] lg:grid-rows-[auto_1fr]">
             <div class="relative z-10 flex flex-col">
-                <img class="h-auto w-[225px] max-w-full lg:w-[238px]" src="/ofclogo1.svg" alt="OnlyFreshers">
+                <a href="/" class="inline-flex">
+                    <img class="h-auto w-[225px] max-w-full lg:w-[238px]" src="/ofclogo1.svg" alt="OnlyFreshers">
+                </a>
                 <div class="relative z-20 mt-[56px] max-w-[520px] lg:mt-[72px]">
                     <h1 class="mb-4 text-[40px] leading-[1.12] text-[#061942] lg:text-[48px]">Welcome to <span class="text-[#075fe4]">OnlyFreshers</span></h1>
                     <p class="m-0 max-w-[560px] text-lg leading-[1.45] text-[#34445e] lg:text-xl">Create your fresher account and begin your career journey.</p>

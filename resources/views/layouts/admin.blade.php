@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'OnlyFreshers Admin')</title>
     @include('components.common.auth-storage')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -158,9 +161,24 @@
                 localStorage.removeItem('ofc_auth_token');
                 localStorage.removeItem('ofc_auth_user');
                 localStorage.removeItem('onlyFreshersAdminLogin');
-                window.location.href = '/admin/login';
+                window.location.replace('/admin/login');
             }
         })();
+
+        window.addEventListener('pageshow', function () {
+            const token = localStorage.getItem('ofc_auth_token');
+            const adminLogin = localStorage.getItem('onlyFreshersAdminLogin');
+            let user = null;
+            try {
+                user = JSON.parse(localStorage.getItem('ofc_auth_user') || 'null');
+            } catch (error) {}
+            if (!token || adminLogin !== 'yes' || user?.role !== 'admin') {
+                localStorage.removeItem('ofc_auth_token');
+                localStorage.removeItem('ofc_auth_user');
+                localStorage.removeItem('onlyFreshersAdminLogin');
+                window.location.replace('/admin/login');
+            }
+        });
 
         function toggleAdminSidebar() {
             const sidebar = document.getElementById('admin-sidebar');

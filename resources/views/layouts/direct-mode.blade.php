@@ -18,6 +18,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Direct Mode - OnlyFreshers')</title>
     @include('components.common.auth-storage')
     <style>
@@ -105,7 +108,7 @@
     <div class="shell">
         <aside class="sidebar">
             <div>
-                <a class="brand" href="/direct-mode/dashboard"><img src="/ofclogo1.svg" alt="OnlyFreshers" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span style="display:none;align-items:center;gap:10px;color:#075fe4;font-size:22px;font-weight:800"><b style="display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#075fe4;color:#fff;font-size:16px">OF</b>OnlyFreshers</span></a>
+                <a class="brand" href="/"><img src="/ofclogo1.svg" alt="OnlyFreshers" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span style="display:none;align-items:center;gap:10px;color:#075fe4;font-size:22px;font-weight:800"><b style="display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#075fe4;color:#fff;font-size:16px">OF</b>OnlyFreshers</span></a>
                 <nav class="menu">
                     @foreach ($menuItems as $item)
                         <a class="menu-item {{ ($activePage ?? '') === $item['key'] ? 'active' : '' }}" href="{{ $item['url'] }}">
@@ -165,6 +168,42 @@
         </main>
     </div>
     <script>
+        (() => {
+            const loginUrl = '/direct-mode/login';
+            const authKeys = [
+                'onlyfreshers_token',
+                'onlyfreshers_user',
+                'ofc_fresher_token',
+                'ofc_fresher_user',
+                'ofc_auth_token',
+                'ofc_auth_user',
+            ];
+            const parseJson = value => {
+                try {
+                    return JSON.parse(value || 'null');
+                } catch (error) {
+                    return null;
+                }
+            };
+            const hasDirectSession = () => {
+                const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token');
+                const user = parseJson(localStorage.getItem('onlyfreshers_user')) || parseJson(localStorage.getItem('ofc_fresher_user')) || parseJson(localStorage.getItem('ofc_auth_user'));
+                return Boolean(token && user?.role === 'fresher');
+            };
+            const redirectIfLoggedOut = () => {
+                if (!hasDirectSession()) {
+                    authKeys.forEach(key => localStorage.removeItem(key));
+                    window.location.replace(loginUrl);
+                }
+            };
+
+            redirectIfLoggedOut();
+            window.addEventListener('pageshow', redirectIfLoggedOut);
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') redirectIfLoggedOut();
+            });
+        })();
+
         window.directModeIcons={home:'<svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg>',user:'<svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle></svg>',clipboard:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 7h6M9 12h6"></path></svg>',briefcase:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>',file:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path></svg>',activity:'<svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>',settings:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4 1.7 1.7 0 0 0 14 21h-4a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3 14v-4a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3h4a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9 1.7 1.7 0 0 0 21 10v4a1.7 1.7 0 0 0-1.6 1Z"></path></svg>',bookmark:'<svg viewBox="0 0 24 24"><path d="M19 21 12 17 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"></path></svg>',search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>',chevron:'<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>'};
         Object.assign(window.directModeIcons,{
             users:'<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"></path><circle cx="12" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path></svg>',
@@ -194,7 +233,7 @@
     </script>
     <script>
         (() => {
-            const token = localStorage.getItem('onlyfreshers_token') || '';
+            const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token') || '';
             const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || 'null');
             const headers = { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
             const searchInput = document.querySelector('[data-global-search]');
@@ -357,6 +396,15 @@
             });
 
             document.querySelector('[data-direct-logout]')?.addEventListener('click', async () => {
+                [
+                    'onlyfreshers_token',
+                    'onlyfreshers_user',
+                    'ofc_fresher_token',
+                    'ofc_fresher_user',
+                    'ofc_auth_token',
+                    'ofc_auth_user',
+                ].forEach(key => localStorage.removeItem(key));
+                window.location.replace('/direct-mode/login');
                 try {
                     if (token) {
                         await fetch('/api/auth/logout', {
@@ -368,9 +416,6 @@
                 } catch (error) {
                     // Local logout should still continue when the token has already expired.
                 }
-                localStorage.removeItem('onlyfreshers_token');
-                localStorage.removeItem('onlyfreshers_user');
-                window.location.href = '/direct-mode/login';
             });
 
             loadTopbar();

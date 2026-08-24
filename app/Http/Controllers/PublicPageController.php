@@ -963,9 +963,9 @@ class PublicPageController extends Controller
     private function hiringPackages(): array
     {
         return [
-            ['name' => 'Starter', 'desc' => 'Perfect for getting started', 'price' => '₹1,999', 'period' => '/month', 'button' => 'Choose Starter', 'popular' => false, 'items' => ['10 Job Postings', '50 Direct Mode Resumes', '20 Fast Track Mode Resumes', 'Candidate Contact Access', 'Email Support']],
-            ['name' => 'Growth', 'desc' => 'Scale your hiring', 'price' => '₹4,999', 'period' => '/month', 'button' => 'Choose Growth', 'popular' => true, 'items' => ['25 Job Postings', '150 Direct Mode Resumes', '60 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support']],
-            ['name' => 'Professional', 'desc' => 'For active hiring teams', 'price' => '₹9,999', 'period' => '/month', 'button' => 'Choose Professional', 'popular' => false, 'items' => ['60 Job Postings', '400 Direct Mode Resumes', '160 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support', 'Dedicated Account Manager']],
+            ['name' => 'Starter', 'desc' => 'Perfect for getting started', 'price' => '₹499', 'period' => '/month', 'button' => 'Choose Starter', 'popular' => false, 'items' => ['10 Job Postings', '50 Direct Mode Resumes', '20 Fast Track Mode Resumes', 'Candidate Contact Access', 'Email Support']],
+            ['name' => 'Growth', 'desc' => 'Scale your hiring', 'price' => '₹799', 'period' => '/month', 'button' => 'Choose Growth', 'popular' => true, 'items' => ['25 Job Postings', '150 Direct Mode Resumes', '60 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support']],
+            ['name' => 'Professional', 'desc' => 'For active hiring teams', 'price' => '₹999', 'period' => '/month', 'button' => 'Choose Professional', 'popular' => false, 'items' => ['60 Job Postings', '400 Direct Mode Resumes', '160 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support', 'Dedicated Account Manager']],
             ['name' => 'Enterprise', 'desc' => 'For large scale hiring', 'price' => 'Custom', 'period' => 'Contact Sales', 'button' => 'Contact Sales', 'popular' => false, 'items' => ['Unlimited Job Postings', 'Custom Resume Access', 'Dedicated Account Manager', 'Bulk Hiring Solutions', 'API Access', 'Custom Integrations']],
         ];
     }
