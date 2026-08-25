@@ -36,7 +36,7 @@
             document.documentElement.classList.remove('admin-auth-pending');
         })();
     </script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('components.common.compiled-assets')
     <style>
         html.admin-auth-pending body {
             visibility: hidden;

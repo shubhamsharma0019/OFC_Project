@@ -1,4 +1,4 @@
-﻿@php
+@php
     $student = array_merge(['name' => 'Fresher', 'notifications' => 0], $student ?? []);
 @endphp
 <!DOCTYPE html>
@@ -10,7 +10,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Fast Track')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('components.common.compiled-assets')
     <style>
         #fastTrackLayout,
         #fastTrackLayout * {

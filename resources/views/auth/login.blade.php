@@ -38,7 +38,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $pageTitle }}</title>
     @include('components.common.auth-storage')
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('components.common.compiled-assets')
 </head>
 <body class="min-h-screen bg-[#eaf3ff] font-sans font-medium text-[#061942]">
     <main class="grid min-h-screen grid-cols-1 items-center gap-[30px] bg-[radial-gradient(circle_at_34%_58%,rgba(7,95,228,0.08)_0_260px,transparent_261px),linear-gradient(130deg,#ffffff,#dfeeff)] px-[18px] py-[18px] lg:grid-cols-[1fr_1.08fr] lg:gap-[34px] lg:px-[46px] lg:py-4">

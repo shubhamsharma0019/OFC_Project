@@ -4,6 +4,153 @@
 
 @push('styles')
 <style>
+    @media (max-width: 1279px) {
+        html,
+        body,
+        #public-site,
+        #public-site main {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+
+        #public-site section,
+        #public-site section > div {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: clip !important;
+        }
+
+        .home-hero {
+            padding-bottom: 24px !important;
+            background: linear-gradient(180deg, #fff 0%, #f3f8ff 100%) !important;
+            overflow: hidden !important;
+        }
+
+        .home-hero-inner {
+            grid-template-columns: minmax(0, 1fr) !important;
+            gap: 24px !important;
+            min-height: 0 !important;
+            max-width: 860px !important;
+            padding: 28px 16px 10px !important;
+            text-align: center !important;
+        }
+
+        .home-hero-inner > * {
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }
+
+        .home-hero-inner > div:first-child {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .home-hero-title-desktop {
+            max-width: 720px;
+            margin: 0 auto !important;
+            font-size: clamp(34px, 6vw, 54px) !important;
+            line-height: 1.08 !important;
+            overflow-wrap: anywhere !important;
+        }
+
+        .home-hero p {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        .home-hero-actions {
+            justify-content: center !important;
+        }
+
+        .home-hero-media {
+            width: 100% !important;
+            max-width: 760px !important;
+            min-height: 330px !important;
+            margin: 0 auto !important;
+            padding-bottom: 72px !important;
+            overflow: hidden !important;
+        }
+
+        .home-hero-media > img {
+            width: 100% !important;
+            max-width: 100% !important;
+            max-height: 300px !important;
+            margin-right: 0 !important;
+            object-fit: contain !important;
+            object-position: bottom center !important;
+        }
+
+        #homeStats {
+            bottom: 16px !important;
+            left: 50% !important;
+            width: min(calc(100% - 24px), 620px) !important;
+            transform: translateX(-50%) !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 8px !important;
+        }
+
+        #homeStats article {
+            min-width: 0 !important;
+        }
+
+        #homeStats strong,
+        #homeStats small {
+            overflow-wrap: anywhere !important;
+        }
+
+        .home-mode-card {
+            grid-template-columns: minmax(0, 1fr) !important;
+            padding: 18px !important;
+            text-align: center !important;
+        }
+
+        .home-mode-panel {
+            width: 100% !important;
+            max-width: 520px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        .home-mode-card ul {
+            max-width: 520px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: left !important;
+        }
+
+        .home-company-grid {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .home-company-grid article {
+            min-height: 0 !important;
+        }
+
+        .home-company-grid article:last-child {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .home-hero-title-desktop {
+            display: none !important;
+        }
+
+        .home-hero-title-mobile {
+            display: block !important;
+        }
+
+        .home-mode-panel [class*="grid-cols-"] {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .home-company-grid article:last-child {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+    }
+
     @media (max-width: 640px) {
         html:has(.home-hero),
         body:has(.home-hero) {
@@ -116,7 +263,7 @@
         .home-hero-media {
             width: 100% !important;
             max-width: 100% !important;
-            min-height: 285px !important;
+            min-height: 250px !important;
             margin: 0 auto !important;
             padding: 0 0 24px !important;
             align-items: flex-end !important;
@@ -129,13 +276,13 @@
             height: auto !important;
             margin-left: 0 !important;
             margin-right: 0 !important;
-            max-height: 300px !important;
+            max-height: 245px !important;
             object-fit: contain !important;
             object-position: bottom center !important;
         }
 
         #homeStats {
-            bottom: 12px !important;
+            bottom: 8px !important;
             left: 50% !important;
             width: calc(100% - 24px) !important;
             max-width: 360px !important;

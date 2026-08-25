@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'OnlyFreshers') }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('components.common.compiled-assets')
 </head>
 <body class="min-h-screen bg-[#f8faff] font-sans text-[#061942]">
     <main class="mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center px-6 py-16 text-center">

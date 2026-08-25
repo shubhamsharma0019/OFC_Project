@@ -14,7 +14,7 @@
     <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Company Dashboard - OnlyFreshers')</title>
     @include('components.common.auth-storage')
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('components.common.compiled-assets')
     <style>
         #company-layout,
         #company-layout * {
