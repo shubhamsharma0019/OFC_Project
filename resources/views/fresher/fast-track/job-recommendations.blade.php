@@ -226,7 +226,11 @@
         const score = Math.min(100, Math.max(45, matchScore(job) || 65));
         const skills = jobSkills(job).slice(0, 4);
         const description = job.description || job.qualification || 'Fast Track role for freshers.';
-        const applyLocked = !hasCertificate;
+        const isDirectJob = job.hiring_mode === 'direct';
+        const applyLocked = !hasCertificate || isDirectJob;
+        const applyLabel = applied
+            ? FastTrack.statusText(application?.application_status || 'Applied')
+            : (isDirectJob ? 'Direct Mode Required' : (!hasCertificate ? 'Certificate Locked' : 'Apply Now'));
 
         return `<article class="job-card grid gap-4 rounded-lg border border-[#dce7f8] bg-white p-4 shadow-[0_10px_24px_rgba(6,25,66,.04)] lg:grid-cols-[82px_minmax(0,1fr)_auto_38px] lg:items-center">
             <span class="grid h-[76px] w-[76px] shrink-0 place-items-center rounded-lg border border-[#dce7f8] bg-[#f8fbff] text-[#075fe4] [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-none [&>svg]:stroke-current [&>svg]:stroke-2 [&>svg]:[stroke-linecap:round] [&>svg]:[stroke-linejoin:round]">${jobIcons.company}</span>
@@ -248,7 +252,7 @@
                 <div class="mb-3 text-right text-xs font-bold text-[#334b83] max-lg:text-left">Match ${score}%</div>
                 <div class="flex flex-wrap gap-2 lg:justify-end">
                     <a class="inline-flex h-[38px] items-center justify-center rounded-md border border-[#075fe4] bg-white px-4 text-sm font-bold text-[#075fe4] hover:bg-[#eff5ff]" href="/jobs/show?job=${FastTrack.esc(job.id)}">Details</a>
-                    <button class="apply-job-btn inline-flex h-[38px] items-center justify-center rounded-md ${applied ? 'bg-[#e6fff0] text-[#05843e]' : (applyLocked ? 'bg-[#eef2f8] text-[#526287]' : 'bg-[#075fe4] text-white hover:bg-[#064fc0]')} px-5 text-sm font-bold" type="button" data-job-id="${FastTrack.esc(job.id)}" ${applied || applyLocked ? 'disabled' : ''}>${applied ? FastTrack.statusText(application?.application_status || 'Applied') : (applyLocked ? 'Certificate Locked' : 'Apply Now')}</button>
+                    <button class="apply-job-btn inline-flex h-[38px] items-center justify-center rounded-md ${applied ? 'bg-[#e6fff0] text-[#05843e]' : (applyLocked ? 'bg-[#eef2f8] text-[#526287]' : 'bg-[#075fe4] text-white hover:bg-[#064fc0]')} px-5 text-sm font-bold" type="button" data-job-id="${FastTrack.esc(job.id)}" ${applied || applyLocked ? 'disabled' : ''}>${applyLabel}</button>
                 </div>
             </div>
             <button class="save-job-btn grid h-9 w-9 place-items-center rounded-full border ${saved ? 'border-[#075fe4] bg-[#eaf2ff] text-[#075fe4]' : 'border-[#dce7f8] bg-white text-[#334b83]'} text-sm font-black" type="button" data-job-id="${FastTrack.esc(job.id)}" aria-label="Save job">${saved ? 'S' : '+'}</button>

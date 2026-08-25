@@ -17,7 +17,7 @@
             'id' => 'email',
             'icon' => '@',
             'placeholder' => 'Enter email address',
-            'value' => 'admin@onlyfreshers.com',
+            'value' => '',
         ],
         [
             'label' => 'Password',
@@ -25,7 +25,7 @@
             'id' => 'password',
             'icon' => '#',
             'placeholder' => 'Enter password',
-            'value' => 'password',
+            'value' => '',
             'toggle' => true,
         ],
     ];
@@ -93,9 +93,9 @@
                 <p class="m-0 text-base font-medium text-[#52607a]">Fill in your details to continue</p>
             </div>
 
-            <form id="adminLoginForm" method="POST" action="{{ $dashboardUrl }}">
+            <form id="adminLoginForm" method="POST" action="{{ $dashboardUrl }}" autocomplete="off">
                 @csrf
-                <p class="mb-3.5 hidden rounded-lg bg-[#fff0f1] px-3 py-2.5 text-sm font-semibold text-[#ff1f2f]" id="loginError">Email ya password galat hai.</p>
+                <p class="mb-3.5 hidden rounded-lg bg-[#fff0f1] px-3 py-2.5 text-sm font-semibold text-[#ff1f2f]" id="loginError">Email or password is incorrect.</p>
 
                 @foreach ($loginFields as $field)
                     <div class="mb-[15px]">
@@ -112,6 +112,7 @@
                                 name="{{ $field['id'] }}"
                                 placeholder="{{ $field['placeholder'] }}"
                                 value="{{ old($field['id'], $field['value']) }}"
+                                autocomplete="{{ $field['type'] === 'password' ? 'new-password' : 'off' }}"
                                 class="h-[52px] w-full border-0 px-[18px] text-base font-medium text-[#061942] outline-none placeholder:text-[#74839d] lg:h-[46px]"
                             >
 
@@ -127,7 +128,7 @@
                         <input type="checkbox" name="remember" checked class="h-5 w-5 accent-[#075fe4]">
                         Remember me
                     </label>
-                    <a href="#" class="font-semibold text-[#075fe4] no-underline">Forgot password?</a>
+                    <a href="/admin/forgot-password" class="font-semibold text-[#075fe4] no-underline">Forgot password?</a>
                 </div>
 
                 <button type="submit" id="loginButton" class="h-[46px] w-full rounded-[11px] bg-[#075fe4] text-lg font-semibold text-white shadow-[0_8px_18px_rgba(7,95,228,0.24)] transition hover:bg-[#003f9e]">Login</button>
@@ -147,7 +148,7 @@
         const dashboardUrl = @json($dashboardUrl);
 
         function showError(message) {
-            loginError.textContent = message || 'Email ya password galat hai.';
+            loginError.textContent = message || 'Email or password is incorrect.';
             loginError.classList.remove('hidden');
         }
 
@@ -173,7 +174,7 @@
                 const result = await response.json();
 
                 if (!response.ok || !result.success) {
-                    throw new Error(result.message || 'Email ya password galat hai.');
+                    throw new Error(result.message || 'Email or password is incorrect.');
                 }
 
                 if (result.data?.user?.role !== 'admin') {

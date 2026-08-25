@@ -85,7 +85,7 @@
         payload.fees = Number(payload.fees || 0);
         try {
             const response = await fetch('/api/training-partner/courses/' + courseId, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify(payload),
             });

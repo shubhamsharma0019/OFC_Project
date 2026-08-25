@@ -23,23 +23,30 @@ Route::view('/fast-track/how-it-works', 'public.fast-track.how-it-works');
 Route::view('/fast-track/login', 'fast-track.login');
 Route::redirect('/fast-track/register', '/direct-mode/flow-selection');
 
+Route::view('/admin/forgot-password', 'auth.forgot-password', ['role' => 'admin', 'loginUrl' => '/admin/login']);
+
 Route::get('/direct-mode', [PublicPageController::class, 'directMode']);
 Route::view('/direct-mode/login', 'direct-mode.login');
 Route::view('/direct-mode/register', 'direct-mode.register');
+Route::view('/direct-mode/forgot-password', 'auth.forgot-password', ['role' => 'fresher', 'loginUrl' => '/direct-mode/login']);
 
 Route::view('/fresher/login', 'direct-mode.login');
 Route::view('/fresher/register', 'direct-mode.register');
+Route::view('/fresher/forgot-password', 'auth.forgot-password', ['role' => 'fresher', 'loginUrl' => '/direct-mode/login']);
 
 Route::view('/company/login', 'direct-mode.login');
 Route::view('/company/register', 'direct-mode.register');
+Route::view('/company/forgot-password', 'auth.forgot-password', ['role' => 'company', 'loginUrl' => '/company/login']);
 
 Route::view('/training-partner/login', 'direct-mode.login');
 Route::view('/training-partner/register', 'direct-mode.register');
+Route::view('/training-partner/forgot-password', 'auth.forgot-password', ['role' => 'training_partner', 'loginUrl' => '/training-partner/login']);
 
 Route::redirect('/training-partners/login', '/training-partner/login');
 Route::redirect('/training-partners/register', '/training-partner/register');
 Route::redirect('/traning-partner/login', '/training-partner/login');
 Route::redirect('/traning-partner/register', '/training-partner/register');
+Route::redirect('/traning-partner/forgot-password', '/training-partner/forgot-password');
 Route::redirect('/traning-partner/{path}', '/training-partner/{path}')
     ->where('path', '.*');
 
@@ -77,6 +84,7 @@ Route::view('/fast-track/training-progress', 'fresher.fast-track.training-progre
 Route::view('/fast-track/job-recommendations', 'fresher.fast-track.job-recommendations');
 Route::view('/fast-track/applications', 'fresher.fast-track.applications');
 Route::view('/fast-track/certificate', 'fresher.fast-track.certificate');
+Route::view('/fast-track/notifications', 'fresher.fast-track.notifications');
 Route::view('/fast-track/settings', 'fresher.fast-track.settings');
 
 Route::get('/training-partners', [PublicPageController::class, 'trainingPartners']);

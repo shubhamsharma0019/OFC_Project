@@ -134,7 +134,7 @@
                     <div class="search-panel" data-search-results></div>
                 </div>
                 <div class="top-user">
-                    <button class="top-bell" type="button" data-ofc-notification-trigger aria-label="Notifications"><b data-ofc-notification-badge>{{ $user['notifications'] }}</b><span class="icon" data-icon="bell"></span></button>
+                    <button class="top-bell" type="button" data-ofc-notification-trigger aria-label="Notifications"><b data-ofc-notification-badge style="{{ (int) ($user['notifications'] ?? 0) > 0 ? '' : 'display:none' }}">{{ (int) ($user['notifications'] ?? 0) > 0 ? $user['notifications'] : '' }}</b><span class="icon" data-icon="bell"></span></button>
                     <div class="top-avatar" style="background-image:url('{{ $user['avatar'] }}')"></div>
                     <strong data-top-user-name>{{ $user['name'] }}</strong>
                     <button class="icon" type="button" data-user-menu-toggle aria-label="Open user menu" style="border:0;background:transparent;color:inherit;cursor:pointer"><span data-icon="chevron"></span></button>

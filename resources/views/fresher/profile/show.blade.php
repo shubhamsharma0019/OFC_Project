@@ -78,6 +78,19 @@
     const profileForm = document.getElementById('profileForm');
     const saveProfile = document.getElementById('saveProfile');
     const profileMessage = document.getElementById('profileMessage');
+    async function parseApiResponse(response) {
+        const text = await response.text();
+        try {
+            return text ? JSON.parse(text) : {};
+        } catch (error) {
+            return {
+                success: false,
+                message: response.ok
+                    ? 'The server returned an invalid response.'
+                    : 'Unable to save profile. Please check the uploaded file and try again.',
+            };
+        }
+    }
     let currentUser = {};
     let currentProfile = {};
     let dashboardStats = {};
@@ -215,10 +228,10 @@
                 },
                 body: new FormData(profileForm),
             });
-            const payload = await response.json();
+            const payload = await parseApiResponse(response);
             if (!response.ok || !payload.success) {
                 const validationMessage = payload.errors ? Object.values(payload.errors).flat()[0] : null;
-                throw new Error(validationMessage || payload.message || 'Profile save nahi ho paayi.');
+                throw new Error(validationMessage || payload.message || 'Unable to save profile.');
             }
             showMessage(payload.message || 'Profile saved successfully.');
             profileEditCard.classList.add('hidden');

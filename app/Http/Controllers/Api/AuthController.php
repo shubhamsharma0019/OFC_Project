@@ -79,6 +79,7 @@ class AuthController extends Controller
                     'fresher',
                     'company',
                     'training_partner',
+                    'admin',
                 ]),
             ],
         ], [
@@ -242,6 +243,77 @@ class AuthController extends Controller
         ]);
     }
 
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $request->merge([
+            'email' => strtolower(trim((string) $request->input('email'))),
+        ]);
+
+        $validatedData = $request->validate([
+            'email' => [
+                'required',
+                'email',
+            ],
+            'role' => [
+                'required',
+                Rule::in([
+                    'fresher',
+                    'company',
+                    'training_partner',
+                ]),
+            ],
+            'password' => [
+                'required',
+                'string',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+                'regex:/^\S+$/',
+                'confirmed',
+            ],
+        ], [
+            'password.min' => 'Password must be at least 8 characters.',
+            'password.mixed' => 'Password must include uppercase and lowercase letters.',
+            'password.numbers' => 'Password must include at least one number.',
+            'password.symbols' => 'Password must include at least one special character.',
+            'password.regex' => 'Password must not contain spaces.',
+            'password.confirmed' => 'Password confirmation does not match.',
+        ]);
+
+        $user = User::query()
+            ->where('email', $validatedData['email'])
+            ->where('role', $validatedData['role'])
+            ->first();
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No account was found for this email and role.',
+            ], 404);
+        }
+
+        if ($user->status === 'blocked') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account has been blocked. Please contact support.',
+            ], 403);
+        }
+
+        $user->tokens()->delete();
+        $user->update([
+            'password' => Hash::make($validatedData['password']),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password reset successfully. Please login with your new password.',
+            'data' => [
+                'login_url' => $this->loginByRole($user->role),
+            ],
+        ]);
+    }
+
     /**
      * Current token logout karega.
      */
@@ -283,6 +355,17 @@ class AuthController extends Controller
             'training_partner' => '/training-partner/dashboard',
             'admin' => '/admin/dashboard',
             default => '/',
+        };
+    }
+
+    private function loginByRole(string $role): string
+    {
+        return match ($role) {
+            'company' => '/company/login',
+            'training_partner' => '/training-partner/login',
+            'fresher' => '/direct-mode/login',
+            'admin' => '/admin/login',
+            default => '/login',
         };
     }
 

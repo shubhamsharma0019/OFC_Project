@@ -36,7 +36,7 @@
         </section>
 
         <section class="flex w-full items-center justify-center">
-            <form class="w-full max-w-[492px] rounded-[24px] bg-white px-5 py-7 shadow-[0_24px_52px_rgba(6,25,66,.12)] sm:px-10 sm:py-9" id="fastTrackLoginForm">
+            <form class="w-full max-w-[492px] rounded-[24px] bg-white px-5 py-7 shadow-[0_24px_52px_rgba(6,25,66,.12)] sm:px-10 sm:py-9" id="fastTrackLoginForm" autocomplete="off">
                 <h2 class="m-0 text-center text-[29px] leading-tight text-[#061942]">Fast Track Login</h2>
                 <div class="mx-auto mb-4 mt-2.5 h-[3px] w-[58px] rounded-full bg-[#075fe4]"></div>
                 <p class="mb-6 text-center text-sm text-[#52607a]">Fill in your details to continue</p>
@@ -46,7 +46,7 @@
                     <span class="flex items-center justify-center text-[#52668e]">
                         <svg class="h-[17px] w-[17px] fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg>
                     </span>
-                    <input class="h-full w-full border-0 px-2.5 text-sm text-[#071743] outline-none placeholder:text-[#6f7ea0]" id="email" type="email" placeholder="Enter your email address">
+                    <input class="h-full w-full border-0 px-2.5 text-sm text-[#071743] outline-none placeholder:text-[#6f7ea0]" id="email" type="email" placeholder="Enter your email address" autocomplete="off">
                 </div>
 
                 <label class="mb-2 block text-sm font-medium text-[#071743]" for="password">Password</label>
@@ -54,7 +54,7 @@
                     <span class="flex items-center justify-center text-[#52668e]">
                         <svg class="h-[17px] w-[17px] fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
                     </span>
-                    <input class="h-full w-full border-0 px-2.5 text-sm text-[#071743] outline-none placeholder:text-[#6f7ea0]" id="password" type="password" placeholder="Enter your password">
+                    <input class="h-full w-full border-0 px-2.5 text-sm text-[#071743] outline-none placeholder:text-[#6f7ea0]" id="password" type="password" placeholder="Enter your password" autocomplete="new-password">
                     <button class="flex items-center justify-center text-[#52668e]" type="button" id="togglePassword" aria-label="Show password">
                         <svg class="h-[18px] w-[18px] fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     </button>
@@ -62,7 +62,7 @@
 
                 <div class="mb-7 flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
                     <label class="flex items-center gap-3 text-[#071743]"><input class="h-[17px] w-[17px] accent-[#075fe4]" type="checkbox"> Remember me</label>
-                    <a class="font-bold text-[#075fe4]" href="#">Forgot Password?</a>
+                    <a class="font-bold text-[#075fe4]" href="/direct-mode/forgot-password">Forgot Password?</a>
                 </div>
 
                 <button class="h-12 w-full rounded-lg bg-[#075fe4] text-base font-bold text-white shadow-[0_9px_18px_rgba(7,95,228,.2)] transition hover:bg-[#064fc0]" type="submit">Login</button>

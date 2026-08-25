@@ -41,7 +41,7 @@
                             </button>
                         </div>
 
-                        <form id="companyLoginForm">
+                        <form id="companyLoginForm" autocomplete="off">
                             <div class="login-alert" id="companyLoginAlert" role="alert">
                                 <span data-icon="alert"></span>
                                 <span id="companyLoginAlertText"></span>
@@ -51,7 +51,7 @@
                                 <label>Email Address</label>
                                 <div class="control">
                                     <span class="input-icon" data-icon="mail"></span>
-                                    <input id="email" name="email" type="email" value="demo.company@onlyfreshers.test" placeholder="Enter your email address" required>
+                                    <input id="email" name="email" type="email" value="" placeholder="Enter your email address" autocomplete="off" required>
                                 </div>
                             </div>
 
@@ -59,7 +59,7 @@
                                 <label>Password</label>
                                 <div class="control password">
                                     <span class="input-icon" data-icon="lock"></span>
-                                    <input id="password" name="password" type="password" value="Company@123" placeholder="Enter your password" required>
+                                    <input id="password" name="password" type="password" value="" placeholder="Enter your password" autocomplete="new-password" required>
                                     <button class="eye" type="button" data-toggle-password aria-label="Show password">
                                         <span data-icon="eye"></span>
                                     </button>
@@ -68,7 +68,7 @@
 
                             <div class="row">
                                 <label><input type="checkbox" checked> Remember me</label>
-                                <a href="#">Forgot Password?</a>
+                                <a href="/company/forgot-password">Forgot Password?</a>
                             </div>
 
                             <button class="primary" type="submit" id="companyLoginButton">Login</button>

@@ -12,13 +12,13 @@
         ? 'Company'
         : ($isTrainingPartnerAuth
             ? 'Training Partner'
-            : 'Direct Mode');
+            : 'Fresher');
 
     $pageTitle = $isCompanyAuth
         ? 'Company Login'
         : ($isTrainingPartnerAuth
             ? 'Training Partner Login'
-            : 'Direct Mode Login');
+            : 'Fresher Login');
 
     $introText = $isCompanyAuth
         ? 'Login to manage your company profile, post jobs, review applications and hire freshers.'
@@ -1141,11 +1141,11 @@
                 <div class="form-shell">
 
                     <h2>
-                        Login to Your Account
+                        {{ $pageTitle }}
                     </h2>
 
                     <p>
-                        Enter your credentials to access your account
+                        Enter your {{ strtolower($roleLabel) }} credentials to access your account
                     </p>
 
 
@@ -1174,6 +1174,7 @@
                     {{-- Login Form --}}
                     <form
                         id="loginForm"
+                        autocomplete="off"
                         data-company-auth="{{ $isCompanyAuth ? '1' : '0' }}"
                         data-training-partner-auth="{{ $isTrainingPartnerAuth ? '1' : '0' }}"
                     >
@@ -1208,7 +1209,7 @@
                                     name="email"
                                     type="email"
                                     placeholder="Enter your email address"
-                                    autocomplete="email"
+                                    autocomplete="off"
                                     required
                                 >
 
@@ -1238,7 +1239,7 @@
                                     name="password"
                                     type="password"
                                     placeholder="Enter your password"
-                                    autocomplete="current-password"
+                                    autocomplete="new-password"
                                     required
                                 >
 
@@ -1274,7 +1275,7 @@
                             </label>
 
 
-                            <a href="#">
+                            <a href="{{ $isCompanyAuth ? '/company/forgot-password' : ($isTrainingPartnerAuth ? '/training-partner/forgot-password' : '/direct-mode/forgot-password') }}">
                                 Forgot Password?
                             </a>
 
