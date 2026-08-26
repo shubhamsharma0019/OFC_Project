@@ -54,7 +54,7 @@ class FresherFinalAssessmentController extends Controller
             ], 403);
         }
 
-        $courseEnrollment->load('trainingProgress');
+        $courseEnrollment->load(['course', 'trainingProgress']);
 
         if ($courseEnrollment->payment_status !== 'paid') {
             return response()->json([
@@ -84,7 +84,9 @@ class FresherFinalAssessmentController extends Controller
             ]);
         }
 
-        $activeQuestionsCount = $this->activeFinalQuestions()->count();
+        $activeQuestionsCount = $this
+            ->activeFinalQuestions($this->assessmentTrack($courseEnrollment, $fresherProfile))
+            ->count();
 
         if ($activeQuestionsCount === 0) {
             return response()->json([
@@ -196,11 +198,16 @@ class FresherFinalAssessmentController extends Controller
             ], 422);
         }
 
-        $questions = $this->activeFinalQuestions()
+        $attempt->loadMissing(['courseEnrollment.course', 'fresherProfile']);
+
+        $questions = $this->activeFinalQuestions(
+            $this->assessmentTrack($attempt->courseEnrollment, $attempt->fresherProfile)
+        )
             ->map
             ->only([
                 'id',
                 'category',
+                'job_category',
                 'question',
                 'option_a',
                 'option_b',
@@ -274,7 +281,11 @@ class FresherFinalAssessmentController extends Controller
             ],
         ]);
 
-        $activeQuestions = $this->activeFinalQuestions();
+        $attempt->loadMissing(['courseEnrollment.course', 'fresherProfile']);
+
+        $activeQuestions = $this->activeFinalQuestions(
+            $this->assessmentTrack($attempt->courseEnrollment, $attempt->fresherProfile)
+        );
 
         if ($activeQuestions->isEmpty()) {
             return response()->json([
@@ -541,24 +552,116 @@ class FresherFinalAssessmentController extends Controller
         );
     }
 
-    private function activeFinalQuestions()
+    private function activeFinalQuestions(?string $jobCategory = null)
     {
         $this->ensureDefaultFinalQuestions();
 
-        return AssessmentQuestion::query()
+        $baseQuery = AssessmentQuestion::query()
             ->where('assessment_type', 'final')
-            ->where('is_active', true)
+            ->where('is_active', true);
+
+        if (filled($jobCategory)) {
+            $preferredQuestions = (clone $baseQuery)
+                ->where(function ($query) use ($jobCategory) {
+                    $query
+                        ->where('job_category', $jobCategory)
+                        ->orWhereNull('job_category');
+                })
+                ->orderByRaw('job_category IS NULL')
+                ->orderBy('category')
+                ->orderBy('id')
+                ->get();
+
+            if ($preferredQuestions->isNotEmpty()) {
+                return $this->preferRoleQuestionsByCategory($preferredQuestions);
+            }
+        }
+
+        return $baseQuery
+            ->whereNull('job_category')
             ->orderBy('category')
             ->orderBy('id')
             ->get();
     }
 
+    private function assessmentTrack(
+        ?CourseEnrollment $courseEnrollment,
+        $fresherProfile
+    ): ?string {
+        $course = $courseEnrollment?->course;
+        $text = strtolower(trim(implode(' ', array_filter([
+            $fresherProfile?->preferred_job_category,
+            $course?->course_name,
+            $course?->category,
+            $course?->skills_covered,
+            $course?->description,
+        ]))));
+
+        return match (true) {
+            str_contains($text, 'data') ||
+                str_contains($text, 'sql') ||
+                str_contains($text, 'excel') ||
+                str_contains($text, 'analytics') ||
+                str_contains($text, 'power bi') => 'Data Analyst',
+            str_contains($text, 'ui') ||
+                str_contains($text, 'ux') ||
+                str_contains($text, 'figma') ||
+                str_contains($text, 'designer') => 'UI/UX Designer',
+            str_contains($text, 'marketing') ||
+                str_contains($text, 'seo') ||
+                str_contains($text, 'social media') => 'Digital Marketing',
+            str_contains($text, 'software') ||
+                str_contains($text, 'developer') ||
+                str_contains($text, 'laravel') ||
+                str_contains($text, 'react') ||
+                str_contains($text, 'python') ||
+                str_contains($text, 'php') => 'Software Developer',
+            default => $fresherProfile?->preferred_job_category,
+        };
+    }
+
+    private function preferRoleQuestionsByCategory($questions)
+    {
+        $roleCategories = $questions
+            ->filter(fn ($question) => filled($question->job_category))
+            ->pluck('category')
+            ->unique();
+
+        if ($roleCategories->isEmpty()) {
+            return $questions;
+        }
+
+        return $questions
+            ->reject(fn ($question) => blank($question->job_category) && $roleCategories->contains($question->category))
+            ->values();
+    }
+
     private function ensureDefaultFinalQuestions(): void
     {
+        foreach ($this->defaultRoleFinalQuestions() as $question) {
+            AssessmentQuestion::firstOrCreate(
+                [
+                    'assessment_type' => 'final',
+                    'category' => $question['category'],
+                    'job_category' => $question['job_category'],
+                    'question' => $question['question'],
+                ],
+                [
+                    'option_a' => $question['option_a'],
+                    'option_b' => $question['option_b'],
+                    'option_c' => $question['option_c'],
+                    'option_d' => $question['option_d'],
+                    'correct_option' => $question['correct_option'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
         foreach ($this->defaultFinalQuestions() as $category => $questions) {
             $activeCount = AssessmentQuestion::query()
                 ->where('assessment_type', 'final')
                 ->where('category', $category)
+                ->whereNull('job_category')
                 ->where('is_active', true)
                 ->count();
 
@@ -571,6 +674,7 @@ class FresherFinalAssessmentController extends Controller
                     [
                         'assessment_type' => 'final',
                         'category' => $category,
+                        'job_category' => null,
                         'question' => $question['question'],
                     ],
                     [
@@ -666,6 +770,72 @@ class FresherFinalAssessmentController extends Controller
                     'option_d' => 'Urgent',
                     'correct_option' => 'B',
                 ],
+            ],
+        ];
+    }
+
+    private function defaultRoleFinalQuestions(): array
+    {
+        return [
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'technical',
+                'question' => 'In a sales dataset, which SQL function would you use to calculate total revenue?',
+                'option_a' => 'COUNT',
+                'option_b' => 'SUM',
+                'option_c' => 'LOWER',
+                'option_d' => 'ROUND',
+                'correct_option' => 'B',
+            ],
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'technical',
+                'question' => 'Which step should come before building a dashboard from raw data?',
+                'option_a' => 'Ignore missing values',
+                'option_b' => 'Clean and validate the data',
+                'option_c' => 'Delete every column',
+                'option_d' => 'Publish without review',
+                'correct_option' => 'B',
+            ],
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'technical',
+                'question' => 'What does a pivot table help you do?',
+                'option_a' => 'Summarize and group data',
+                'option_b' => 'Encrypt passwords',
+                'option_c' => 'Write CSS styles',
+                'option_d' => 'Deploy APIs',
+                'correct_option' => 'A',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'technical',
+                'question' => 'Which practice helps make code easier to maintain?',
+                'option_a' => 'Clear naming and small functions',
+                'option_b' => 'Duplicating every file',
+                'option_c' => 'Removing all tests',
+                'option_d' => 'Hardcoding every secret',
+                'correct_option' => 'A',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'technical',
+                'question' => 'What is the main purpose of a database transaction?',
+                'option_a' => 'Group operations so they succeed or fail together',
+                'option_b' => 'Change text color',
+                'option_c' => 'Resize images',
+                'option_d' => 'Clear browser history',
+                'correct_option' => 'A',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'technical',
+                'question' => 'Which response code commonly means validation failed in an API?',
+                'option_a' => '200',
+                'option_b' => '301',
+                'option_c' => '422',
+                'option_d' => '500',
+                'correct_option' => 'C',
             ],
         ];
     }

@@ -257,8 +257,8 @@ class FresherAssessmentController extends Controller
             ], 422);
         }
 
-        $activeQuestionsCount = AssessmentQuestion::query()
-            ->whereIn('id', $this->activeInitialQuestions()->pluck('id'))
+        $activeQuestionsCount = $this
+            ->activeInitialQuestions($fresherProfile->preferred_job_category)
             ->count();
 
         if ($activeQuestionsCount === 0) {
@@ -321,9 +321,10 @@ class FresherAssessmentController extends Controller
             ], 422);
         }
 
-        $questions = $this->activeInitialQuestions()
+        $questions = $this
+            ->activeInitialQuestions($request->user()?->fresherProfile?->preferred_job_category)
             ->map
-            ->only(['id', 'category', 'question', 'option_a', 'option_b', 'option_c', 'option_d'])
+            ->only(['id', 'category', 'job_category', 'question', 'option_a', 'option_b', 'option_c', 'option_d'])
             ->values();
 
         return response()->json([
@@ -358,7 +359,8 @@ class FresherAssessmentController extends Controller
             'answers.*.selected_option' => ['required', 'string', Rule::in(['A', 'B', 'C', 'D'])],
         ]);
 
-        $activeQuestions = $this->activeInitialQuestions();
+        $activeQuestions = $this
+            ->activeInitialQuestions($request->user()?->fresherProfile?->preferred_job_category);
 
         $activeQuestionIds = $activeQuestions->pluck('id')->sort()->values();
         $submittedQuestionIds = collect($validated['answers'])->pluck('question_id')->sort()->values();
@@ -505,13 +507,33 @@ class FresherAssessmentController extends Controller
         };
     }
 
-    private function activeInitialQuestions()
+    private function activeInitialQuestions(?string $jobCategory = null)
     {
         $this->ensureDefaultInitialQuestions();
 
-        $questions = AssessmentQuestion::query()
+        $baseQuery = AssessmentQuestion::query()
             ->where('assessment_type', 'initial')
-            ->where('is_active', true)
+            ->where('is_active', true);
+
+        if (filled($jobCategory)) {
+            $preferredQuestions = (clone $baseQuery)
+                ->where(function ($query) use ($jobCategory) {
+                    $query
+                        ->where('job_category', $jobCategory)
+                        ->orWhereNull('job_category');
+                })
+                ->orderByRaw('job_category IS NULL')
+                ->orderBy('category')
+                ->orderBy('id')
+                ->get();
+
+            if ($preferredQuestions->isNotEmpty()) {
+                $questions = $this->preferRoleQuestionsByCategory($preferredQuestions);
+            }
+        }
+
+        $questions ??= $baseQuery
+            ->whereNull('job_category')
             ->orderBy('category')
             ->orderBy('id')
             ->get();
@@ -535,12 +557,48 @@ class FresherAssessmentController extends Controller
         return trim(preg_replace('/\s+/', ' ', strtolower($question)));
     }
 
+    private function preferRoleQuestionsByCategory($questions)
+    {
+        $roleCategories = $questions
+            ->filter(fn ($question) => filled($question->job_category))
+            ->pluck('category')
+            ->unique();
+
+        if ($roleCategories->isEmpty()) {
+            return $questions;
+        }
+
+        return $questions
+            ->reject(fn ($question) => blank($question->job_category) && $roleCategories->contains($question->category))
+            ->values();
+    }
+
     private function ensureDefaultInitialQuestions(): void
     {
+        foreach ($this->defaultRoleInitialQuestions() as $question) {
+            AssessmentQuestion::firstOrCreate(
+                [
+                    'assessment_type' => 'initial',
+                    'category' => $question['category'],
+                    'job_category' => $question['job_category'],
+                    'question' => $question['question'],
+                ],
+                [
+                    'option_a' => $question['option_a'],
+                    'option_b' => $question['option_b'],
+                    'option_c' => $question['option_c'],
+                    'option_d' => $question['option_d'],
+                    'correct_option' => $question['correct_option'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
         foreach ($this->defaultInitialQuestions() as $category => $questions) {
             $activeCount = AssessmentQuestion::query()
                 ->where('assessment_type', 'initial')
                 ->where('category', $category)
+                ->whereNull('job_category')
                 ->where('is_active', true)
                 ->count();
 
@@ -553,6 +611,7 @@ class FresherAssessmentController extends Controller
                     [
                         'assessment_type' => 'initial',
                         'category' => $category,
+                        'job_category' => null,
                         'question' => $question['question'],
                     ],
                     [
@@ -648,6 +707,72 @@ class FresherAssessmentController extends Controller
                     'option_d' => 'To change the topic',
                     'correct_option' => 'B',
                 ],
+            ],
+        ];
+    }
+
+    private function defaultRoleInitialQuestions(): array
+    {
+        return [
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'technical',
+                'question' => 'Which SQL clause is used to group rows for aggregate analysis?',
+                'option_a' => 'ORDER BY',
+                'option_b' => 'GROUP BY',
+                'option_c' => 'WHERE',
+                'option_d' => 'LIMIT',
+                'correct_option' => 'B',
+            ],
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'technical',
+                'question' => 'Which chart is best suited to show a trend over time?',
+                'option_a' => 'Line chart',
+                'option_b' => 'Pie chart',
+                'option_c' => 'Donut chart',
+                'option_d' => 'Treemap',
+                'correct_option' => 'A',
+            ],
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'technical',
+                'question' => 'What does data cleaning mainly help with?',
+                'option_a' => 'Adding duplicate rows',
+                'option_b' => 'Improving data quality before analysis',
+                'option_c' => 'Removing every numeric value',
+                'option_d' => 'Changing database passwords',
+                'correct_option' => 'B',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'technical',
+                'question' => 'What is the purpose of version control in software development?',
+                'option_a' => 'Track and manage code changes',
+                'option_b' => 'Design image banners only',
+                'option_c' => 'Increase monitor brightness',
+                'option_d' => 'Compress database backups only',
+                'correct_option' => 'A',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'technical',
+                'question' => 'Which HTTP method is commonly used to create a new resource?',
+                'option_a' => 'GET',
+                'option_b' => 'POST',
+                'option_c' => 'HEAD',
+                'option_d' => 'TRACE',
+                'correct_option' => 'B',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'technical',
+                'question' => 'What does an API allow two software systems to do?',
+                'option_a' => 'Communicate and exchange data',
+                'option_b' => 'Replace all databases',
+                'option_c' => 'Delete source code automatically',
+                'option_d' => 'Disable user login',
+                'correct_option' => 'A',
             ],
         ];
     }

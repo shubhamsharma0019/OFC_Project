@@ -48,13 +48,13 @@
         ? 'Training Category'
         : ($isCompanyAuth
             ? 'Hiring Category'
-            : 'Interested Role');
+            : 'Career Interest');
 
     $categoryPlaceholder = $isTrainingPartnerAuth
         ? 'Select training category'
         : ($isCompanyAuth
             ? 'Select hiring category'
-            : 'Select interested role');
+            : 'Select job category');
 
     $introTitle = $isCompanyAuth
         ? 'Hire Freshers with'
@@ -151,8 +151,22 @@
             const activeSession = sessions.find(item => item.token && item.user?.role === item.role) ||
                 (sharedToken && sharedUser ? sessions.find(item => item.role === sharedUser.role) : null);
 
-            if (activeSession) {
+            if (activeSession && !(activeSession.role === 'fresher' && '{{ $registerRole }}' === 'fresher')) {
                 window.location.replace(activeSession.url);
+            }
+
+            if ('{{ $registerRole }}' === 'fresher') {
+                [
+                    'onlyfreshers_token',
+                    'onlyfreshers_user',
+                    'ofc_fresher_token',
+                    'ofc_fresher_user',
+                    'ofc_auth_token',
+                    'ofc_auth_user',
+                    'onlyfreshers_selected_mode',
+                    'onlyfreshers_intended_mode',
+                    'onlyfreshers_direct_profile_extra',
+                ].forEach(key => localStorage.removeItem(key));
             }
         })();
     </script>
@@ -2328,7 +2342,10 @@ document.addEventListener(
                                     payload.password_confirmation,
 
                                 role:
-                                    form.dataset.role
+                                    form.dataset.role,
+
+                                category:
+                                    payload.category
                             }
                         );
 
@@ -2534,27 +2551,28 @@ document.addEventListener(
                                     .secondary_field
                                     .trim(),
 
-                            skills:
+                            preferred_job_category:
                                 payload.category
                         },
                         token
                     );
 
 
-                    localStorage.setItem(
-                        'onlyfreshers_selected_mode',
-                        'direct'
-                    );
-
-
                     setAlert(
-                        'Account created successfully. Redirecting to dashboard...',
+                        'Account created successfully. Redirecting to flow selection...',
                         'success'
                     );
 
 
+                    const selectedCreditPlan =
+                        new URLSearchParams(window.location.search)
+                            .get('plan');
+
                     window.location.href =
-                        '/direct-mode/dashboard';
+                        selectedCreditPlan
+                            ? '/direct-mode/dashboard?plan=' +
+                                encodeURIComponent(selectedCreditPlan)
+                            : '/direct-mode/flow-selection';
 
 
                 } catch (error) {

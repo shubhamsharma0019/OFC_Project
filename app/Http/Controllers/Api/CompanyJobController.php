@@ -164,6 +164,11 @@ class CompanyJobController extends Controller
                 'max:50',
             ],
 
+            'immediate_joiner' => [
+                'nullable',
+                'boolean',
+            ],
+
             'openings' => [
                 'required',
                 'integer',
@@ -305,6 +310,12 @@ class CompanyJobController extends Controller
                 'nullable',
                 'string',
                 'max:50',
+            ],
+
+            'immediate_joiner' => [
+                'sometimes',
+                'nullable',
+                'boolean',
             ],
 
             'openings' => [

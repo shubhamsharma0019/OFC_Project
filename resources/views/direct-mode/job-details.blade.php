@@ -203,6 +203,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 ['Openings', job.openings || 'Not specified', 'users'],
                 ['Qualification', job.qualification || 'Not specified', 'cap'],
                 ['Salary', job.salary || 'Not disclosed', 'money'],
+                ['Immediate Joiner', job.immediate_joiner ? 'Yes' : 'No', 'clock'],
                 ['Location', job.location || 'Not shared', 'pin'],
                 ['Apply Before', lastDate, 'calendar'],
                 ['Hiring Mode', titleCase(jobMode(job)), 'briefcase'],
@@ -326,11 +327,6 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 }
 
                 const selectedMode = localStorage.getItem('onlyfreshers_selected_mode');
-                if (assessment.recommended_mode === 'fast_track') {
-                    localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
-                    window.location.href = '/fast-track/dashboard';
-                    return false;
-                }
                 if (selectedMode === 'fast_track') {
                     window.location.href = '/fast-track/dashboard';
                     return false;

@@ -102,9 +102,14 @@
             .search-top input{font-size:13px!important}
             .page,.dashboard,.profile-page,.assess-page{padding-left:12px!important;padding-right:12px!important}
         }
+        body.direct-assessment-page .shell{display:block!important;grid-template-columns:1fr!important}
+        body.direct-assessment-page .shell>.sidebar,
+        body.direct-assessment-page .topbar,
+        body.direct-assessment-page [data-mobile-direct-nav]{display:none!important}
+        body.direct-assessment-page .main{display:block!important;height:100vh!important;overflow-y:auto!important}
     </style>
 </head>
-<body>
+<body class="{{ ($activePage ?? '') === 'assessments' ? 'direct-assessment-page' : '' }}">
     <div class="shell">
         <aside class="sidebar">
             <div>

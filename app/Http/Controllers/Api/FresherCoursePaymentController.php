@@ -20,6 +20,15 @@ class FresherCoursePaymentController extends Controller
         Request $request,
         CourseEnrollment $courseEnrollment
     ): JsonResponse {
+        return response()->json([
+            'success' => false,
+            'message' => 'Please use the secure Razorpay checkout flow for course payments.',
+            'data' => [
+                'order_endpoint' => '/api/payments/razorpay/order',
+                'verify_endpoint' => '/api/payments/razorpay/verify',
+            ],
+        ], 410);
+
         $user = $request->user();
 
         if ($user->role !== 'fresher') {

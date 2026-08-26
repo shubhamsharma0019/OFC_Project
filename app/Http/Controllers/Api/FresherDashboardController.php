@@ -45,6 +45,7 @@ class FresherDashboardController extends Controller
         $initialAssessment = AssessmentAttempt::query()
             ->where('fresher_profile_id', $fresherProfile->id)
             ->where('assessment_type', 'initial')
+            ->where('created_at', '>=', $fresherProfile->created_at)
             ->with('result')
             ->latest('updated_at')
             ->first();
@@ -52,6 +53,7 @@ class FresherDashboardController extends Controller
         $finalAssessment = AssessmentAttempt::query()
             ->where('fresher_profile_id', $fresherProfile->id)
             ->where('assessment_type', 'final')
+            ->where('created_at', '>=', $fresherProfile->created_at)
             ->with('result')
             ->latest('updated_at')
             ->first();
@@ -92,6 +94,11 @@ class FresherDashboardController extends Controller
         );
         $usedApplicationCredits = (int) $fresherProfile->total_direct_mode_credits_used;
         $remainingApplicationCredits = (int) $fresherProfile->direct_mode_credits;
+        $directModePlan = $fresherProfile->direct_mode_subscription_plan;
+        $directModeExpiresAt = $fresherProfile->direct_mode_subscription_expires_at;
+        $directModeDaysRemaining = $directModeExpiresAt
+            ? max(0, today()->diffInDays($directModeExpiresAt, false))
+            : null;
 
         $upcomingInterviews = Interview::query()
             ->whereHas('jobApplication', function ($query) use (
@@ -149,6 +156,8 @@ class FresherDashboardController extends Controller
                         $fresherProfile->direct_mode_subscription_plan,
                     'direct_mode_subscribed_at' =>
                         optional($fresherProfile->direct_mode_subscribed_at)->toIso8601String(),
+                    'direct_mode_subscription_expires_at' =>
+                        optional($directModeExpiresAt)->toIso8601String(),
                 ],
 
                 'statistics' => [
@@ -235,6 +244,14 @@ class FresherDashboardController extends Controller
                     'application_cost' => $applicationCreditCost,
                     'can_apply' =>
                         $remainingApplicationCredits >= $applicationCreditCost,
+                    'active_plan' => $directModePlan,
+                    'active_plan_label' => $directModePlan
+                        ? ucfirst(str_replace('_', ' ', $directModePlan))
+                        : 'Starter',
+                    'subscribed_at' =>
+                        optional($fresherProfile->direct_mode_subscribed_at)->toIso8601String(),
+                    'valid_till' => optional($directModeExpiresAt)->toIso8601String(),
+                    'days_remaining' => $directModeDaysRemaining,
                 ],
 
                 'initial_assessment' => $initialAssessment
@@ -249,8 +266,8 @@ class FresherDashboardController extends Controller
                             $internshipEligibilityScore,
                         'recommended_mode' => $recommendedMode,
                         'eligible_paths' => [
-                            'jobs' => $directCareerEligible,
-                            'internships' => $directCareerEligible,
+                            'jobs' => true,
+                            'internships' => true,
                             'fast_track' => true,
                         ],
                     ]

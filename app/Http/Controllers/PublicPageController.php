@@ -971,9 +971,9 @@ class PublicPageController extends Controller
     private function hiringPackages(): array
     {
         return [
-            ['name' => 'Starter', 'desc' => 'Perfect for getting started', 'price' => '₹499', 'period' => '/month', 'button' => 'Choose Starter', 'popular' => false, 'items' => ['10 Job Postings', '50 Direct Mode Resumes', '20 Fast Track Mode Resumes', 'Candidate Contact Access', 'Email Support']],
-            ['name' => 'Growth', 'desc' => 'Scale your hiring', 'price' => '₹799', 'period' => '/month', 'button' => 'Choose Growth', 'popular' => true, 'items' => ['25 Job Postings', '150 Direct Mode Resumes', '60 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support']],
-            ['name' => 'Professional', 'desc' => 'For active hiring teams', 'price' => '₹999', 'period' => '/month', 'button' => 'Choose Professional', 'popular' => false, 'items' => ['60 Job Postings', '400 Direct Mode Resumes', '160 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support', 'Dedicated Account Manager']],
+            ['name' => 'Starter', 'desc' => 'Perfect for getting started', 'price' => '₹2', 'period' => '/month', 'button' => 'Choose Starter', 'popular' => false, 'items' => ['10 Job Postings', '50 Direct Mode Resumes', '20 Fast Track Mode Resumes', 'Candidate Contact Access', 'Email Support']],
+            ['name' => 'Growth', 'desc' => 'Scale your hiring', 'price' => '₹3', 'period' => '/month', 'button' => 'Choose Growth', 'popular' => true, 'items' => ['25 Job Postings', '150 Direct Mode Resumes', '60 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support']],
+            ['name' => 'Professional', 'desc' => 'For active hiring teams', 'price' => '₹4', 'period' => '/month', 'button' => 'Choose Professional', 'popular' => false, 'items' => ['60 Job Postings', '400 Direct Mode Resumes', '160 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support', 'Dedicated Account Manager']],
             ['name' => 'Enterprise', 'desc' => 'For large scale hiring', 'price' => 'Custom', 'period' => 'Contact Sales', 'button' => 'Contact Sales', 'popular' => false, 'items' => ['Unlimited Job Postings', 'Custom Resume Access', 'Dedicated Account Manager', 'Bulk Hiring Solutions', 'API Access', 'Custom Integrations']],
         ];
     }
@@ -981,11 +981,11 @@ class PublicPageController extends Controller
     private function creditPlans(): array
     {
         return [
-            ['name' => 'Starter', 'credits' => '250', 'price' => '₹0', 'period' => 'FREE', 'button' => 'Current Plan', 'popular' => false, 'items' => ['Apply to 5 jobs', '50 credits per application', 'For Direct Mode only']],
-            ['name' => 'Basic', 'credits' => '1,000', 'price' => '₹249', 'period' => 'Valid for 60 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 20 jobs', 'Valid for 60 days', 'For Direct Mode only']],
-            ['name' => 'Pro', 'credits' => '2,500', 'price' => '₹499', 'period' => 'Valid for 90 days', 'button' => 'Buy Now', 'popular' => true, 'items' => ['Apply to 50 jobs', 'Valid for 90 days', 'For Direct Mode only', 'Priority Support']],
-            ['name' => 'Premium', 'credits' => '5,000', 'price' => '₹899', 'period' => 'Valid for 120 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 100 jobs', 'Valid for 120 days', 'For Direct Mode only', 'Priority Support']],
-            ['name' => 'Ultimate', 'credits' => '10,000', 'price' => '₹1,499', 'period' => 'Valid for 180 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 200 jobs', 'Valid for 180 days', 'For Direct Mode only', 'Priority Support']],
+            ['key' => 'starter', 'name' => 'Starter', 'credits' => '250', 'price' => '₹0', 'period' => 'FREE', 'button' => 'Current Plan', 'popular' => false, 'items' => ['Apply to 5 jobs', '50 credits per application', 'For Direct Mode only']],
+            ['key' => 'basic', 'name' => 'Basic', 'credits' => '1,000', 'price' => '₹3', 'period' => 'Valid for 60 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 20 jobs', 'Valid for 60 days', 'For Direct Mode only']],
+            ['key' => 'pro', 'name' => 'Pro', 'credits' => '2,500', 'price' => '₹4', 'period' => 'Valid for 90 days', 'button' => 'Buy Now', 'popular' => true, 'items' => ['Apply to 50 jobs', 'Valid for 90 days', 'For Direct Mode only', 'Priority Support']],
+            ['key' => 'premium', 'name' => 'Premium', 'credits' => '5,000', 'price' => '₹5', 'period' => 'Valid for 120 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 100 jobs', 'Valid for 120 days', 'For Direct Mode only', 'Priority Support']],
+            ['key' => 'ultimate', 'name' => 'Ultimate', 'credits' => '10,000', 'price' => '₹1,499', 'period' => 'Valid for 180 days', 'button' => 'Buy Now', 'popular' => false, 'items' => ['Apply to 200 jobs', 'Valid for 180 days', 'For Direct Mode only', 'Priority Support']],
         ];
     }
 

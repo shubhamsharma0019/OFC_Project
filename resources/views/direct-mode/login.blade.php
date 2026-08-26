@@ -1965,14 +1965,28 @@ document.addEventListener(
                         return;
                     }
 
-
-                    localStorage.setItem(
-                        'onlyfreshers_selected_mode',
+                    if (
+                        selectedMode ===
                         'direct'
-                    );
+                    ) {
+                        window.location.href =
+                            '/direct-mode/dashboard';
+
+                        return;
+                    }
+
+                    if (
+                        selectedMode ===
+                        'internship'
+                    ) {
+                        window.location.href =
+                            '/direct-mode/jobs?type=internship';
+
+                        return;
+                    }
 
                     window.location.href =
-                        '/direct-mode/dashboard';
+                        '/direct-mode/flow-selection';
 
 
                 } catch (error) {

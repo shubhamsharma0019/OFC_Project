@@ -73,6 +73,26 @@ class PublicJobController extends Controller
                 }
             )
             ->when(
+                $request->filled('job_category'),
+                function ($query) use ($request) {
+                    $terms = $this->categoryTerms(
+                        $request->string('job_category')->toString()
+                    );
+
+                    $query->where(function ($jobQuery) use ($terms) {
+                        foreach ($terms as $term) {
+                            $jobQuery
+                                ->orWhere('title', 'like', "%{$term}%")
+                                ->orWhere('required_skills', 'like', "%{$term}%")
+                                ->orWhere('description', 'like', "%{$term}%")
+                                ->orWhereHas('companyProfile', function ($companyQuery) use ($term) {
+                                    $companyQuery->where('industry', 'like', "%{$term}%");
+                                });
+                        }
+                    });
+                }
+            )
+            ->when(
                 $request->filled('job_type'),
                 function ($query) use ($request) {
                     $jobType = strtolower(
@@ -91,6 +111,35 @@ class PublicJobController extends Controller
             )
             ->latest()
             ->get();
+
+        $minPackage = $request->filled('min_package')
+            ? (float) $request->query('min_package')
+            : null;
+        $maxPackage = $request->filled('max_package')
+            ? (float) $request->query('max_package')
+            : null;
+
+        if ($minPackage !== null || $maxPackage !== null) {
+            $jobs = $jobs
+                ->filter(function (Job $job) use ($minPackage, $maxPackage) {
+                    [$salaryMin, $salaryMax] = $this->salaryBounds($job->salary);
+
+                    if ($salaryMin === null && $salaryMax === null) {
+                        return false;
+                    }
+
+                    if ($minPackage !== null && $salaryMax !== null && $salaryMax < $minPackage) {
+                        return false;
+                    }
+
+                    if ($maxPackage !== null && $salaryMin !== null && $salaryMin > $maxPackage) {
+                        return false;
+                    }
+
+                    return true;
+                })
+                ->values();
+        }
 
         return response()->json([
             'success' => true,
@@ -149,5 +198,52 @@ class PublicJobController extends Controller
                 'job' => $job,
             ],
         ]);
+    }
+
+    private function salaryBounds(?string $salary): array
+    {
+        if (! $salary) {
+            return [null, null];
+        }
+
+        preg_match_all('/\d+(?:,\d+)*(?:\.\d+)?/', $salary, $matches);
+
+        $numbers = collect($matches[0] ?? [])
+            ->map(fn (string $value) => (float) str_replace(',', '', $value))
+            ->filter(fn (float $value) => $value > 0)
+            ->values();
+
+        if ($numbers->isEmpty()) {
+            return [null, null];
+        }
+
+        $normalized = $numbers->map(function (float $value) use ($salary) {
+            $text = strtolower($salary);
+
+            if (str_contains($text, 'month') || str_contains($text, 'pm')) {
+                return ($value * 12) / 100000;
+            }
+
+            if ($value >= 100000) {
+                return $value / 100000;
+            }
+
+            return $value;
+        });
+
+        return [$normalized->min(), $normalized->max()];
+    }
+
+    private function categoryTerms(string $category): array
+    {
+        $normalized = strtolower($category);
+
+        return match (true) {
+            str_contains($normalized, 'data') => ['data analyst', 'data', 'sql', 'excel', 'power bi', 'analytics'],
+            str_contains($normalized, 'software') || str_contains($normalized, 'developer') => ['software', 'developer', 'laravel', 'php', 'react', 'javascript', 'python'],
+            str_contains($normalized, 'ui') || str_contains($normalized, 'ux') || str_contains($normalized, 'design') => ['ui', 'ux', 'designer', 'figma', 'wireframe'],
+            str_contains($normalized, 'marketing') => ['marketing', 'seo', 'social media', 'content', 'analytics'],
+            default => [$category],
+        };
     }
 }

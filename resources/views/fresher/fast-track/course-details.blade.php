@@ -179,6 +179,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     const courseDetailsHero = document.getElementById('courseDetailsHero');
     const courseMessage = document.getElementById('courseMessage');
@@ -311,17 +312,70 @@
     }
     function payCourse() {
         if (!currentEnrollment?.id) return;
-        showMessage('Confirming payment...');
-        FastTrack.postJson('/api/fresher/enrollments/' + currentEnrollment.id + '/payment', {
-            transaction_id: 'FT-' + Date.now(),
-            payment_status: 'success',
+        const payButton = document.getElementById('payBtn');
+        if (payButton) {
+            payButton.disabled = true;
+            payButton.textContent = 'Processing...';
+        }
+        showMessage('Creating secure payment order...');
+
+        FastTrack.postJson('/api/payments/razorpay/order', {
+            purpose: 'course_enrollment',
+            course_enrollment_id: currentEnrollment.id,
         }).then(function (result) {
-            const paymentData = FastTrack.apiData(result) || {};
-            currentEnrollment = paymentData.enrollment || currentEnrollment;
-            currentEnrollment.payment_status = 'paid';
-            currentEnrollment.enrollment_status = 'enrolled';
-            showMessage('Payment successful. Training unlocked.');
-            refreshCourse();
+            const order = FastTrack.apiData(result) || {};
+
+            if (!window.Razorpay) {
+                throw new Error('Razorpay checkout could not be loaded. Please refresh and try again.');
+            }
+
+            const checkout = new Razorpay({
+                key: order.key,
+                amount: order.amount,
+                currency: order.currency,
+                order_id: order.razorpay_order_id,
+                name: order.name,
+                description: order.description,
+                prefill: order.prefill || {},
+                method: {
+                    card: true,
+                    netbanking: true,
+                    wallet: true,
+                    upi: true,
+                },
+                handler: function (response) {
+                    showMessage('Verifying payment...');
+                    FastTrack.postJson('/api/payments/razorpay/verify', {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                    }).then(function (verifyResult) {
+                        currentEnrollment.payment_status = 'paid';
+                        currentEnrollment.enrollment_status = 'enrolled';
+                        showMessage('Payment successful. Training unlocked.');
+                        refreshCourse();
+                        const redirectTo = FastTrack.apiData(verifyResult, 'redirect_to');
+                        if (redirectTo) window.location.href = redirectTo;
+                    }).catch(function (error) {
+                        showMessage(error.message || 'Payment verification failed.', 'error');
+                        if (payButton) {
+                            payButton.disabled = false;
+                            payButton.textContent = 'Retry Payment';
+                        }
+                    });
+                },
+                modal: {
+                    ondismiss: function () {
+                        showMessage('Payment was cancelled. You can retry anytime.', 'error');
+                        if (payButton) {
+                            payButton.disabled = false;
+                            payButton.textContent = 'Retry Payment';
+                        }
+                    },
+                },
+            });
+
+            checkout.open();
         }).catch(function (error) {
             if (/already/i.test(error.message || '')) {
                 currentEnrollment.payment_status = 'paid';
@@ -331,6 +385,10 @@
                 return;
             }
             showMessage(error.message || 'Payment failed.', 'error');
+            if (payButton) {
+                payButton.disabled = false;
+                payButton.textContent = 'Retry Payment';
+            }
         });
     }
     function loadCourse() {

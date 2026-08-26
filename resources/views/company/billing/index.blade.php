@@ -7,9 +7,9 @@
     $activePage = 'billing';
 
     $plans = [
-        ['name' => 'Basic', 'monthly' => 'Rs. 499', 'yearly' => 'Rs. 4,999', 'popular' => false, 'features' => ['10 Job Postings', 'Basic Search Access', 'Email Support']],
-        ['name' => 'Premium', 'monthly' => 'Rs. 799', 'yearly' => 'Rs. 7,999', 'popular' => true, 'features' => ['Unlimited Job Postings', 'Access to Fresh Candidates', 'Priority Support']],
-        ['name' => 'Enterprise', 'monthly' => 'Rs. 999', 'yearly' => 'Rs. 9,999', 'popular' => false, 'features' => ['50 Job Postings', 'Dedicated Account Manager', 'Custom Reports']],
+        ['name' => 'Basic', 'monthly' => 'Rs. 2', 'yearly' => 'Rs. 19', 'popular' => false, 'features' => ['10 Job Postings', 'Basic Search Access', 'Email Support']],
+        ['name' => 'Premium', 'monthly' => 'Rs. 3', 'yearly' => 'Rs. 29', 'popular' => true, 'features' => ['Unlimited Job Postings', 'Access to Fresh Candidates', 'Priority Support']],
+        ['name' => 'Enterprise', 'monthly' => 'Rs. 4', 'yearly' => 'Rs. 38', 'popular' => false, 'features' => ['50 Job Postings', 'Dedicated Account Manager', 'Custom Reports']],
     ];
 
     $benefits = [
@@ -97,6 +97,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     document.querySelectorAll('[data-tenure]').forEach(function (button) {
         button.addEventListener('click', function () {
@@ -131,10 +132,10 @@
 
             const originalText = button.textContent;
             button.disabled = true;
-            button.textContent = 'Activating...';
+            button.textContent = 'Processing...';
 
             try {
-                const response = await fetch('/api/company/subscribe', {
+                const orderResponse = await fetch('/api/payments/razorpay/order', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -142,28 +143,78 @@
                         Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({
+                        purpose: 'company_subscription',
                         plan: button.dataset.plan,
                     }),
                 });
 
-                const result = await response.json();
+                const orderResult = await orderResponse.json();
 
-                if (!response.ok || result.success === false) {
-                    throw new Error(result.message || 'Unable to activate plan.');
+                if (!orderResponse.ok || orderResult.success === false) {
+                    throw new Error(orderResult.message || 'Unable to create payment order.');
                 }
 
-                if (result.data?.profile) {
-                    localStorage.setItem(
-                        'ofc_company_profile',
-                        JSON.stringify(result.data.profile)
-                    );
+                const order = orderResult.data || {};
+                if (!window.Razorpay) {
+                    throw new Error('Razorpay checkout could not be loaded. Please refresh and try again.');
                 }
 
-                alert(result.message || 'Plan activated.');
-                window.location.href = result.data?.redirect_to || '/company/post-job';
+                const checkout = new Razorpay({
+                    key: order.key,
+                    amount: order.amount,
+                    currency: order.currency,
+                    order_id: order.razorpay_order_id,
+                    name: order.name,
+                    description: order.description,
+                    prefill: order.prefill || {},
+                    method: {
+                        card: true,
+                        netbanking: true,
+                        wallet: true,
+                        upi: true,
+                    },
+                    handler: async function (response) {
+                        button.textContent = 'Verifying...';
+                        try {
+                            const verifyResponse = await fetch('/api/payments/razorpay/verify', {
+                                method: 'POST',
+                                headers: {
+                                    Accept: 'application/json',
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${token}`,
+                                },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                }),
+                            });
+                            const verifyResult = await verifyResponse.json();
+
+                            if (!verifyResponse.ok || verifyResult.success === false) {
+                                throw new Error(verifyResult.message || 'Payment verification failed.');
+                            }
+
+                            alert(verifyResult.message || 'Plan activated.');
+                            window.location.href = verifyResult.data?.redirect_to || '/company/post-job';
+                        } catch (error) {
+                            alert(error.message || 'Payment verification failed.');
+                            button.disabled = false;
+                            button.textContent = originalText;
+                        }
+                    },
+                    modal: {
+                        ondismiss: function () {
+                            alert('Payment was cancelled. You can retry anytime.');
+                            button.disabled = false;
+                            button.textContent = originalText;
+                        },
+                    },
+                });
+
+                checkout.open();
             } catch (error) {
                 alert(error.message || 'Something went wrong.');
-            } finally {
                 button.disabled = false;
                 button.textContent = originalText;
             }

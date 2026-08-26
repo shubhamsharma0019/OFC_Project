@@ -28,6 +28,12 @@ class PublicCourseController extends Controller
                 'max:150',
             ],
 
+            'job_category' => [
+                'nullable',
+                'string',
+                'max:150',
+            ],
+
             'training_mode' => [
                 'nullable',
                 'string',
@@ -73,6 +79,22 @@ class PublicCourseController extends Controller
                                 'like',
                                 "%{$search}%"
                             );
+                    });
+                }
+            )
+            ->when(
+                isset($validated['job_category']),
+                function ($query) use ($validated) {
+                    $terms = $this->categoryTerms($validated['job_category']);
+
+                    $query->where(function ($subQuery) use ($terms) {
+                        foreach ($terms as $term) {
+                            $subQuery
+                                ->orWhere('course_name', 'like', "%{$term}%")
+                                ->orWhere('category', 'like', "%{$term}%")
+                                ->orWhere('skills_covered', 'like', "%{$term}%")
+                                ->orWhere('description', 'like', "%{$term}%");
+                        }
                     });
                 }
             )
@@ -135,5 +157,18 @@ class PublicCourseController extends Controller
                 'course' => $course,
             ],
         ]);
+    }
+
+    private function categoryTerms(string $category): array
+    {
+        $normalized = strtolower($category);
+
+        return match (true) {
+            str_contains($normalized, 'data') => ['data analyst', 'data', 'sql', 'excel', 'power bi', 'analytics'],
+            str_contains($normalized, 'software') || str_contains($normalized, 'developer') => ['software', 'developer', 'laravel', 'php', 'react', 'javascript', 'python'],
+            str_contains($normalized, 'ui') || str_contains($normalized, 'ux') || str_contains($normalized, 'design') => ['ui', 'ux', 'designer', 'figma', 'wireframe'],
+            str_contains($normalized, 'marketing') => ['marketing', 'seo', 'social media', 'content', 'analytics'],
+            default => [$category],
+        };
     }
 }

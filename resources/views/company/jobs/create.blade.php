@@ -294,6 +294,24 @@
         </div>
 
 
+        {{-- Immediate Joiner --}}
+        <div class="md:col-span-2">
+
+            <label
+                class="inline-flex items-center gap-3 rounded-lg border border-[#dce7f8] bg-[#f8fbff] px-4 py-3 text-[13px] font-bold text-[#061942]"
+            >
+                <input
+                    id="immediateJoiner"
+                    name="immediate_joiner"
+                    type="checkbox"
+                    class="h-4 w-4 accent-[#075fe4]"
+                >
+                Immediate joiner required
+            </label>
+
+        </div>
+
+
         {{-- Location --}}
         <div class="md:col-span-2">
 
@@ -956,6 +974,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             job_type:
                 employmentType,
+
+            immediate_joiner:
+                document
+                    .getElementById('immediateJoiner')
+                    .checked,
 
             openings:
                 Number(

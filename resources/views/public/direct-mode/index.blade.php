@@ -174,7 +174,7 @@
                         <p class="mb-4 text-[10px] font-bold text-[#075fe4]">{{ $planLabels['credits'] }}</p>
                         <p class="text-[27px] font-black leading-none text-[#061942]">{{ $plan['price'] }}</p>
                         <p class="mb-4 text-[10px] font-semibold text-[#34445e]">{{ $plan['period'] }}</p>
-                        <a href="{{ $planLabels['buy_href'] }}" class="mb-5 inline-flex h-9 w-full items-center justify-center rounded-md border border-[#075fe4] px-4 text-[11px] font-bold transition {{ $plan['button'] === 'Current Plan' ? 'bg-white text-[#075fe4]' : 'bg-[#075fe4] text-white hover:bg-[#0554cc]' }}">{{ $plan['button'] }}</a>
+                        <a href="{{ $plan['button'] === 'Current Plan' ? $planLabels['buy_href'] : $planLabels['buy_href'].'?plan='.$plan['key'] }}" class="mb-5 inline-flex h-9 w-full items-center justify-center rounded-md border border-[#075fe4] px-4 text-[11px] font-bold transition {{ $plan['button'] === 'Current Plan' ? 'bg-white text-[#075fe4]' : 'bg-[#075fe4] text-white hover:bg-[#0554cc]' }}">{{ $plan['button'] }}</a>
                         <ul class="grid gap-2 text-left text-[10px] font-semibold leading-4 text-[#061942]">
                             @foreach ($plan['items'] as $item)
                                 <li class="flex gap-2"><span class="font-bold text-[#0b8b67]">✓</span><span>{{ $item }}</span></li>

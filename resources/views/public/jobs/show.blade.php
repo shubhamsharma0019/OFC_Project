@@ -119,6 +119,7 @@
                         ${overviewRow('Location', job.location)}
                         ${overviewRow('Industry', company.industry)}
                         ${overviewRow('Salary', job.salary)}
+                        ${overviewRow('Immediate Joiner', job.immediate_joiner ? 'Yes' : 'No')}
                         ${overviewRow('Openings Left', openingsLeft(job))}
                         ${overviewRow('Last Date', job.application_last_date ? new Date(job.application_last_date).toLocaleDateString('en-IN') : '-')}
                     </div>

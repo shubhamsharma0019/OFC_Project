@@ -20,11 +20,13 @@
             <button class="job-tab shrink-0 border-b-[3px] border-transparent px-4 pb-3 text-sm font-bold text-[#334b83]" type="button" data-tab="applied">Applied Jobs <span data-tab-count="applied">0</span></button>
         </div>
 
-        <div class="grid gap-3 lg:grid-cols-[1.8fr_repeat(3,180px)_120px]">
+        <div class="grid gap-3 lg:grid-cols-[1.8fr_repeat(3,170px)_repeat(2,120px)_110px]">
             <input id="jobSearchInput" class="h-[42px] rounded-md border border-[#cfe0ff] bg-white px-4 text-sm text-[#334b83] outline-none placeholder:text-[#6f7ea0]" placeholder="Search by job title, company or skills">
             <select id="jobLocationFilter" class="h-[42px] rounded-md border border-[#cfe0ff] bg-white px-4 text-sm text-[#334b83]"><option value="">All Locations</option></select>
             <select id="jobTypeFilter" class="h-[42px] rounded-md border border-[#cfe0ff] bg-white px-4 text-sm text-[#334b83]"><option value="">All Job Types</option></select>
             <select id="jobExperienceFilter" class="h-[42px] rounded-md border border-[#cfe0ff] bg-white px-4 text-sm text-[#334b83]"><option value="">Experience Level</option></select>
+            <input id="jobMinPackageFilter" type="number" min="0" step="0.1" class="h-[42px] rounded-md border border-[#cfe0ff] bg-white px-4 text-sm text-[#334b83] outline-none placeholder:text-[#6f7ea0]" placeholder="Min LPA">
+            <input id="jobMaxPackageFilter" type="number" min="0" step="0.1" class="h-[42px] rounded-md border border-[#cfe0ff] bg-white px-4 text-sm text-[#334b83] outline-none placeholder:text-[#6f7ea0]" placeholder="Max LPA">
             <button id="jobClearFilters" class="h-[42px] rounded-md border border-[#cfe0ff] bg-white px-4 text-sm font-bold text-[#075fe4]" type="button">Clear</button>
         </div>
 
@@ -70,6 +72,8 @@
     const jobLocationFilter = document.getElementById('jobLocationFilter');
     const jobTypeFilter = document.getElementById('jobTypeFilter');
     const jobExperienceFilter = document.getElementById('jobExperienceFilter');
+    const jobMinPackageFilter = document.getElementById('jobMinPackageFilter');
+    const jobMaxPackageFilter = document.getElementById('jobMaxPackageFilter');
     const jobClearFilters = document.getElementById('jobClearFilters');
     const savedJobsList = document.getElementById('savedJobsList');
     const savedViewButton = document.getElementById('savedViewButton');
@@ -85,6 +89,7 @@
     let recommendedJobs = [];
     let applications = [];
     let profileSkills = [];
+    let preferredJobCategory = '';
     let recommendedTrack = '';
     let hasCertificate = false;
     let usedAllJobsFallback = false;
@@ -129,6 +134,32 @@
             job.description,
             job.required_skills,
         ].join(' ').toLowerCase();
+    }
+
+    function categoryTerms(category) {
+        const value = String(category || '').toLowerCase();
+        if (value.includes('data')) return ['data analyst', 'data', 'sql', 'excel', 'power bi', 'analytics'];
+        if (value.includes('software') || value.includes('developer')) return ['software', 'developer', 'laravel', 'php', 'react', 'javascript', 'python'];
+        if (value.includes('ui') || value.includes('ux') || value.includes('design')) return ['ui', 'ux', 'designer', 'figma', 'wireframe'];
+        if (value.includes('marketing')) return ['marketing', 'seo', 'social media', 'content', 'analytics'];
+        return value ? [value] : [];
+    }
+
+    function salaryBounds(job) {
+        const text = String(job.salary || '');
+        const values = (text.match(/\d+(?:,\d+)*(?:\.\d+)?/g) || [])
+            .map((value) => Number(value.replace(/,/g, '')))
+            .filter((value) => value > 0)
+            .map((value) => {
+                const lowered = text.toLowerCase();
+                if (lowered.includes('month') || lowered.includes('pm')) return (value * 12) / 100000;
+                if (value >= 100000) return value / 100000;
+                return value;
+            });
+
+        if (!values.length) return [0, 0];
+
+        return [Math.min(...values), Math.max(...values)];
     }
 
     function applicationJobId(application) {
@@ -181,13 +212,19 @@
         const location = jobLocationFilter.value;
         const type = jobTypeFilter.value;
         const experience = jobExperienceFilter.value;
+        const minPackage = Number(jobMinPackageFilter.value || 0);
+        const maxPackage = Number(jobMaxPackageFilter.value || 0);
+        const categoryKeywords = categoryTerms(preferredJobCategory);
 
         return rows.filter((job) => {
             const text = jobText(job);
+            const [salaryMin, salaryMax] = salaryBounds(job);
             return (!query || text.includes(query))
+                && (!categoryKeywords.length || categoryKeywords.some((term) => text.includes(term)))
                 && (!location || String(job.location || '') === location)
                 && (!type || String(job.job_type || '') === type)
-                && (!experience || String(job.experience || job.experience_level || job.qualification || '') === experience);
+                && (!experience || String(job.experience || job.experience_level || job.qualification || '') === experience)
+                && (!(minPackage || maxPackage) || ((salaryMin || salaryMax) && (!minPackage || salaryMax >= minPackage) && (!maxPackage || salaryMin <= maxPackage)));
         });
     }
 
@@ -248,6 +285,7 @@
                     <span class="rounded-lg bg-[#e8f8ef] px-3 py-1.5 text-xs font-bold text-[#05843e]">${FastTrack.esc(job.job_type || 'Full Time')}</span>
                     <span class="rounded-lg bg-[#efeaff] px-3 py-1.5 text-xs font-bold text-[#673de6]">${FastTrack.esc(job.experience || job.experience_level || 'Fresher')}</span>
                     <span class="rounded-lg ${badgeClass(job.hiring_mode)} px-3 py-1.5 text-xs font-bold">${FastTrack.esc(FastTrack.statusText(job.hiring_mode || 'Fast Track'))}</span>
+                    ${job.immediate_joiner ? '<span class="rounded-lg bg-[#fff2d8] px-3 py-1.5 text-xs font-bold text-[#b66b00]">Immediate Joiner</span>' : ''}
                 </div>
                 <div class="mb-3 text-right text-xs font-bold text-[#334b83] max-lg:text-left">Match ${score}%</div>
                 <div class="flex flex-wrap gap-2 lg:justify-end">
@@ -344,6 +382,9 @@
             const profile = dashboard.profile || {};
             const assessment = dashboard.initial_assessment || {};
             profileSkills = Array.isArray(profile.skills) ? profile.skills : String(profile.skills || '').split(/[,|]/).map((skill) => skill.trim()).filter(Boolean);
+            preferredJobCategory = profile.preferred_job_category || '';
+            if (profile.preferred_min_package_lpa) jobMinPackageFilter.value = profile.preferred_min_package_lpa;
+            if (profile.preferred_max_package_lpa) jobMaxPackageFilter.value = profile.preferred_max_package_lpa;
             recommendedTrack = assessment.recommended_track || '';
             populateFilters();
             renderJobs();
@@ -359,13 +400,15 @@
         renderJobs();
     }));
 
-    [jobSearchInput, jobLocationFilter, jobTypeFilter, jobExperienceFilter].forEach((input) => input.addEventListener('input', renderJobs));
-    [jobLocationFilter, jobTypeFilter, jobExperienceFilter].forEach((input) => input.addEventListener('change', renderJobs));
+    [jobSearchInput, jobLocationFilter, jobTypeFilter, jobExperienceFilter, jobMinPackageFilter, jobMaxPackageFilter].forEach((input) => input.addEventListener('input', renderJobs));
+    [jobLocationFilter, jobTypeFilter, jobExperienceFilter, jobMinPackageFilter, jobMaxPackageFilter].forEach((input) => input.addEventListener('change', renderJobs));
     jobClearFilters.addEventListener('click', function () {
         jobSearchInput.value = '';
         jobLocationFilter.value = '';
         jobTypeFilter.value = '';
         jobExperienceFilter.value = '';
+        jobMinPackageFilter.value = '';
+        jobMaxPackageFilter.value = '';
         renderJobs();
     });
     savedViewButton.addEventListener('click', function () {

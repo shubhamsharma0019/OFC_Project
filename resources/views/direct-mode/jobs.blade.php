@@ -30,7 +30,7 @@
         @media(max-width:1240px){.job{grid-template-columns:74px minmax(190px,1fr) 92px minmax(260px,auto)}}
         @media(max-width:980px){.job{grid-template-columns:74px minmax(0,1fr);align-items:start}.job .tag,.job-actions{grid-column:2;justify-self:start;justify-items:start}.action-row{justify-content:flex-start;flex-wrap:wrap}.posted{justify-self:start}}
         @media(max-width:760px){.job .outline,.job .primary{width:max-content;max-width:100%}.job .tag,.job-actions{grid-column:auto}}
-body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!important;min-height:0!important;overflow:hidden!important;grid-template-columns:250px minmax(0,1fr)!important}.sidebar{position:sticky!important;top:0!important;height:100vh!important;overflow:hidden!important;justify-content:space-between!important}.menu{max-height:calc(100vh - 300px)!important;overflow-y:auto!important}.main{height:100vh!important;overflow-y:auto!important;grid-template-rows:82px minmax(0,max-content)!important}.topbar{position:sticky!important;top:0!important;z-index:20!important;height:82px!important;grid-template-columns:1fr minmax(320px,603px) 1fr!important;padding:0 38px!important}.footer{display:none!important}.page{min-width:0;padding:24px 24px 30px!important}.layout{align-items:start}.jobs-panel,.side-card{max-width:100%;overflow:hidden}.filters-row{grid-template-columns:minmax(280px,1fr) repeat(3,minmax(128px,150px)) minmax(116px,128px)!important;gap:12px!important}.input,.select{height:42px!important;min-width:0!important}.input input{width:100%!important;min-width:0!important;border:0!important;outline:0!important;background:transparent!important;color:#06123f!important;font-weight:600!important}.input input:focus{outline:0!important;box-shadow:none!important}.job{grid-template-columns:74px minmax(180px,1fr) 92px minmax(250px,auto)!important}.job-actions{min-width:0}.action-row{flex-wrap:wrap}.job-meta .icon{vertical-align:middle;margin-right:4px}.select select,.sort select{border:0;outline:0;background:transparent;width:100%;min-width:0;height:100%;color:#06123f;font-weight:700;appearance:none;cursor:pointer;padding:0 28px 0 0}.select select:focus,.sort select:focus{outline:0!important;box-shadow:none!important}.select select option,.sort select option{background:#fff!important;color:#06123f!important;font-weight:600!important;padding:8px 10px!important}.select{position:relative;overflow:visible!important;background:#fff!important}.select .icon{position:absolute;right:10px;pointer-events:none}.meta-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:16px!important}.sort{display:grid!important;grid-template-columns:auto minmax(150px,190px) 18px!important;align-items:center!important}.alert{display:none;margin:0 0 14px;padding:11px 13px;border-radius:8px;border:1px solid #bcd3ff;background:#eef5ff;color:#06123f;font-size:13px;font-weight:700}.alert.show{display:block}.empty{border:1px dashed #cbd8ee;border-radius:10px;background:#fbfdff;padding:26px;text-align:center;color:#43517b}.primary[disabled],.outline[disabled]{opacity:.65;cursor:not-allowed}.save.saved{background:#eaf2ff;color:#064cff}.job.applied{border-color:#bde6ce}.job.applied .tag{background:#e8f8ef;color:#008a35}.logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}.logo.generated{background:#102d68}.top-filter{min-width:0}.top-filter option{font-weight:600}.saved-row{cursor:pointer}.saved-row.empty-saved{grid-template-columns:1fr;color:#657197}.insights{grid-template-columns:repeat(2,minmax(0,1fr))!important}.insight{height:auto!important;min-height:64px!important;grid-template-columns:36px minmax(0,1fr)!important;align-items:center!important;gap:8px!important;padding:10px!important;overflow:hidden!important}.insight>div{min-width:0!important;display:grid!important;gap:2px!important;align-content:center!important}.insight strong{line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.insight span:not(.insight-icon){display:block!important;font-size:11px!important;line-height:1.18!important;white-space:normal!important;overflow-wrap:anywhere!important}.insight-icon{width:32px!important;height:32px!important;align-self:center!important;justify-self:center!important}.insight-icon svg{stroke:#064cff!important;fill:none!important}@media(max-width:1240px){.layout{grid-template-columns:1fr!important}.filters-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}.job{grid-template-columns:74px minmax(0,1fr)!important}.job .tag,.job-actions{grid-column:2;justify-self:start;justify-items:start}.action-row{justify-content:flex-start}}@media(max-width:760px){.filters-row,.meta-row{grid-template-columns:1fr!important}.sort{grid-template-columns:auto minmax(0,1fr) 18px!important}.job .tag,.job-actions{grid-column:auto}.job{grid-template-columns:1fr!important}.logo{width:58px;height:58px}.action-row{gap:8px}}</style>
+body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!important;min-height:0!important;overflow:hidden!important;grid-template-columns:250px minmax(0,1fr)!important}.sidebar{position:sticky!important;top:0!important;height:100vh!important;overflow:hidden!important;justify-content:space-between!important}.menu{max-height:calc(100vh - 300px)!important;overflow-y:auto!important}.main{height:100vh!important;overflow-y:auto!important;grid-template-rows:82px minmax(0,max-content)!important}.topbar{position:sticky!important;top:0!important;z-index:20!important;height:82px!important;grid-template-columns:1fr minmax(320px,603px) 1fr!important;padding:0 38px!important}.footer{display:none!important}.page{min-width:0;padding:24px 24px 30px!important}.layout{align-items:start}.jobs-panel,.side-card{max-width:100%;overflow:hidden}.filters-row{grid-template-columns:minmax(280px,1fr) repeat(3,minmax(128px,150px)) minmax(116px,128px)!important;gap:12px!important}.input,.select{height:42px!important;min-width:0!important}.input input{width:100%!important;min-width:0!important;border:0!important;outline:0!important;background:transparent!important;color:#06123f!important;font-weight:600!important}.input input:focus{outline:0!important;box-shadow:none!important}.job{grid-template-columns:74px minmax(180px,1fr) 92px minmax(250px,auto)!important}.job-actions{min-width:0}.action-row{flex-wrap:wrap}.job-meta .icon{vertical-align:middle;margin-right:4px}.select select,.sort select{border:0;outline:0;background:transparent;width:100%;min-width:0;height:100%;color:#06123f;font-weight:700;appearance:none;cursor:pointer;padding:0 28px 0 0}.select select:focus,.sort select:focus{outline:0!important;box-shadow:none!important}.select select option,.sort select option{background:#fff!important;color:#06123f!important;font-weight:600!important;padding:8px 10px!important}.select{position:relative;overflow:visible!important;background:#fff!important}.select .icon{position:absolute;right:10px;pointer-events:none}.salary-range{display:grid;grid-template-columns:1fr 1fr;gap:8px}.salary-range input{width:100%;height:36px;border:1px solid #d8e4f7;border-radius:6px;background:#fff;color:#06123f;font-size:12px;font-weight:700;padding:0 10px;outline:0}.meta-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:16px!important}.sort{display:grid!important;grid-template-columns:auto minmax(150px,190px) 18px!important;align-items:center!important}.alert{display:none;margin:0 0 14px;padding:11px 13px;border-radius:8px;border:1px solid #bcd3ff;background:#eef5ff;color:#06123f;font-size:13px;font-weight:700}.alert.show{display:block}.empty{border:1px dashed #cbd8ee;border-radius:10px;background:#fbfdff;padding:26px;text-align:center;color:#43517b}.primary[disabled],.outline[disabled]{opacity:.65;cursor:not-allowed}.save.saved{background:#eaf2ff;color:#064cff}.job.applied{border-color:#bde6ce}.job.applied .tag{background:#e8f8ef;color:#008a35}.logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}.logo.generated{background:#102d68}.top-filter{min-width:0}.top-filter option{font-weight:600}.saved-row{cursor:pointer}.saved-row.empty-saved{grid-template-columns:1fr;color:#657197}.insights{grid-template-columns:repeat(2,minmax(0,1fr))!important}.insight{height:auto!important;min-height:64px!important;grid-template-columns:36px minmax(0,1fr)!important;align-items:center!important;gap:8px!important;padding:10px!important;overflow:hidden!important}.insight>div{min-width:0!important;display:grid!important;gap:2px!important;align-content:center!important}.insight strong{line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.insight span:not(.insight-icon){display:block!important;font-size:11px!important;line-height:1.18!important;white-space:normal!important;overflow-wrap:anywhere!important}.insight-icon{width:32px!important;height:32px!important;align-self:center!important;justify-self:center!important}.insight-icon svg{stroke:#064cff!important;fill:none!important}@media(max-width:1240px){.layout{grid-template-columns:1fr!important}.filters-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}.job{grid-template-columns:74px minmax(0,1fr)!important}.job .tag,.job-actions{grid-column:2;justify-self:start;justify-items:start}.action-row{justify-content:flex-start}}@media(max-width:760px){.filters-row,.meta-row{grid-template-columns:1fr!important}.sort{grid-template-columns:auto minmax(0,1fr) 18px!important}.job .tag,.job-actions{grid-column:auto}.job{grid-template-columns:1fr!important}.logo{width:58px;height:58px}.action-row{gap:8px}.salary-range{grid-template-columns:1fr}}</style>
 @endpush
 
 @section('content')
@@ -59,7 +59,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                             <div class="field"><label>Job Role</label><select data-role-filter><option value="">All Roles</option></select></div>
                             <div class="field"><label>Location</label><select data-location-filter><option value="">All Locations</option></select></div>
                             <div class="field"><label>Experience</label><select data-experience-filter><option value="">All Experience</option><option value="fresher">Fresher</option><option value="full">Full Time</option><option value="part">Part Time</option><option value="internship">Internship</option></select></div>
-                            <div class="field"><label>Salary Range</label><select data-salary-filter><option value="">All Salary</option><option value="0-4">Up to Rs 4 LPA</option><option value="4-7">Rs 4 - Rs 7 LPA</option><option value="7-10">Rs 7 - Rs 10 LPA</option><option value="10">Rs 10+ LPA</option></select></div>
+                            <div class="field"><label>Package Range (LPA)</label><div class="salary-range"><input data-min-package type="number" min="0" step="0.1" placeholder="Min"><input data-max-package type="number" min="0" step="0.1" placeholder="Max"></div></div>
                             <div class="field"><label>Job Type</label><div class="checks"><label><input data-job-type value="full" type="checkbox" checked>Full Time</label><label><input data-job-type value="part" type="checkbox">Part Time</label><label><input data-job-type value="internship" type="checkbox">Internship</label></div></div>
                             <button class="primary wide" data-apply-filters type="button">Apply Filters</button>
                         </article>
@@ -95,6 +95,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             savedJobs: JSON.parse(localStorage.getItem('onlyfreshers_saved_jobs') || '[]'),
             savedSearches: JSON.parse(localStorage.getItem('onlyfreshers_saved_searches') || '[]'),
             profileKeywords: [],
+            preferredJobCategory: '',
         };
 
         function hydrateIcons(root = document) {
@@ -155,8 +156,22 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         }
 
         function salaryNumber(job) {
-            const numbers = String(job.salary || '').match(/\d+(\.\d+)?/g);
-            return numbers ? Number(numbers[numbers.length - 1]) : 0;
+            return salaryBounds(job)[1] || 0;
+        }
+
+        function salaryBounds(job) {
+            const text = String(job.salary || '');
+            const values = (text.match(/\d+(?:,\d+)*(?:\.\d+)?/g) || [])
+                .map(value => Number(value.replace(/,/g, '')))
+                .filter(value => value > 0)
+                .map(value => {
+                    const lowered = text.toLowerCase();
+                    if (lowered.includes('month') || lowered.includes('pm')) return (value * 12) / 100000;
+                    if (value >= 100000) return value / 100000;
+                    return value;
+                });
+            if (!values.length) return [0, 0];
+            return [Math.min(...values), Math.max(...values)];
         }
 
         function matchesProfile(job) {
@@ -219,7 +234,8 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 role: $('[data-role-filter]').value || $('[data-top-role]').value,
                 location: $('[data-location-filter]').value || $('[data-top-location]').value,
                 experience: $('[data-experience-filter]').value || $('[data-top-experience]').value,
-                salary: $('[data-salary-filter]').value,
+                minPackage: Number($('[data-min-package]').value || 0),
+                maxPackage: Number($('[data-max-package]').value || 0),
                 jobTypes: $$('[data-job-type]:checked').map(input => input.value),
                 sort: $('[data-sort]').value,
             };
@@ -235,13 +251,13 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             if (filters.role) jobs = jobs.filter(job => normalize(job.title) === normalize(filters.role));
             if (filters.location) jobs = jobs.filter(job => normalize(job.location).includes(normalize(filters.location)));
             if (filters.experience) jobs = jobs.filter(job => normalize(jobType(job)) === normalize(filters.experience) || normalize(job.qualification).includes(normalize(filters.experience)));
-            if (filters.salary) {
+            if (filters.minPackage || filters.maxPackage) {
                 jobs = jobs.filter(job => {
-                    const salary = salaryNumber(job);
-                    if (filters.salary === '0-4') return salary <= 4;
-                    if (filters.salary === '4-7') return salary >= 4 && salary <= 7;
-                    if (filters.salary === '7-10') return salary >= 7 && salary <= 10;
-                    return salary >= 10;
+                    const [salaryMin, salaryMax] = salaryBounds(job);
+                    if (!salaryMin && !salaryMax) return false;
+                    if (filters.minPackage && salaryMax < filters.minPackage) return false;
+                    if (filters.maxPackage && salaryMin > filters.maxPackage) return false;
+                    return true;
                 });
             }
             if (filters.jobTypes.length) {
@@ -310,6 +326,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                             <span><span class="icon" data-icon="pin"></span>${escapeHtml(job.location || 'Location not shared')}</span>
                             <span><span class="icon" data-icon="briefcase"></span>${escapeHtml(jobType(job))}</span>
                             <span>${escapeHtml(job.salary || 'Salary not disclosed')}</span>
+                            ${job.immediate_joiner ? '<span>Immediate Joiner</span>' : ''}
                         </div>
                     </div>
                     <span class="tag">${applied ? 'Applied' : escapeHtml(titleCase(jobMode(job)))}</span>
@@ -391,7 +408,10 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         }
 
         function saveCurrentSearch(filters, count) {
-            const parts = [filters.search, filters.role, filters.location, filters.experience, filters.salary].filter(Boolean);
+            const packageText = filters.minPackage || filters.maxPackage
+                ? `${filters.minPackage || 0}-${filters.maxPackage || 'Any'} LPA`
+                : '';
+            const parts = [filters.search, filters.role, filters.location, filters.experience, packageText].filter(Boolean);
             if (!parts.length) return;
             const label = parts.join(' in ');
             state.savedSearches = [{ label, count, filters }, ...state.savedSearches.filter(item => item.label !== label)].slice(0, 6);
@@ -407,7 +427,8 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             $('[data-top-location]').value = saved.filters.location || '';
             $('[data-experience-filter]').value = saved.filters.experience || '';
             $('[data-top-experience]').value = saved.filters.experience || '';
-            $('[data-salary-filter]').value = saved.filters.salary || '';
+            $('[data-min-package]').value = saved.filters.minPackage || '';
+            $('[data-max-package]').value = saved.filters.maxPackage || '';
             applyFilters();
         }
 
@@ -458,7 +479,14 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     const response = await fetch('/api/fresher/profile', { headers: apiHeaders() });
                     const payload = await response.json();
                     const profile = payload.data?.profile || payload.data?.fresher_profile || payload.data || {};
+                    state.preferredJobCategory = profile.preferred_job_category || '';
                     words.push(profile.skills, profile.qualification, profile.preferred_role);
+                    if (!$('[data-min-package]').value && profile.preferred_min_package_lpa) {
+                        $('[data-min-package]').value = profile.preferred_min_package_lpa;
+                    }
+                    if (!$('[data-max-package]').value && profile.preferred_max_package_lpa) {
+                        $('[data-max-package]').value = profile.preferred_max_package_lpa;
+                    }
                 } catch (error) {}
             }
             state.profileKeywords = words.join(',').split(/[,|]/).map(word => normalize(word.trim())).filter(Boolean);
@@ -486,11 +514,6 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 }
 
                 const selectedMode = localStorage.getItem('onlyfreshers_selected_mode');
-                if (assessment.recommended_mode === 'fast_track') {
-                    localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
-                    window.location.href = '/fast-track/dashboard';
-                    return false;
-                }
                 if (selectedMode === 'fast_track') {
                     window.location.href = '/fast-track/dashboard';
                     return false;
@@ -520,7 +543,9 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 
         async function loadJobs() {
             try {
-                const response = await fetch('/api/jobs?hiring_mode=direct', { headers: { 'Accept': 'application/json' } });
+                const params = new URLSearchParams({ hiring_mode: 'direct' });
+                if (state.preferredJobCategory) params.set('job_category', state.preferredJobCategory);
+                const response = await fetch('/api/jobs?' + params.toString(), { headers: { 'Accept': 'application/json' } });
                 const payload = await response.json();
                 state.jobs = payload.data?.jobs || [];
                 buildFilters();
@@ -569,14 +594,19 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 $('[data-search]').addEventListener('input', () => { headerSearch.value = $('[data-search]').value; });
             }
             $('[data-sort]').addEventListener('change', () => applyFilters());
-            $('[data-salary-filter]').addEventListener('change', () => applyFilters({ saveSearch: true }));
+            [$('[data-min-package]'), $('[data-max-package]')].forEach(input => {
+                input.addEventListener('input', debounce(() => applyFilters(), 250));
+                input.addEventListener('change', () => applyFilters({ saveSearch: true }));
+            });
             $$('[data-job-type]').forEach(input => input.addEventListener('change', () => applyFilters()));
             $('[data-filter-button]').addEventListener('click', () => applyFilters({ saveSearch: true }));
             $('[data-apply-filters]').addEventListener('click', () => applyFilters({ saveSearch: true }));
             $('[data-clear-filters]').addEventListener('click', event => {
                 event.preventDefault();
                 $('[data-search]').value = '';
-                $$('[data-top-location],[data-location-filter],[data-top-role],[data-role-filter],[data-top-experience],[data-experience-filter],[data-salary-filter]').forEach(select => { select.value = ''; });
+                $$('[data-top-location],[data-location-filter],[data-top-role],[data-role-filter],[data-top-experience],[data-experience-filter]').forEach(select => { select.value = ''; });
+                $('[data-min-package]').value = '';
+                $('[data-max-package]').value = '';
                 $$('[data-job-type]').forEach((input, index) => { input.checked = index === 0; });
                 applyFilters();
             });

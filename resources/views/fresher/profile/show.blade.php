@@ -54,6 +54,21 @@
                         <label class="grid gap-2 text-xs font-bold text-[#061942] lg:col-span-2">Skills
                             <textarea name="skills" class="min-h-24 rounded-md border border-[#dce7f8] p-3 text-sm outline-none" placeholder="React, Laravel, MySQL"></textarea>
                         </label>
+                        <label class="grid gap-2 text-xs font-bold text-[#061942]">Career Interest
+                            <select name="preferred_job_category" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm outline-none">
+                                <option value="">Select job category</option>
+                                <option value="Software Developer">Software Developer</option>
+                                <option value="Data Analyst">Data Analyst</option>
+                                <option value="UI/UX Designer">UI/UX Designer</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                            </select>
+                        </label>
+                        <label class="grid gap-2 text-xs font-bold text-[#061942]">Preferred Min Package (LPA)
+                            <input name="preferred_min_package_lpa" type="number" min="0" step="0.1" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm outline-none" placeholder="3">
+                        </label>
+                        <label class="grid gap-2 text-xs font-bold text-[#061942]">Preferred Max Package (LPA)
+                            <input name="preferred_max_package_lpa" type="number" min="0" step="0.1" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm outline-none" placeholder="5">
+                        </label>
                         <label class="grid gap-2 text-xs font-bold text-[#061942] lg:col-span-2">Resume
                             <input name="resume" type="file" accept=".pdf,.doc,.docx" class="rounded-md border border-[#dce7f8] px-3 py-2 text-sm outline-none">
                         </label>
@@ -123,6 +138,14 @@
     function summaryItem(icon, label, value) {
         return `<div class="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-3 text-sm">${profileIcon(icon, 'h-[34px] w-[34px]')}<span class="font-semibold text-[#24344f]">${FastTrack.esc(label)}</span><strong class="font-bold text-[#061942]">${FastTrack.esc(value)}</strong></div>`;
     }
+    function packagePreferenceText() {
+        const min = currentProfile.preferred_min_package_lpa;
+        const max = currentProfile.preferred_max_package_lpa;
+        if (min && max) return `${min} - ${max} LPA`;
+        if (min) return `${min}+ LPA`;
+        if (max) return `Up to ${max} LPA`;
+        return 'Any package';
+    }
     function fillForm() {
         profileForm.elements.phone.value = currentProfile.phone || currentUser.mobile || '';
         profileForm.elements.city.value = currentProfile.city || '';
@@ -130,6 +153,9 @@
         profileForm.elements.college_name.value = currentProfile.college_name || '';
         profileForm.elements.passing_year.value = currentProfile.passing_year || '';
         profileForm.elements.skills.value = currentProfile.skills || '';
+        profileForm.elements.preferred_job_category.value = currentProfile.preferred_job_category || '';
+        profileForm.elements.preferred_min_package_lpa.value = currentProfile.preferred_min_package_lpa || '';
+        profileForm.elements.preferred_max_package_lpa.value = currentProfile.preferred_max_package_lpa || '';
         profileForm.elements.profile_photo.value = '';
         profileForm.elements.resume.value = '';
     }
@@ -154,6 +180,8 @@
                 ${infoRow('Qualification', currentProfile.qualification)}
                 ${infoRow('College', currentProfile.college_name)}
                 ${infoRow('Passing Year', currentProfile.passing_year)}
+                ${infoRow('Career Interest', currentProfile.preferred_job_category)}
+                ${infoRow('Package', packagePreferenceText())}
             </div>`;
 
         profileView.innerHTML = `
@@ -165,6 +193,7 @@
                 <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                     <div class="mb-4 flex items-center gap-3">${profileIcon('skills')}<h3 class="text-lg font-bold text-[#061942]">Skills</h3></div>
                     <div class="flex flex-wrap gap-3">${skills.length ? skills.map((skill) => `<span class="rounded-lg bg-[#f0f4ff] px-4 py-2.5 text-sm font-semibold text-[#075fe4]">${FastTrack.esc(skill)}</span>`).join('') : '<p class="text-sm text-[#455a82]">No skills added yet.</p>'}</div>
+                    <p class="mt-5 text-sm font-bold text-[#061942]">Preferred Package: ${FastTrack.esc(packagePreferenceText())}</p>
                 </article>
                 <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                     <div class="mb-4 flex items-center gap-3">${profileIcon('resume')}<h3 class="text-lg font-bold text-[#061942]">Resume</h3></div>

@@ -177,6 +177,7 @@
     const courseGrid = document.getElementById('courseGrid');
     const courseStats = document.getElementById('courseStats');
     const initialTrack = new URLSearchParams(window.location.search).get('track') || '';
+    let preferredJobCategory = '';
     let fastTrackCourses = [];
     if (initialTrack && courseSearchInput) courseSearchInput.value = initialTrack;
 
@@ -190,9 +191,18 @@
     function courseFee(course) {
         return course.fees || course.fee || course.price || course.course_fee || course.amount;
     }
+    function categoryTerms(category) {
+        const value = String(category || '').toLowerCase();
+        if (value.includes('data')) return ['data analyst', 'data', 'sql', 'excel', 'power bi', 'analytics'];
+        if (value.includes('software') || value.includes('developer')) return ['software', 'developer', 'laravel', 'php', 'react', 'javascript', 'python'];
+        if (value.includes('ui') || value.includes('ux') || value.includes('design')) return ['ui', 'ux', 'designer', 'figma', 'wireframe'];
+        if (value.includes('marketing')) return ['marketing', 'seo', 'social media', 'content', 'analytics'];
+        return value ? [value] : [];
+    }
     function filteredCourses() {
         const query = (courseSearchInput.value || '').toLowerCase();
         const mode = modeFilter.value;
+        const categoryKeywords = categoryTerms(preferredJobCategory);
         return fastTrackCourses.filter(function (course) {
             const text = [
                 FastTrack.courseName(course),
@@ -202,7 +212,7 @@
                 course.skills_covered,
             ].join(' ').toLowerCase();
             const modeValue = String(course.training_mode || course.mode || '').toLowerCase();
-            return (!query || text.includes(query)) && (!mode || modeValue === mode);
+            return (!query || text.includes(query)) && (!categoryKeywords.length || categoryKeywords.some((term) => text.includes(term))) && (!mode || modeValue === mode);
         });
     }
     function renderStats(courses) {
@@ -257,6 +267,7 @@
     function loadCourses() {
         const params = new URLSearchParams();
         if (courseSearchInput.value.trim()) params.set('search', courseSearchInput.value.trim());
+        if (preferredJobCategory) params.set('job_category', preferredJobCategory);
         if (modeFilter.value) params.set('training_mode', modeFilter.value);
         courseGrid.innerHTML = '<article class="rounded-lg border border-[#dce7f8] bg-white p-8 text-center text-sm text-[#334b83] shadow-[0_10px_24px_rgba(6,25,66,.04)] sm:col-span-2 xl:col-span-4">Loading approved Fast Track courses...</article>';
         FastTrack.getJson('/api/courses?' + params.toString())
@@ -277,6 +288,15 @@
         modeFilter.value = '';
         loadCourses();
     });
-    loadCourses();
+    FastTrack.getJson('/api/fresher/dashboard')
+        .then(function (result) {
+            const profile = (FastTrack.apiData(result) || {}).profile || {};
+            preferredJobCategory = profile.preferred_job_category || '';
+            if (!courseSearchInput.value && preferredJobCategory) {
+                courseSearchInput.value = preferredJobCategory;
+            }
+        })
+        .catch(function () {})
+        .finally(loadCourses);
 </script>
 @endpush

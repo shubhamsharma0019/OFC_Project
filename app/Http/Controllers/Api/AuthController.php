@@ -82,6 +82,12 @@ class AuthController extends Controller
                     'admin',
                 ]),
             ],
+
+            'category' => [
+                'nullable',
+                'string',
+                'max:150',
+            ],
         ], [
             'name.regex' => 'Name may only contain letters, spaces, dot, apostrophe and hyphen.',
             'email.unique' => 'This email is already registered. Please login with this email or use another email.',
@@ -108,6 +114,7 @@ class AuthController extends Controller
         if ($user->role === 'fresher') {
             $user->fresherProfile()->create([
                 'phone' => $validatedData['mobile'] ?? null,
+                'preferred_job_category' => $validatedData['category'] ?? null,
                 'profile_completion' => filled($validatedData['mobile'] ?? null) ? 13 : 0,
                 'direct_mode_credits' => 250,
                 'total_direct_mode_credits_used' => 0,

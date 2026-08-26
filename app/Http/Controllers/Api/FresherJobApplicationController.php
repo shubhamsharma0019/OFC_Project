@@ -115,22 +115,6 @@ class FresherJobApplicationController extends Controller
             ], 422);
         }
 
-        $minimumDirectScore = (float) config(
-            'onlyfreshers.assessment.internship_eligibility_score',
-            50
-        );
-
-        if (
-            ! $isFastTrackJob &&
-            (float) ($initialAssessment?->result?->overall_score ?? 0) <
-                $minimumDirectScore
-        ) {
-            return response()->json([
-                'success' => false,
-                'message' => "An initial assessment score of {$minimumDirectScore}+ is required to apply for jobs and internships.",
-            ], 422);
-        }
-
         if ($job->status !== 'active') {
             return response()->json([
                 'success' => false,

@@ -63,6 +63,13 @@
         </div>
 
         <div class="md:col-span-2">
+            <label class="inline-flex items-center gap-3 rounded-lg border border-[#dce7f8] bg-[#f8fbff] px-4 py-3 text-[13px] font-bold text-[#061942]">
+                <input id="immediateJoiner" name="immediate_joiner" type="checkbox" class="h-4 w-4 accent-[#075fe4]">
+                Immediate joiner required
+            </label>
+        </div>
+
+        <div class="md:col-span-2">
             <label for="location" class="mb-2 block text-[13px] font-bold text-[#061942]">Location <span class="text-[#ff3045]">*</span></label>
             <input id="location" name="location" required class="h-[50px] w-full rounded-lg border border-[#dce7f8] bg-white px-[18px] text-[15px] text-[#24344f] outline-none focus:border-[#075fe4] focus:ring-2 focus:ring-[#075fe41f]">
         </div>
@@ -158,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setSelectValue(document.getElementById('employmentType'), job.job_type, 'Full Time');
         document.getElementById('hiringMode').value = job.hiring_mode || 'direct';
         document.getElementById('status').value = ['draft', 'active', 'inactive'].includes(job.status) ? job.status : 'active';
+        document.getElementById('immediateJoiner').checked = Boolean(job.immediate_joiner);
         form.location.value = job.location || '';
         form.salary.value = job.salary || '';
         form.openings.value = job.openings || 1;
@@ -176,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
             location: form.location.value.trim(),
             salary: form.salary.value.trim(),
             job_type: document.getElementById('employmentType').value,
+            immediate_joiner: document.getElementById('immediateJoiner').checked,
             openings: Number(form.openings.value || 1),
             hiring_mode: document.getElementById('hiringMode').value,
             application_last_date: form.application_last_date.value || null,

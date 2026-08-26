@@ -20,13 +20,13 @@
 <style>
     .tabs{min-height:46px!important;height:auto!important}.tab{min-width:0!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;padding:0 10px!important;white-space:nowrap!important}.tab b{min-width:20px;height:20px;border-radius:999px;background:#eef4ff;color:#064cff;display:none;place-items:center;font-size:11px;line-height:20px}.tab.has-count b{display:grid}.tab span{overflow:hidden;text-overflow:ellipsis}.tab.active b{background:#064cff;color:#fff}
     .content-grid{grid-template-columns:1fr!important}.side{display:none!important}.stat{min-width:0!important;grid-template-columns:64px minmax(0,1fr)!important;gap:16px!important;overflow:hidden!important;align-items:center!important;justify-items:start!important}.stat-icon{width:54px!important;height:54px!important;align-self:center!important;justify-self:center!important;display:grid!important;place-items:center!important;padding:0!important;line-height:0!important;margin:auto!important;background:#eef5ff!important;color:#0b63f6!important;border:1px solid #d9e8ff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 10px 22px rgba(11,99,246,.08)!important}.stat-icon svg{width:22px!important;height:22px!important;display:block!important;margin:0!important;position:relative!important;top:0!important;left:0!important;transform:none!important;vertical-align:middle!important}.stat div{min-width:0!important;overflow:hidden!important}.stat h3{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.stat strong{font-size:clamp(24px,1.9vw,30px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important}.stat span{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.2!important}
-    body.assessment-onboarding .sidebar,body.assessment-onboarding .topbar{display:none!important}
-    body.assessment-onboarding .shell{grid-template-columns:1fr!important}
-    body.assessment-onboarding .main{height:100vh!important;grid-template-rows:minmax(0,max-content)!important}
-    body.assessment-onboarding .assess-page{min-height:100vh!important;padding:24px 26px 34px!important}
-    body.assessment-onboarding .welcome{display:none!important}
-    body.assessment-onboarding .panel{width:100%;max-width:none;margin:0}
-    @media(max-width:760px){body.assessment-onboarding .assess-page{padding:14px!important}}
+    body .sidebar,body .topbar,body [data-mobile-direct-nav]{display:none!important}
+    body .shell{grid-template-columns:1fr!important}
+    body .main{height:100vh!important;grid-template-rows:minmax(0,max-content)!important}
+    body .assess-page{min-height:100vh!important;padding:24px 26px 34px!important}
+    body .welcome{display:none!important}
+    body .panel{width:100%;max-width:none;margin:0}
+    @media(max-width:760px){body .assess-page{padding:14px!important}}
 </style>
 @endpush
 
@@ -174,12 +174,10 @@
             : 'Initial Assessment';
         qs('[data-track-text]').textContent = result
             ? (recommended === 'fast_track'
-                ? 'Your score suggests training first will help you become job-ready faster.'
-                : (eligiblePaths.jobs && eligiblePaths.internships
-                    ? 'Your score is 50+ so you can apply for both fresher jobs and internships.'
-                    : 'Complete your score improvement to unlock jobs and internships.'))
+                ? 'Your score suggests training first will help you become job-ready faster, but you can choose any path.'
+                : 'Your score suggests Jobs & Internships, but you can choose any path that fits your goal.')
             : 'Complete your initial assessment to know whether Jobs, Internships or Fast Track Mode fits you better.';
-        qs('[data-track-action]').textContent = result ? 'Explore Career Track' : 'Start Assessment';
+        qs('[data-track-action]').textContent = result ? 'Choose Your Path' : 'Start Assessment';
         renderModeActions(data?.initial_assessment);
     };
     const renderModeActions = assessment => {
@@ -189,17 +187,15 @@
         wrap.style.display = result ? 'flex' : 'none';
         if (!result) return;
         const recommended = assessment?.recommended_mode || 'direct';
-        const eligiblePaths = assessment?.eligible_paths || {};
         qsa('[data-choose-mode]').forEach(button => {
             const mode = button.dataset.chooseMode;
             const isRecommended = mode === recommended || (recommended === 'direct' && mode === 'internship');
-            const locked = (mode === 'direct' && !eligiblePaths.jobs) || (mode === 'internship' && !eligiblePaths.internships);
-            button.className = isRecommended && !locked ? 'primary' : 'outline';
-            button.disabled = locked;
+            button.className = isRecommended ? 'primary' : 'outline';
+            button.disabled = false;
             if (mode === 'direct') {
-                button.textContent = locked ? 'Jobs Locked (Score 50+)' : `Continue with Jobs${isRecommended ? ' (Recommended)' : ''}`;
+                button.textContent = `Continue with Jobs${isRecommended ? ' (Recommended)' : ''}`;
             } else if (mode === 'internship') {
-                button.textContent = locked ? 'Internships Locked (Score 50+)' : `Continue with Internships${isRecommended ? ' (Recommended)' : ''}`;
+                button.textContent = `Continue with Internships${isRecommended ? ' (Recommended)' : ''}`;
             } else {
                 button.textContent = `Continue with Fast Track Mode${isRecommended ? ' (Recommended)' : ''}`;
             }
@@ -360,16 +356,10 @@
     qs('[data-start-assessment]').addEventListener('click', startAssessment);
     qs('[data-track-action]').addEventListener('click', () => {
         if (dashboard?.initial_assessment) {
-            const recommended = dashboard.initial_assessment.recommended_mode || 'direct';
-            const intended = localStorage.getItem('onlyfreshers_intended_mode');
-            const selected = intended === 'internship'
-                ? 'internship'
-                : (intended === 'fast_track' ? 'fast_track' : recommended);
-            localStorage.setItem('onlyfreshers_selected_mode', selected);
-            alert('Opening your recommended mode.', 'success');
-            window.location.href = selected === 'fast_track'
-                ? '/fast-track/dashboard'
-                : (selected === 'internship' ? '/direct-mode/jobs?type=internship' : '/direct-mode/dashboard');
+            const actions = qs('[data-mode-actions]');
+            if (actions) {
+                actions.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             return;
         }
         startAssessment();

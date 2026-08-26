@@ -13,6 +13,7 @@ class AssessmentQuestion extends Model
     protected $fillable = [
         'assessment_type',
         'category',
+        'job_category',
         'question',
         'option_a',
         'option_b',

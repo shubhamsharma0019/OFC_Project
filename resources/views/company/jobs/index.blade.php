@@ -103,6 +103,7 @@
                         <span>${escapeHtml(job.location || 'Location not added')}</span>
                         <span>&bull;</span>
                         <span>${escapeHtml(formatStatus(job.hiring_mode))}</span>
+                        ${job.immediate_joiner ? '<span>&bull;</span><span class="font-bold text-[#075fe4]">Immediate Joiner</span>' : ''}
                     </div>
                     <div class="mb-2 flex flex-wrap gap-2">${skills.map((skill) => `<span class="rounded-lg bg-[#eaf2ff] px-2.5 py-1 text-xs font-bold text-[#075fe4]">${escapeHtml(skill)}</span>`).join('')}</div>
                     <div class="text-[13px] text-[#061942]">${Number(job.applications_count || 0)} Applications</div>

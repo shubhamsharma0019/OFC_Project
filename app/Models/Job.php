@@ -20,6 +20,7 @@ class Job extends Model
         'location',
         'salary',
         'job_type',
+        'immediate_joiner',
         'openings',
         'hiring_mode',
         'application_last_date',
@@ -30,6 +31,7 @@ class Job extends Model
     {
         return [
             'openings' => 'integer',
+            'immediate_joiner' => 'boolean',
             'application_last_date' => 'date',
         ];
     }

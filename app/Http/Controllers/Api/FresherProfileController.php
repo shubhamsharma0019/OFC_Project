@@ -91,6 +91,26 @@ class FresherProfileController extends Controller
                 'string',
             ],
 
+            'preferred_job_category' => [
+                'nullable',
+                'string',
+                'max:150',
+            ],
+
+            'preferred_min_package_lpa' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                'max:999999',
+            ],
+
+            'preferred_max_package_lpa' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                'max:999999',
+            ],
+
             'profile_photo' => [
                 'nullable',
                 'image',
@@ -105,6 +125,23 @@ class FresherProfileController extends Controller
                 'max:5120',
             ],
         ]);
+
+        if (
+            filled($validatedData['preferred_min_package_lpa'] ?? null) &&
+            filled($validatedData['preferred_max_package_lpa'] ?? null) &&
+            (float) $validatedData['preferred_max_package_lpa'] <
+                (float) $validatedData['preferred_min_package_lpa']
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Preferred max package should be greater than or equal to min package.',
+                'errors' => [
+                    'preferred_max_package_lpa' => [
+                        'Preferred max package should be greater than or equal to min package.',
+                    ],
+                ],
+            ], 422);
+        }
 
         $existingProfile = $user->fresherProfile;
 
@@ -138,6 +175,9 @@ class FresherProfileController extends Controller
                 'college_name',
                 'passing_year',
                 'skills',
+                'preferred_job_category',
+                'preferred_min_package_lpa',
+                'preferred_max_package_lpa',
                 'profile_photo',
                 'resume',
             ]) ?? [],
@@ -209,7 +249,14 @@ class FresherProfileController extends Controller
             'ultimate' => 10000,
         ];
 
-        $profile = DB::transaction(function () use ($profile, $validatedData, $creditsByPlan) {
+        $validityByPlan = [
+            'basic' => 60,
+            'pro' => 90,
+            'premium' => 120,
+            'ultimate' => 180,
+        ];
+
+        $profile = DB::transaction(function () use ($profile, $validatedData, $creditsByPlan, $validityByPlan) {
             $lockedProfile = $profile->newQuery()
                 ->whereKey($profile->id)
                 ->lockForUpdate()
@@ -221,6 +268,7 @@ class FresherProfileController extends Controller
                     $creditsByPlan[$validatedData['plan']],
                 'direct_mode_subscription_plan' => $validatedData['plan'],
                 'direct_mode_subscribed_at' => now(),
+                'direct_mode_subscription_expires_at' => now()->addDays($validityByPlan[$validatedData['plan']]),
             ]);
 
             return $lockedProfile->fresh();

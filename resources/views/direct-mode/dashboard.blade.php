@@ -1151,6 +1151,7 @@
             <div class="apply-copy">
                 <h2>Apply to jobs & internships for FREE!</h2>
                 <p>You get <strong data-direct-free-copy>free application credits</strong> after Initial Assessment to apply for jobs or internships.</p>
+                <p><strong data-direct-plan-label>Starter Plan</strong> <span data-direct-plan-validity>Free credits</span></p>
                 <a href="/direct-mode/jobs">Learn More</a>
             </div>
         </article>
@@ -1188,11 +1189,11 @@
                     <small>Remaining</small>
                 </div>
             </article>
-            <a class="direct-credit-cell" href="/direct-mode/jobs" style="text-decoration:none">
+            <a class="direct-credit-cell" href="#credits" style="text-decoration:none">
                 <span class="direct-credit-icon" data-icon="plus"></span>
                 <div>
                     <span>Purchase Credits</span>
-                    <small>To Apply More</small>
+                    <small>Choose Plan & Pay</small>
                 </div>
             </a>
         </div>
@@ -1264,7 +1265,7 @@
                     <li><b>&#10003;</b> Fill your profile completely</li>
                     <li><b>&#10003;</b> Upload an updated resume</li>
                     <li><b>&#10003;</b> Check your Initial Track Analysis</li>
-                    <li><b>&#10003;</b> Score 50+ to access jobs and internships</li>
+                    <li><b>&#10003;</b> Choose any path after Initial Track Analysis</li>
                     <li><b>&#10003;</b> Apply to roles that match your skills</li>
                 </ul>
                 <a class="tips-link" href="/direct-mode/jobs">View All Tips</a>
@@ -1276,6 +1277,7 @@
             <h2>Apply More Jobs with Additional Credits</h2>
             <p data-credit-pricing-copy>You get free credits to apply for jobs under Direct Mode. Need more? Choose a plan that suits you.</p>
         </div>
+        <div class="dashboard-error" data-credit-payment-message style="display:none;margin:0 0 14px"></div>
         <div class="credits-plan-grid" data-credit-plans>
             <div class="empty">Loading credit plans...</div>
         </div>
@@ -1290,6 +1292,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 (() => {
     Object.assign(window.directModeIcons || {}, {
@@ -1310,7 +1313,9 @@
         trophy:'<svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"></path><path d="M8 6H4v2a4 4 0 0 0 4 4"></path><path d="M16 6h4v2a4 4 0 0 1-4 4"></path><path d="M12 13v5"></path><path d="M8 20h8"></path></svg>',
     });
     document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = window.directModeIcons[el.dataset.icon] || el.innerHTML; });
-    const token = localStorage.getItem('onlyfreshers_token');
+    const token = localStorage.getItem('onlyfreshers_token') ||
+        localStorage.getItem('ofc_fresher_token') ||
+        localStorage.getItem('ofc_auth_token');
     const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || 'null');
     const headers = { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
     const qs = selector => document.querySelector(selector);
@@ -1321,6 +1326,9 @@
     const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
     const initials = value => String(value || 'OF').split(/\s+/).filter(Boolean).slice(0,2).map(part => part[0]).join('').toUpperCase();
     const label = value => String(value || '').replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+    const formatDate = value => value
+        ? new Date(value).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '';
     const timeAgo = value => {
         if (!value) return '';
         const seconds = Math.max(1, Math.floor((Date.now() - new Date(value).getTime()) / 1000));
@@ -1558,6 +1566,16 @@
     const renderDirectJobs = (jobs, dashboard) => {
         const box = qs('[data-direct-job-list]');
         if (!box) return;
+        const credits = dashboard?.direct_mode_credits || {};
+        const remainingCredits = Number(credits.remaining ?? 0);
+        const creditCost = Number(credits.application_cost || 50);
+        if (remainingCredits < creditCost) {
+            box.innerHTML = `<div class="empty">
+                Your free Direct Mode credits are over. Please choose an additional credits plan to continue applying.
+                <div style="margin-top:12px"><a class="primary" href="#credits">Choose Subscription Plan</a></div>
+            </div>`;
+            return;
+        }
         const result = dashboard?.initial_assessment?.result || {};
         const score = Number(result.overall_score || 0);
         const fit = fitForScore(score || 72);
@@ -1626,9 +1644,9 @@
 
     const creditPlans = [
         { key: 'starter', name: 'Starter', credits: '250', price: '₹0', validity: 'FREE', button: 'Current Plan', current: true, popular: false, features: ['Apply to 5 jobs', '50 credits per application', 'For Direct Mode only'] },
-        { key: 'basic', name: 'Basic', credits: '1,000', price: '₹249', validity: 'Valid for 60 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 20 jobs', 'Valid for 60 days', 'For Direct Mode only'] },
-        { key: 'pro', name: 'Pro', credits: '2,500', price: '₹499', validity: 'Valid for 90 days', button: 'Buy Now', current: false, popular: true, features: ['Apply to 50 jobs', 'Valid for 90 days', 'For Direct Mode only', 'Priority Support'] },
-        { key: 'premium', name: 'Premium', credits: '5,000', price: '₹899', validity: 'Valid for 120 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 100 jobs', 'Valid for 120 days', 'For Direct Mode only', 'Priority Support'] },
+        { key: 'basic', name: 'Basic', credits: '1,000', price: '₹3', validity: 'Valid for 60 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 20 jobs', 'Valid for 60 days', 'For Direct Mode only'] },
+        { key: 'pro', name: 'Pro', credits: '2,500', price: '₹4', validity: 'Valid for 90 days', button: 'Buy Now', current: false, popular: true, features: ['Apply to 50 jobs', 'Valid for 90 days', 'For Direct Mode only', 'Priority Support'] },
+        { key: 'premium', name: 'Premium', credits: '5,000', price: '₹5', validity: 'Valid for 120 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 100 jobs', 'Valid for 120 days', 'For Direct Mode only', 'Priority Support'] },
         { key: 'ultimate', name: 'Ultimate', credits: '10,000', price: '₹1,499', validity: 'Valid for 180 days', button: 'Buy Now', current: false, popular: false, features: ['Apply to 200 jobs', 'Valid for 180 days', 'For Direct Mode only', 'Priority Support'] },
     ];
 
@@ -1646,6 +1664,15 @@
         box.querySelectorAll('[data-credit-plan]:not([disabled])').forEach(button => {
             button.addEventListener('click', () => buyDirectModeCredits(button));
         });
+
+        const selectedPlan = new URLSearchParams(window.location.search).get('plan');
+        const selectedButton = selectedPlan
+            ? [...box.querySelectorAll('[data-credit-plan]')].find(item => item.dataset.creditPlan === selectedPlan)
+            : null;
+        if (selectedButton) {
+            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => buyDirectModeCredits(selectedButton), 450);
+        }
     };
 
     async function buyDirectModeCredits(button) {
@@ -1656,35 +1683,108 @@
 
         const originalText = button.textContent;
         button.disabled = true;
-        button.textContent = 'Activating...';
+        button.textContent = 'Processing...';
+        showCreditMessage('Creating secure payment order...', 'info');
 
         try {
-            const response = await fetch('/api/fresher/direct-mode/subscribe', {
+            const orderResponse = await fetch('/api/payments/razorpay/order', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ plan: button.dataset.creditPlan }),
+                body: JSON.stringify({
+                    purpose: 'direct_mode_subscription',
+                    plan: button.dataset.creditPlan,
+                }),
             });
-            const payload = await response.json();
+            const orderPayload = await orderResponse.json();
 
-            if (!response.ok || payload.success === false) {
-                throw new Error(payload.message || 'Credits could not be activated.');
+            if (!orderResponse.ok || orderPayload.success === false) {
+                throw new Error(orderPayload.message || 'Payment order could not be created.');
             }
 
-            if (payload.data?.profile) {
-                localStorage.setItem('onlyfreshers_profile', JSON.stringify(payload.data.profile));
+            const order = orderPayload.data || {};
+            if (!window.Razorpay) {
+                throw new Error('Razorpay checkout could not be loaded. Please refresh and try again.');
             }
 
-            window.location.href = payload.data?.redirect_to || '/direct-mode/jobs';
+            showCreditMessage('Opening Razorpay checkout...', 'info');
+            const checkout = new Razorpay({
+                key: order.key,
+                amount: order.amount,
+                currency: order.currency,
+                order_id: order.razorpay_order_id,
+                name: order.name,
+                description: order.description,
+                prefill: order.prefill || {},
+                method: {
+                    card: true,
+                    netbanking: true,
+                    wallet: true,
+                    upi: true,
+                },
+                handler: async function (response) {
+                    button.textContent = 'Verifying...';
+                    showCreditMessage('Verifying payment securely...', 'info');
+                    try {
+                        const verifyResponse = await fetch('/api/payments/razorpay/verify', {
+                            method: 'POST',
+                            headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${token}`,
+                            },
+                            body: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_signature: response.razorpay_signature,
+                            }),
+                        });
+                        const verifyPayload = await verifyResponse.json();
+
+                        if (!verifyResponse.ok || verifyPayload.success === false) {
+                            throw new Error(verifyPayload.message || 'Payment verification failed.');
+                        }
+
+                        showCreditMessage('Payment successful. Updating your credits...', 'success');
+                        window.location.href = verifyPayload.data?.redirect_to || '/direct-mode/dashboard#credits';
+                    } catch (error) {
+                        showCreditMessage(error.message || 'Payment verification failed.', 'error');
+                        showError(error.message || 'Payment verification failed.');
+                        button.disabled = false;
+                        button.textContent = 'Retry Payment';
+                    }
+                },
+                modal: {
+                    ondismiss: function () {
+                        showCreditMessage('Payment was cancelled. You can retry anytime.', 'error');
+                        showError('Payment was cancelled. You can retry anytime.');
+                        button.disabled = false;
+                        button.textContent = 'Retry Payment';
+                    },
+                },
+            });
+
+            checkout.open();
         } catch (error) {
+            showCreditMessage(error.message || 'Something went wrong.', 'error');
             showError(error.message || 'Something went wrong.');
             button.disabled = false;
             button.textContent = originalText;
         }
     }
+
+    const showCreditMessage = (message, type = 'error') => {
+        const box = qs('[data-credit-payment-message]');
+        if (!box) return;
+        box.style.display = message ? 'block' : 'none';
+        box.textContent = message || '';
+        box.style.borderColor = type === 'success' ? '#baf0ce' : (type === 'info' ? '#b8d4ff' : '#ffd0d7');
+        box.style.background = type === 'success' ? '#ecfdf3' : (type === 'info' ? '#f0f6ff' : '#fff1f2');
+        box.style.color = type === 'success' ? '#087443' : (type === 'info' ? '#075fe4' : '#c8102e');
+    };
 
     const showError = message => {
         const box = qs('[data-dashboard-error]');
@@ -1717,11 +1817,6 @@
             }
 
             const selectedMode = localStorage.getItem('onlyfreshers_selected_mode');
-            if (journeyAssessment.recommended_mode === 'fast_track') {
-                localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
-                window.location.href = '/fast-track/dashboard';
-                return;
-            }
             if (selectedMode === 'fast_track') {
                 window.location.href = '/fast-track/dashboard';
                 return;
@@ -1756,13 +1851,30 @@
             const freeCredits = Number(credits.free ?? 0);
             const usedCredits = Number(credits.used ?? stats.total_applications ?? 0);
             const remainingCredits = Number(credits.remaining ?? Math.max(0, freeCredits - usedCredits));
-            const creditCost = Number(credits.application_cost || 1);
+            const creditCost = Number(credits.application_cost || 50);
+            const usedApplications = Math.floor(usedCredits / creditCost);
+            const remainingApplications = Math.floor(remainingCredits / creditCost);
+            const activePlan = credits.active_plan_label || 'Starter';
+            const validTill = credits.valid_till || '';
+            const daysRemaining = credits.days_remaining;
             text('[data-direct-credit-count]', remainingCredits);
             text('[data-direct-free-count]', freeCredits);
             text('[data-direct-free-copy]', `${freeCredits.toLocaleString('en-IN')} free application credits`);
             text('[data-credit-pricing-copy]', `You get ${freeCredits.toLocaleString('en-IN')} FREE credits to apply for jobs under Direct Mode. Need more? Choose a plan that suits you.`);
-            text('[data-direct-used-count]', usedCredits);
-            text('[data-direct-remaining-count]', remainingCredits);
+            text('[data-direct-used-count]', usedApplications);
+            text('[data-direct-remaining-count]', remainingApplications);
+            text('[data-direct-plan-label]', `${activePlan} Plan`);
+            text('[data-direct-plan-validity]', validTill
+                ? `Valid till ${formatDate(validTill)}${daysRemaining !== null && daysRemaining !== undefined ? ` (${daysRemaining} days left)` : ''}`
+                : 'Free credits, upgrade anytime');
+            if (remainingCredits < creditCost && !window.location.hash) {
+                setTimeout(() => {
+                    document.getElementById('credits')?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                    });
+                }, 350);
+            }
             qsa('.direct-job-action small').forEach(el => {
                 el.innerHTML = `<span data-icon="database"></span> ${creditCost} Credit`;
             });

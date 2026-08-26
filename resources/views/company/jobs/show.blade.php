@@ -946,7 +946,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             job.qualification
                 ? `Qualification: ${job.qualification}`
-                : ''
+                : '',
+
+            job.immediate_joiner
+                ? 'Immediate Joiner: Yes'
+                : 'Immediate Joiner: No'
 
         ]
         .filter(Boolean)

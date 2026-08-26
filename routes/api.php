@@ -31,6 +31,8 @@ use App\Http\Controllers\Api\PublicCertificateController;
 use App\Http\Controllers\Api\PublicCourseController;
 use App\Http\Controllers\Api\PublicJobController;
 use App\Http\Controllers\Api\PublicTrainingPartnerController;
+use App\Http\Controllers\Api\RazorpayPaymentController;
+use App\Http\Controllers\Api\RazorpayWebhookController;
 use App\Http\Controllers\Api\TrainingPartnerAssessmentController;
 use App\Http\Controllers\Api\TrainingPartnerCertificateController;
 use App\Http\Controllers\Api\TrainingPartnerCourseController;
@@ -104,6 +106,11 @@ Route::get(
     [PublicCertificateController::class, 'verify']
 );
 
+Route::post(
+    '/webhooks/razorpay',
+    [RazorpayWebhookController::class, 'handle']
+);
+
 /*
 |--------------------------------------------------------------------------
 | Protected Authentication Routes
@@ -126,6 +133,15 @@ Route::middleware('auth:sanctum')
 */
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post(
+        '/payments/razorpay/order',
+        [RazorpayPaymentController::class, 'createOrder']
+    );
+
+    Route::post(
+        '/payments/razorpay/verify',
+        [RazorpayPaymentController::class, 'verify']
+    );
 
     /*
     |--------------------------------------------------------------------------
