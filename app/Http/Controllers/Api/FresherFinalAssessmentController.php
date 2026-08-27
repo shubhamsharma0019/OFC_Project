@@ -556,6 +556,8 @@ class FresherFinalAssessmentController extends Controller
     {
         $this->ensureDefaultFinalQuestions();
 
+        $jobCategory = $this->canonicalAssessmentTrack($jobCategory);
+
         $baseQuery = AssessmentQuestion::query()
             ->where('assessment_type', 'final')
             ->where('is_active', true);
@@ -589,20 +591,53 @@ class FresherFinalAssessmentController extends Controller
         $fresherProfile
     ): ?string {
         $course = $courseEnrollment?->course;
-        $text = strtolower(trim(implode(' ', array_filter([
+        foreach ([
+            implode(' ', array_filter([
+                $course?->course_name,
+                $course?->category,
+                $course?->skills_covered,
+                $course?->description,
+            ])),
             $fresherProfile?->preferred_job_category,
-            $course?->course_name,
-            $course?->category,
-            $course?->skills_covered,
-            $course?->description,
-        ]))));
+        ] as $trackSource) {
+            $track = $this->canonicalAssessmentTrack($trackSource);
+
+            if (filled($track)) {
+                return $track;
+            }
+        }
+
+        return null;
+    }
+
+    private function canonicalAssessmentTrack(?string $value): ?string
+    {
+        $text = strtolower(trim((string) $value));
+
+        if ($text === '') {
+            return null;
+        }
 
         return match (true) {
             str_contains($text, 'data') ||
+                str_contains($text, 'analytics') ||
+                str_contains($text, 'analyst') ||
                 str_contains($text, 'sql') ||
                 str_contains($text, 'excel') ||
-                str_contains($text, 'analytics') ||
-                str_contains($text, 'power bi') => 'Data Analyst',
+                str_contains($text, 'power bi') ||
+                str_contains($text, 'dashboard') => 'Data Analyst',
+            str_contains($text, 'software') ||
+                str_contains($text, 'developer') ||
+                str_contains($text, 'development') ||
+                str_contains($text, 'full stack') ||
+                str_contains($text, 'frontend') ||
+                str_contains($text, 'backend') ||
+                str_contains($text, 'web dev') ||
+                str_contains($text, 'laravel') ||
+                str_contains($text, 'react') ||
+                str_contains($text, 'php') ||
+                str_contains($text, 'python') ||
+                str_contains($text, 'java') => 'Software Developer',
             str_contains($text, 'ui') ||
                 str_contains($text, 'ux') ||
                 str_contains($text, 'figma') ||
@@ -610,13 +645,7 @@ class FresherFinalAssessmentController extends Controller
             str_contains($text, 'marketing') ||
                 str_contains($text, 'seo') ||
                 str_contains($text, 'social media') => 'Digital Marketing',
-            str_contains($text, 'software') ||
-                str_contains($text, 'developer') ||
-                str_contains($text, 'laravel') ||
-                str_contains($text, 'react') ||
-                str_contains($text, 'python') ||
-                str_contains($text, 'php') => 'Software Developer',
-            default => $fresherProfile?->preferred_job_category,
+            default => trim((string) $value),
         };
     }
 
@@ -808,6 +837,46 @@ class FresherFinalAssessmentController extends Controller
                 'correct_option' => 'A',
             ],
             [
+                'job_category' => 'Data Analyst',
+                'category' => 'aptitude',
+                'question' => 'A dashboard has 1,200 visitors and 90 conversions. What is the conversion rate?',
+                'option_a' => '5%',
+                'option_b' => '7.5%',
+                'option_c' => '9%',
+                'option_d' => '12%',
+                'correct_option' => 'B',
+            ],
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'aptitude',
+                'question' => 'If average order value is 500 and there are 40 orders, what is total revenue?',
+                'option_a' => '5,000',
+                'option_b' => '10,000',
+                'option_c' => '20,000',
+                'option_d' => '40,000',
+                'correct_option' => 'C',
+            ],
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'communication',
+                'question' => 'Which summary is best for a stakeholder report?',
+                'option_a' => 'Everything is fine.',
+                'option_b' => 'Revenue grew 8%, but repeat purchases dropped 3%, so retention needs review.',
+                'option_c' => 'Please check the file yourself.',
+                'option_d' => 'The data has many columns.',
+                'correct_option' => 'B',
+            ],
+            [
+                'job_category' => 'Data Analyst',
+                'category' => 'communication',
+                'question' => 'What should be included when explaining a metric change?',
+                'option_a' => 'Context, comparison period, and possible reason',
+                'option_b' => 'Only the final number',
+                'option_c' => 'Only the chart color',
+                'option_d' => 'No assumptions or source',
+                'correct_option' => 'A',
+            ],
+            [
                 'job_category' => 'Software Developer',
                 'category' => 'technical',
                 'question' => 'Which practice helps make code easier to maintain?',
@@ -836,6 +905,46 @@ class FresherFinalAssessmentController extends Controller
                 'option_c' => '422',
                 'option_d' => '500',
                 'correct_option' => 'C',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'aptitude',
+                'question' => 'A bug fix takes 45 minutes and testing takes 30 minutes. How long is the total work?',
+                'option_a' => '60 minutes',
+                'option_b' => '70 minutes',
+                'option_c' => '75 minutes',
+                'option_d' => '90 minutes',
+                'correct_option' => 'C',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'aptitude',
+                'question' => 'If an API handles 300 requests in 5 minutes, what is the average requests per minute?',
+                'option_a' => '30',
+                'option_b' => '50',
+                'option_c' => '60',
+                'option_d' => '75',
+                'correct_option' => 'C',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'communication',
+                'question' => 'Which pull request note is clearest?',
+                'option_a' => 'Done.',
+                'option_b' => 'Fixed login validation and added error handling for empty email input.',
+                'option_c' => 'Changed some things.',
+                'option_d' => 'Please merge fast.',
+                'correct_option' => 'B',
+            ],
+            [
+                'job_category' => 'Software Developer',
+                'category' => 'communication',
+                'question' => 'What is the best way to report a blocker during development?',
+                'option_a' => 'Wait until the deadline passes',
+                'option_b' => 'Share the blocker, impact, and what help is needed',
+                'option_c' => 'Ignore team messages',
+                'option_d' => 'Only say that code is hard',
+                'correct_option' => 'B',
             ],
         ];
     }

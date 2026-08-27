@@ -49,7 +49,11 @@
         <article class="card assessment-runner" data-runner>
             <div class="card-head"><h2 data-runner-title>Initial Assessment</h2><button class="outline" type="button" data-close-runner>Close</button></div>
             <div data-questions></div>
-            <button class="primary" type="button" data-submit-assessment>Submit Assessment</button>
+            <div data-runner-actions style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap">
+                <button class="outline" type="button" data-prev-section>Previous</button>
+                <button class="primary" type="button" data-next-section>Next: Aptitude</button>
+                <button class="primary" type="button" data-submit-assessment>Submit Assessment</button>
+            </div>
         </article>
         <div class="content-grid">
             <div>
@@ -252,7 +256,7 @@
         ];
         qs('[data-runner-title]').textContent = 'Assessment Report';
         qs('[data-questions]').innerHTML = `<div class="question"><h3>Detailed Analysis</h3><div class="options">${rows.map(([k, v]) => `<div class="option"><strong style="min-width:150px">${esc(k)}</strong><span>${typeof v === 'number' ? `${clamp(v)}%` : esc(v)}</span></div>`).join('')}</div></div>`;
-        qs('[data-submit-assessment]').style.display = 'none';
+        qs('[data-runner-actions]').style.display = 'none';
         qs('[data-runner]').classList.add('active');
         qs('[data-runner]').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
@@ -260,6 +264,27 @@
     const categoryOrder = ['technical', 'aptitude', 'communication'];
     const categoryQuestions = category => questions.filter(q => q.category === category);
     const answeredCount = category => categoryQuestions(category).filter(q => answersByQuestion[q.id]).length;
+    const currentCategoryComplete = () => answeredCount(runnerCategory) === categoryQuestions(runnerCategory).length;
+    const syncRunnerActions = () => {
+        const currentIndex = categoryOrder.indexOf(runnerCategory);
+        const previousButton = qs('[data-prev-section]');
+        const nextButton = qs('[data-next-section]');
+        const submitButton = qs('[data-submit-assessment]');
+        const isLast = currentIndex === categoryOrder.length - 1;
+        const isComplete = currentCategoryComplete();
+
+        previousButton.style.display = currentIndex > 0 ? '' : 'none';
+        previousButton.disabled = currentIndex <= 0;
+        nextButton.style.display = isLast ? 'none' : '';
+        nextButton.disabled = !isComplete;
+        submitButton.style.display = isLast ? '' : 'none';
+        submitButton.disabled = !isComplete;
+
+        if (!isLast) {
+            const nextCategory = categoryOrder[currentIndex + 1];
+            nextButton.textContent = `Next: ${categoryLabels[nextCategory]}`;
+        }
+    };
     const renderQuestions = () => {
         const currentQuestions = categoryQuestions(runnerCategory);
         const nav = categoryOrder.map(category => {
@@ -269,11 +294,28 @@
         }).join('');
         qs('[data-runner-title]').textContent = `${categoryLabels[runnerCategory]} Assessment`;
         qs('[data-questions]').innerHTML = `<div class="tabs" style="width:100%;margin-bottom:14px">${nav}</div>${currentQuestions.length ? currentQuestions.map((q, index) => `<div class="question"><h3>${index + 1}. ${esc(q.question)}</h3><div class="options">${['A','B','C','D'].map(opt => `<label class="option"><input type="radio" name="q_${q.id}" value="${opt}" ${answersByQuestion[q.id] === opt ? 'checked' : ''}><span>${opt}. ${esc(q['option_' + opt.toLowerCase()])}</span></label>`).join('')}</div></div>`).join('') : '<div class="empty">No questions found for this category.</div>'}`;
-        qsa('[data-runner-category]').forEach(btn => btn.addEventListener('click', () => { runnerCategory = btn.dataset.runnerCategory; renderQuestions(); }));
+        qsa('[data-runner-category]').forEach(btn => btn.addEventListener('click', () => {
+            alert('');
+            runnerCategory = btn.dataset.runnerCategory;
+            renderQuestions();
+        }));
         qsa('[data-questions] input[type="radio"]').forEach(input => input.addEventListener('change', () => {
             answersByQuestion[input.name.replace('q_', '')] = input.value;
             renderQuestions();
         }));
+        syncRunnerActions();
+    };
+    const moveSection = direction => {
+        const currentIndex = categoryOrder.indexOf(runnerCategory);
+        if (direction > 0 && !currentCategoryComplete()) {
+            return alert(`Please answer all ${categoryLabels[runnerCategory]} questions before continuing.`);
+        }
+        const nextIndex = currentIndex + direction;
+        if (nextIndex < 0 || nextIndex >= categoryOrder.length) return;
+        alert('');
+        runnerCategory = categoryOrder[nextIndex];
+        renderQuestions();
+        qs('[data-runner]').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
     const startAssessment = async () => {
         alert('');
@@ -289,13 +331,13 @@
             const questionData = await getJson(`/api/fresher/assessment/${currentAttempt.id}/questions`);
             questions = questionData.questions || [];
             answersByQuestion = {};
-            runnerCategory = categoryOrder.includes(activeFilter) ? activeFilter : 'technical';
+            runnerCategory = 'technical';
             if (!questions.length) {
                 alert('No active questions are available right now.');
                 return;
             }
             renderQuestions();
-            qs('[data-submit-assessment]').style.display = '';
+            qs('[data-runner-actions]').style.display = 'flex';
             qs('[data-runner]').classList.add('active');
             qs('[data-runner]').scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (e) {
@@ -310,6 +352,9 @@
     };
     const submitAssessment = async () => {
         const answers = questions.map(q => ({ question_id: q.id, selected_option: answersByQuestion[q.id] })).filter(a => a.selected_option);
+        if (runnerCategory !== 'communication') {
+            return alert('Please complete Technical Skills and Aptitude before submitting.');
+        }
         if (answers.length !== questions.length) {
             const pendingCategory = categoryOrder.find(category => answeredCount(category) < categoryQuestions(category).length);
             if (pendingCategory) runnerCategory = pendingCategory;
@@ -373,9 +418,12 @@
             : (chosen === 'internship' ? '/direct-mode/jobs?type=internship' : '/direct-mode/dashboard');
     }));
     qs('[data-submit-assessment]').addEventListener('click', submitAssessment);
+    qs('[data-next-section]').addEventListener('click', () => moveSection(1));
+    qs('[data-prev-section]').addEventListener('click', () => moveSection(-1));
     qs('[data-close-runner]').addEventListener('click', () => {
         qs('[data-runner]').classList.remove('active');
-        qs('[data-submit-assessment]').style.display = '';
+        qs('[data-runner-actions]').style.display = 'flex';
+        syncRunnerActions();
     });
     qs('[data-view-all]').addEventListener('click', e => { e.preventDefault(); activeFilter = 'all'; qsa('[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all')); renderOverview(dashboard); renderRecent(); });
     load();

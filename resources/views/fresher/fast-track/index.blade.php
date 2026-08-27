@@ -109,6 +109,14 @@
         align-items: stretch;
     }
 
+    @media (min-width: 1024px) {
+        .fast-track-program-step .fast-track-step-line {
+            left: 50% !important;
+            top: 24px !important;
+            width: 100% !important;
+        }
+    }
+
     @media (min-width: 1280px) {
         .dashboard-main-grid {
             grid-template-columns: minmax(0, 1fr) minmax(360px, .82fr);
@@ -259,6 +267,13 @@
     <section class="fast-track-dashboard-shell space-y-5">
         <div class="flex items-center justify-between gap-4">
             <h1 class="text-[27px] font-bold leading-tight text-[#061942]">Dashboard</h1>
+            <a
+                id="switchToDirectMode"
+                href="/direct-mode/dashboard"
+                class="inline-flex min-h-[40px] items-center justify-center rounded-md border border-[#075fe4] bg-white px-4 text-sm font-extrabold text-[#075fe4] transition hover:bg-[#eef5ff]"
+            >
+                Switch to Direct Mode
+            </a>
         </div>
 
         <article class="dashboard-welcome-card flex flex-col gap-5 rounded-lg border border-[#dbe8f8] bg-[#fbfdff] px-5 py-5 shadow-[0_10px_24px_rgba(6,25,66,.035)] md:flex-row md:items-center md:px-6">
@@ -551,6 +566,7 @@
     const dashboardProfileLocation = document.getElementById('dashboardProfileLocation');
     const dashboardProfileImageWrap = document.getElementById('dashboardProfileImageWrap');
     const dashboardProfileImage = document.getElementById('dashboardProfileImage');
+    const switchToDirectMode = document.getElementById('switchToDirectMode');
     const dashboardStatsGrid = document.getElementById('dashboardStatsGrid');
     const quickActions = document.getElementById('quickActions');
     const recentActivity = document.getElementById('recentActivity');
@@ -558,6 +574,13 @@
     const learningProgressChart = document.getElementById('learningProgressChart');
     const learningProgressLabel = document.getElementById('learningProgressLabel');
     const applicationOverviewChart = document.getElementById('applicationOverviewChart');
+
+    if (switchToDirectMode) {
+        switchToDirectMode.addEventListener('click', function () {
+            localStorage.setItem('onlyfreshers_selected_mode', 'direct');
+            localStorage.removeItem('onlyfreshers_intended_mode');
+        });
+    }
 
     const dashboardIcons = {
         profile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path></svg>',

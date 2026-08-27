@@ -1128,6 +1128,9 @@
 @section('content')
 <section class="dashboard" data-dashboard>
     <div class="dashboard-error" data-dashboard-error></div>
+    <div style="display:flex;justify-content:flex-end;margin:0 0 14px">
+        <a class="direct-help-btn" href="/fast-track/dashboard" data-switch-fast-track>Switch to Fast Track</a>
+    </div>
     <section class="direct-hero direct-credit-hero">
         <article class="direct-hero-profile">
             <span class="direct-hero-avatar" aria-hidden="true"></span>
@@ -1162,7 +1165,9 @@
                 <h2>Apply Jobs & Internships (Direct Mode) <span class="direct-info-dot">i</span></h2>
                 <p>Companies receive your resume along with Initial Track Analysis to find the right match.</p>
             </div>
-            <a class="direct-help-btn" href="/direct-mode/jobs"><span class="direct-info-dot">i</span> How Direct Mode Works</a>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+                <a class="direct-help-btn" href="/direct-mode/jobs"><span class="direct-info-dot">i</span> How Direct Mode Works</a>
+            </div>
         </div>
         <div class="direct-credit-row">
             <article class="direct-credit-cell">
@@ -1320,6 +1325,10 @@
     const headers = { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
     const qs = selector => document.querySelector(selector);
     const qsa = selector => [...document.querySelectorAll(selector)];
+    qs('[data-switch-fast-track]')?.addEventListener('click', () => {
+        localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+        localStorage.setItem('onlyfreshers_intended_mode', 'fast_track');
+    });
     const directJobState = { jobs: [], dashboard: {} };
     const clamp = value => Math.max(0, Math.min(100, Number(value) || 0));
     const text = (selector, value) => { const el = qs(selector); if (el) el.textContent = value; };
