@@ -335,6 +335,13 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     window.location.href = '/direct-mode/flow-selection';
                     return false;
                 }
+                const eligiblePaths = assessment.eligible_paths || {};
+                const directAllowed = eligiblePaths.direct ?? eligiblePaths.jobs ?? true;
+                if (!directAllowed) {
+                    localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+                    window.location.href = '/fast-track/dashboard';
+                    return false;
+                }
 
                 return true;
             } catch (error) {

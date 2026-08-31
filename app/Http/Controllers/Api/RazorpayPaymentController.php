@@ -21,6 +21,13 @@ class RazorpayPaymentController extends Controller
         'basic' => ['amount' => 2, 'credits' => 500],
         'premium' => ['amount' => 3, 'credits' => 2500],
         'enterprise' => ['amount' => 4, 'credits' => 5000],
+        'custom' => ['amount' => 10, 'credits' => 10000],
+    ];
+
+    private const COMPANY_CUSTOM_RESUME_PLANS = [
+        'resume_3_months' => ['amount' => 10, 'credits' => 10000, 'resume_access' => 200, 'validity_days' => 90, 'label' => '3 Months - 200 resumes'],
+        'resume_6_months' => ['amount' => 18, 'credits' => 25000, 'resume_access' => 500, 'validity_days' => 180, 'label' => '6 Months - 500 resumes'],
+        'resume_1_year' => ['amount' => 30, 'credits' => 1000000, 'resume_access' => 1000000, 'validity_days' => 365, 'label' => '1 Year - full resume access'],
     ];
 
     private const DIRECT_MODE_PLANS = [
@@ -36,6 +43,12 @@ class RazorpayPaymentController extends Controller
             'purpose' => ['required', Rule::in(['course_enrollment', 'company_subscription', 'direct_mode_subscription'])],
             'course_enrollment_id' => ['required_if:purpose,course_enrollment', 'integer', 'exists:course_enrollments,id'],
             'plan' => ['required_unless:purpose,course_enrollment', 'string'],
+            'custom_category' => ['nullable', Rule::in(['enterprise', 'resume'])],
+            'custom_amount' => ['nullable', 'numeric', 'min:1', 'max:1000000'],
+            'custom_credits' => ['nullable', 'integer', 'min:1', 'max:1000000'],
+            'custom_resume_plan' => ['nullable', Rule::in(array_keys(self::COMPANY_CUSTOM_RESUME_PLANS))],
+            'custom_facilities' => ['nullable', 'array'],
+            'custom_facilities.*' => ['string', 'max:120'],
         ]);
 
         $user = $request->user();
@@ -95,8 +108,8 @@ class RazorpayPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Payment order could not be created. Please try again.',
-            ], 500);
+                'message' => 'Razorpay checkout could not be opened. Please check internet/Razorpay credentials and try again.',
+            ], 503);
         }
 
         return response()->json([
@@ -257,6 +270,49 @@ class RazorpayPaymentController extends Controller
             $plan = $validated['plan'];
             abort_unless(isset(self::COMPANY_PLANS[$plan]), 422, 'Invalid company subscription plan.');
 
+            if ($plan === 'custom') {
+                $customCategory = $validated['custom_category'] ?? ($validated['custom_resume_plan'] ?? null ? 'resume' : 'enterprise');
+
+                if ($customCategory === 'enterprise') {
+                    $amount = (float) ($validated['custom_amount'] ?? 0);
+                    $credits = (int) ($validated['custom_credits'] ?? 0);
+
+                    abort_if($amount <= 0 || $credits <= 0, 422, 'Enter a valid custom amount.');
+
+                    return [
+                        $amount,
+                        'Custom enterprise hiring plan',
+                        [
+                            'credits' => $credits,
+                            'custom_category' => 'enterprise',
+                            'custom_amount' => $amount,
+                            'custom_facilities' => array_values(array_filter($validated['custom_facilities'] ?? [])),
+                        ],
+                    ];
+                }
+
+                $customResumePlanKey = $validated['custom_resume_plan'] ?? null;
+                abort_unless($customResumePlanKey && isset(self::COMPANY_CUSTOM_RESUME_PLANS[$customResumePlanKey]), 422, 'Choose a valid resume access plan.');
+
+                $customResumePlan = self::COMPANY_CUSTOM_RESUME_PLANS[$customResumePlanKey];
+                $facilities = array_values(array_filter($validated['custom_facilities'] ?? []));
+
+                return [
+                    $customResumePlan['amount'],
+                    'Custom resume access plan: '.$customResumePlan['label'],
+                    [
+                        'credits' => $customResumePlan['credits'],
+                        'custom_category' => 'resume',
+                        'custom_amount' => $customResumePlan['amount'],
+                        'custom_resume_plan' => $customResumePlanKey,
+                        'resume_access' => $customResumePlan['resume_access'],
+                        'validity_days' => $customResumePlan['validity_days'],
+                        'label' => $customResumePlan['label'],
+                        'custom_facilities' => $facilities,
+                    ],
+                ];
+            }
+
             return [
                 self::COMPANY_PLANS[$plan]['amount'],
                 'Company hiring credits: '.$plan,
@@ -314,6 +370,10 @@ class RazorpayPaymentController extends Controller
 
     private function redirectFor(Payment $payment): string
     {
+        if ($payment->purpose === 'company_subscription' && $payment->plan === 'custom') {
+            return '/company/applications';
+        }
+
         return match ($payment->purpose) {
             'course_enrollment' => '/fast-track/training',
             'company_subscription' => '/company/post-job',

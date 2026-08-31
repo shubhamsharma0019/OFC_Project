@@ -1621,6 +1621,44 @@
 
                         </div>
 
+                        @if ($isCompanyAuth)
+                            <div class="field full">
+
+                                <label>
+                                    What are you here for?
+                                    <span class="required">*</span>
+                                </label>
+
+                                <div class="control select-control">
+
+                                    <select
+                                        name="hiring_intent"
+                                        required
+                                    >
+                                        <option value="job_posting">
+                                            Job posting and complete hiring tools
+                                        </option>
+
+                                        <option value="resume_only">
+                                            Resume access only
+                                        </option>
+                                    </select>
+
+                                    <span
+                                        class="input-icon"
+                                        data-icon="chevron"
+                                    ></span>
+
+                                </div>
+
+                                <div
+                                    class="field-error"
+                                    data-error-for="hiring_intent"
+                                ></div>
+
+                            </div>
+                        @endif
+
                     </div>
 
 
@@ -1960,12 +1998,17 @@ document.addEventListener(
             type = 'error'
         ) {
 
+            const safeMessage =
+                /sqlstate|database|mysql|select\s|insert\s|update\s|delete\s/i.test(String(message || ''))
+                    ? 'Unable to connect to the server right now. Please try again in a moment.'
+                    : message;
+
             alertBox.textContent =
-                message || '';
+                safeMessage || '';
 
 
             alertBox.className =
-                message
+                safeMessage
                     ? `form-alert ${type}`
                     : 'form-alert';
         }
@@ -2075,6 +2118,7 @@ document.addEventListener(
                 'password_confirmation',
                 'category'
             ]
+            .concat(form.dataset.role === 'company' ? ['hiring_intent'] : [])
             .forEach(
                 function (name) {
 
@@ -2200,38 +2244,79 @@ document.addEventListener(
         async function postJson(
             url,
             payload,
-            token = null
+            token = null,
+            timeoutMs = 12000
         ) {
 
-            const response =
-                await fetch(
-                    url,
-                    {
-                        method: 'POST',
+            const controller =
+                new AbortController();
 
-                        headers: {
-
-                            Accept:
-                                'application/json',
-
-                            'Content-Type':
-                                'application/json',
-
-                            ...(token
-                                ? {
-                                    Authorization:
-                                        `Bearer ${token}`
-                                }
-                                : {})
-                        },
-
-                        body:
-                            JSON.stringify(
-                                payload
-                            )
-                    }
+            const timeout =
+                window.setTimeout(
+                    function () {
+                        controller.abort();
+                    },
+                    timeoutMs
                 );
 
+            let response;
+
+            try {
+
+                response =
+                    await fetch(
+                        url,
+                        {
+                            method: 'POST',
+
+                            signal:
+                                controller.signal,
+
+                            headers: {
+
+                                Accept:
+                                    'application/json',
+
+                                'Content-Type':
+                                    'application/json',
+
+                                ...(token
+                                    ? {
+                                        Authorization:
+                                            `Bearer ${token}`
+                                    }
+                                    : {})
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+
+            } catch (error) {
+
+                if (
+                    error.name ===
+                    'AbortError'
+                ) {
+
+                    throw new Error(
+                        'Server is taking too long to respond. Please check MySQL/server and try again.'
+                    );
+                }
+
+                throw new Error(
+                    'Unable to connect to the server right now. Please try again.'
+                );
+
+            } finally {
+
+                window.clearTimeout(
+                    timeout
+                );
+            }
 
             const data =
                 await response
@@ -2345,7 +2430,10 @@ document.addEventListener(
                                     form.dataset.role,
 
                                 category:
-                                    payload.category
+                                    payload.category,
+
+                                hiring_intent:
+                                    payload.hiring_intent || 'job_posting'
                             }
                         );
 
@@ -2445,7 +2533,10 @@ document.addEventListener(
                                     industry:
                                         payload
                                             .secondary_field
-                                            .trim()
+                                            .trim(),
+
+                                    hiring_intent:
+                                        payload.hiring_intent || 'job_posting'
                                 },
                                 token
                             );

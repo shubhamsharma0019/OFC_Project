@@ -19,7 +19,7 @@
                 Reset
             </button>
 
-            <a href="/company/applications" class="inline-flex h-[42px] items-center justify-center rounded-lg border border-[#dce7f8] bg-white px-4 text-[13px] font-bold text-[#075fe4] transition hover:bg-[#f5f9ff]">
+            <a id="allItemsLink" href="/company/applications" class="inline-flex h-[42px] items-center justify-center rounded-lg border border-[#dce7f8] bg-white px-4 text-[13px] font-bold text-[#075fe4] transition hover:bg-[#f5f9ff]">
                 All Applications
             </a>
         </div>
@@ -41,7 +41,9 @@
     const jobFilter = document.getElementById('jobFilter');
     const candidateList = document.getElementById('candidateList');
     const resultText = document.getElementById('resultText');
+    const allItemsLink = document.getElementById('allItemsLink');
     let shortlisted = [];
+    let companyProfile = null;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
         '&': '&amp;',
@@ -74,6 +76,7 @@
         }
         localStorage.setItem('ofc_company_profile', JSON.stringify(profile));
         document.dispatchEvent(new CustomEvent('company-profile-loaded', { detail: profile }));
+        companyProfile = profile;
         if (profile.approval_status === 'pending') {
             window.location.href = '/company/approval/pending';
             return false;
@@ -86,11 +89,71 @@
     }
 
     function populateJobs() {
+        if (companyProfile?.hiring_intent === 'resume_only') {
+            jobFilter.innerHTML = '<option value="all">All Resume Status</option><option value="shortlisted">Shortlisted</option><option value="interview_sent">Interview Sent</option>';
+            allItemsLink.href = '/company/resumes';
+            allItemsLink.textContent = 'All Resumes';
+            searchInput.placeholder = 'Search by name, email, role or skills...';
+            return;
+        }
+
         const jobs = [...new Map(shortlisted.map((app) => [app.job?.id, app.job]).filter(([id]) => id)).values()];
         jobFilter.innerHTML = '<option value="all">All Jobs</option>' + jobs.map((job) => `<option value="${job.id}">${escapeHtml(job.title)}</option>`).join('');
     }
 
+    function renderResumeShortlist() {
+        const search = searchInput.value.trim().toLowerCase();
+        const selectedStatus = jobFilter.value;
+        const filtered = shortlisted.filter((resume) => {
+            const haystack = [resume.name, resume.email, resume.preferred_job_category, resume.skills, resume.qualification, resume.city, resume.status].join(' ').toLowerCase();
+            return (selectedStatus === 'all' || resume.status === selectedStatus) && haystack.includes(search);
+        });
+
+        if (!filtered.length) {
+            candidateList.innerHTML = '<div class="rounded-lg border border-[#dce7f8] bg-[#f8fbff] p-8 text-center text-sm text-[#52607a]">No resume shortlisted candidates found.</div>';
+            resultText.textContent = `Showing 0 of ${shortlisted.length} shortlisted resumes`;
+            return;
+        }
+
+        candidateList.innerHTML = `
+            <div class="overflow-x-auto rounded-lg border border-[#dce7f8]">
+                <table class="w-full min-w-[980px] border-collapse text-left text-sm">
+                    <thead class="bg-[#f8fbff] text-xs font-bold uppercase text-[#52607a]">
+                        <tr>
+                            <th class="px-5 py-4">Candidate</th>
+                            <th class="px-5 py-4">Role</th>
+                            <th class="px-5 py-4">Qualification</th>
+                            <th class="px-5 py-4">Skills</th>
+                            <th class="px-5 py-4">Status</th>
+                            <th class="px-5 py-4">Interview</th>
+                            <th class="px-5 py-4 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#edf2fb] bg-white text-[#061942]">
+                        ${filtered.map((resume) => `
+                            <tr>
+                                <td class="px-5 py-4"><strong class="block font-bold">${escapeHtml(resume.name || 'Candidate')}</strong><span class="mt-1 block text-xs text-[#52607a]">${escapeHtml(resume.email || '-')}</span></td>
+                                <td class="px-5 py-4">${escapeHtml(resume.preferred_job_category || '-')}</td>
+                                <td class="px-5 py-4">${escapeHtml([resume.qualification, resume.city].filter(Boolean).join(' - ') || '-')}</td>
+                                <td class="px-5 py-4 text-xs">${escapeHtml(resume.skills || '-')}</td>
+                                <td class="px-5 py-4"><span class="rounded-md ${resume.status === 'interview_sent' ? 'bg-[#eaf2ff] text-[#075fe4]' : 'bg-[#e8f8ef] text-[#078346]'} px-2.5 py-1 text-xs font-bold capitalize">${escapeHtml(String(resume.status || 'shortlisted').replaceAll('_', ' '))}</span></td>
+                                <td class="px-5 py-4 text-xs">${resume.interview_link ? `<a class="font-bold text-[#075fe4]" href="${escapeHtml(resume.interview_link)}" target="_blank" rel="noopener">${escapeHtml(resume.interview_date || 'Open link')}</a><span class="mt-1 block text-[#52607a]">${escapeHtml(resume.interview_time || '')}</span>` : '-'}</td>
+                                <td class="px-5 py-4 text-right"><a href="/company/resumes" class="inline-flex h-9 items-center rounded-md border border-[#075fe4] px-4 text-xs font-bold text-[#075fe4]">Manage</a></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        resultText.textContent = `Showing ${filtered.length} of ${shortlisted.length} shortlisted resumes`;
+    }
+
     function renderCandidates() {
+        if (companyProfile?.hiring_intent === 'resume_only') {
+            renderResumeShortlist();
+            return;
+        }
+
         const search = searchInput.value.trim().toLowerCase();
         const selectedJob = jobFilter.value;
         const filtered = shortlisted.filter((app) => {
@@ -157,6 +220,21 @@
     async function loadShortlisted() {
         const canContinue = await guardCompanyFlow();
         if (!canContinue) return;
+
+        if (companyProfile?.hiring_intent === 'resume_only') {
+            const response = await fetch('/api/company/resumes', {
+                headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || 'Unable to load shortlisted resumes.');
+            }
+            shortlisted = (result.data?.resumes || []).filter((resume) => ['shortlisted', 'interview_sent'].includes(resume.status));
+            populateJobs();
+            renderResumeShortlist();
+            return;
+        }
+
         const response = await fetch('/api/company/applications', {
             headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
         });

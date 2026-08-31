@@ -2104,6 +2104,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
+        | Resume-only companies work from the resume pipeline.
+        */
+
+        if (
+            profile.hiring_intent ===
+            'resume_only'
+        ) {
+
+            window.location.href =
+                '/company/resumes';
+
+            return;
+        }
+
+
+        /*
         | Company Name
         */
 
@@ -2207,8 +2223,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
             dashboardStatus.textContent =
-                error.message ||
-                'Unable to load dashboard.';
+                'Find and hire the best fresher talent for your team.';
 
             if (recentActivities) {
                 recentActivities.innerHTML = `

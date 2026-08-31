@@ -23,6 +23,10 @@ class PublicPageController extends Controller
             'top_brands' => 'Trusted',
         ];
 
+        if ($this->useStaticPublicFallback()) {
+            $trainingPartners = collect();
+            $homeStats = $fallbackStats;
+        } else {
         try {
             $partnerCompanies = CompanyProfile::query()
                 ->where('approval_status', 'approved')
@@ -43,6 +47,7 @@ class PublicPageController extends Controller
         } catch (QueryException) {
             $trainingPartners = collect();
             $homeStats = $fallbackStats;
+        }
         }
 
         return view('public.home', [
@@ -173,6 +178,9 @@ class PublicPageController extends Controller
 
     public function companies(): View
     {
+        if ($this->useStaticPublicFallback()) {
+            $recentJobs = collect();
+        } else {
         try {
             $recentJobs = $this->activeJobs()
                 ->with('companyProfile:id,company_name,industry')
@@ -198,6 +206,7 @@ class PublicPageController extends Controller
                 ]);
         } catch (QueryException) {
             $recentJobs = collect();
+        }
         }
 
         return view('public.jobs.index', [
@@ -232,8 +241,8 @@ class PublicPageController extends Controller
                 : $this->fallbackCompanyJobs(),
             'hiringPackages' => $this->hiringPackages(),
             'resumePacks' => [
-                ['icon' => 'document', 'title' => 'Direct Mode Resumes', 'price' => '₹300', 'unit' => '/ 5 Resumes', 'classes' => 'bg-[#edf5ff] text-[#075fe4]'],
-                ['icon' => 'users', 'title' => 'Fast Track Mode Resumes', 'price' => '₹400', 'unit' => '/ 5 Resumes', 'classes' => 'bg-[#e4f8ef] text-[#0b9b6b]'],
+                ['icon' => 'document', 'title' => '3 Month Resume Plan', 'price' => '200', 'unit' => ' resumes', 'classes' => 'bg-[#edf5ff] text-[#075fe4]'],
+                ['icon' => 'users', 'title' => '6 Month Resume Plan', 'price' => '500', 'unit' => ' resumes', 'classes' => 'bg-[#e4f8ef] text-[#0b9b6b]'],
             ],
             'companyTrustItems' => [
                 ['icon' => 'shield', 'title' => '100% Verified Freshers', 'text' => 'All candidates are verified'],
@@ -246,6 +255,10 @@ class PublicPageController extends Controller
 
     public function directMode(): View
     {
+        if ($this->useStaticPublicFallback()) {
+            $jobs = collect();
+            $locations = collect();
+        } else {
         try {
             $jobs = $this->activeJobs()
                 ->with('companyProfile:id,company_name,company_logo,industry')
@@ -257,6 +270,7 @@ class PublicPageController extends Controller
         } catch (QueryException) {
             $jobs = collect();
             $locations = collect();
+        }
         }
 
         return view('public.direct-mode.index', [
@@ -344,6 +358,10 @@ class PublicPageController extends Controller
 
     public function fastTrack(): View
     {
+        if ($this->useStaticPublicFallback()) {
+            $courses = collect();
+            $partners = collect();
+        } else {
         try {
             $courses = Course::query()
                 ->where('status', 'active')
@@ -357,6 +375,7 @@ class PublicPageController extends Controller
         } catch (QueryException) {
             $courses = collect();
             $partners = collect();
+        }
         }
 
         return view('public.fast-track.index', [
@@ -510,6 +529,11 @@ class PublicPageController extends Controller
             'level' => trim((string) $request->query('level', '')),
         ];
 
+        if ($this->useStaticPublicFallback()) {
+            $courses = collect();
+            $filterOptionsSource = collect();
+            $partnerCount = 0;
+        } else {
         try {
             $baseCourses = Course::query()
                 ->where('status', 'active')
@@ -551,6 +575,7 @@ class PublicPageController extends Controller
             $courses = collect();
             $filterOptionsSource = collect();
             $partnerCount = 0;
+        }
         }
 
         $courseRows = $courses->isNotEmpty()
@@ -692,6 +717,10 @@ class PublicPageController extends Controller
             'mode' => trim((string) $request->query('mode', '')),
         ];
 
+        if ($this->useStaticPublicFallback()) {
+            $courses = collect();
+            $optionSource = collect();
+        } else {
         try {
             $baseCourses = Course::query()
                 ->where('status', 'active')
@@ -720,6 +749,7 @@ class PublicPageController extends Controller
         } catch (QueryException) {
             $courses = collect();
             $optionSource = collect();
+        }
         }
 
         $courseCards = $courses->isNotEmpty()
@@ -809,6 +839,12 @@ class PublicPageController extends Controller
                     ->whereNull('application_last_date')
                     ->orWhereDate('application_last_date', '>=', now()->toDateString());
             });
+    }
+
+    private function useStaticPublicFallback(): bool
+    {
+        return app()->environment('local')
+            && filter_var(env('OFC_PUBLIC_STATIC_FALLBACK', true), FILTER_VALIDATE_BOOLEAN);
     }
 
     private function approvedTrainingPartners()
@@ -974,7 +1010,7 @@ class PublicPageController extends Controller
             ['name' => 'Starter', 'desc' => 'Perfect for getting started', 'price' => '₹2', 'period' => '/month', 'button' => 'Choose Starter', 'popular' => false, 'items' => ['10 Job Postings', '50 Direct Mode Resumes', '20 Fast Track Mode Resumes', 'Candidate Contact Access', 'Email Support']],
             ['name' => 'Growth', 'desc' => 'Scale your hiring', 'price' => '₹3', 'period' => '/month', 'button' => 'Choose Growth', 'popular' => true, 'items' => ['25 Job Postings', '150 Direct Mode Resumes', '60 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support']],
             ['name' => 'Professional', 'desc' => 'For active hiring teams', 'price' => '₹4', 'period' => '/month', 'button' => 'Choose Professional', 'popular' => false, 'items' => ['60 Job Postings', '400 Direct Mode Resumes', '160 Fast Track Mode Resumes', 'Candidate Contact Access', 'Priority Support', 'Dedicated Account Manager']],
-            ['name' => 'Enterprise', 'desc' => 'For large scale hiring', 'price' => 'Custom', 'period' => 'Contact Sales', 'button' => 'Contact Sales', 'popular' => false, 'items' => ['Unlimited Job Postings', 'Custom Resume Access', 'Dedicated Account Manager', 'Bulk Hiring Solutions', 'API Access', 'Custom Integrations']],
+            ['name' => 'Customise Plan', 'desc' => 'Enterprise or resume-only access', 'price' => 'Custom', 'period' => '2 categories', 'button' => 'Customise Plan', 'popular' => false, 'items' => ['Enterprise Custom: Contact Sales', 'Resume Plan: 3 Months / 200 Resumes', 'Resume Plan: 6 Months / 500 Resumes', 'Resume Plan: 1 Year / Full Access']],
         ];
     }
 

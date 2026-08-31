@@ -2,9 +2,10 @@
     $companyMenu = [
         ['title' => 'Dashboard', 'key' => 'dashboard', 'url' => '/company/dashboard', 'icon' => '<path d="M4 11l8-7 8 7"></path><path d="M6 10v9h5v-5h2v5h5v-9"></path>'],
         ['title' => 'My Profile', 'key' => 'profile', 'url' => '/company/profile', 'icon' => '<circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>'],
-        ['title' => 'Post Opportunity', 'key' => 'post-job', 'url' => '/company/post-job', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M12 11v4M10 13h4"></path>'],
-        ['title' => 'Jobs & Internships', 'key' => 'jobs', 'url' => '/company/jobs', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M4 12h16"></path>'],
-        ['title' => 'Applications', 'key' => 'applications', 'url' => '/company/applications', 'icon' => '<path d="M7 3h8l4 4v14H7z"></path><path d="M15 3v5h5M10 13h6M10 17h4"></path>'],
+        ['title' => 'Post Opportunity', 'key' => 'post-job', 'url' => '/company/post-job', 'intent' => 'job_posting', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M12 11v4M10 13h4"></path>'],
+        ['title' => 'Jobs & Internships', 'key' => 'jobs', 'url' => '/company/jobs', 'intent' => 'job_posting', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M4 12h16"></path>'],
+        ['title' => 'Resumes', 'key' => 'resumes', 'url' => '/company/resumes', 'intent' => 'resume_only', 'icon' => '<path d="M7 3h8l4 4v14H7z"></path><path d="M15 3v5h5M10 12h6M10 16h6"></path>'],
+        ['title' => 'Applications', 'key' => 'applications', 'url' => '/company/applications', 'intent' => 'job_posting', 'icon' => '<path d="M7 3h8l4 4v14H7z"></path><path d="M15 3v5h5M10 13h6M10 17h4"></path>'],
         ['title' => 'Shortlisted', 'key' => 'shortlisted', 'url' => '/company/shortlisted', 'icon' => '<path d="M12 3l2.7 5.4 6 .9-4.3 4.2 1 6-5.4-2.8-5.4 2.8 1-6-4.3-4.2 6-.9z"></path>'],
         ['title' => 'Interviews', 'key' => 'interviews', 'url' => '/company/interviews', 'icon' => '<rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4M16 3v4M4 10h16"></path>'],
         ['title' => 'Hired', 'key' => 'hired', 'url' => '/company/hired', 'icon' => '<path d="M8 21v-2a4 4 0 0 1 8 0v2"></path><circle cx="12" cy="7" r="4"></circle><path d="M19 8l2 2 3-5"></path>'],
@@ -63,6 +64,7 @@
         @foreach ($companyMenu as $item)
             <a
                 href="{{ $item['url'] }}"
+                data-company-intent="{{ $item['intent'] ?? 'all' }}"
                 class="relative flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm transition
                        {{ ($activePage ?? '') === $item['key'] ? 'bg-[#eaf2ff] text-[#075fe4]' : 'text-[#061942] hover:bg-[#f5f9ff]' }}"
             >
@@ -78,6 +80,30 @@
             </a>
         @endforeach
     </nav>
+
+    <script>
+        (() => {
+            const parseProfile = () => {
+                try {
+                    return JSON.parse(localStorage.getItem('ofc_company_profile') || 'null') || {};
+                } catch (error) {
+                    return {};
+                }
+            };
+
+            const syncIntentMenu = () => {
+                const intent = parseProfile().hiring_intent || 'job_posting';
+                document.querySelectorAll('[data-company-intent]').forEach((item) => {
+                    const target = item.dataset.companyIntent || 'all';
+                    item.classList.toggle('hidden', target !== 'all' && target !== intent);
+                });
+            };
+
+            document.addEventListener('company-profile-loaded', syncIntentMenu);
+            window.addEventListener('storage', syncIntentMenu);
+            syncIntentMenu();
+        })();
+    </script>
 </div>
 
 <div class="company-sidebar-font company-account-block relative">

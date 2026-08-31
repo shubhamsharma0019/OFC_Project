@@ -117,6 +117,8 @@ class CompanyDashboardController extends Controller
                     'industry' => $companyProfile->industry,
                     'approval_status' =>
                         $companyProfile->approval_status,
+                    'hiring_intent' =>
+                        $companyProfile->hiring_intent,
                     'rejection_reason' =>
                         $companyProfile->rejection_reason,
                     'job_credits' => $companyProfile->job_credits,

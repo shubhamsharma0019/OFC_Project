@@ -58,9 +58,15 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                             <div class="side-head"><h2>Filters</h2><a href="#" data-clear-filters>Clear All</a></div>
                             <div class="field"><label>Job Role</label><select data-role-filter><option value="">All Roles</option></select></div>
                             <div class="field"><label>Location</label><select data-location-filter><option value="">All Locations</option></select></div>
+                            <div class="field"><label>Course / Qualification</label><select data-course-filter><option value="">All Courses</option></select></div>
+                            <div class="field"><label>Company</label><select data-company-filter><option value="">All Companies</option></select></div>
+                            <div class="field"><label>Industry</label><select data-industry-filter><option value="">All Industries</option></select></div>
+                            <div class="field"><label>Skills</label><select data-skill-filter><option value="">All Skills</option></select></div>
                             <div class="field"><label>Experience</label><select data-experience-filter><option value="">All Experience</option><option value="fresher">Fresher</option><option value="full">Full Time</option><option value="part">Part Time</option><option value="internship">Internship</option></select></div>
                             <div class="field"><label>Package Range (LPA)</label><div class="salary-range"><input data-min-package type="number" min="0" step="0.1" placeholder="Min"><input data-max-package type="number" min="0" step="0.1" placeholder="Max"></div></div>
+                            <div class="field"><label>Posted Date</label><select data-posted-filter><option value="">Any Time</option><option value="today">Today</option><option value="3">Last 3 Days</option><option value="7">Last 7 Days</option><option value="30">Last 30 Days</option></select></div>
                             <div class="field"><label>Job Type</label><div class="checks"><label><input data-job-type value="full" type="checkbox" checked>Full Time</label><label><input data-job-type value="part" type="checkbox">Part Time</label><label><input data-job-type value="internship" type="checkbox">Internship</label></div></div>
+                            <div class="field"><label>More Options</label><div class="checks"><label><input data-immediate-filter type="checkbox">Immediate Joiner</label><label><input data-openings-filter type="checkbox">Openings Available</label></div></div>
                             <button class="primary wide" data-apply-filters type="button">Apply Filters</button>
                         </article>
                         <article class="card side-card">
@@ -174,6 +180,24 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             return [Math.min(...values), Math.max(...values)];
         }
 
+        function splitValues(value) {
+            return String(value || '')
+                .split(/[,|/]/)
+                .map(item => item.trim())
+                .filter(Boolean);
+        }
+
+        function companyIndustry(job) {
+            return company(job).industry || job.industry || '';
+        }
+
+        function daysSincePosted(job) {
+            const raw = job.created_at || job.updated_at;
+            if (!raw) return null;
+            const diff = Date.now() - new Date(raw).getTime();
+            return Math.floor(Math.max(0, diff) / 86400000);
+        }
+
         function matchesProfile(job) {
             if (!state.profileKeywords.length) return false;
             const haystack = normalize([job.title, job.required_skills, job.qualification, companyName(job)].join(' '));
@@ -207,12 +231,20 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const locations = [...new Set(state.jobs.map(job => job.location).filter(Boolean))].sort();
             const roles = [...new Set(state.jobs.map(job => job.title).filter(Boolean))].sort();
             const experienceValues = [...new Set(state.jobs.map(job => jobType(job)).filter(Boolean))].sort();
+            const courses = [...new Set(state.jobs.flatMap(job => splitValues(job.qualification)))].sort();
+            const companies = [...new Set(state.jobs.map(job => companyName(job)).filter(Boolean))].sort();
+            const industries = [...new Set(state.jobs.map(job => companyIndustry(job)).filter(Boolean))].sort();
+            const skills = [...new Set(state.jobs.flatMap(job => splitValues(job.required_skills)))].sort();
             populateSelect($('[data-top-location]'), locations, 'Location');
             populateSelect($('[data-location-filter]'), locations, 'All Locations');
             populateSelect($('[data-top-role]'), roles, 'Job Role');
             populateSelect($('[data-role-filter]'), roles, 'All Roles');
             populateSelect($('[data-top-experience]'), experienceValues, 'Experience');
             populateSelect($('[data-experience-filter]'), experienceValues, 'All Experience');
+            populateSelect($('[data-course-filter]'), courses, 'All Courses');
+            populateSelect($('[data-company-filter]'), companies, 'All Companies');
+            populateSelect($('[data-industry-filter]'), industries, 'All Industries');
+            populateSelect($('[data-skill-filter]'), skills, 'All Skills');
             renderJobTypeChecks(experienceValues);
         }
 
@@ -233,9 +265,16 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 search: $('[data-search]').value.trim(),
                 role: $('[data-role-filter]').value || $('[data-top-role]').value,
                 location: $('[data-location-filter]').value || $('[data-top-location]').value,
+                course: $('[data-course-filter]').value,
+                company: $('[data-company-filter]').value,
+                industry: $('[data-industry-filter]').value,
+                skill: $('[data-skill-filter]').value,
                 experience: $('[data-experience-filter]').value || $('[data-top-experience]').value,
                 minPackage: Number($('[data-min-package]').value || 0),
                 maxPackage: Number($('[data-max-package]').value || 0),
+                posted: $('[data-posted-filter]').value,
+                immediate: $('[data-immediate-filter]').checked,
+                openings: $('[data-openings-filter]').checked,
                 jobTypes: $$('[data-job-type]:checked').map(input => input.value),
                 sort: $('[data-sort]').value,
             };
@@ -250,7 +289,20 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             }
             if (filters.role) jobs = jobs.filter(job => normalize(job.title) === normalize(filters.role));
             if (filters.location) jobs = jobs.filter(job => normalize(job.location).includes(normalize(filters.location)));
+            if (filters.course) jobs = jobs.filter(job => normalize(job.qualification).includes(normalize(filters.course)));
+            if (filters.company) jobs = jobs.filter(job => normalize(companyName(job)) === normalize(filters.company));
+            if (filters.industry) jobs = jobs.filter(job => normalize(companyIndustry(job)) === normalize(filters.industry));
+            if (filters.skill) jobs = jobs.filter(job => normalize(job.required_skills).includes(normalize(filters.skill)));
             if (filters.experience) jobs = jobs.filter(job => normalize(jobType(job)) === normalize(filters.experience) || normalize(job.qualification).includes(normalize(filters.experience)));
+            if (filters.posted) {
+                jobs = jobs.filter(job => {
+                    const days = daysSincePosted(job);
+                    if (days === null) return false;
+                    return filters.posted === 'today' ? days === 0 : days <= Number(filters.posted);
+                });
+            }
+            if (filters.immediate) jobs = jobs.filter(job => Boolean(job.immediate_joiner));
+            if (filters.openings) jobs = jobs.filter(job => Number(job.openings || 0) > 0);
             if (filters.minPackage || filters.maxPackage) {
                 jobs = jobs.filter(job => {
                     const [salaryMin, salaryMax] = salaryBounds(job);
@@ -268,7 +320,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 };
                 jobs = jobs.filter(job => {
                     const value = normalize(jobType(job));
-                    return filters.jobTypes.some(type => (typeAliases[type] || [type]).includes(value));
+                    return filters.jobTypes.some(type => (typeAliases[normalize(type)] || [normalize(type)]).includes(value));
                 });
             }
 
@@ -411,7 +463,23 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const packageText = filters.minPackage || filters.maxPackage
                 ? `${filters.minPackage || 0}-${filters.maxPackage || 'Any'} LPA`
                 : '';
-            const parts = [filters.search, filters.role, filters.location, filters.experience, packageText].filter(Boolean);
+            const quickFlags = [
+                filters.posted ? `Posted ${filters.posted === 'today' ? 'Today' : `${filters.posted} Days`}` : '',
+                filters.immediate ? 'Immediate Joiner' : '',
+                filters.openings ? 'Openings Available' : '',
+            ].filter(Boolean);
+            const parts = [
+                filters.search,
+                filters.role,
+                filters.location,
+                filters.course,
+                filters.company,
+                filters.industry,
+                filters.skill,
+                filters.experience,
+                packageText,
+                ...quickFlags,
+            ].filter(Boolean);
             if (!parts.length) return;
             const label = parts.join(' in ');
             state.savedSearches = [{ label, count, filters }, ...state.savedSearches.filter(item => item.label !== label)].slice(0, 6);
@@ -427,8 +495,15 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             $('[data-top-location]').value = saved.filters.location || '';
             $('[data-experience-filter]').value = saved.filters.experience || '';
             $('[data-top-experience]').value = saved.filters.experience || '';
+            $('[data-course-filter]').value = saved.filters.course || '';
+            $('[data-company-filter]').value = saved.filters.company || '';
+            $('[data-industry-filter]').value = saved.filters.industry || '';
+            $('[data-skill-filter]').value = saved.filters.skill || '';
             $('[data-min-package]').value = saved.filters.minPackage || '';
             $('[data-max-package]').value = saved.filters.maxPackage || '';
+            $('[data-posted-filter]').value = saved.filters.posted || '';
+            $('[data-immediate-filter]').checked = Boolean(saved.filters.immediate);
+            $('[data-openings-filter]').checked = Boolean(saved.filters.openings);
             applyFilters();
         }
 
@@ -522,6 +597,19 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     window.location.href = '/direct-mode/flow-selection';
                     return false;
                 }
+                const eligiblePaths = assessment.eligible_paths || {};
+                const directAllowed = eligiblePaths.direct ?? eligiblePaths.jobs ?? true;
+                const internshipAllowed = eligiblePaths.internships ?? directAllowed;
+                if (selectedMode === 'direct' && !directAllowed) {
+                    localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+                    window.location.href = '/fast-track/dashboard';
+                    return false;
+                }
+                if (selectedMode === 'internship' && !internshipAllowed) {
+                    localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+                    window.location.href = '/fast-track/dashboard';
+                    return false;
+                }
 
                 return true;
             } catch (error) {
@@ -594,20 +682,26 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 $('[data-search]').addEventListener('input', () => { headerSearch.value = $('[data-search]').value; });
             }
             $('[data-sort]').addEventListener('change', () => applyFilters());
+            $$('[data-course-filter],[data-company-filter],[data-industry-filter],[data-skill-filter],[data-posted-filter]').forEach(select => {
+                select.addEventListener('change', () => applyFilters({ saveSearch: true }));
+            });
             [$('[data-min-package]'), $('[data-max-package]')].forEach(input => {
                 input.addEventListener('input', debounce(() => applyFilters(), 250));
                 input.addEventListener('change', () => applyFilters({ saveSearch: true }));
             });
             $$('[data-job-type]').forEach(input => input.addEventListener('change', () => applyFilters()));
+            $$('[data-immediate-filter],[data-openings-filter]').forEach(input => input.addEventListener('change', () => applyFilters({ saveSearch: true })));
             $('[data-filter-button]').addEventListener('click', () => applyFilters({ saveSearch: true }));
             $('[data-apply-filters]').addEventListener('click', () => applyFilters({ saveSearch: true }));
             $('[data-clear-filters]').addEventListener('click', event => {
                 event.preventDefault();
                 $('[data-search]').value = '';
-                $$('[data-top-location],[data-location-filter],[data-top-role],[data-role-filter],[data-top-experience],[data-experience-filter]').forEach(select => { select.value = ''; });
+                $$('[data-top-location],[data-location-filter],[data-top-role],[data-role-filter],[data-top-experience],[data-experience-filter],[data-course-filter],[data-company-filter],[data-industry-filter],[data-skill-filter],[data-posted-filter]').forEach(select => { select.value = ''; });
                 $('[data-min-package]').value = '';
                 $('[data-max-package]').value = '';
                 $$('[data-job-type]').forEach((input, index) => { input.checked = index === 0; });
+                $('[data-immediate-filter]').checked = false;
+                $('[data-openings-filter]').checked = false;
                 applyFilters();
             });
             const clearSaved = $('[data-clear-saved]');

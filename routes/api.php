@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\CompanyDashboardController;
 use App\Http\Controllers\Api\CompanyInterviewController;
 use App\Http\Controllers\Api\CompanyJobController;
 use App\Http\Controllers\Api\CompanyProfileController;
+use App\Http\Controllers\Api\CompanyResumeController;
 use App\Http\Controllers\Api\FresherAssessmentController;
 use App\Http\Controllers\Api\FresherCertificateController;
 use App\Http\Controllers\Api\FresherCourseEnrollmentController;
@@ -339,6 +340,21 @@ Route::middleware('auth:sanctum')->group(function () {
         [CompanyDashboardController::class, 'index']
     );
 
+    Route::get(
+        '/company/resumes',
+        [CompanyResumeController::class, 'index']
+    );
+
+    Route::post(
+        '/company/resumes/{assignment}/shortlist',
+        [CompanyResumeController::class, 'shortlist']
+    );
+
+    Route::post(
+        '/company/resumes/{assignment}/interview',
+        [CompanyResumeController::class, 'sendInterview']
+    );
+
     /*
     |--------------------------------------------------------------------------
     | Company Job Routes
@@ -582,6 +598,21 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin/companies')->group(function () {
         Route::get(
+            '/available-resumes',
+            [AdminCompanyController::class, 'availableResumes']
+        );
+
+        Route::get(
+            '/resume-overview',
+            [AdminCompanyController::class, 'resumeOverview']
+        );
+
+        Route::post(
+            '/dummy-resumes',
+            [AdminCompanyController::class, 'createDummyResumes']
+        );
+
+        Route::get(
             '/',
             [AdminCompanyController::class, 'index']
         );
@@ -604,6 +635,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch(
             '/{companyProfile}/user-status',
             [AdminCompanyController::class, 'updateUserStatus']
+        );
+
+        Route::post(
+            '/{companyProfile}/resumes',
+            [AdminCompanyController::class, 'assignResumes']
+        );
+
+        Route::post(
+            '/{companyProfile}/resumes/assign-all',
+            [AdminCompanyController::class, 'assignAllResumes']
         );
     });
 

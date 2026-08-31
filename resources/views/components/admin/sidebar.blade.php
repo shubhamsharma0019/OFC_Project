@@ -3,6 +3,7 @@
         ['title' => 'Dashboard', 'icon' => '<path d="M4 11l8-7 8 7"></path><path d="M6 10v9h5v-5h2v5h5v-9"></path>', 'url' => '/admin/dashboard', 'key' => 'dashboard'],
         ['title' => 'Freshers', 'icon' => '<circle cx="9" cy="8" r="3"></circle><path d="M3 19c0-3 2.5-5 6-5"></path><circle cx="17" cy="9" r="2.5"></circle><path d="M14 19c0-2.4 1.8-4 4-4"></path>', 'url' => '/admin/freshers', 'key' => 'freshers'],
         ['title' => 'Companies', 'icon' => '<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16"></path><path d="M15 9h4a1 1 0 0 1 1 1v11"></path><path d="M8 8h3M8 12h3M8 16h3M18 13h.01M18 17h.01"></path>', 'url' => '/admin/companies', 'key' => 'companies'],
+        ['title' => 'Resumes', 'icon' => '<path d="M7 3h8l4 4v14H7z"></path><path d="M15 3v5h5"></path><path d="M10 12h6"></path><path d="M10 16h6"></path>', 'url' => '/admin/resumes', 'key' => 'resumes'],
         ['title' => 'Training Partners', 'icon' => '<path d="M3 8l9-4 9 4-9 4-9-4z"></path><path d="M7 10v5c0 1.5 2.3 3 5 3s5-1.5 5-3v-5"></path>', 'url' => '/admin/training-partners', 'key' => 'training-partners'],
         ['title' => 'Jobs', 'icon' => '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5h6v2M4 12h16"></path>', 'url' => '/admin/jobs', 'key' => 'jobs'],
         ['title' => 'Courses', 'icon' => '<path d="M4 5h7a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h7z"></path>', 'url' => '/admin/courses', 'key' => 'courses'],

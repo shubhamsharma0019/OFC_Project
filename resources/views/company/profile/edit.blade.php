@@ -21,10 +21,29 @@
     <p id="authMessage" class="mb-5 hidden rounded-lg border px-4 py-3 text-sm font-bold"></p>
 
     <form id="companyProfileForm" class="grid gap-4 sm:gap-5 md:grid-cols-2">
-        <input name="company_name" type="hidden">
-        <input name="industry" type="hidden">
-        <input name="email" type="hidden">
-        <input name="phone" type="hidden">
+        <label class="block">
+            <span class="mb-2 block text-xs font-bold text-[#061942]">Company / Contact Name</span>
+            <input name="company_name" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]" required>
+        </label>
+        <label class="block">
+            <span class="mb-2 block text-xs font-bold text-[#061942]">Email Address</span>
+            <input name="email" type="email" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
+        </label>
+        <label class="block">
+            <span class="mb-2 block text-xs font-bold text-[#061942]">Mobile Number</span>
+            <input name="phone" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
+        </label>
+        <label class="block">
+            <span class="mb-2 block text-xs font-bold text-[#061942]">Industry</span>
+            <input name="industry" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
+        </label>
+        <label class="block md:col-span-2">
+            <span class="mb-2 block text-xs font-bold text-[#061942]">What are you here for?</span>
+            <select name="hiring_intent" class="h-[46px] w-full rounded-lg border border-[#dce7f8] bg-white px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
+                <option value="job_posting">Job posting and hiring tools</option>
+                <option value="resume_only">Resume access only</option>
+            </select>
+        </label>
         <label class="block">
             <span class="mb-2 block text-xs font-bold text-[#061942]">Website</span>
             <input name="website" type="text" placeholder="https://example.com" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
@@ -65,12 +84,13 @@
             industry: profile?.industry || '',
             email: profile?.email || account.email || '',
             phone: profile?.phone || account.mobile || '',
+            hiring_intent: profile?.hiring_intent || 'job_posting',
             website: profile?.website || '',
             address: profile?.address || '',
             description: profile?.description || '',
         };
 
-        for (const field of ['company_name', 'industry', 'email', 'phone', 'website', 'address', 'description']) {
+        for (const field of ['company_name', 'industry', 'email', 'phone', 'hiring_intent', 'website', 'address', 'description']) {
             form[field].value = values[field] || '';
         }
         const name = values.company_name || 'Company';
@@ -125,6 +145,7 @@
                     industry: form.industry.value.trim(),
                     email: form.email.value.trim(),
                     phone: form.phone.value.trim(),
+                    hiring_intent: form.hiring_intent.value,
                     website: normalizedWebsite,
                     address: form.address.value.trim(),
                     description: form.description.value.trim(),
@@ -138,6 +159,11 @@
             }
 
             const profile = result.data.profile;
+            if (result.data?.user) {
+                localStorage.setItem('ofc_auth_user', JSON.stringify(result.data.user));
+                localStorage.setItem('onlyfreshers_company_user', JSON.stringify(result.data.user));
+                localStorage.setItem('onlyfreshers_user', JSON.stringify(result.data.user));
+            }
             localStorage.setItem('ofc_company_profile', JSON.stringify(profile));
             showMessage(profile?.approval_status === 'approved' ? 'Profile saved successfully.' : 'Profile saved and submitted for admin approval.', 'success');
             setTimeout(() => window.location.href = '/company/profile', 700);

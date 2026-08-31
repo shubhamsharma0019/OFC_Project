@@ -383,6 +383,28 @@
 
             </article>
 
+
+            {{-- Account Purpose --}}
+            <article
+                class="min-h-[112px] rounded-lg border border-[#dce7f8] bg-white px-5 py-5 sm:px-[30px] sm:py-[26px] md:col-span-2 xl:col-span-1"
+            >
+
+                <h3
+                    class="mb-4 text-[15px] font-bold text-[#061942]"
+                >
+                    Account Purpose
+                </h3>
+
+
+                <p
+                    id="companyPurpose"
+                    class="text-sm font-bold text-[#24344f]"
+                >
+                    -
+                </p>
+
+            </article>
+
         </div>
 
     </div>
@@ -744,6 +766,12 @@ document.addEventListener(
             setText(
                 'companyApproval',
                 formattedStatus
+            );
+
+
+            setText(
+                'companyPurpose',
+                formatStatus(profile.hiring_intent || 'job_posting')
             );
 
 

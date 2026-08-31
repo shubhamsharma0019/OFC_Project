@@ -22,6 +22,7 @@ class CompanyProfile extends Model
         'address',
         'description',
         'approval_status',
+        'hiring_intent',
         'rejection_reason',
         'job_credits',
         'total_job_credits_used',
@@ -43,5 +44,10 @@ class CompanyProfile extends Model
     public function jobs(): HasMany
     {
         return $this->hasMany(Job::class);
+    }
+
+    public function resumeAssignments(): HasMany
+    {
+        return $this->hasMany(CompanyResumeAssignment::class);
     }
 }

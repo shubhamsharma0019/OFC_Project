@@ -1292,6 +1292,17 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
 
+        if (
+            profile.hiring_intent ===
+            'resume_only'
+        ) {
+
+            window.location.href =
+                '/company/resumes';
+
+            return false;
+        }
+
         if (remainingCredits < 50) {
             if (publishButton) {
                 publishButton.disabled = true;

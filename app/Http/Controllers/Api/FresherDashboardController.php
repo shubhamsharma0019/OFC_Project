@@ -81,9 +81,23 @@ class FresherDashboardController extends Controller
         $recommendedMode = $assessmentResult
             ? ($overallScore >= $directModeThreshold ? 'direct' : 'fast_track')
             : null;
+        $directModeEligible =
+            $assessmentResult &&
+            $overallScore >= $directModeThreshold;
         $directCareerEligible =
             $assessmentResult &&
             $overallScore >= $internshipEligibilityScore;
+        $retakeCooldownDays = (int) config(
+            'onlyfreshers.assessment.initial_retake_cooldown_days',
+            30
+        );
+        $retakeAvailableAt = $initialAssessment?->submitted_at
+            ? $initialAssessment->submitted_at->copy()->addDays($retakeCooldownDays)
+            : null;
+        $canRetakeInitialAssessment = !$assessmentResult ||
+            $overallScore >= $directModeThreshold ||
+            !$retakeAvailableAt ||
+            now()->gte($retakeAvailableAt);
         $freeApplicationCredits = (int) config(
             'onlyfreshers.direct_mode.free_application_credits',
             250
@@ -265,9 +279,16 @@ class FresherDashboardController extends Controller
                         'internship_eligibility_score' =>
                             $internshipEligibilityScore,
                         'recommended_mode' => $recommendedMode,
+                        'can_retake_initial_assessment' =>
+                            $canRetakeInitialAssessment,
+                        'retake_available_at' =>
+                            optional($retakeAvailableAt)->toIso8601String(),
+                        'initial_retake_cooldown_days' =>
+                            $retakeCooldownDays,
                         'eligible_paths' => [
-                            'jobs' => true,
-                            'internships' => true,
+                            'direct' => $directModeEligible,
+                            'jobs' => $directModeEligible,
+                            'internships' => $directCareerEligible,
                             'fast_track' => true,
                         ],
                     ]

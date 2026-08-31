@@ -42,12 +42,19 @@ class CompanyApplicationController extends Controller
                 );
             })
             ->with([
-                'job:id,company_profile_id,title,hiring_mode,status',
-                'fresherProfile:id,user_id,profile_photo,phone,city,qualification,college_name,passing_year,skills,resume,profile_completion',
+                'job:id,company_profile_id,title,hiring_mode,status,location,job_type',
+                'fresherProfile:id,user_id,profile_photo,phone,city,qualification,college_name,passing_year,skills,resume,profile_completion,preferred_job_category',
+                'fresherProfile.assessmentAttempts' => function ($query) {
+                    $query->where('status', 'submitted')->latest('submitted_at');
+                },
+                'fresherProfile.assessmentAttempts.result',
+                'fresherProfile.courseEnrollments.course:id,course_name,category,training_mode',
                 'fresherProfile.user:id,name,email,role,status',
             ])
             ->latest('applied_at')
             ->get();
+
+        $applications->each(fn (JobApplication $application) => $this->attachCandidateSummary($application));
 
         return response()->json([
             'success' => true,
@@ -86,6 +93,11 @@ class CompanyApplicationController extends Controller
         $jobApplication->load([
             'job:id,company_profile_id,title,description,required_skills,qualification,location,salary,job_type,hiring_mode,status',
             'fresherProfile:id,user_id,profile_photo,phone,city,qualification,college_name,passing_year,skills,resume,profile_completion',
+            'fresherProfile.assessmentAttempts' => function ($query) {
+                $query->where('status', 'submitted')->latest('submitted_at');
+            },
+            'fresherProfile.assessmentAttempts.result',
+            'fresherProfile.courseEnrollments.course:id,course_name,category,training_mode',
             'fresherProfile.user:id,name,email,role,status',
             'interview',
         ]);
@@ -104,9 +116,37 @@ class CompanyApplicationController extends Controller
             'success' => true,
             'message' => 'Application details fetched successfully.',
             'data' => [
-                'application' => $jobApplication,
+                'application' => $this->attachCandidateSummary($jobApplication),
             ],
         ]);
+    }
+
+    private function attachCandidateSummary(JobApplication $application): JobApplication
+    {
+        $profile = $application->fresherProfile;
+
+        if (! $profile) {
+            return $application;
+        }
+
+        $attempts = $profile->assessmentAttempts ?? collect();
+        $initialAttempt = $attempts->firstWhere('assessment_type', 'initial');
+        $finalAttempt = $attempts->firstWhere('assessment_type', 'final');
+        $latestCourse = ($profile->courseEnrollments ?? collect())->first()?->course;
+        $flow = $application->job?->hiring_mode ?? 'direct';
+
+        $application->setAttribute('candidate_summary', [
+            'flow' => $flow,
+            'course' => $latestCourse?->course_name ?? $profile->qualification,
+            'course_category' => $latestCourse?->category,
+            'preferred_role' => $profile->preferred_job_category,
+            'initial_score' => $initialAttempt?->result?->overall_score,
+            'final_score' => $flow === 'fast_track' ? $finalAttempt?->result?->overall_score : null,
+            'initial_result' => $initialAttempt?->result,
+            'final_result' => $flow === 'fast_track' ? $finalAttempt?->result : null,
+        ]);
+
+        return $application;
     }
 
     /**

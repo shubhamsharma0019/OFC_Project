@@ -97,7 +97,7 @@
             <div class="mx-auto w-full max-w-7xl rounded-lg bg-[#f8fbff] px-5 py-6 shadow-[0_8px_24px_rgba(6,25,66,.04)]">
                 <div class="mb-7 text-center">
                     <h2 class="mb-1 text-[20px] text-[#061942]">Choose a Hiring Package</h2>
-                    <p class="text-[12px] font-semibold text-[#34445e]">Post more jobs and access more resumes to hire the best talent.</p>
+                    <p class="text-[12px] font-semibold text-[#34445e]">Post jobs, or choose Custom when you only need resume access after credits are over.</p>
                 </div>
 
                 <div class="grid gap-5 lg:grid-cols-4">
@@ -125,8 +125,8 @@
                 <div class="mt-8 rounded-lg border border-[#dce7f8] bg-white px-5 py-5 shadow-[0_6px_18px_rgba(6,25,66,.035)]">
                     <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_230px_1px_230px_170px] lg:items-center">
                         <div>
-                            <h3 class="mb-2 text-[15px] text-[#061942]">Additional Resume Packs</h3>
-                            <p class="text-[11px] font-semibold text-[#34445e]">Need more resumes without upgrading your plan?</p>
+                            <h3 class="mb-2 text-[15px] text-[#061942]">Custom Resume Access Plans</h3>
+                            <p class="text-[11px] font-semibold text-[#34445e]">Need only resumes without job posting?</p>
                         </div>
                         @foreach ($resumePacks as $pack)
                             <div class="flex items-center gap-4">

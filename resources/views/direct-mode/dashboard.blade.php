@@ -1834,6 +1834,19 @@
                 window.location.href = '/direct-mode/flow-selection';
                 return;
             }
+            const eligiblePaths = journeyAssessment.eligible_paths || {};
+            const directAllowed = eligiblePaths.direct ?? eligiblePaths.jobs ?? true;
+            const internshipAllowed = eligiblePaths.internships ?? directAllowed;
+            if (selectedMode === 'direct' && !directAllowed) {
+                localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+                window.location.href = '/fast-track/dashboard';
+                return;
+            }
+            if (selectedMode === 'internship' && !internshipAllowed) {
+                localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+                window.location.href = '/fast-track/dashboard';
+                return;
+            }
 
             const [dashboard, applicationData, notificationData, unreadData, profileData, jobsData] = await Promise.all([
                 Promise.resolve(journey),

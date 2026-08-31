@@ -4,6 +4,7 @@ return [
     'assessment' => [
         'direct_mode_threshold' => env('OFC_DIRECT_MODE_THRESHOLD', 50),
         'internship_eligibility_score' => env('OFC_INTERNSHIP_ELIGIBILITY_SCORE', 50),
+        'initial_retake_cooldown_days' => env('OFC_INITIAL_ASSESSMENT_RETAKE_COOLDOWN_DAYS', 30),
     ],
 
     'direct_mode' => [
@@ -68,7 +69,7 @@ return [
             'cta' => [
                 'title' => "You've used all your free opportunity postings!",
                 'available_title' => 'Free opportunity postings available',
-                'text' => 'Post more jobs or internships and connect with more talented freshers.',
+                'text' => 'Your first company credits are finished. Choose a hiring plan, or use Custom when you only need resume access.',
                 'available_text' => 'Use your free postings to reach verified fresher talent.',
                 'button' => 'View Hiring Packages',
                 'href' => '/company/billing',
@@ -77,7 +78,7 @@ return [
                 ['name' => 'Starter', 'desc' => 'Perfect for getting started', 'price' => '₹2', 'period' => '/month', 'button' => 'Choose Starter', 'popular' => false, 'items' => ['10 Job Postings', '50 Direct Mode Resumes (5 per job extra)', '20 Fast Track Mode Resumes (2 per job extra)', 'Candidate Contact Access', 'Email Support']],
                 ['name' => 'Growth', 'desc' => 'Scale your hiring', 'price' => '₹3', 'period' => '/month', 'button' => 'Choose Growth', 'popular' => true, 'items' => ['25 Job Postings', '150 Direct Mode Resumes (6 per job extra)', '60 Fast Track Mode Resumes (2.5 per job extra)', 'Candidate Contact Access', 'Priority Support']],
                 ['name' => 'Professional', 'desc' => 'For active hiring teams', 'price' => '₹4', 'period' => '/month', 'button' => 'Choose Professional', 'popular' => false, 'items' => ['60 Job Postings', '400 Direct Mode Resumes (7 per job extra)', '160 Fast Track Mode Resumes (2.5 per job extra)', 'Candidate Contact Access', 'Priority Support', 'Dedicated Account Manager']],
-                ['name' => 'Enterprise', 'desc' => 'For large scale hiring', 'price' => 'Custom', 'period' => 'Contact Sales', 'button' => 'Contact Sales', 'popular' => false, 'items' => ['Unlimited Job Postings', 'Custom Resume Access', 'Dedicated Account Manager', 'Bulk Hiring Solutions', 'API Access', 'Custom Integrations']],
+                ['name' => 'Customise Plan', 'desc' => 'Enterprise or resume-only access', 'price' => 'Custom', 'period' => '2 categories', 'button' => 'Customise Plan', 'popular' => false, 'items' => ['Enterprise Custom: Contact Sales', 'Resume Plan: 3 Months / 200 Resumes', 'Resume Plan: 6 Months / 500 Resumes', 'Resume Plan: 1 Year / Full Access']],
             ],
             'resume_packs' => [
                 'title' => 'Additional Resume Packs',

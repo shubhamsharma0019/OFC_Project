@@ -122,6 +122,10 @@
     let questions = [];
     let runnerCategory = 'technical';
     let answersByQuestion = {};
+    let currentQuestionIndex = 0;
+    let questionTimer = null;
+    const questionDuration = 8;
+    let questionTimeLeft = questionDuration;
     const qs = s => document.querySelector(s);
     const qsa = s => [...document.querySelectorAll(s)];
     const esc = v => String(v ?? '').replace(/[&<>"']/g, c => {
@@ -131,6 +135,9 @@
     const clamp = v => Math.max(0, Math.min(100, Number(v) || 0));
     const label = v => String(v || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     const date = v => v ? new Date(v).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '-';
+    const retakeDate = assessment => assessment?.retake_available_at
+        ? new Date(assessment.retake_available_at).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })
+        : '';
     const alert = (msg, type = 'error') => {
         const el = qs('[data-alert]');
         el.textContent = msg || '';
@@ -171,17 +178,27 @@
         setSkill('technical', result?.technical_score);
         setSkill('aptitude', result?.aptitude_score);
         setSkill('communication', result?.communication_score);
-        const recommended = data?.initial_assessment?.recommended_mode || null;
-        const eligiblePaths = data?.initial_assessment?.eligible_paths || {};
+        const assessment = data?.initial_assessment;
+        const recommended = assessment?.recommended_mode || null;
+        const eligiblePaths = assessment?.eligible_paths || {};
+        const directAllowed = eligiblePaths.direct ?? eligiblePaths.jobs ?? true;
+        const retakeAt = retakeDate(assessment);
         qs('[data-track-title]').textContent = result
             ? (recommended === 'fast_track' ? 'Fast Track Mode Recommended' : 'Jobs & Internships Unlocked')
             : 'Initial Assessment';
         qs('[data-track-text]').textContent = result
-            ? (recommended === 'fast_track'
-                ? 'Your score suggests training first will help you become job-ready faster, but you can choose any path.'
-                : 'Your score suggests Jobs & Internships, but you can choose any path that fits your goal.')
+            ? (!directAllowed
+                ? `Your score is below the Direct Mode requirement. Choose Fast Track Mode now. You can retake for Direct Mode${retakeAt ? ` after ${retakeAt}` : ' after 1 month'}.`
+                : 'Your score unlocks Jobs & Internships. Choose the path that fits your goal.')
             : 'Complete your initial assessment to know whether Jobs, Internships or Fast Track Mode fits you better.';
         qs('[data-track-action]').textContent = result ? 'Choose Your Path' : 'Start Assessment';
+        const startButton = qs('[data-start-assessment]');
+        if (startButton) {
+            startButton.disabled = Boolean(result && !assessment?.can_retake_initial_assessment);
+            startButton.textContent = result && !assessment?.can_retake_initial_assessment
+                ? (retakeAt ? `Retake after ${retakeAt}` : 'Retake after 1 month')
+                : 'Start Assessment';
+        }
         renderModeActions(data?.initial_assessment);
     };
     const renderModeActions = assessment => {
@@ -191,15 +208,24 @@
         wrap.style.display = result ? 'flex' : 'none';
         if (!result) return;
         const recommended = assessment?.recommended_mode || 'direct';
+        const eligiblePaths = assessment?.eligible_paths || {};
+        const directAllowed = eligiblePaths.direct ?? eligiblePaths.jobs ?? true;
+        const internshipAllowed = eligiblePaths.internships ?? directAllowed;
         qsa('[data-choose-mode]').forEach(button => {
             const mode = button.dataset.chooseMode;
             const isRecommended = mode === recommended || (recommended === 'direct' && mode === 'internship');
             button.className = isRecommended ? 'primary' : 'outline';
             button.disabled = false;
             if (mode === 'direct') {
-                button.textContent = `Continue with Jobs${isRecommended ? ' (Recommended)' : ''}`;
+                button.disabled = !directAllowed;
+                button.textContent = directAllowed
+                    ? `Continue with Jobs${isRecommended ? ' (Recommended)' : ''}`
+                    : 'Direct locked for 1 month';
             } else if (mode === 'internship') {
-                button.textContent = `Continue with Internships${isRecommended ? ' (Recommended)' : ''}`;
+                button.disabled = !internshipAllowed;
+                button.textContent = internshipAllowed
+                    ? `Continue with Internships${isRecommended ? ' (Recommended)' : ''}`
+                    : 'Internships locked for 1 month';
             } else {
                 button.textContent = `Continue with Fast Track Mode${isRecommended ? ' (Recommended)' : ''}`;
             }
@@ -264,7 +290,31 @@
     const categoryOrder = ['technical', 'aptitude', 'communication'];
     const categoryQuestions = category => questions.filter(q => q.category === category);
     const answeredCount = category => categoryQuestions(category).filter(q => answersByQuestion[q.id]).length;
-    const currentCategoryComplete = () => answeredCount(runnerCategory) === categoryQuestions(runnerCategory).length;
+    const currentCategoryComplete = () => currentQuestionIndex >= categoryQuestions(runnerCategory).length - 1;
+    const stopQuestionTimer = () => {
+        if (questionTimer) {
+            clearInterval(questionTimer);
+            questionTimer = null;
+        }
+    };
+    const updateQuestionTimer = () => {
+        const text = qs('[data-question-timer-text]');
+        const bar = qs('[data-question-timer-bar]');
+        if (text) text.textContent = `${questionTimeLeft}s`;
+        if (bar) bar.style.width = `${(questionTimeLeft / questionDuration) * 100}%`;
+    };
+    const startQuestionTimer = () => {
+        stopQuestionTimer();
+        questionTimeLeft = questionDuration;
+        updateQuestionTimer();
+        questionTimer = setInterval(() => {
+            questionTimeLeft -= 1;
+            updateQuestionTimer();
+            if (questionTimeLeft <= 0) {
+                moveQuestion(1);
+            }
+        }, 1000);
+    };
     const syncRunnerActions = () => {
         const currentIndex = categoryOrder.indexOf(runnerCategory);
         const previousButton = qs('[data-prev-section]');
@@ -286,34 +336,63 @@
         }
     };
     const renderQuestions = () => {
+        qs('[data-runner-actions]').style.display = 'none';
         const currentQuestions = categoryQuestions(runnerCategory);
+        const currentQuestion = currentQuestions[currentQuestionIndex];
         const nav = categoryOrder.map(category => {
             const total = categoryQuestions(category).length;
             const done = answeredCount(category);
             return `<button class="tab ${runnerCategory === category ? 'active' : ''} ${done ? 'has-count' : ''}" type="button" data-runner-category="${category}"><span>${categoryLabels[category]}</span><b>${done}/${total}</b></button>`;
         }).join('');
         qs('[data-runner-title]').textContent = `${categoryLabels[runnerCategory]} Assessment`;
-        qs('[data-questions]').innerHTML = `<div class="tabs" style="width:100%;margin-bottom:14px">${nav}</div>${currentQuestions.length ? currentQuestions.map((q, index) => `<div class="question"><h3>${index + 1}. ${esc(q.question)}</h3><div class="options">${['A','B','C','D'].map(opt => `<label class="option"><input type="radio" name="q_${q.id}" value="${opt}" ${answersByQuestion[q.id] === opt ? 'checked' : ''}><span>${opt}. ${esc(q['option_' + opt.toLowerCase()])}</span></label>`).join('')}</div></div>`).join('') : '<div class="empty">No questions found for this category.</div>'}`;
+        qs('[data-questions]').innerHTML = `<div class="tabs" style="width:100%;margin-bottom:14px">${nav}</div>${currentQuestion ? `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap"><strong class="muted">Question ${currentQuestionIndex + 1} of ${currentQuestions.length}</strong><div style="min-width:112px;border:1px solid #d8e4f7;border-radius:8px;background:#f8fbff;padding:8px 12px;text-align:center"><span style="display:block;font-size:11px;font-weight:800;color:#3d4c77">Time Left</span><b data-question-timer-text style="font-size:22px;color:#064cff">${questionDuration}s</b></div></div><div class="bar" style="height:8px;margin-bottom:14px"><span data-question-timer-bar style="width:100%"></span></div><div class="question"><h3>${currentQuestionIndex + 1}. ${esc(currentQuestion.question)}</h3><div class="options">${['A','B','C','D'].map(opt => `<label class="option"><input type="radio" name="q_${currentQuestion.id}" value="${opt}" ${answersByQuestion[currentQuestion.id] === opt ? 'checked' : ''}><span>${opt}. ${esc(currentQuestion['option_' + opt.toLowerCase()])}</span></label>`).join('')}</div></div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="primary" type="button" data-next-question>${runnerCategory === 'communication' && currentQuestionIndex === currentQuestions.length - 1 ? 'Submit' : 'Next Question'}</button></div>` : '<div class="empty">No questions found for this category.</div>'}`;
         qsa('[data-runner-category]').forEach(btn => btn.addEventListener('click', () => {
             alert('');
             runnerCategory = btn.dataset.runnerCategory;
+            currentQuestionIndex = 0;
             renderQuestions();
         }));
         qsa('[data-questions] input[type="radio"]').forEach(input => input.addEventListener('change', () => {
             answersByQuestion[input.name.replace('q_', '')] = input.value;
-            renderQuestions();
+            moveQuestion(1);
         }));
+        const nextQuestionButton = qs('[data-next-question]');
+        if (nextQuestionButton) nextQuestionButton.addEventListener('click', () => moveQuestion(1));
         syncRunnerActions();
+        if (currentQuestion) startQuestionTimer();
+    };
+    const moveQuestion = direction => {
+        const currentQuestions = categoryQuestions(runnerCategory);
+        const nextQuestionIndex = currentQuestionIndex + direction;
+        stopQuestionTimer();
+
+        if (nextQuestionIndex >= 0 && nextQuestionIndex < currentQuestions.length) {
+            currentQuestionIndex = nextQuestionIndex;
+            renderQuestions();
+            return;
+        }
+
+        if (direction > 0) {
+            const nextCategoryIndex = categoryOrder.indexOf(runnerCategory) + 1;
+            if (nextCategoryIndex < categoryOrder.length) {
+                runnerCategory = categoryOrder[nextCategoryIndex];
+                currentQuestionIndex = 0;
+                renderQuestions();
+                return;
+            }
+            submitAssessment();
+        }
     };
     const moveSection = direction => {
         const currentIndex = categoryOrder.indexOf(runnerCategory);
         if (direction > 0 && !currentCategoryComplete()) {
-            return alert(`Please answer all ${categoryLabels[runnerCategory]} questions before continuing.`);
+            return alert(`Please complete all ${categoryLabels[runnerCategory]} questions before continuing.`);
         }
         const nextIndex = currentIndex + direction;
         if (nextIndex < 0 || nextIndex >= categoryOrder.length) return;
         alert('');
         runnerCategory = categoryOrder[nextIndex];
+        currentQuestionIndex = 0;
         renderQuestions();
         qs('[data-runner]').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
@@ -332,12 +411,13 @@
             questions = questionData.questions || [];
             answersByQuestion = {};
             runnerCategory = 'technical';
+            currentQuestionIndex = 0;
             if (!questions.length) {
                 alert('No active questions are available right now.');
                 return;
             }
             renderQuestions();
-            qs('[data-runner-actions]').style.display = 'flex';
+            qs('[data-runner-actions]').style.display = 'none';
             qs('[data-runner]').classList.add('active');
             qs('[data-runner]').scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (e) {
@@ -351,16 +431,8 @@
         }
     };
     const submitAssessment = async () => {
-        const answers = questions.map(q => ({ question_id: q.id, selected_option: answersByQuestion[q.id] })).filter(a => a.selected_option);
-        if (runnerCategory !== 'communication') {
-            return alert('Please complete Technical Skills and Aptitude before submitting.');
-        }
-        if (answers.length !== questions.length) {
-            const pendingCategory = categoryOrder.find(category => answeredCount(category) < categoryQuestions(category).length);
-            if (pendingCategory) runnerCategory = pendingCategory;
-            renderQuestions();
-            return alert('Please answer all category questions before submitting.');
-        }
+        stopQuestionTimer();
+        const answers = questions.map(q => ({ question_id: q.id, selected_option: answersByQuestion[q.id] || null }));
         try {
             qs('[data-submit-assessment]').disabled = true;
             qs('[data-submit-assessment]').textContent = 'Submitting...';
@@ -411,6 +483,17 @@
     });
     qsa('[data-choose-mode]').forEach(button => button.addEventListener('click', () => {
         const chosen = button.dataset.chooseMode;
+        const eligiblePaths = dashboard?.initial_assessment?.eligible_paths || {};
+        const directAllowed = eligiblePaths.direct ?? eligiblePaths.jobs ?? true;
+        const internshipAllowed = eligiblePaths.internships ?? directAllowed;
+        if (chosen === 'direct' && !directAllowed) {
+            alert('Your assessment score is below the Direct Mode requirement. Please continue with Fast Track Mode.');
+            return;
+        }
+        if (chosen === 'internship' && !internshipAllowed) {
+            alert('Your assessment score is below the internship requirement. Please continue with Fast Track Mode.');
+            return;
+        }
         localStorage.setItem('onlyfreshers_selected_mode', chosen);
         syncAssessmentChrome();
         window.location.href = chosen === 'fast_track'
@@ -421,8 +504,9 @@
     qs('[data-next-section]').addEventListener('click', () => moveSection(1));
     qs('[data-prev-section]').addEventListener('click', () => moveSection(-1));
     qs('[data-close-runner]').addEventListener('click', () => {
+        stopQuestionTimer();
         qs('[data-runner]').classList.remove('active');
-        qs('[data-runner-actions]').style.display = 'flex';
+        qs('[data-runner-actions]').style.display = 'none';
         syncRunnerActions();
     });
     qs('[data-view-all]').addEventListener('click', e => { e.preventDefault(); activeFilter = 'all'; qsa('[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all')); renderOverview(dashboard); renderRecent(); });

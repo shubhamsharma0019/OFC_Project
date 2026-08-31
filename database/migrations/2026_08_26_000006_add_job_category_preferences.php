@@ -8,23 +8,31 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('fresher_profiles', function (Blueprint $table) {
-            $table->string('preferred_job_category', 150)->nullable()->after('skills');
-        });
+        if (! Schema::hasColumn('fresher_profiles', 'preferred_job_category')) {
+            Schema::table('fresher_profiles', function (Blueprint $table) {
+                $table->string('preferred_job_category', 150)->nullable()->after('skills');
+            });
+        }
 
-        Schema::table('assessment_questions', function (Blueprint $table) {
-            $table->string('job_category', 150)->nullable()->after('category');
-        });
+        if (! Schema::hasColumn('assessment_questions', 'job_category')) {
+            Schema::table('assessment_questions', function (Blueprint $table) {
+                $table->string('job_category', 150)->nullable()->after('category');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('assessment_questions', function (Blueprint $table) {
-            $table->dropColumn('job_category');
-        });
+        if (Schema::hasColumn('assessment_questions', 'job_category')) {
+            Schema::table('assessment_questions', function (Blueprint $table) {
+                $table->dropColumn('job_category');
+            });
+        }
 
-        Schema::table('fresher_profiles', function (Blueprint $table) {
-            $table->dropColumn('preferred_job_category');
-        });
+        if (Schema::hasColumn('fresher_profiles', 'preferred_job_category')) {
+            Schema::table('fresher_profiles', function (Blueprint $table) {
+                $table->dropColumn('preferred_job_category');
+            });
+        }
     }
 };

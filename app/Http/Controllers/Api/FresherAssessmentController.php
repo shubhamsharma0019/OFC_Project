@@ -260,6 +260,44 @@ class FresherAssessmentController extends Controller
 
         $assessmentTrack = $this->assessmentTrack($fresherProfile);
 
+        $latestSubmittedAttempt = AssessmentAttempt::query()
+            ->where('fresher_profile_id', $fresherProfile->id)
+            ->where('assessment_type', 'initial')
+            ->where('status', 'submitted')
+            ->with('result')
+            ->latest('submitted_at')
+            ->first();
+
+        if ($latestSubmittedAttempt?->result) {
+            $directModeThreshold = (float) config(
+                'onlyfreshers.assessment.direct_mode_threshold',
+                50
+            );
+            $retakeCooldownDays = (int) config(
+                'onlyfreshers.assessment.initial_retake_cooldown_days',
+                30
+            );
+            $retakeAvailableAt = $latestSubmittedAttempt->submitted_at
+                ? $latestSubmittedAttempt->submitted_at->copy()->addDays($retakeCooldownDays)
+                : null;
+
+            if (
+                (float) $latestSubmittedAttempt->result->overall_score < $directModeThreshold &&
+                $retakeAvailableAt &&
+                now()->lt($retakeAvailableAt)
+            ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You can retake the initial assessment for Direct Mode after 1 month.',
+                    'data' => [
+                        'retake_available_at' => $retakeAvailableAt->toIso8601String(),
+                        'direct_mode_threshold' => $directModeThreshold,
+                        'initial_retake_cooldown_days' => $retakeCooldownDays,
+                    ],
+                ], 422);
+            }
+        }
+
         $activeQuestionsCount = $this
             ->activeInitialQuestions($assessmentTrack)
             ->count();
@@ -365,7 +403,7 @@ class FresherAssessmentController extends Controller
         $validated = $request->validate([
             'answers' => ['required', 'array', 'min:1'],
             'answers.*.question_id' => ['required', 'integer', 'distinct', 'exists:assessment_questions,id'],
-            'answers.*.selected_option' => ['required', 'string', Rule::in(['A', 'B', 'C', 'D'])],
+            'answers.*.selected_option' => ['nullable', 'string', Rule::in(['A', 'B', 'C', 'D'])],
         ]);
 
         $activeQuestions = $this
@@ -389,13 +427,13 @@ class FresherAssessmentController extends Controller
             $totalCorrect = 0;
 
             foreach ($activeQuestions as $question) {
-                $selectedOption = strtoupper($submittedAnswers[$question->id]['selected_option']);
+                $selectedOption = strtoupper((string) ($submittedAnswers[$question->id]['selected_option'] ?? ''));
                 $isCorrect = $selectedOption === strtoupper($question->correct_option);
 
                 AssessmentAnswer::create([
                     'attempt_id' => $attempt->id,
                     'question_id' => $question->id,
-                    'selected_option' => $selectedOption,
+                    'selected_option' => $selectedOption ?: null,
                     'is_correct' => $isCorrect,
                 ]);
 

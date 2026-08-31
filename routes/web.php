@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\CompanyDashboardPageController;
+use App\Models\CompanyResumeAssignment;
+use App\Models\FresherProfile;
 use App\Http\Controllers\PublicPageController;
+use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -106,6 +110,13 @@ Route::get('/company/dashboard-preview', CompanyDashboardPageController::class);
 Route::get('/company/dashboard', CompanyDashboardPageController::class);
 Route::view('/company/credits-welcome', 'company.credits-welcome');
 Route::view('/company/billing', 'company.billing.index');
+Route::view('/company/resumes', 'company.resumes.index');
+Route::get('/company/resumes/open-assigned', function (Request $request) {
+    return openAssignedCompanyResume($request, false);
+});
+Route::get('/company/resumes/download-assigned', function (Request $request) {
+    return openAssignedCompanyResume($request, true);
+});
 
 Route::view('/company/profile', 'company.profile.show');
 Route::view('/company/profile/edit', 'company.profile.edit');
@@ -119,6 +130,8 @@ Route::view('/company/jobs/preview', 'company.jobs.preview');
 Route::view('/company/applications', 'company.applications.index');
 Route::view('/company/applications/show', 'company.applications.show');
 Route::get('/company/resumes/open', function (Request $request) {
+    abort_unless(companyCanAccessBulkResumes($request), 403);
+
     $path = trim((string) $request->query('path', ''));
 
     abort_if($path === '' || str_contains($path, '..') || ! str_starts_with($path, 'fresher/resumes/'), 404);
@@ -141,6 +154,8 @@ Route::get('/company/resumes/open', function (Request $request) {
     ]);
 });
 Route::get('/company/resumes/download', function (Request $request) {
+    abort_unless(companyCanAccessBulkResumes($request), 403);
+
     $path = trim((string) $request->query('path', ''));
 
     abort_if($path === '' || str_contains($path, '..') || ! str_starts_with($path, 'fresher/resumes/'), 404);
@@ -149,6 +164,99 @@ Route::get('/company/resumes/download', function (Request $request) {
     return Storage::disk('public')->download($path);
 });
 Route::view('/company/shortlisted', 'company.applications.shortlisted');
+
+if (! function_exists('companyCanAccessBulkResumes')) {
+    function companyCanAccessBulkResumes(Request $request): bool
+    {
+        $token = trim((string) $request->query('token', ''));
+
+        if ($token === '') {
+            return false;
+        }
+
+        $accessToken = PersonalAccessToken::findToken($token);
+        $user = $accessToken?->tokenable;
+        $plan = strtolower((string) $user?->companyProfile?->subscription_plan);
+
+        return $user?->role === 'company'
+            && in_array($plan, ['custom', 'customized', 'customised'], true);
+    }
+}
+
+if (! function_exists('openAssignedCompanyResume')) {
+    function openAssignedCompanyResume(Request $request, bool $download)
+    {
+        $token = trim((string) $request->query('token', ''));
+        $profileId = (int) $request->query('fresher_profile_id', 0);
+
+        if ($token === '' || $profileId <= 0) {
+            abort(404);
+        }
+
+        $accessToken = PersonalAccessToken::findToken($token);
+        $user = $accessToken?->tokenable;
+        $companyProfile = $user?->companyProfile;
+
+        abort_unless($user?->role === 'company' && $companyProfile, 403);
+        abort_unless($companyProfile->approval_status === 'approved', 403);
+        abort_unless($companyProfile->hiring_intent === 'resume_only', 403);
+
+        $resumeProfile = FresherProfile::query()
+            ->whereKey($profileId)
+            ->whereNotNull('resume')
+            ->where('resume', '!=', '')
+            ->firstOrFail();
+
+        abort_unless(
+            CompanyResumeAssignment::query()
+                ->where('company_profile_id', $companyProfile->id)
+                ->where('fresher_profile_id', $resumeProfile->id)
+                ->exists(),
+            403
+        );
+
+        if ((int) $companyProfile->job_credits < 50) {
+            return redirect('/company/billing?reason=resume-credits-over');
+        }
+
+        DB::transaction(function () use ($companyProfile) {
+            $lockedProfile = $companyProfile->newQuery()
+                ->whereKey($companyProfile->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            abort_if((int) $lockedProfile->job_credits < 50, 402, 'Resume credits are over.');
+
+            $lockedProfile->decrement('job_credits', 50);
+            $lockedProfile->increment('total_job_credits_used', 50);
+        });
+
+        $path = $resumeProfile->resume;
+
+        abort_if(str_contains($path, '..') || ! str_starts_with($path, 'fresher/resumes/'), 404);
+        abort_unless(Storage::disk('public')->exists($path), 404);
+
+        if ($download) {
+            return Storage::disk('public')->download($path);
+        }
+
+        $absolutePath = Storage::disk('public')->path($path);
+        $fileName = basename($path);
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $contentTypes = [
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ];
+
+        return response()->file($absolutePath, [
+            'Content-Type' => $contentTypes[$extension] ?? 'application/octet-stream',
+            'Content-Disposition' => 'inline; filename="' . addslashes($fileName) . '"',
+            'Cache-Control' => 'private, max-age=0, must-revalidate',
+            'Pragma' => 'public',
+        ]);
+    }
+}
 
 Route::view('/company/interviews', 'company.interviews.index');
 Route::view('/company/interviews/create', 'company.interviews.create');
@@ -176,6 +284,7 @@ Route::view('/admin/freshers/show', 'admin.freshers.show');
 
 Route::view('/admin/companies', 'admin.companies.index');
 Route::view('/admin/companies/show', 'admin.companies.show');
+Route::view('/admin/resumes', 'admin.resumes.index');
 
 Route::view('/admin/training-partners', 'admin.training-partners.index');
 Route::view('/admin/training-partners/show', 'admin.training-partners.show');

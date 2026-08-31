@@ -35,6 +35,9 @@
                 Loading resume...
             </div>
 
+            <h3 class="mb-2 mt-6 font-bold">Assessment Scores</h3>
+            <div id="candidateScores" class="grid gap-3 md:grid-cols-2"></div>
+
             <h3 class="mb-2 mt-6 font-bold">Profile Completion</h3>
             <p id="profileCompletion" class="text-sm leading-relaxed text-[#24344f]">-</p>
         </div>
@@ -63,6 +66,7 @@
     const content = document.getElementById('applicationContent');
     const actionMessage = document.getElementById('actionMessage');
     let currentApplication = null;
+    let companyProfile = null;
     const actionControls = {
         underReview: document.getElementById('underReviewButton'),
         shortlist: document.getElementById('shortlistButton'),
@@ -98,8 +102,10 @@
         if (/^(https?:)?\/\//.test(value) || value.startsWith('/')) return value;
         return `/storage/${value}`;
     };
-    const resumeOpenUrl = (path) => `/company/resumes/open?path=${encodeURIComponent(path)}`;
-    const resumeDownloadUrl = (path) => `/company/resumes/download?path=${encodeURIComponent(path)}`;
+    const resumeOpenUrl = (path) => `/company/resumes/open?path=${encodeURIComponent(path)}&token=${encodeURIComponent(token)}`;
+    const resumeDownloadUrl = (path) => `/company/resumes/download?path=${encodeURIComponent(path)}&token=${encodeURIComponent(token)}`;
+    const scoreText = (value) => value !== null && value !== undefined && value !== '' ? `${Math.round(Number(value))}%` : '-';
+    const hasCustomPlanAccess = () => ['custom', 'customized', 'customised'].includes(String(companyProfile?.subscription_plan || '').trim().toLowerCase());
 
     function showActionMessage(text, type = 'error') {
         actionMessage.textContent = text;
@@ -138,6 +144,7 @@
             return false;
         }
 
+        companyProfile = profile;
         localStorage.setItem('ofc_company_profile', JSON.stringify(profile));
         document.dispatchEvent(new CustomEvent('company-profile-loaded', { detail: profile }));
 
@@ -158,6 +165,7 @@
         const profile = application.fresher_profile || {};
         const job = application.job || {};
         const status = application.application_status || 'applied';
+        const summary = application.candidate_summary || {};
         const skills = profile.skills ? String(profile.skills).split(',').map((skill) => skill.trim()).filter(Boolean) : [];
 
         setText('candidateInitials', initials(user.name));
@@ -180,7 +188,9 @@
 
         const resumeBox = document.getElementById('candidateResume');
         const resumeUrl = storageUrl(profile.resume);
-        resumeBox.innerHTML = resumeUrl
+        resumeBox.innerHTML = !hasCustomPlanAccess()
+            ? '<span class="text-sm font-bold text-[#52607a]">Custom plan required to view resumes.</span>'
+            : resumeUrl
             ? `<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div class="min-w-0">
                         <p class="break-all font-bold text-[#061942]">${escapeHtml(fileName(profile.resume))}</p>
@@ -192,6 +202,32 @@
                     </div>
                 </div>`
             : '<span class="text-sm text-[#52607a]">No resume uploaded by this candidate.</span>';
+
+        if (!hasCustomPlanAccess()) {
+            document.getElementById('candidateScores').innerHTML = '<div class="rounded-lg border border-[#dce7f8] bg-[#f8fbff] p-4 text-sm font-bold text-[#52607a] md:col-span-2">Custom plan required to view assessment scores and Fast Track final scores.</div>';
+            renderActions(status, application);
+            return;
+        }
+
+        const scoreCards = [
+            ['Initial Assessment', summary.initial_score, summary.initial_result],
+        ];
+
+        if ((summary.flow || job.hiring_mode) === 'fast_track') {
+            scoreCards.push(['Final Assessment', summary.final_score, summary.final_result]);
+        }
+
+        document.getElementById('candidateScores').innerHTML = scoreCards.map(([title, score, result]) => `
+            <div class="rounded-lg border border-[#dce7f8] bg-[#f8fbff] p-4">
+                <div class="mb-2 text-xs font-bold uppercase text-[#52607a]">${escapeHtml(title)}</div>
+                <div class="text-2xl font-black text-[#061942]">${escapeHtml(scoreText(score))}</div>
+                <div class="mt-2 grid gap-1 text-xs text-[#52607a]">
+                    <span>Technical: ${escapeHtml(scoreText(result?.technical_score))}</span>
+                    <span>Aptitude: ${escapeHtml(scoreText(result?.aptitude_score))}</span>
+                    <span>Communication: ${escapeHtml(scoreText(result?.communication_score))}</span>
+                </div>
+            </div>
+        `).join('');
 
         renderActions(status, application);
     }

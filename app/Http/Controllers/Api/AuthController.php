@@ -88,6 +88,14 @@ class AuthController extends Controller
                 'string',
                 'max:150',
             ],
+
+            'hiring_intent' => [
+                'nullable',
+                Rule::in([
+                    'job_posting',
+                    'resume_only',
+                ]),
+            ],
         ], [
             'name.regex' => 'Name may only contain letters, spaces, dot, apostrophe and hyphen.',
             'email.unique' => 'This email is already registered. Please login with this email or use another email.',
@@ -126,6 +134,7 @@ class AuthController extends Controller
                 'company_name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'phone' => $validatedData['mobile'] ?? null,
+                'hiring_intent' => $validatedData['hiring_intent'] ?? 'job_posting',
                 'job_credits' => 500,
                 'total_job_credits_used' => 0,
             ]);

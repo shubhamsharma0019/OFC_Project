@@ -175,6 +175,11 @@
             return false;
         }
 
+        if (profile.hiring_intent === 'resume_only') {
+            window.location.href = '/company/resumes';
+            return false;
+        }
+
         return true;
     }
 

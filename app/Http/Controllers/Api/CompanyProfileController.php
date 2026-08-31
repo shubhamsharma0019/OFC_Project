@@ -68,6 +68,7 @@ class CompanyProfileController extends Controller
                 'nullable',
                 'email',
                 'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
             ],
 
             'phone' => [
@@ -104,6 +105,14 @@ class CompanyProfileController extends Controller
                 'mimes:jpg,jpeg,png,webp',
                 'max:2048',
             ],
+
+            'hiring_intent' => [
+                'nullable',
+                Rule::in([
+                    'job_posting',
+                    'resume_only',
+                ]),
+            ],
         ]);
 
         if ($request->hasFile('company_logo')) {
@@ -127,6 +136,7 @@ class CompanyProfileController extends Controller
                 'website',
                 'address',
                 'description',
+                'hiring_intent',
             ]) ?? [],
             $validatedData
         );
@@ -139,6 +149,7 @@ class CompanyProfileController extends Controller
         if (! $existingProfile) {
             $profileData['job_credits'] = 500;
             $profileData['total_job_credits_used'] = 0;
+            $profileData['hiring_intent'] = $validatedData['hiring_intent'] ?? 'job_posting';
         }
 
         $profile = $user->companyProfile()->updateOrCreate(
@@ -147,6 +158,12 @@ class CompanyProfileController extends Controller
             ],
             $profileData
         );
+
+        $user->update([
+            'name' => $profileData['company_name'],
+            'email' => $profileData['email'] ?: $user->email,
+            'mobile' => $profileData['phone'] ?: $user->mobile,
+        ]);
 
         if (! $existingProfile) {
             $this->notifyAdminsAboutCompanyRegistration($profile->company_name);
@@ -159,6 +176,7 @@ class CompanyProfileController extends Controller
                 : 'Company profile created successfully.',
             'data' => [
                 'profile' => $profile->fresh(),
+                'user' => $user->fresh(),
             ],
         ]);
     }
