@@ -355,6 +355,21 @@ Route::middleware('auth:sanctum')->group(function () {
         [CompanyResumeController::class, 'sendInterview']
     );
 
+    Route::post(
+        '/company/resumes/{assignment}/interview/join',
+        [CompanyResumeController::class, 'markInterviewJoined']
+    );
+
+    Route::post(
+        '/company/resumes/{assignment}/interview/complete',
+        [CompanyResumeController::class, 'completeInterview']
+    );
+
+    Route::post(
+        '/company/resumes/{assignment}/hiring-status',
+        [CompanyResumeController::class, 'updateHiringStatus']
+    );
+
     /*
     |--------------------------------------------------------------------------
     | Company Job Routes

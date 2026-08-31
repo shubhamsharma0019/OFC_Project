@@ -245,7 +245,9 @@
 
 @push('scripts')
 <script>
-    const token = localStorage.getItem('ofc_auth_token');
+    const token = localStorage.getItem('ofc_company_token') ||
+        localStorage.getItem('onlyfreshers_company_token') ||
+        localStorage.getItem('ofc_auth_token');
     const body = document.getElementById('interviewBody');
     const searchInput = document.getElementById('searchInput');
     const jobFilter = document.getElementById('jobFilter');
@@ -266,6 +268,8 @@
         scheduled: 'bg-[#fff0d1] text-[#c86b00]',
         completed: 'bg-[#dbf8e9] text-[#00a65a]',
         cancelled: 'bg-[#ffe8eb] text-[#ff3045]',
+        hired: 'bg-[#dbf8e9] text-[#00a65a]',
+        not_selected: 'bg-[#ffe8eb] text-[#ff3045]',
     };
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
@@ -292,8 +296,7 @@
     function meetingEnded(interview) {
         const status = String(interview.status || '').toLowerCase();
         if (['completed', 'cancelled'].includes(status)) return true;
-        const date = interviewDateTime(interview);
-        return date ? date.getTime() < Date.now() : false;
+        return false;
     }
 
     function showMessage(text, type = 'error') {
@@ -383,9 +386,9 @@
 
     function updateCounts() {
         document.getElementById('allCount').textContent = interviews.length;
-        for (const status of ['scheduled', 'completed', 'cancelled']) {
-            document.getElementById(`${status}Count`).textContent = interviews.filter((interview) => interview.status === status).length;
-        }
+        document.getElementById('scheduledCount').textContent = interviews.filter((interview) => interview.status === 'scheduled').length;
+        document.getElementById('completedCount').textContent = interviews.filter((interview) => ['completed', 'hired', 'not_selected'].includes(interview.status)).length;
+        document.getElementById('cancelledCount').textContent = interviews.filter((interview) => interview.status === 'cancelled').length;
     }
 
     function populateJobs() {
@@ -401,7 +404,11 @@
             const user = app.fresher_profile?.user || {};
             const job = app.job || {};
             const haystack = [user.name, user.email, job.title, interview.interview_mode, interview.status].join(' ').toLowerCase();
-            return (activeStatus === 'all' || interview.status === activeStatus)
+            const matchesStatus = activeStatus === 'all' ||
+                interview.status === activeStatus ||
+                (activeStatus === 'completed' && ['hired', 'not_selected'].includes(interview.status));
+
+            return matchesStatus
                 && (selectedJob === 'all' || String(job.id) === selectedJob)
                 && haystack.includes(search);
         });
@@ -419,15 +426,31 @@
             const app = interview.job_application || {};
             const user = app.fresher_profile?.user || {};
             const job = app.job || {};
+            const isResumeInterview = interview.source === 'resume_assignment';
             const place = interview.interview_mode === 'online' ? interview.meeting_link : interview.interview_location;
             const ended = meetingEnded(interview);
-            const displayStatus = ended && interview.status === 'scheduled' ? 'meeting_completed' : interview.status;
-            const joinButton = interview.status === 'scheduled' && !ended && interview.interview_mode === 'online' && interview.meeting_link
-                ? `<a href="${escapeAttr(interview.meeting_link)}" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg border border-[#075fe4] bg-[#075fe4] px-3 py-2 text-xs font-bold text-white" title="Open Google Meet">Join Meet</a>`
+            const displayStatus = interview.status;
+            const joinButton = interview.status === 'scheduled' && interview.interview_mode === 'online' && interview.meeting_link
+                ? `<a href="${escapeAttr(interview.meeting_link)}" target="_blank" rel="noopener noreferrer" data-assignment-id="${interview.assignment_id || ''}" class="join-meet-action inline-flex rounded-lg border border-[#075fe4] bg-[#075fe4] px-3 py-2 text-xs font-bold text-white" title="Open Google Meet">Join Meet</a>`
                 : '';
-            const editButton = interview.status === 'scheduled'
+            const editButton = interview.status === 'scheduled' && !isResumeInterview
                 ? `<button data-id="${interview.id}" class="edit-interview rounded-lg border border-[#9fc0f5] px-3 py-2 text-xs font-bold text-[#075fe4]" type="button">Edit</button>`
                 : '';
+            const joinedNote = isResumeInterview && interview.status === 'scheduled'
+                ? `<span class="text-xs font-bold text-[#52607a]">${interview.company_joined_at ? 'Company joined' : 'Company pending'} / ${interview.fresher_joined_at ? 'Fresher joined' : 'Fresher pending'}</span>`
+                : '';
+            const resumeActions = isResumeInterview && interview.status === 'scheduled'
+                ? `<div class="company-interview-actions flex flex-wrap gap-2">
+                    ${joinButton}
+                    <button data-assignment-id="${interview.assignment_id}" class="resume-complete-action rounded-lg border border-[#b9e7c9] px-3 py-2 text-xs font-bold text-[#138a43] disabled:cursor-not-allowed disabled:opacity-50" type="button" ${interview.both_joined ? '' : 'disabled'}>Close Interview</button>
+                    ${joinedNote}
+                </div>`
+                : isResumeInterview && interview.status === 'completed'
+                    ? `<div class="company-interview-actions flex flex-wrap gap-2">
+                        <button data-assignment-id="${interview.assignment_id}" data-status="hired" class="resume-final-action rounded-lg border border-[#b9e7c9] px-3 py-2 text-xs font-bold text-[#138a43]" type="button">Hired</button>
+                        <button data-assignment-id="${interview.assignment_id}" data-status="not_selected" class="resume-final-action rounded-lg border border-[#ffd1d7] px-3 py-2 text-xs font-bold text-[#ff3045]" type="button">Not Selected</button>
+                    </div>`
+                    : (isResumeInterview ? (joinButton || '-') : '');
 
             return `
                 <tr class="border-b border-[#edf2fb] last:border-b-0">
@@ -443,9 +466,9 @@
                     <td class="px-4 py-4 align-middle text-[13px] text-[#061942]" data-label="Job Role">${escapeHtml(job.title || '-')}</td>
                     <td class="px-4 py-4 align-middle text-[13px]" data-label="Mode"><div class="font-bold text-[#061942]">${escapeHtml(formatStatus(interview.interview_mode))}</div><div class="mt-1 max-w-[220px] break-all text-xs text-[#52607a]">${escapeHtml(place || '-')}</div></td>
                     <td class="px-4 py-4 align-middle text-[13px] text-[#061942]" data-label="Date & Time"><div class="mb-1.5">${formatDate(interview.interview_date)}</div><span>${escapeHtml(interview.interview_time || '-')}</span></td>
-                    <td class="px-4 py-4 align-middle text-[13px]" data-label="Status"><span class="inline-flex h-[30px] min-w-[72px] items-center justify-center rounded-lg px-2.5 text-xs font-bold ${ended ? statusClasses.completed : (statusClasses[interview.status] || statusClasses.scheduled)}">${escapeHtml(formatStatus(displayStatus))}</span></td>
+                    <td class="px-4 py-4 align-middle text-[13px]" data-label="Status"><span class="inline-flex h-[30px] min-w-[72px] items-center justify-center rounded-lg px-2.5 text-xs font-bold ${statusClasses[interview.status] || (ended ? statusClasses.completed : statusClasses.scheduled)}">${escapeHtml(formatStatus(displayStatus))}</span></td>
                     <td class="px-4 py-4 align-middle text-[13px]" data-label="Action">
-                        ${interview.status === 'scheduled' ? `
+                        ${isResumeInterview ? resumeActions : (interview.status === 'scheduled' ? `
                             <div class="company-interview-actions flex flex-wrap gap-2">
                                 ${editButton}
                                 ${joinButton}
@@ -453,7 +476,7 @@
                                 <button data-id="${interview.id}" data-status="completed" data-application-status="rejected" class="status-action rounded-lg border border-[#ffd1d7] px-3 py-2 text-xs font-bold text-[#ff3045]" type="button">Reject</button>
                                 <button data-id="${interview.id}" data-status="cancelled" class="status-action rounded-lg border border-[#dce7f8] px-3 py-2 text-xs font-bold text-[#52607a]" type="button">Cancel</button>
                             </div>
-                        ` : (editButton || joinButton ? `<div class="company-interview-actions flex flex-wrap gap-2">${editButton}${joinButton}</div>` : '-')}
+                        ` : (editButton || joinButton ? `<div class="company-interview-actions flex flex-wrap gap-2">${editButton}${joinButton}</div>` : '-'))}
                     </td>
                 </tr>
             `;
@@ -464,6 +487,15 @@
         });
         document.querySelectorAll('.status-action').forEach((button) => {
             button.addEventListener('click', () => updateInterviewStatus(button));
+        });
+        document.querySelectorAll('.resume-complete-action').forEach((button) => {
+            button.addEventListener('click', () => completeResumeInterview(button));
+        });
+        document.querySelectorAll('.resume-final-action').forEach((button) => {
+            button.addEventListener('click', () => updateResumeHiringStatus(button));
+        });
+        document.querySelectorAll('.join-meet-action[data-assignment-id]').forEach((link) => {
+            link.addEventListener('click', () => markResumeInterviewJoined(link.dataset.assignmentId));
         });
         resultText.textContent = `Showing ${filtered.length} of ${interviews.length} interviews`;
     }
@@ -536,6 +568,76 @@
             await loadInterviews();
         } catch (error) {
             showMessage(error.message || 'Unable to update interview.');
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    async function completeResumeInterview(button) {
+        button.disabled = true;
+        try {
+            const response = await fetch(`/api/company/resumes/${button.dataset.assignmentId}/interview/complete`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: '{}',
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                const validationMessage = result.errors ? Object.values(result.errors).flat()[0] : null;
+                throw new Error(validationMessage || result.message || 'Unable to close interview.');
+            }
+            showMessage(result.message || 'Interview closed.', 'success');
+            await loadInterviews();
+        } catch (error) {
+            showMessage(error.message || 'Unable to close interview.');
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    async function markResumeInterviewJoined(assignmentId) {
+        if (!assignmentId) return;
+
+        try {
+            await fetch(`/api/company/resumes/${assignmentId}/interview/join`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: '{}',
+            });
+            window.setTimeout(loadInterviews, 500);
+        } catch (error) {
+        }
+    }
+
+    async function updateResumeHiringStatus(button) {
+        button.disabled = true;
+        try {
+            const response = await fetch(`/api/company/resumes/${button.dataset.assignmentId}/hiring-status`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ status: button.dataset.status }),
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                const validationMessage = result.errors ? Object.values(result.errors).flat()[0] : null;
+                throw new Error(validationMessage || result.message || 'Unable to update candidate status.');
+            }
+            showMessage(result.message || 'Candidate status updated.', 'success');
+            await loadInterviews();
+        } catch (error) {
+            showMessage(error.message || 'Unable to update candidate status.');
         } finally {
             button.disabled = false;
         }

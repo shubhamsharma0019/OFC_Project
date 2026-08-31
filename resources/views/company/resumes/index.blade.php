@@ -77,8 +77,9 @@
 <script>
     (() => {
         const token =
-            localStorage.getItem('ofc_auth_token') ||
-            localStorage.getItem('onlyfreshers_company_token');
+            localStorage.getItem('ofc_company_token') ||
+            localStorage.getItem('onlyfreshers_company_token') ||
+            localStorage.getItem('ofc_auth_token');
         const resumeList = document.getElementById('resumeList');
         const emptyResumeState = document.getElementById('emptyResumeState');
         const resumeCredits = document.getElementById('resumeCredits');
@@ -111,7 +112,13 @@
 
         const statusBadge = (status) => {
             const label = String(status || 'assigned').replaceAll('_', ' ');
-            const tone = status === 'interview_sent'
+            const tone = status === 'hired'
+                ? 'bg-[#e8f8ef] text-[#078346]'
+                : status === 'not_selected'
+                    ? 'bg-[#ffe8eb] text-[#c81e3a]'
+                    : status === 'interview_completed'
+                        ? 'bg-[#dbf8e9] text-[#00a65a]'
+                        : status === 'interview_sent'
                 ? 'bg-[#eaf2ff] text-[#075fe4]'
                 : status === 'shortlisted'
                     ? 'bg-[#e8f8ef] text-[#078346]'
@@ -137,6 +144,22 @@
             }
 
             return result;
+        };
+
+        const pipelineActions = (resume) => {
+            const join = resume.interview_link && resume.status === 'interview_sent'
+                ? `<a href="${escapeHtml(resume.interview_link)}" target="_blank" rel="noopener" data-assignment-id="${resume.assignment_id}" class="join-meet-action inline-flex h-9 items-center justify-center rounded-md bg-[#075fe4] px-4 text-xs font-bold text-white">Join Meet</a>`
+                : '';
+            const close = resume.status === 'interview_sent'
+                ? `<button class="complete-interview inline-flex h-9 items-center justify-center rounded-md border border-[#078346] bg-white px-4 text-xs font-bold text-[#078346] disabled:cursor-not-allowed disabled:opacity-50" type="button" data-assignment-id="${resume.assignment_id}" ${resume.both_joined ? '' : 'disabled'}>Close Interview</button>
+                   <span class="inline-flex min-h-9 items-center text-xs font-bold text-[#52607a]">${resume.company_joined_at ? 'Company joined' : 'Company pending'} / ${resume.fresher_joined_at ? 'Fresher joined' : 'Fresher pending'}</span>`
+                : '';
+            const final = resume.status === 'interview_completed'
+                ? `<button class="final-status inline-flex h-9 items-center justify-center rounded-md border border-[#078346] bg-white px-4 text-xs font-bold text-[#078346]" type="button" data-status="hired" data-assignment-id="${resume.assignment_id}">Hired</button>
+                   <button class="final-status inline-flex h-9 items-center justify-center rounded-md border border-[#ffd1d7] bg-white px-4 text-xs font-bold text-[#ff3045]" type="button" data-status="not_selected" data-assignment-id="${resume.assignment_id}">Not Selected</button>`
+                : '';
+
+            return `${join}${close}${final}`;
         };
 
         const renderResumes = (resumes, credits) => {
@@ -195,6 +218,7 @@
                                             }
                                             <button class="shortlist-resume inline-flex h-9 items-center justify-center rounded-md border border-[#078346] bg-white px-4 text-xs font-bold text-[#078346]" type="button" data-assignment-id="${resume.assignment_id}">Shortlist</button>
                                             <button class="interview-resume inline-flex h-9 items-center justify-center rounded-md border border-[#dce7f8] bg-white px-4 text-xs font-bold text-[#061942]" type="button" data-assignment-id="${resume.assignment_id}">Interview Link</button>
+                                            ${pipelineActions(resume)}
                                         </div>
                                     </td>
                                 </tr>
@@ -227,6 +251,7 @@
                                 }
                                 <button class="shortlist-resume inline-flex h-9 items-center justify-center rounded-md border border-[#078346] bg-white px-4 text-xs font-bold text-[#078346]" type="button" data-assignment-id="${resume.assignment_id}">Shortlist</button>
                                 <button class="interview-resume inline-flex h-9 items-center justify-center rounded-md border border-[#dce7f8] bg-white px-4 text-xs font-bold text-[#061942]" type="button" data-assignment-id="${resume.assignment_id}">Interview Link</button>
+                                ${pipelineActions(resume)}
                             </div>
                         </article>
                     `).join('')}
@@ -237,6 +262,9 @@
         resumeList.addEventListener('click', async (event) => {
             const shortlistButton = event.target.closest('.shortlist-resume');
             const interviewButton = event.target.closest('.interview-resume');
+            const completeButton = event.target.closest('.complete-interview');
+            const finalButton = event.target.closest('.final-status');
+            const joinLink = event.target.closest('.join-meet-action');
 
             if (shortlistButton) {
                 shortlistButton.disabled = true;
@@ -260,6 +288,42 @@
                 interviewTime.value = resume?.interview_time || '';
                 interviewModal.classList.remove('hidden');
                 interviewModal.classList.add('flex');
+            }
+
+            if (completeButton) {
+                completeButton.disabled = true;
+
+                try {
+                    await authPost(`/api/company/resumes/${completeButton.dataset.assignmentId}/interview/complete`);
+                    showMessage('Interview marked as completed.', 'success');
+                    await loadResumes();
+                } catch (error) {
+                    showMessage(error.message || 'Unable to close interview.');
+                    completeButton.disabled = false;
+                }
+            }
+
+            if (finalButton) {
+                finalButton.disabled = true;
+
+                try {
+                    await authPost(`/api/company/resumes/${finalButton.dataset.assignmentId}/hiring-status`, {
+                        status: finalButton.dataset.status,
+                    });
+                    showMessage('Candidate status updated successfully.', 'success');
+                    await loadResumes();
+                } catch (error) {
+                    showMessage(error.message || 'Unable to update candidate status.');
+                    finalButton.disabled = false;
+                }
+            }
+
+            if (joinLink) {
+                try {
+                    await authPost(`/api/company/resumes/${joinLink.dataset.assignmentId}/interview/join`);
+                    window.setTimeout(loadResumes, 500);
+                } catch (error) {
+                }
             }
         });
 

@@ -154,6 +154,46 @@
             }).join('');
         }
 
+        function resumeCompanies() {
+            return companies.filter((company) => company.hiring_intent === 'resume_only');
+        }
+
+        function chooseAssignCompany(defaultCompanyId) {
+            const options = resumeCompanies();
+            if (!options.length) {
+                return Promise.reject(new Error('No resume-only companies found.'));
+            }
+
+            return new Promise((resolve) => {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 z-[3000] flex items-center justify-center bg-[#06194266] p-4';
+                modal.innerHTML = `<form class="w-full max-w-md rounded-lg border border-[#dce7f8] bg-white p-5 shadow-2xl">
+                    <h2 class="text-lg font-bold text-[#061942]">Assign resumes to company</h2>
+                    <p class="mt-1 text-sm font-semibold text-[#52607a]">Select which company should receive these resumes.</p>
+                    <select class="mt-4 h-11 w-full rounded-lg border border-[#dce7f8] px-3 text-sm font-bold text-[#061942] outline-none">
+                        ${options.map((company) => `<option value="${company.id}" ${String(company.id) === String(defaultCompanyId) ? 'selected' : ''}>${escapeHtml(company.company_name || 'Company')} - ${escapeHtml(company.email || '')}</option>`).join('')}
+                    </select>
+                    <div class="mt-5 flex justify-end gap-2">
+                        <button data-cancel type="button" class="h-10 rounded-md border border-[#dce7f8] px-4 text-sm font-bold text-[#52607a]">Cancel</button>
+                        <button type="submit" class="h-10 rounded-md bg-[#075fe4] px-4 text-sm font-bold text-white">Assign</button>
+                    </div>
+                </form>`;
+                document.body.appendChild(modal);
+                const close = (value = null) => {
+                    modal.remove();
+                    resolve(value);
+                };
+                modal.querySelector('[data-cancel]').addEventListener('click', () => close());
+                modal.addEventListener('click', (event) => {
+                    if (event.target === modal) close();
+                });
+                modal.querySelector('form').addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    close(modal.querySelector('select').value);
+                });
+            });
+        }
+
         async function loadOverview() {
             try {
                 const payload = await requestJson('/api/admin/companies/resume-overview');
@@ -183,8 +223,19 @@
             event.target.disabled = true;
 
             try {
-                if (approve) await requestJson(`/api/admin/companies/${id}/approve`, { method: 'POST' });
-                if (assignAll) await requestJson(`/api/admin/companies/${id}/resumes/assign-all`, { method: 'POST' });
+                if (approve) {
+                    await requestJson(`/api/admin/companies/${id}/approve`, { method: 'POST' });
+                    const targetCompanyId = await chooseAssignCompany(id);
+                    if (targetCompanyId) {
+                        await requestJson(`/api/admin/companies/${targetCompanyId}/resumes/assign-all`, { method: 'POST' });
+                    }
+                }
+                if (assignAll) {
+                    const targetCompanyId = await chooseAssignCompany(id);
+                    if (targetCompanyId) {
+                        await requestJson(`/api/admin/companies/${targetCompanyId}/resumes/assign-all`, { method: 'POST' });
+                    }
+                }
                 await loadOverview();
             } catch (error) {
                 alert(error.message || 'Action failed.');

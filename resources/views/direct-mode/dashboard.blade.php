@@ -1318,10 +1318,20 @@
         trophy:'<svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"></path><path d="M8 6H4v2a4 4 0 0 0 4 4"></path><path d="M16 6h4v2a4 4 0 0 1-4 4"></path><path d="M12 13v5"></path><path d="M8 20h8"></path></svg>',
     });
     document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = window.directModeIcons[el.dataset.icon] || el.innerHTML; });
-    const token = localStorage.getItem('onlyfreshers_token') ||
-        localStorage.getItem('ofc_fresher_token') ||
-        localStorage.getItem('ofc_auth_token');
-    const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || 'null');
+    const parseStoredJson = value => {
+        try {
+            return JSON.parse(value || 'null');
+        } catch (error) {
+            return null;
+        }
+    };
+    const directSession = [
+        [localStorage.getItem('onlyfreshers_token'), parseStoredJson(localStorage.getItem('onlyfreshers_user'))],
+        [localStorage.getItem('ofc_fresher_token'), parseStoredJson(localStorage.getItem('ofc_fresher_user'))],
+        [localStorage.getItem('ofc_auth_token'), parseStoredJson(localStorage.getItem('ofc_auth_user'))],
+    ].find(([sessionToken, sessionUser]) => sessionToken && sessionUser?.role === 'fresher') || [];
+    const token = directSession[0] || '';
+    const storedUser = directSession[1] || null;
     const headers = { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
     const qs = selector => document.querySelector(selector);
     const qsa = selector => [...document.querySelectorAll(selector)];

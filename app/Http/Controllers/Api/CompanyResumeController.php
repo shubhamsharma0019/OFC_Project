@@ -63,6 +63,9 @@ class CompanyResumeController extends Controller
                 'interview_link' => $assignment->interview_link,
                 'interview_date' => $assignment->interview_date?->format('Y-m-d'),
                 'interview_time' => $assignment->interview_time,
+                'company_joined_at' => optional($assignment->company_joined_at)->toIso8601String(),
+                'fresher_joined_at' => optional($assignment->fresher_joined_at)->toIso8601String(),
+                'both_joined' => filled($assignment->company_joined_at) && filled($assignment->fresher_joined_at),
                 'id' => $assignment->fresherProfile->id,
                 'name' => $assignment->fresherProfile->user?->name ?? 'Candidate',
                 'email' => $assignment->fresherProfile->user?->email,
@@ -137,6 +140,8 @@ class CompanyResumeController extends Controller
             'interview_link' => $validated['interview_link'],
             'interview_date' => $validated['interview_date'],
             'interview_time' => $validated['interview_time'],
+            'company_joined_at' => null,
+            'fresher_joined_at' => null,
         ]);
 
         if ($assignment->fresherProfile?->user_id) {
@@ -152,6 +157,151 @@ class CompanyResumeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Interview link sent successfully.',
+            'data' => [
+                'assignment' => $assignment->fresh('fresherProfile.user'),
+            ],
+        ]);
+    }
+
+    public function markInterviewJoined(Request $request, CompanyResumeAssignment $assignment): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Login required.',
+            ], 401);
+        }
+
+        if ($assignment->status !== 'interview_sent') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This interview is not open for joining.',
+            ], 422);
+        }
+
+        $assignment->load(['companyProfile', 'fresherProfile']);
+
+        if ($user->role === 'company') {
+            abort_unless($user->companyProfile?->id === $assignment->company_profile_id, 403);
+
+            if (! $assignment->company_joined_at) {
+                $assignment->update(['company_joined_at' => now()]);
+            }
+        } elseif ($user->role === 'fresher') {
+            abort_unless($user->fresherProfile?->id === $assignment->fresher_profile_id, 403);
+
+            if (! $assignment->fresher_joined_at) {
+                $assignment->update(['fresher_joined_at' => now()]);
+            }
+        } else {
+            abort(403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Interview join recorded.',
+            'data' => [
+                'assignment' => $assignment->fresh(),
+            ],
+        ]);
+    }
+
+    public function completeInterview(Request $request, CompanyResumeAssignment $assignment): JsonResponse
+    {
+        $companyProfile = $this->authorizedResumeCompany($request);
+
+        if ($assignment->company_profile_id !== $companyProfile->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot update this resume.',
+            ], 403);
+        }
+
+        if ($assignment->status !== 'interview_sent') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only scheduled interviews can be closed.',
+            ], 422);
+        }
+
+        if (! $assignment->company_joined_at || ! $assignment->fresher_joined_at) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Interview can be closed only after company and fresher both join the meeting.',
+            ], 422);
+        }
+
+        $assignment->load('fresherProfile.user');
+        $assignment->update([
+            'status' => 'interview_completed',
+        ]);
+
+        if ($assignment->fresherProfile?->user_id) {
+            Notification::create([
+                'user_id' => $assignment->fresherProfile->user_id,
+                'type' => 'interview',
+                'title' => 'Interview Completed',
+                'message' => "{$companyProfile->company_name} marked your interview as completed. Final status will be shared soon.",
+                'is_read' => false,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Interview marked as completed.',
+            'data' => [
+                'assignment' => $assignment->fresh('fresherProfile.user'),
+            ],
+        ]);
+    }
+
+    public function updateHiringStatus(Request $request, CompanyResumeAssignment $assignment): JsonResponse
+    {
+        $companyProfile = $this->authorizedResumeCompany($request);
+
+        if ($assignment->company_profile_id !== $companyProfile->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot update this resume.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'status' => ['required', Rule::in(['hired', 'not_selected'])],
+        ]);
+
+        if (! in_array($assignment->status, ['interview_completed', 'hired', 'not_selected'], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Close the interview before sending final status.',
+            ], 422);
+        }
+
+        $assignment->load('fresherProfile.user');
+        $assignment->update([
+            'status' => $validated['status'],
+        ]);
+
+        if ($assignment->fresherProfile?->user_id) {
+            $title = $validated['status'] === 'hired' ? 'You Are Hired' : 'Not Selected';
+            $message = $validated['status'] === 'hired'
+                ? "{$companyProfile->company_name} marked your interview result as hired."
+                : "{$companyProfile->company_name} marked your interview result as not selected.";
+
+            Notification::create([
+                'user_id' => $assignment->fresherProfile->user_id,
+                'type' => 'interview',
+                'title' => $title,
+                'message' => $message,
+                'is_read' => false,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Candidate status updated successfully.',
             'data' => [
                 'assignment' => $assignment->fresh('fresherProfile.user'),
             ],

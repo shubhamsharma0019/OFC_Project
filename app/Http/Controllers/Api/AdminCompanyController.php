@@ -117,20 +117,11 @@ class AdminCompanyController extends Controller
             'rejection_reason' => null,
         ]);
 
-        $assignedResumeCount = 0;
-
-        if ($companyProfile->hiring_intent === 'resume_only') {
-            $this->ensureDummyResumePool(100);
-            $assignedResumeCount = $this->assignResumePoolToCompany($companyProfile->fresh());
-        }
-
         return response()->json([
             'success' => true,
-            'message' => $assignedResumeCount > 0
-                ? "Company approved successfully. {$assignedResumeCount} resumes assigned."
-                : 'Company approved successfully.',
+            'message' => 'Company approved successfully.',
             'data' => [
-                'assigned_resume_count' => $assignedResumeCount,
+                'assigned_resume_count' => 0,
                 'company' => $companyProfile
                     ->fresh()
                     ->load('user', 'resumeAssignments.fresherProfile.user'),

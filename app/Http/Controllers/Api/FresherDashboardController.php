@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AssessmentAttempt;
 use App\Models\Certificate;
+use App\Models\CompanyResumeAssignment;
 use App\Models\CourseEnrollment;
 use App\Models\Interview;
 use App\Models\JobApplication;
@@ -130,6 +131,61 @@ class FresherDashboardController extends Controller
             ->orderBy('interview_date')
             ->orderBy('interview_time')
             ->get();
+
+        $resumeInterviews = CompanyResumeAssignment::query()
+            ->where('fresher_profile_id', $fresherProfile->id)
+            ->whereIn('status', ['interview_sent', 'interview_completed', 'hired', 'not_selected'])
+            ->whereNotNull('interview_link')
+            ->whereNotNull('interview_date')
+            ->whereNotNull('interview_time')
+            ->with([
+                'companyProfile:id,company_name,company_logo',
+            ])
+            ->orderBy('interview_date')
+            ->orderBy('interview_time')
+            ->get()
+            ->map(function (CompanyResumeAssignment $assignment) use ($fresherProfile) {
+                $displayStatus = match ($assignment->status) {
+                    'interview_sent' => 'scheduled',
+                    'interview_completed' => 'completed',
+                    default => $assignment->status,
+                };
+
+                return [
+                    'id' => 'resume-' . $assignment->id,
+                    'source' => 'resume_assignment',
+                    'assignment_id' => $assignment->id,
+                    'interview_date' => $assignment->interview_date?->format('Y-m-d'),
+                    'interview_time' => $assignment->interview_time,
+                    'interview_mode' => 'online',
+                    'interview_location' => null,
+                    'meeting_link' => $assignment->interview_link,
+                    'status' => $displayStatus,
+                    'assignment_status' => $assignment->status,
+                    'company_joined_at' => optional($assignment->company_joined_at)->toIso8601String(),
+                    'fresher_joined_at' => optional($assignment->fresher_joined_at)->toIso8601String(),
+                    'both_joined' => filled($assignment->company_joined_at) && filled($assignment->fresher_joined_at),
+                    'created_at' => $assignment->created_at,
+                    'updated_at' => $assignment->updated_at,
+                    'job_application' => [
+                        'id' => 'resume-' . $assignment->id,
+                        'job_id' => null,
+                        'fresher_profile_id' => $fresherProfile->id,
+                        'application_status' => 'interview_scheduled',
+                        'job' => [
+                            'id' => 'resume-' . $assignment->id,
+                            'company_profile_id' => $assignment->company_profile_id,
+                            'title' => 'Resume Shortlist Interview',
+                            'company_profile' => $assignment->companyProfile,
+                        ],
+                    ],
+                ];
+            });
+
+        $upcomingInterviews = $upcomingInterviews
+            ->concat($resumeInterviews)
+            ->sortBy(fn ($interview) => ($interview['interview_date'] ?? $interview->interview_date) . ' ' . ($interview['interview_time'] ?? $interview->interview_time))
+            ->values();
 
         $recentApplications = JobApplication::query()
             ->where('fresher_profile_id', $fresherProfile->id)

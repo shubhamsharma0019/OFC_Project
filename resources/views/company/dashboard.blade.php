@@ -2104,22 +2104,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        | Resume-only companies work from the resume pipeline.
-        */
-
-        if (
-            profile.hiring_intent ===
-            'resume_only'
-        ) {
-
-            window.location.href =
-                '/company/resumes';
-
-            return;
-        }
-
-
-        /*
         | Company Name
         */
 

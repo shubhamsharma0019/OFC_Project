@@ -102,22 +102,21 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         function isUpcoming(interview) {
             const date = interviewDate(interview);
             const status = String(interview.status || '').toLowerCase();
-            if (['completed', 'cancelled'].includes(status)) return false;
+            if (['completed', 'cancelled', 'hired', 'not_selected'].includes(status)) return false;
             return !date || date.getTime() >= Date.now();
         }
 
         function isPast(interview) {
             const status = String(interview.status || '').toLowerCase();
-            if (['completed', 'cancelled'].includes(status)) return true;
+            if (['completed', 'cancelled', 'hired', 'not_selected'].includes(status)) return true;
             const date = interviewDate(interview);
             return date ? date.getTime() < Date.now() : false;
         }
 
         function meetingEnded(interview) {
             const status = String(interview.status || '').toLowerCase();
-            if (['completed', 'cancelled'].includes(status)) return true;
-            const date = interviewDate(interview);
-            return date ? date.getTime() < Date.now() : false;
+            if (['completed', 'cancelled', 'hired', 'not_selected'].includes(status)) return true;
+            return false;
         }
 
         function startOfToday() {
@@ -165,6 +164,8 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const status = String(interview.status || '').toLowerCase();
             if (status === 'completed') return 'Completed';
             if (status === 'cancelled') return 'Cancelled';
+            if (status === 'hired') return 'Hired';
+            if (status === 'not_selected') return 'Not Selected';
             if (meetingEnded(interview)) return 'Meeting Completed';
             return titleCase(status || 'scheduled');
         }
@@ -209,7 +210,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     <span class="badge">${escapeHtml(interviewStatusLabel(interview))}</span>
                     <div class="countdown">Interview in<strong>${escapeHtml(countdown(interview))}</strong></div>
                     <button class="outline" data-detail type="button">View Details</button>
-                    ${join ? `<a class="primary" href="${escapeAttr(join)}" target="_blank" rel="noopener">Join Meeting</a>` : '<button class="primary" data-prepare type="button">Prepare Now</button>'}
+                    ${join ? `<a class="primary join-meet-action" href="${escapeAttr(join)}" target="_blank" rel="noopener" data-assignment-id="${interview.assignment_id || ''}">Join Meeting</a>` : '<button class="primary" data-prepare type="button">Prepare Now</button>'}
                 </div>`;
             }).join('');
             hydrateIcons(wrap);
@@ -241,11 +242,19 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
 
         function bindInterviewActions(root) {
             root.querySelectorAll('[data-detail],[data-feedback]').forEach(button => button.addEventListener('click', event => {
-                const id = event.currentTarget.closest('[data-job-id]').dataset.jobId;
-                if (id) window.location.href = `/direct-mode/jobs/${id}`;
+                const row = event.currentTarget.closest('[data-job-id]');
+                const id = row?.dataset.jobId || '';
+                if (!id || id.startsWith('resume-')) {
+                    window.location.href = '/direct-mode/applications';
+                    return;
+                }
+                window.location.href = `/direct-mode/jobs/${id}`;
             }));
             root.querySelectorAll('[data-prepare]').forEach(button => button.addEventListener('click', () => {
                 document.querySelector('[data-tips]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }));
+            root.querySelectorAll('.join-meet-action[data-assignment-id]').forEach(link => link.addEventListener('click', () => {
+                markResumeInterviewJoined(link.dataset.assignmentId);
             }));
         }
 
@@ -309,6 +318,24 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             } catch (error) {
                 state.interviews = [];
                 render();
+            }
+        }
+
+        async function markResumeInterviewJoined(assignmentId) {
+            if (!assignmentId) return;
+
+            try {
+                await fetch(`/api/company/resumes/${assignmentId}/interview/join`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                    },
+                    body: '{}',
+                });
+                window.setTimeout(loadData, 500);
+            } catch (error) {
             }
         }
 

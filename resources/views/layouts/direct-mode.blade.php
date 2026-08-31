@@ -190,11 +190,16 @@
                     return null;
                 }
             };
-            const hasDirectSession = () => {
-                const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token');
-                const user = parseJson(localStorage.getItem('onlyfreshers_user')) || parseJson(localStorage.getItem('ofc_fresher_user')) || parseJson(localStorage.getItem('ofc_auth_user'));
-                return Boolean(token && user?.role === 'fresher');
+            const directSession = () => {
+                const sessions = [
+                    [localStorage.getItem('onlyfreshers_token'), parseJson(localStorage.getItem('onlyfreshers_user'))],
+                    [localStorage.getItem('ofc_fresher_token'), parseJson(localStorage.getItem('ofc_fresher_user'))],
+                    [localStorage.getItem('ofc_auth_token'), parseJson(localStorage.getItem('ofc_auth_user'))],
+                ];
+
+                return sessions.find(([token, user]) => token && user?.role === 'fresher') || null;
             };
+            const hasDirectSession = () => Boolean(directSession());
             const redirectIfLoggedOut = () => {
                 if (!hasDirectSession()) {
                     authKeys.forEach(key => localStorage.removeItem(key));
@@ -238,8 +243,20 @@
     </script>
     <script>
         (() => {
-            const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token') || '';
-            const storedUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || 'null');
+            const parseJson = value => {
+                try {
+                    return JSON.parse(value || 'null');
+                } catch (error) {
+                    return null;
+                }
+            };
+            const directSession = [
+                [localStorage.getItem('onlyfreshers_token'), parseJson(localStorage.getItem('onlyfreshers_user'))],
+                [localStorage.getItem('ofc_fresher_token'), parseJson(localStorage.getItem('ofc_fresher_user'))],
+                [localStorage.getItem('ofc_auth_token'), parseJson(localStorage.getItem('ofc_auth_user'))],
+            ].find(([sessionToken, sessionUser]) => sessionToken && sessionUser?.role === 'fresher') || [];
+            const token = directSession[0] || '';
+            const storedUser = directSession[1] || null;
             const headers = { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
             const searchInput = document.querySelector('[data-global-search]');
             const searchPanel = document.querySelector('[data-search-results]');

@@ -52,6 +52,43 @@
         const payload = await requestJson('/api/admin/companies/available-resumes');
         return payload?.data?.resumes || [];
     }
+    async function loadAssignableCompanies() {
+        const payload = await requestJson('/api/admin/companies');
+        return (payload?.data?.companies || []).filter((company) => company.hiring_intent === 'resume_only');
+    }
+    async function chooseAssignCompany(defaultCompanyId = companyId) {
+        const companies = await loadAssignableCompanies();
+        if (!companies.length) throw new Error('No resume-only companies found.');
+
+        return new Promise((resolve) => {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-[3000] flex items-center justify-center bg-[#06194266] p-4';
+            modal.innerHTML = `<form class="w-full max-w-md rounded-lg border border-[#dce7f8] bg-white p-5 shadow-2xl">
+                <h2 class="text-lg font-bold text-[#061942]">Assign resumes to company</h2>
+                <p class="mt-1 text-sm font-semibold text-[#52607a]">Select which company should receive these resumes.</p>
+                <select class="mt-4 h-11 w-full rounded-lg border border-[#dce7f8] px-3 text-sm font-bold text-[#061942] outline-none">
+                    ${companies.map((company) => `<option value="${company.id}" ${String(company.id) === String(defaultCompanyId) ? 'selected' : ''}>${escapeHtml(company.company_name || company.user?.name || 'Company')} - ${escapeHtml(company.user?.email || company.email || '')}</option>`).join('')}
+                </select>
+                <div class="mt-5 flex justify-end gap-2">
+                    <button data-cancel type="button" class="h-10 rounded-md border border-[#dce7f8] px-4 text-sm font-bold text-[#52607a]">Cancel</button>
+                    <button type="submit" class="h-10 rounded-md bg-[#075fe4] px-4 text-sm font-bold text-white">Assign</button>
+                </div>
+            </form>`;
+            document.body.appendChild(modal);
+            const close = (value = null) => {
+                modal.remove();
+                resolve(value);
+            };
+            modal.querySelector('[data-cancel]').addEventListener('click', () => close());
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) close();
+            });
+            modal.querySelector('form').addEventListener('submit', (event) => {
+                event.preventDefault();
+                close(modal.querySelector('select').value);
+            });
+        });
+    }
     function renderCompany(company) {
         const jobs = company.jobs || [];
         const applications = jobs.flatMap((job) => job.applications || []);
@@ -90,14 +127,20 @@
             document.getElementById('assignSelectedResumesBtn')?.addEventListener('click', async () => {
                 const ids = Array.from(document.querySelectorAll('.resume-pick:checked')).map((input) => Number(input.value));
                 if (!ids.length) { alert('Select resumes first.'); return; }
-                await action(`/api/admin/companies/${companyId}/resumes`, { method: 'POST', body: JSON.stringify({ fresher_profile_ids: ids }) });
+                const targetCompanyId = await chooseAssignCompany();
+                if (!targetCompanyId) return;
+                await action(`/api/admin/companies/${targetCompanyId}/resumes`, { method: 'POST', body: JSON.stringify({ fresher_profile_ids: ids }) });
             });
         };
         document.getElementById('createDummyResumesBtn').onclick = async () => {
             await requestJson('/api/admin/companies/dummy-resumes', { method: 'POST', body: JSON.stringify({ count: 100 }) });
             await renderAvailable();
         };
-        document.getElementById('assignAllResumesBtn').onclick = () => action(`/api/admin/companies/${companyId}/resumes/assign-all`, { method: 'POST' });
+        document.getElementById('assignAllResumesBtn').onclick = async () => {
+            const targetCompanyId = await chooseAssignCompany();
+            if (!targetCompanyId) return;
+            await action(`/api/admin/companies/${targetCompanyId}/resumes/assign-all`, { method: 'POST' });
+        };
         try { await renderAvailable(); } catch (error) { availableBox.textContent = error.message || 'Resume pool could not be loaded.'; }
     }
     async function action(url, options) { try { await requestJson(url, options); await loadCompany(); } catch (error) { alert(error.message || 'Action failed.'); } }

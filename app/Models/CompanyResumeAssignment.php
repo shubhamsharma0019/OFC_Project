@@ -17,12 +17,16 @@ class CompanyResumeAssignment extends Model
         'interview_link',
         'interview_date',
         'interview_time',
+        'company_joined_at',
+        'fresher_joined_at',
     ];
 
     protected function casts(): array
     {
         return [
             'interview_date' => 'date',
+            'company_joined_at' => 'datetime',
+            'fresher_joined_at' => 'datetime',
         ];
     }
 
