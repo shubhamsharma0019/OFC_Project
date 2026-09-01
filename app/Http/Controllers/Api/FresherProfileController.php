@@ -118,6 +118,11 @@ class FresherProfileController extends Controller
                 'max:2048',
             ],
 
+            'remove_profile_photo' => [
+                'nullable',
+                'boolean',
+            ],
+
             'resume' => [
                 'nullable',
                 'file',
@@ -144,6 +149,15 @@ class FresherProfileController extends Controller
         }
 
         $existingProfile = $user->fresherProfile;
+
+        if ($request->boolean('remove_profile_photo') && $existingProfile?->profile_photo && ! $request->hasFile('profile_photo')) {
+            Storage::disk('public')
+                ->delete($existingProfile->profile_photo);
+
+            $validatedData['profile_photo'] = null;
+        }
+
+        unset($validatedData['remove_profile_photo']);
 
         if ($request->hasFile('profile_photo')) {
             if ($existingProfile?->profile_photo) {

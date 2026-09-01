@@ -72,6 +72,9 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         let authUser = {};
         try { authUser = JSON.parse(localStorage.getItem('onlyfreshers_user') || '{}'); } catch (error) { authUser = {}; }
         const jobId = location.pathname.split('/').filter(Boolean).pop();
+        if (!/^\d+$/.test(String(jobId || ''))) {
+            window.location.replace('/direct-mode/applications');
+        }
         const state = {
             job: null,
             similar: [],

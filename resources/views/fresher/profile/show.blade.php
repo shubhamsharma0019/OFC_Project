@@ -4,16 +4,19 @@
 
 @php
     $activePage = 'profile';
+    $editMode = $editMode ?? request()->is('fast-track/profile/edit');
 @endphp
 
 @section('content')
     <section class="space-y-7">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h1 class="text-[27px] font-bold leading-tight text-[#061942]">My Profile</h1>
-                <p class="mt-2 text-sm font-medium text-[#455a82]">View and manage your personal, education, skills, and resume details.</p>
+                <h1 class="text-[27px] font-bold leading-tight text-[#061942]">{{ $editMode ? 'Edit Profile' : 'My Profile' }}</h1>
+                <p class="mt-2 text-sm font-medium text-[#455a82]">{{ $editMode ? 'Update your personal, education, skills, and resume details.' : 'View and manage your personal, education, skills, and resume details.' }}</p>
             </div>
-            <button id="toggleEdit" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,.18)] transition hover:bg-[#064fc0]" type="button">Edit Profile</button>
+            @if (! $editMode)
+                <a id="toggleEdit" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#075fe4] px-5 text-sm font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,.18)] transition hover:bg-[#064fc0]" href="/fast-track/profile/edit">Edit Profile</a>
+            @endif
         </div>
 
         <div id="profileMessage" class="hidden rounded-lg border px-4 py-3 text-sm font-bold"></div>
@@ -24,13 +27,13 @@
             </article>
 
             <div class="space-y-6">
-                <div id="profileView" class="space-y-6">
+                <div id="profileView" class="{{ $editMode ? 'hidden' : 'space-y-6' }}">
                     <article class="rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                         <p class="text-sm text-[#455a82]">Loading profile details...</p>
                     </article>
                 </div>
 
-                <article id="profileEditCard" class="hidden rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
+                <article id="profileEditCard" class="{{ $editMode ? '' : 'hidden' }} rounded-lg border border-[#dce7f8] bg-white p-6 shadow-[0_10px_24px_rgba(6,25,66,.04)]">
                     <h3 class="mb-5 text-lg font-bold text-[#061942]">Edit Profile</h3>
                     <form id="profileForm" class="grid gap-4 lg:grid-cols-2">
                         <label class="grid gap-2 text-xs font-bold text-[#061942]">Phone
@@ -49,7 +52,11 @@
                             <input name="passing_year" type="number" min="1900" max="2100" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm outline-none">
                         </label>
                         <label class="grid gap-2 text-xs font-bold text-[#061942]">Profile Photo
-                            <input name="profile_photo" type="file" accept=".jpg,.jpeg,.png,.webp" class="rounded-md border border-[#dce7f8] px-3 py-2 text-sm outline-none">
+                            <span class="flex min-h-10 items-center gap-3 rounded-md border border-[#dce7f8] bg-white px-3 py-1.5 focus-within:border-[#075fe4] focus-within:ring-2 focus-within:ring-[#075fe433]">
+                                <input name="profile_photo" type="file" accept=".jpg,.jpeg,.png,.webp" class="min-w-0 flex-1 border-0 p-0 text-sm outline-none">
+                                <button id="removeProfilePhoto" type="button" class="h-8 shrink-0 rounded-md border border-[#ffb8bf] bg-[#fff5f6] px-3 text-xs font-bold text-[#c5162d]" style="display:none">Remove Photo</button>
+                            </span>
+                            <input name="remove_profile_photo" type="hidden" value="0">
                         </label>
                         <label class="grid gap-2 text-xs font-bold text-[#061942] lg:col-span-2">Skills
                             <textarea name="skills" class="min-h-24 rounded-md border border-[#dce7f8] p-3 text-sm outline-none" placeholder="React, Laravel, MySQL"></textarea>
@@ -70,7 +77,7 @@
                             <input name="preferred_max_package_lpa" type="number" min="0" step="0.1" class="h-10 rounded-md border border-[#dce7f8] px-3 text-sm outline-none" placeholder="5">
                         </label>
                         <label class="grid gap-2 text-xs font-bold text-[#061942] lg:col-span-2">Resume
-                            <input name="resume" type="file" accept=".pdf,.doc,.docx" class="rounded-md border border-[#dce7f8] px-3 py-2 text-sm outline-none">
+                            <input name="resume" type="file" accept=".pdf,.doc,.docx" class="rounded-md border-2 border-[#075fe4] bg-[#f3f8ff] px-3 py-2 text-sm font-bold text-[#061942] shadow-[0_8px_18px_rgba(7,95,228,0.10)] outline-none file:mr-4 file:rounded-md file:border-0 file:bg-[#075fe4] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white hover:bg-[#eaf2ff] focus:ring-2 focus:ring-[#075fe433]">
                         </label>
                         <div class="flex justify-end gap-3 lg:col-span-2">
                             <button id="cancelEdit" class="h-10 rounded-md border border-[#dce7f8] px-5 text-sm font-bold text-[#24344f]" type="button">Cancel</button>
@@ -93,6 +100,8 @@
     const profileForm = document.getElementById('profileForm');
     const saveProfile = document.getElementById('saveProfile');
     const profileMessage = document.getElementById('profileMessage');
+    const removeProfilePhoto = document.getElementById('removeProfilePhoto');
+    const isEditMode = @json($editMode);
     async function parseApiResponse(response) {
         const text = await response.text();
         try {
@@ -157,7 +166,13 @@
         profileForm.elements.preferred_min_package_lpa.value = currentProfile.preferred_min_package_lpa || '';
         profileForm.elements.preferred_max_package_lpa.value = currentProfile.preferred_max_package_lpa || '';
         profileForm.elements.profile_photo.value = '';
+        profileForm.elements.remove_profile_photo.value = '0';
         profileForm.elements.resume.value = '';
+        if (removeProfilePhoto) {
+            const hasUploadedPhoto = Boolean(String(currentProfile.profile_photo || '').trim());
+            removeProfilePhoto.style.display = hasUploadedPhoto ? 'inline-flex' : 'none';
+            removeProfilePhoto.textContent = 'Remove Photo';
+        }
     }
     function renderProfile() {
         const completion = Number(currentProfile.profile_completion || 0);
@@ -235,14 +250,24 @@
             profileView.innerHTML = '<article class="rounded-lg border border-[#ffd7d7] bg-[#fff4f4] p-6 text-sm font-bold text-[#b42318]">' + FastTrack.esc(error.message || 'Profile load nahi ho paayi.') + '</article>';
         }
     }
-    toggleEdit.addEventListener('click', function () {
+    toggleEdit?.addEventListener('click', function () {
         profileEditCard.classList.toggle('hidden');
         toggleEdit.textContent = profileEditCard.classList.contains('hidden') ? 'Edit Profile' : 'Close Edit';
     });
     cancelEdit.addEventListener('click', function () {
+        if (isEditMode) {
+            window.location.href = '/fast-track/profile';
+            return;
+        }
         profileEditCard.classList.add('hidden');
-        toggleEdit.textContent = 'Edit Profile';
+        if (toggleEdit) toggleEdit.textContent = 'Edit Profile';
         fillForm();
+    });
+    removeProfilePhoto?.addEventListener('click', function () {
+        profileForm.elements.profile_photo.value = '';
+        profileForm.elements.remove_profile_photo.value = '1';
+        removeProfilePhoto.style.display = 'none';
+        showMessage('Profile photo remove ho jayegi jab aap Save Profile karoge.');
     });
     profileForm.addEventListener('submit', async function (event) {
         event.preventDefault();
@@ -263,8 +288,12 @@
                 throw new Error(validationMessage || payload.message || 'Unable to save profile.');
             }
             showMessage(payload.message || 'Profile saved successfully.');
+            if (isEditMode) {
+                window.location.href = '/fast-track/profile';
+                return;
+            }
             profileEditCard.classList.add('hidden');
-            toggleEdit.textContent = 'Edit Profile';
+            if (toggleEdit) toggleEdit.textContent = 'Edit Profile';
             await loadProfile();
         } catch (error) {
             showMessage(error.message || 'Profile save nahi ho paayi.', 'error');

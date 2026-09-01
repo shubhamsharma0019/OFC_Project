@@ -146,6 +146,13 @@
             return result;
         };
 
+        const syncActionCredits = (result) => {
+            const remaining = result?.data?.credits?.remaining;
+            if (remaining !== undefined && remaining !== null) {
+                resumeCredits.textContent = Number(remaining).toLocaleString('en-IN');
+            }
+        };
+
         const pipelineActions = (resume) => {
             const join = resume.interview_link && resume.status === 'interview_sent'
                 ? `<a href="${escapeHtml(resume.interview_link)}" target="_blank" rel="noopener" data-assignment-id="${resume.assignment_id}" class="join-meet-action inline-flex h-9 items-center justify-center rounded-md bg-[#075fe4] px-4 text-xs font-bold text-white">Join Meet</a>`
@@ -270,7 +277,8 @@
                 shortlistButton.disabled = true;
 
                 try {
-                    await authPost(`/api/company/resumes/${shortlistButton.dataset.assignmentId}/shortlist`);
+                    const result = await authPost(`/api/company/resumes/${shortlistButton.dataset.assignmentId}/shortlist`);
+                    syncActionCredits(result);
                     showMessage('Candidate shortlisted successfully.', 'success');
                     await loadResumes();
                 } catch (error) {
@@ -294,7 +302,8 @@
                 completeButton.disabled = true;
 
                 try {
-                    await authPost(`/api/company/resumes/${completeButton.dataset.assignmentId}/interview/complete`);
+                    const result = await authPost(`/api/company/resumes/${completeButton.dataset.assignmentId}/interview/complete`);
+                    syncActionCredits(result);
                     showMessage('Interview marked as completed.', 'success');
                     await loadResumes();
                 } catch (error) {
@@ -307,9 +316,10 @@
                 finalButton.disabled = true;
 
                 try {
-                    await authPost(`/api/company/resumes/${finalButton.dataset.assignmentId}/hiring-status`, {
+                    const result = await authPost(`/api/company/resumes/${finalButton.dataset.assignmentId}/hiring-status`, {
                         status: finalButton.dataset.status,
                     });
+                    syncActionCredits(result);
                     showMessage('Candidate status updated successfully.', 'success');
                     await loadResumes();
                 } catch (error) {
@@ -336,11 +346,12 @@
             event.preventDefault();
 
             try {
-                await authPost(`/api/company/resumes/${interviewAssignmentId.value}/interview`, {
+                const result = await authPost(`/api/company/resumes/${interviewAssignmentId.value}/interview`, {
                     interview_link: interviewLink.value.trim(),
                     interview_date: interviewDate.value,
                     interview_time: interviewTime.value,
                 });
+                syncActionCredits(result);
                 interviewModal.classList.add('hidden');
                 interviewModal.classList.remove('flex');
                 showMessage('Interview link sent successfully.', 'success');

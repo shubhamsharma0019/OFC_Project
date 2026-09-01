@@ -28,8 +28,8 @@
                     <h1 class="mb-3 text-[30px] leading-tight text-[#061942] sm:text-[38px] lg:text-[44px]">Hire Fresh Talent, Faster</h1>
                     <p class="mb-6 max-w-md text-[14px] font-semibold leading-6 text-[#34445e] sm:text-[15px]">Post jobs and connect with verified, job-ready freshers for your growing team.</p>
                     <div class="flex flex-wrap gap-3">
-                        <a href="/company/post-job" class="inline-flex h-11 min-w-[132px] items-center justify-center rounded-md bg-[#075fe4] px-6 text-[13px] font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,0.20)] transition hover:bg-[#0554cc]">Post a Job</a>
-                        <a href="/company/applications" class="inline-flex h-11 min-w-[148px] items-center justify-center rounded-md border border-[#8eb4ef] bg-white px-6 text-[13px] font-bold text-[#075fe4] transition hover:bg-[#f3f8ff]">View Candidates</a>
+                        <a href="/company/login?next=/company/post-job" class="inline-flex h-11 min-w-[132px] items-center justify-center rounded-md bg-[#075fe4] px-6 text-[13px] font-bold text-white shadow-[0_10px_20px_rgba(7,95,228,0.20)] transition hover:bg-[#0554cc]">Post a Job</a>
+                        <a href="/company/login?next=/company/applications" class="inline-flex h-11 min-w-[148px] items-center justify-center rounded-md border border-[#8eb4ef] bg-white px-6 text-[13px] font-bold text-[#075fe4] transition hover:bg-[#f3f8ff]">View Candidates</a>
                     </div>
                 </div>
 
@@ -64,7 +64,7 @@
                 <div class="rounded-lg border border-[#dce7f8] bg-white shadow-[0_6px_18px_rgba(6,25,66,.04)]">
                     <div class="flex items-center justify-between border-b border-[#edf2f8] px-5 py-4">
                         <h2 class="text-[16px] text-[#061942]">Recent Job Postings</h2>
-                        <a href="/company/jobs" class="text-[12px] font-bold text-[#075fe4]">View All Jobs -></a>
+                        <a href="/company/login?next=/company/jobs" class="text-[12px] font-bold text-[#075fe4]">View All Jobs -></a>
                     </div>
                     @foreach ($recentJobs as $job)
                         <article class="grid gap-4 border-b border-[#edf2f8] px-5 py-4 last:border-b-0 lg:grid-cols-[minmax(0,1fr)_90px_90px_160px_130px] lg:items-center">
@@ -85,7 +85,7 @@
                                     <span>Fast Track Mode<br><strong class="text-[#061942]">{{ $job['fast'] }}</strong></span>
                                 </div>
                             </div>
-                            <a href="/company/applications" class="inline-flex h-8 items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-4 text-[10px] font-bold text-[#075fe4]">View Applicants</a>
+                            <a href="/company/login?next=/company/applications" class="inline-flex h-8 items-center justify-center rounded-md border border-[#9bb7dc] bg-white px-4 text-[10px] font-bold text-[#075fe4]">View Applicants</a>
                         </article>
                     @endforeach
                 </div>
@@ -117,7 +117,7 @@
                                 @endforeach
                             </ul>
 
-                            <a href="{{ $package['name'] === 'Enterprise' ? '/company/register' : '/company/register' }}" class="inline-flex h-10 w-full items-center justify-center rounded-md border border-[#075fe4] px-4 text-[12px] font-bold transition {{ $package['popular'] ? 'bg-[#075fe4] text-white hover:bg-[#0554cc]' : 'bg-white text-[#075fe4] hover:bg-[#f3f8ff]' }}">{{ $package['button'] }}</a>
+                            <a href="/company/login?next=/company/billing" class="inline-flex h-10 w-full items-center justify-center rounded-md border border-[#075fe4] px-4 text-[12px] font-bold transition {{ $package['popular'] ? 'bg-[#075fe4] text-white hover:bg-[#0554cc]' : 'bg-white text-[#075fe4] hover:bg-[#f3f8ff]' }}">{{ $package['button'] }}</a>
                         </article>
                     @endforeach
                 </div>
@@ -140,7 +140,7 @@
                             @if (! $loop->last)
                                 <span class="hidden h-12 w-px bg-[#cfdceb] lg:block"></span>
                             @endif
-                        @endforeach                        <a href="/company/register" class="inline-flex h-11 items-center justify-center rounded-md border border-[#075fe4] bg-white px-6 text-[12px] font-bold text-[#075fe4] transition hover:bg-[#f3f8ff]">Buy Now</a>
+                        @endforeach                        <a href="/company/login?next=/company/billing" class="inline-flex h-11 items-center justify-center rounded-md border border-[#075fe4] bg-white px-6 text-[12px] font-bold text-[#075fe4] transition hover:bg-[#f3f8ff]">Buy Now</a>
                     </div>
                 </div>
 

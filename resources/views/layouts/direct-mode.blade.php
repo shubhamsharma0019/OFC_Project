@@ -23,7 +23,11 @@
     <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Direct Mode - OnlyFreshers')</title>
     @include('components.common.auth-storage')
+    <script>
+        document.documentElement.classList.add('auth-pending');
+    </script>
     <style>
+        html.auth-pending body{visibility:hidden}
         *{box-sizing:border-box}body{margin:0;height:100vh;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#06123f;background:#f7fbff;font-weight:500}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}.shell{height:100vh;overflow:hidden;display:grid;grid-template-columns:250px minmax(0,1fr);background:linear-gradient(135deg,#fbfdff,#f1f7ff)}.sidebar{position:sticky;top:0;height:100vh;min-width:0;overflow:hidden;background:#fff;border-right:1px solid #d8e4f7;display:flex;flex-direction:column}.brand{height:82px;display:flex;align-items:center;padding:0 34px;border-bottom:1px solid #d8e4f7}.brand img{display:block;width:200px;max-width:100%;height:auto;object-fit:contain;object-position:left center}.menu{flex:1;min-height:0;overflow:hidden;padding:24px 18px 12px;display:grid;align-content:start;gap:8px}.menu-item{min-height:46px;border-radius:8px;display:flex;align-items:center;gap:15px;padding:0 18px;font-size:14px;font-weight:700;position:relative;color:#06123f;white-space:nowrap}.menu-item.active{background:#eaf2ff;color:#064cff}.menu-item.active:before{content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;background:#064cff;border-radius:6px}.icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.boost{margin:18px;padding:18px;border-radius:9px;background:#eef5ff;text-align:center}.rocket{height:96px;position:relative}.rocket:before{content:"";position:absolute;left:50%;top:13px;width:66px;height:66px;background:linear-gradient(135deg,#0d67ff,#163ade);clip-path:polygon(50% 0,82% 23%,68% 68%,100% 82%,65% 88%,50% 100%,35% 88%,0 82%,32% 68%,18% 23%);transform:translateX(-50%) rotate(35deg)}.rocket:after{content:"";position:absolute;left:34px;right:34px;bottom:5px;height:18px;border-radius:50%;background:#dce8ff}.boost h3{margin:0 0 10px;font-size:15px;line-height:1.25}.boost p{margin:0 0 16px;font-size:13px;line-height:1.35;color:#26375e}.primary{height:36px;border:1px solid #064cff;border-radius:6px;background:#064cff;color:#fff;font-size:13px;font-weight:800;padding:0 20px;cursor:pointer}.main{height:100vh;min-width:0;overflow-y:auto;display:grid;grid-template-rows:82px minmax(0,max-content)}.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #d8e4f7;display:grid;grid-template-columns:1fr minmax(320px,603px) 1fr;align-items:center;gap:26px;padding:0 38px}.hamb{font-size:25px;line-height:1;color:#06123f}.search-wrap{position:relative;min-width:0}.search-top{height:46px;border:1px solid #cbd8ee;border-radius:7px;background:#fbfdff;display:flex;align-items:center;gap:14px;padding:0 16px;color:#26375e}.search-top input{border:0;outline:0;background:transparent;width:100%;min-width:0;color:#26375e}.search-panel{display:none;position:absolute;left:0;right:0;top:54px;z-index:50;border:1px solid #d8e4f7;border-radius:10px;background:#fff;box-shadow:0 18px 34px rgba(6,25,66,.12);overflow:hidden}.search-panel.show{display:block}.search-state{padding:15px 16px;color:#526287;font-size:13px}.search-result{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid #eef3fb}.search-result:first-child{border-top:0}.search-result:hover{background:#f7fbff}.search-result-icon{width:38px;height:38px;border-radius:9px;background:#eaf2ff;color:#064cff;display:grid;place-items:center}.search-result-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.search-result h3{margin:0 0 5px;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-result p{margin:0;color:#526287;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-badge{border:1px solid #d8e4f7;border-radius:999px;padding:5px 9px;color:#064cff;font-size:11px;font-weight:800}.top-user{justify-self:end;display:flex;align-items:center;gap:14px;min-width:0}.top-bell{position:relative;border:0;background:transparent;color:#06123f;padding:0;cursor:pointer}.top-bell b{position:absolute;right:-8px;top:-11px;background:#064cff;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center}.top-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:50%;border:5px solid #e6eefb;background:center top/cover no-repeat}.top-user strong{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page{min-width:0;padding:24px 28px 26px}.welcome{margin:0 0 18px 4px}.welcome small{font-size:13px;color:#526287}.welcome h1{margin:4px 0 0;font-size:22px;line-height:1.2}.footer{min-height:58px;border-top:1px solid #d8e4f7;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 32px;font-size:13px;color:#26375e}.footer nav{display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px}.footer i{height:16px;width:1px;background:#7d8aaa}@media(max-width:1240px){.shell{grid-template-columns:1fr}.sidebar{display:none}.topbar{grid-template-columns:32px minmax(0,1fr) auto}.top-user strong{display:none}}@media(max-width:760px){.main{grid-template-rows:auto minmax(0,1fr) auto}.topbar{grid-template-columns:1fr auto;gap:14px;padding:14px}.hamb{display:none}.search-wrap{grid-column:1/-1;grid-row:2}.search-top{width:100%}.top-user{grid-column:2;grid-row:1}.page{padding:16px}.footer,.footer nav{height:auto;flex-direction:column;align-items:flex-start}.footer{padding:16px}.footer i{display:none}}
     </style>
     @stack('styles')
@@ -199,12 +203,26 @@
 
                 return sessions.find(([token, user]) => token && user?.role === 'fresher') || null;
             };
+            const hasLogoutFlag = () => localStorage.getItem('ofc_logged_out') ||
+                sessionStorage.getItem('ofc_logged_out') ||
+                localStorage.getItem('ofc_fresher_logged_out') ||
+                sessionStorage.getItem('ofc_fresher_logged_out');
             const hasDirectSession = () => Boolean(directSession());
             const redirectIfLoggedOut = () => {
-                if (!hasDirectSession()) {
+                document.documentElement.classList.add('auth-pending');
+                if (
+                    window.location.pathname === '/direct-mode/dashboard' &&
+                    localStorage.getItem('onlyfreshers_selected_mode') === 'fast_track'
+                ) {
+                    window.location.replace('/fast-track/dashboard');
+                    return;
+                }
+                if (hasLogoutFlag() || !hasDirectSession()) {
                     authKeys.forEach(key => localStorage.removeItem(key));
                     window.location.replace(loginUrl);
+                    return;
                 }
+                document.documentElement.classList.remove('auth-pending');
             };
 
             redirectIfLoggedOut();

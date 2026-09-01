@@ -38,6 +38,10 @@
             <input name="industry" class="h-[46px] w-full rounded-lg border border-[#dce7f8] px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
         </label>
         <label class="block md:col-span-2">
+            <span class="mb-2 block text-xs font-bold text-[#061942]">Company Profile Image</span>
+            <input name="company_logo" type="file" accept=".jpg,.jpeg,.png,.webp" class="w-full rounded-lg border border-[#dce7f8] px-4 py-3 text-sm text-[#24344f] outline-none file:mr-4 file:rounded-md file:border-0 file:bg-[#075fe4] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#075fe4]">
+        </label>
+        <label class="block md:col-span-2">
             <span class="mb-2 block text-xs font-bold text-[#061942]">What are you here for?</span>
             <select name="hiring_intent" class="h-[46px] w-full rounded-lg border border-[#dce7f8] bg-white px-4 text-sm text-[#24344f] outline-none focus:border-[#075fe4]">
                 <option value="job_posting">Job posting and hiring tools</option>
@@ -94,7 +98,12 @@
             form[field].value = values[field] || '';
         }
         const name = values.company_name || 'Company';
-        document.getElementById('companyInitial').textContent = name.charAt(0).toUpperCase();
+        const logo = profile?.company_logo ? `/storage/${String(profile.company_logo).replace(/^\/?storage\//, '')}` : '';
+        const initial = document.getElementById('companyInitial');
+        initial.textContent = logo ? '' : name.charAt(0).toUpperCase();
+        initial.style.backgroundImage = logo ? `url("${logo}")` : '';
+        initial.style.backgroundSize = 'cover';
+        initial.style.backgroundPosition = 'center';
         document.getElementById('formTitle').textContent = name;
         document.getElementById('formSubtitle').textContent = `Approval status: ${profile?.approval_status || 'pending'}`;
     };
@@ -133,23 +142,22 @@
         try {
             const website = form.website.value.trim();
             const normalizedWebsite = website && !/^https?:\/\//i.test(website) ? `https://${website}` : website;
+            const formData = new FormData(form);
+            formData.set('company_name', form.company_name.value.trim());
+            formData.set('industry', form.industry.value.trim());
+            formData.set('email', form.email.value.trim());
+            formData.set('phone', form.phone.value.trim());
+            formData.set('website', normalizedWebsite);
+            formData.set('address', form.address.value.trim());
+            formData.set('description', form.description.value.trim());
+
             const response = await fetch('/api/company/profile', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
-                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    company_name: form.company_name.value.trim(),
-                    industry: form.industry.value.trim(),
-                    email: form.email.value.trim(),
-                    phone: form.phone.value.trim(),
-                    hiring_intent: form.hiring_intent.value,
-                    website: normalizedWebsite,
-                    address: form.address.value.trim(),
-                    description: form.description.value.trim(),
-                }),
+                body: formData,
             });
             const result = await response.json();
 

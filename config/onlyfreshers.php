@@ -109,7 +109,7 @@ return [
             [
                 'title' => 'For Freshers',
                 'subtitle' => 'Find Jobs & Programs',
-                'href' => '/direct-mode/register',
+                'href' => '/direct-mode/login',
             ],
             [
                 'title' => 'For Companies',

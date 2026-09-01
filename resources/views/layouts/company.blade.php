@@ -15,7 +15,11 @@
     <title>@yield('title', 'Company Dashboard - OnlyFreshers')</title>
     @include('components.common.auth-storage')
     @include('components.common.compiled-assets')
+    <script>
+        document.documentElement.classList.add('auth-pending');
+    </script>
     <style>
+        html.auth-pending body{visibility:hidden}
         #company-layout,
         #company-layout * {
             font-family: Inter, Arial, Helvetica, sans-serif !important;
@@ -311,6 +315,8 @@
                 ].forEach(key => localStorage.removeItem(key));
                 sessionStorage.setItem('ofc_logged_out', '1');
                 localStorage.setItem('ofc_logged_out', '1');
+                sessionStorage.setItem('ofc_company_logged_out', '1');
+                localStorage.setItem('ofc_company_logged_out', '1');
 
                 window.location.replace('/');
 
@@ -333,8 +339,13 @@
                 const user = parseLocalStorage('onlyfreshers_company_user') ||
                     parseLocalStorage('ofc_company_user') ||
                     parseLocalStorage('ofc_auth_user');
+                const isLoggedOut = localStorage.getItem('ofc_logged_out') ||
+                    sessionStorage.getItem('ofc_logged_out') ||
+                    localStorage.getItem('ofc_company_logged_out') ||
+                    sessionStorage.getItem('ofc_company_logged_out');
 
-                if (!token || user?.role !== 'company') {
+                document.documentElement.classList.add('auth-pending');
+                if (isLoggedOut || !token || user?.role !== 'company') {
                     [
                         'ofc_auth_token',
                         'ofc_auth_user',
@@ -345,7 +356,9 @@
                         'onlyfreshers_company_user'
                     ].forEach(key => localStorage.removeItem(key));
                     window.location.replace('/company/login');
+                    return;
                 }
+                document.documentElement.classList.remove('auth-pending');
             }
 
             function bindMenu(buttonId, menuId) {
@@ -375,6 +388,7 @@
 
             document.getElementById('company-topbar-logout')?.addEventListener('click', logoutCompany);
             document.getElementById('company-sidebar-logout')?.addEventListener('click', logoutCompany);
+            guardCompanySession();
             window.addEventListener('pageshow', guardCompanySession);
 
             document.addEventListener('company-profile-loaded', function (event) {

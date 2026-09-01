@@ -88,7 +88,7 @@
     }
     .company-free-stats {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         align-items: stretch;
         gap: 0;
         border-radius: 9px;
@@ -158,15 +158,15 @@
             grid-template-columns: 1fr;
         }
         .company-free-stats {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: 1fr;
         }
-        .company-free-stat:nth-child(2) {
+        .company-free-stat {
             border-right: 0;
-        }
-        .company-free-stat:nth-child(-n + 2) {
             border-bottom: 1px solid #dce7f8;
-            padding-bottom: 14px;
-            margin-bottom: 14px;
+            padding: 14px 0;
+        }
+        .company-free-stat:last-child {
+            border-bottom: 0;
         }
     }
     @media (max-width: 640px) {
@@ -286,10 +286,6 @@
         border: 1px solid currentColor;
         font-size: 9px;
     }
-    .hiring-free-note {
-        font-size: 14px;
-        font-weight: 900;
-    }
     .hiring-summary-title {
         margin: 0 0 22px;
         text-align: center;
@@ -397,7 +393,7 @@
     }
     .recent-job-row {
         display: grid;
-        grid-template-columns: 76px minmax(0, 1.25fr) 130px 130px 255px 160px 28px;
+        grid-template-columns: 76px minmax(0, 1.25fr) 130px 130px 160px 28px;
         align-items: center;
         gap: 0;
         min-height: 118px;
@@ -445,14 +441,12 @@
         font-weight: 800;
     }
     .recent-job-metric,
-    .recent-resume-block,
     .recent-action-block {
         min-height: 64px;
         border-left: 1px solid #dce7f8;
         padding-left: 26px;
     }
-    .recent-job-metric small,
-    .recent-resume-mode small {
+    .recent-job-metric small {
         display: block;
         margin-bottom: 8px;
         color: #526287;
@@ -463,30 +457,6 @@
         color: #061942;
         font-size: 20px;
         line-height: 1;
-    }
-    .recent-resume-block {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
-    }
-    .recent-resume-block > small {
-        grid-column: 1 / -1;
-        margin-bottom: -6px;
-        color: #061942;
-        font-size: 11px;
-        font-weight: 900;
-        text-align: center;
-    }
-    .recent-resume-mode strong {
-        color: #061942;
-        font-size: 18px;
-        line-height: 1;
-    }
-    .recent-resume-mode em {
-        color: #0b8b67;
-        font-size: 11px;
-        font-style: normal;
-        font-weight: 900;
     }
     .recent-action-block {
         display: flex;
@@ -568,7 +538,6 @@
             gap: 14px;
         }
         .recent-job-metric,
-        .recent-resume-block,
         .recent-action-block {
             border-left: 0;
             padding-left: 0;
@@ -902,7 +871,6 @@
                             <li><b>&#10003;</b>{{ $item }}</li>
                         @endforeach
                     </ul>
-                    <div class="hiring-free-note" data-direct-free-note>Free resumes per job posting</div>
                 </div>
             </article>
             <article class="hiring-mode-card fast">
@@ -924,7 +892,6 @@
                             <li><b>&#10003;</b>{{ $item }}</li>
                         @endforeach
                     </ul>
-                    <div class="hiring-free-note" data-fast-free-note>Free resumes per job posting</div>
                 </div>
             </article>
         </div>
@@ -975,7 +942,15 @@
                             <li><b>&#10003;</b><span>{{ $item }}</span></li>
                         @endforeach
                     </ul>
-                    <a href="/company/billing">{{ $package['button'] }}</a>
+                    @if (($package['name'] ?? '') !== 'Starter')
+                        @php
+                            $packagePaymentPlan = [
+                                'Growth' => 'premium',
+                                'Professional' => 'enterprise',
+                            ][$package['name'] ?? ''] ?? null;
+                        @endphp
+                        <a href="/company/billing" @if ($packagePaymentPlan) data-company-plan="{{ $packagePaymentPlan }}" @endif>{{ $package['button'] }}</a>
+                    @endif
                 </article>
             @endforeach
         </div>
@@ -1022,6 +997,7 @@
 
 @push('scripts')
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -1036,6 +1012,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const token =
         localStorage.getItem('onlyfreshers_company_token') ||
+        localStorage.getItem('ofc_company_token') ||
         localStorage.getItem('ofc_auth_token');
 
     const statsGrid = document.getElementById('statsGrid');
@@ -1345,12 +1322,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const jobCredits =
             limits.job_credits || {};
 
-        const directMode =
-            limits.direct_mode_resumes_per_job || {};
-
-        const fastTrack =
-            limits.fast_track_resumes_per_job || {};
-
         const cards = [
             {
                 title: 'Job Credits',
@@ -1373,16 +1344,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 classes: 'bg-[#f0edff] text-[#6c50ff]',
                 href: '/company/jobs',
                 link: 'View Jobs ->'
-            },
-            {
-                title: 'Direct Mode',
-                value: `${directMode.remaining ?? directMode.total ?? 0} / ${directMode.total ?? 0}`,
-                note: 'Free Resumes',
-                sub: 'Per Job Posting',
-                icon: 'users',
-                classes: 'bg-[#eef5ff] text-[#075fe4]',
-                href: '/company/applications',
-                link: ''
             },
             {
                 title: 'Total Active Opportunities',
@@ -1440,31 +1401,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </article>
         `).join('');
-    }
-
-    function renderHiringFreeNotes(limits = {}) {
-
-        const direct =
-            limits.direct_mode_resumes_per_job || {};
-
-        const fast =
-            limits.fast_track_resumes_per_job || {};
-
-        const directNote =
-            document.querySelector('[data-direct-free-note]');
-
-        const fastNote =
-            document.querySelector('[data-fast-free-note]');
-
-        if (directNote) {
-            directNote.textContent =
-                `${direct.total ?? 0} Free Resumes per Job Posting`;
-        }
-
-        if (fastNote) {
-            fastNote.textContent =
-                `${fast.total ?? 0} Free Resumes per Job Posting`;
-        }
     }
 
     function renderConfigDrivenContent(limits = {}) {
@@ -1540,12 +1476,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ((data.recent_jobs || []).length ? data.recent_jobs : fallbackJobs)
                 .slice(0, 2);
 
-        const directTotal =
-            limits?.direct_mode_resumes_per_job?.total ?? 0;
-
-        const fastTotal =
-            limits?.fast_track_resumes_per_job?.total ?? 0;
-
         recentJobPostings.innerHTML = jobs
             .map((job, index) => {
 
@@ -1583,20 +1513,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="recent-job-metric">
                             <small>Shortlisted</small>
                             <strong>${shortlisted}</strong>
-                        </div>
-
-                        <div class="recent-resume-block">
-                            <small>Free Resumes</small>
-                            <div class="recent-resume-mode">
-                                <small>Direct Mode</small>
-                                <strong>${directTotal} / ${directTotal}</strong>
-                                <em>Used</em>
-                            </div>
-                            <div class="recent-resume-mode">
-                                <small>Fast Track Mode</small>
-                                <strong>${fastTotal} / ${fastTotal}</strong>
-                                <em>Used</em>
-                            </div>
                         </div>
 
                         <div class="recent-action-block">
@@ -1920,6 +1836,113 @@ document.addEventListener('DOMContentLoaded', function () {
                 .join('');
     }
 
+    async function createCompanyPlanOrder(plan) {
+        const response = await fetch('/api/payments/razorpay/order', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                purpose: 'company_subscription',
+                plan,
+            }),
+        });
+        const payload = await response.json();
+
+        if (!response.ok || payload.success === false) {
+            throw new Error(payload.message || 'Payment order could not be created.');
+        }
+
+        return payload.data || {};
+    }
+
+    function openCompanyPlanCheckout(order, button, originalText) {
+        if (!window.Razorpay) {
+            throw new Error('Razorpay checkout could not be loaded. Please refresh and try again.');
+        }
+
+        const checkout = new Razorpay({
+            key: order.key,
+            amount: order.amount,
+            currency: order.currency,
+            order_id: order.razorpay_order_id,
+            name: order.name,
+            description: order.description,
+            prefill: order.prefill || {},
+            method: {
+                card: true,
+                netbanking: true,
+                wallet: true,
+                upi: true,
+            },
+            handler: async function (response) {
+                button.textContent = 'Verifying...';
+                try {
+                    const verifyResponse = await fetch('/api/payments/razorpay/verify', {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                        }),
+                    });
+                    const verifyPayload = await verifyResponse.json();
+
+                    if (!verifyResponse.ok || verifyPayload.success === false) {
+                        throw new Error(verifyPayload.message || 'Payment verification failed.');
+                    }
+
+                    window.location.href = verifyPayload.data?.redirect_to || '/company/post-job';
+                } catch (error) {
+                    alert(error.message || 'Payment verification failed.');
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            },
+            modal: {
+                ondismiss: function () {
+                    button.disabled = false;
+                    button.textContent = originalText;
+                },
+            },
+        });
+
+        checkout.open();
+    }
+
+    function bindPackagePayments() {
+        document.querySelectorAll('[data-company-plan]').forEach(button => {
+            button.addEventListener('click', async event => {
+                event.preventDefault();
+
+                if (!token) {
+                    window.location.href = '/company/login';
+                    return;
+                }
+
+                const originalText = button.textContent;
+                button.disabled = true;
+                button.textContent = 'Opening Razorpay...';
+
+                try {
+                    const order = await createCompanyPlanOrder(button.dataset.companyPlan);
+                    openCompanyPlanCheckout(order, button, originalText);
+                } catch (error) {
+                    alert(error.message || 'Razorpay checkout could not be opened.');
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            });
+        });
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -2150,10 +2173,6 @@ document.addEventListener('DOMContentLoaded', function () {
             data.free_limits || {}
         );
 
-        renderHiringFreeNotes(
-            data.free_limits || {}
-        );
-
         renderConfigDrivenContent(
             data.free_limits || {}
         );
@@ -2178,11 +2197,11 @@ document.addEventListener('DOMContentLoaded', function () {
     */
 
     renderStats({});
-    renderHiringFreeNotes({});
     renderConfigDrivenContent({});
     renderHiringSummary({});
     renderRecentJobPostings({});
     renderActions();
+    bindPackagePayments();
 
     document
         .querySelectorAll('[data-company-icon]')

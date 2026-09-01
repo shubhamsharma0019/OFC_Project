@@ -19,6 +19,12 @@ class CompanyResumeAssignment extends Model
         'interview_time',
         'company_joined_at',
         'fresher_joined_at',
+        'resume_opened_at',
+        'resume_downloaded_at',
+        'shortlisted_at',
+        'interview_sent_at',
+        'interview_completed_at',
+        'final_status_sent_at',
     ];
 
     protected function casts(): array
@@ -27,6 +33,12 @@ class CompanyResumeAssignment extends Model
             'interview_date' => 'date',
             'company_joined_at' => 'datetime',
             'fresher_joined_at' => 'datetime',
+            'resume_opened_at' => 'datetime',
+            'resume_downloaded_at' => 'datetime',
+            'shortlisted_at' => 'datetime',
+            'interview_sent_at' => 'datetime',
+            'interview_completed_at' => 'datetime',
+            'final_status_sent_at' => 'datetime',
         ];
     }
 

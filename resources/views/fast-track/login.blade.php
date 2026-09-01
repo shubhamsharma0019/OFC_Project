@@ -140,7 +140,15 @@
                     }
 
                     localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
-                    window.location.href = '/fast-track/dashboard';
+                    const nextUrl = new URLSearchParams(window.location.search).get('next');
+                    const safeNextUrl = nextUrl &&
+                        nextUrl.startsWith('/fast-track/') &&
+                        !nextUrl.startsWith('/fast-track/login') &&
+                        !nextUrl.startsWith('/fast-track/register')
+                            ? nextUrl
+                            : '/fast-track/dashboard';
+
+                    window.location.href = safeNextUrl;
                 } catch (error) {
                     alert(error.message || 'Login failed.');
                     submitButton.disabled = false;

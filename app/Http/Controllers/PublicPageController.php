@@ -99,7 +99,7 @@ class PublicPageController extends Controller
                 'title' => 'Hire Freshers with Confidence',
                 'text' => 'Post jobs or internships, review applications, shortlist candidates, and hire top talent.',
                 'button' => 'Post Opportunity',
-                'href' => '/company/post-job',
+                'href' => '/company/login?next=/company/post-job',
             ],
             'fastTrackSteps' => [
                 ['icon' => 'document', 'title' => '1. Enroll', 'text' => 'Student enrolls for Fast Track Program'],
@@ -279,7 +279,7 @@ class PublicPageController extends Controller
                 'title' => 'Apply to Jobs Directly',
                 'text' => 'Get 250 free application credits and apply to fresher jobs with your profile and initial assessment.',
                 'button' => 'Apply Now',
-                'href' => '/direct-mode/register',
+                'href' => '/direct-mode/login',
                 'image' => 'direct-mode-hero.png',
             ],
             'jobsHeader' => [
@@ -349,7 +349,7 @@ class PublicPageController extends Controller
             'planLabels' => [
                 'popular' => 'Popular',
                 'credits' => 'Credits',
-                'buy_href' => '/direct-mode/register',
+                'buy_href' => '/direct-mode/login',
             ],
             'creditTrustItems' => ['Secure Payments', 'Instant Credit', 'No Auto Renewal', 'Use Anytime'],
             'creditPlans' => $this->creditPlans(),
@@ -395,18 +395,18 @@ class PublicPageController extends Controller
                 'title' => 'Explore Career Tracks',
                 'text' => 'Choose a career track that matches your interest and career goals.',
                 'button' => 'View All Tracks',
-                'href' => '/fast-track/courses',
+                'href' => '/fast-track/login?next=/fast-track/courses',
             ],
             'trackLabels' => [
                 'skills' => 'Key Skills',
                 'details' => 'View Details',
-                'href' => '/fast-track/courses',
+                'href' => '/fast-track/login?next=/fast-track/courses',
             ],
             'assessmentHeader' => [
                 'title' => 'Assessment Summary',
                 'text' => 'Improve your skills and see your growth with initial and final assessments.',
                 'button' => 'View Detailed Report',
-                'href' => '/fast-track/final-assessment',
+                'href' => '/fast-track/login?next=/fast-track/final-assessment',
             ],
             'assessmentCards' => [
                 'initial' => [
@@ -491,11 +491,26 @@ class PublicPageController extends Controller
                 : $this->fallbackPartners(),
             'fastTrackPlans' => $this->fastTrackPlans(),
             'fastTrackFaqs' => [
-                'What is the Fast Track Program?',
-                'How does the Fast Track Program work?',
-                'Who can enroll in the program?',
-                'Will I get a certificate?',
-                'How will companies see my profile?',
+                [
+                    'question' => 'What is the Fast Track Program?',
+                    'answer' => 'Fast Track is a skill-building and assessment program for freshers. You get training from verified partners, complete assessments, and build a stronger profile for hiring companies.',
+                ],
+                [
+                    'question' => 'How does the Fast Track Program work?',
+                    'answer' => 'You enroll in a track, complete an initial assessment, attend training, take the final assessment, receive a certificate, and then companies can review your improved profile.',
+                ],
+                [
+                    'question' => 'Who can enroll in the program?',
+                    'answer' => 'Freshers, students, recent graduates, and career switchers who want structured training and better job readiness can enroll.',
+                ],
+                [
+                    'question' => 'Will I get a certificate?',
+                    'answer' => 'Yes. After completing the training and final assessment, your certificate and assessment report become part of your profile.',
+                ],
+                [
+                    'question' => 'How will companies see my profile?',
+                    'answer' => 'Companies can see your resume, initial score, final score, training status, certificate, and overall fit when they review Fast Track candidates.',
+                ],
             ],
             'assessmentLabels' => [
                 'Technical Skills',

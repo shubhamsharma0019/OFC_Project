@@ -32,6 +32,8 @@
                 original.removeItem('ofc_logged_out');
                 sessionStorage.removeItem('ofc_fresher_logged_out');
                 original.removeItem('ofc_fresher_logged_out');
+                sessionStorage.removeItem('ofc_company_logged_out');
+                original.removeItem('ofc_company_logged_out');
             }
             if (scopedKeys.has(key)) sessionStorage.setItem(key, value);
             original.setItem(key, value);
