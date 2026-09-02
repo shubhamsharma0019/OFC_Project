@@ -371,6 +371,10 @@ class RazorpayPaymentController extends Controller
     private function redirectFor(Payment $payment): string
     {
         if ($payment->purpose === 'company_subscription' && $payment->plan === 'custom') {
+            if (($payment->metadata['custom_category'] ?? null) === 'resume') {
+                return '/company/resumes';
+            }
+
             return '/company/applications';
         }
 
