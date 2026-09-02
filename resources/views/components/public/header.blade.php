@@ -163,6 +163,16 @@
             ].forEach(key => localStorage.removeItem(key));
         }
 
+        const fresherMode = localStorage.getItem('onlyfreshers_selected_mode') ||
+            localStorage.getItem('onlyfreshers_intended_mode') ||
+            '';
+        const fresherProfileHref = fresherMode === 'fast_track'
+            ? '/fast-track/profile'
+            : '/direct-mode/profile';
+        const fresherDashboardHref = fresherMode === 'fast_track'
+            ? '/fast-track/dashboard'
+            : '/direct-mode/dashboard';
+
         const sessions = [
             {
                 role: 'company',
@@ -182,7 +192,8 @@
                 role: 'fresher',
                 token: localStorage.getItem('ofc_fresher_token') || localStorage.getItem('onlyfreshers_token'),
                 user: parseJson(localStorage.getItem('ofc_fresher_user')) || parseJson(localStorage.getItem('onlyfreshers_user')),
-                href: '/direct-mode/profile',
+                href: fresherProfileHref,
+                dashboardHref: fresherDashboardHref,
                 fallback: 'Profile',
             },
         ];
@@ -203,7 +214,7 @@
         });
 
         document.querySelectorAll('[data-public-register]').forEach(link => {
-            link.href = session.role === 'company' ? '/company/dashboard' : (session.role === 'training_partner' ? '/training-partner/dashboard' : '/direct-mode/dashboard');
+            link.href = session.role === 'company' ? '/company/dashboard' : (session.role === 'training_partner' ? '/training-partner/dashboard' : (session.dashboardHref || fresherDashboardHref));
             link.textContent = 'Dashboard';
         });
     })();

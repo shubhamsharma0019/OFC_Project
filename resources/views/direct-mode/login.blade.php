@@ -1801,8 +1801,20 @@ document.addEventListener(
                         'company'
                     ) {
 
+                        const nextUrl =
+                            new URLSearchParams(window.location.search)
+                                .get('next');
+
+                        const companyNextUrl =
+                            nextUrl &&
+                            nextUrl.startsWith('/company/') &&
+                            !nextUrl.startsWith('/company/login') &&
+                            !nextUrl.startsWith('/company/register')
+                                ? nextUrl
+                                : '/company/profile';
+
                         window.location.href =
-                            '/company/profile';
+                            companyNextUrl;
 
                         return;
                     }

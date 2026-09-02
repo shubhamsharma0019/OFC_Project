@@ -51,6 +51,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             user: authUser,
             profile: {},
             dashboard: {},
+            extras: {},
             active: 'account',
             editing: false,
             prefs: JSON.parse(localStorage.getItem('onlyfreshers_settings_prefs') || '{}'),
@@ -173,9 +174,68 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
         }
 
         function renderLinked() {
-            $('[data-panel-root]').innerHTML = `
-                <div class="toggle-row linked-row"><div><h3>Google Account</h3><p>${state.user.email || 'Not connected'}</p></div><button class="outline" type="button">Connected</button></div>
-                <div class="toggle-row linked-row"><div><h3>LinkedIn</h3><p>Connect LinkedIn profile for better visibility</p></div><button class="outline" type="button">Connect</button></div>`;
+            const p = state.profile || {};
+            const extra = state.extras || {};
+            const accounts = [
+                {
+                    title: 'Email Account',
+                    value: state.user.email || '',
+                    fallback: 'Email not added',
+                    connected: Boolean(state.user.email),
+                    action: state.user.email ? 'Connected' : 'Add Email',
+                },
+                {
+                    title: 'Phone Number',
+                    value: p.phone || '',
+                    fallback: 'Phone number not added',
+                    connected: Boolean(p.phone),
+                    action: p.phone ? 'Verified' : 'Add Phone',
+                },
+                {
+                    title: 'Resume',
+                    value: p.resume ? 'Resume uploaded' : '',
+                    fallback: 'Resume not uploaded',
+                    connected: Boolean(p.resume),
+                    action: p.resume ? 'Uploaded' : 'Upload',
+                },
+                {
+                    title: 'LinkedIn',
+                    value: extra.linkedin || '',
+                    fallback: 'LinkedIn profile not connected',
+                    connected: Boolean(extra.linkedin),
+                    action: extra.linkedin ? 'Connected' : 'Connect',
+                    url: extra.linkedin || '',
+                },
+                {
+                    title: 'GitHub / Portfolio',
+                    value: extra.portfolio || '',
+                    fallback: 'Portfolio link not connected',
+                    connected: Boolean(extra.portfolio),
+                    action: extra.portfolio ? 'Connected' : 'Connect',
+                    url: extra.portfolio || '',
+                },
+            ];
+
+            $('[data-panel-root]').innerHTML = accounts.map(account => `
+                <div class="toggle-row linked-row">
+                    <div>
+                        <h3>${escapeHtml(account.title)}</h3>
+                        <p>${account.url ? `<a href="${escapeAttr(account.url)}" target="_blank" rel="noopener">${escapeHtml(account.value)}</a>` : escapeHtml(account.value || account.fallback)}</p>
+                    </div>
+                    <button class="outline ${account.connected ? 'verified' : ''}" data-linked-action="${account.connected ? 'view' : 'connect'}" data-linked-url="${escapeAttr(account.url || '')}" type="button">${escapeHtml(account.action)}</button>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('[data-linked-action]').forEach(button => {
+                button.addEventListener('click', () => {
+                    if (button.dataset.linkedUrl) {
+                        window.open(button.dataset.linkedUrl, '_blank', 'noopener');
+                        return;
+                    }
+
+                    window.location.href = '/direct-mode/profile';
+                });
+            });
         }
 
         function renderDeactivate() {
@@ -246,6 +306,11 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                 state.profile = profileRes.data?.profile || profileRes.data?.fresher_profile || {};
                 state.dashboard = dashboardRes.data || {};
                 state.user = profileRes.data?.user || state.dashboard.user || state.user;
+            }
+            try {
+                state.extras = JSON.parse(localStorage.getItem('onlyfreshers_direct_profile_extra') || '{}') || {};
+            } catch (error) {
+                state.extras = {};
             }
             updateUserChrome();
             render();

@@ -132,9 +132,19 @@
                 <div
                     id="companyInitial"
                     data-company-profile-initial
-                    class="flex h-[110px] w-[110px] shrink-0 items-center justify-center rounded-full bg-[#075fe4] text-[50px] font-bold text-white sm:h-[145px] sm:w-[145px] sm:text-[68px]"
+                    class="relative flex h-[110px] w-[110px] shrink-0 overflow-hidden rounded-full bg-[#075fe4] text-[50px] font-bold text-white sm:h-[145px] sm:w-[145px] sm:text-[68px]"
                 >
-                    C
+                    <img
+                        id="companyLogoImage"
+                        alt="Company Logo"
+                        class="hidden h-full w-full object-cover"
+                    >
+                    <span
+                        id="companyInitialText"
+                        class="flex h-full w-full items-center justify-center"
+                    >
+                        C
+                    </span>
                 </div>
 
 
@@ -824,17 +834,58 @@ document.addEventListener(
                     .toUpperCase() ||
                 'C';
 
+            const logo =
+                profile.company_logo
+                    ? `/storage/${String(profile.company_logo).replace(/^\/?storage\//, '')}`
+                    : '';
+
 
             const companyInitial =
                 document.getElementById(
                     'companyInitial'
                 );
+            const companyLogoImage =
+                document.getElementById(
+                    'companyLogoImage'
+                );
+            const companyInitialText =
+                document.getElementById(
+                    'companyInitialText'
+                );
 
 
             if (companyInitial) {
 
-                companyInitial.textContent =
+                companyInitial.style.backgroundImage =
+                    logo ? `url("${logo}")` : '';
+
+                companyInitial.style.backgroundSize =
+                    'cover';
+
+                companyInitial.style.backgroundPosition =
+                    'center';
+            }
+
+            if (companyLogoImage) {
+
+                companyLogoImage.src =
+                    logo || '';
+
+                companyLogoImage.classList.toggle(
+                    'hidden',
+                    !logo
+                );
+            }
+
+            if (companyInitialText) {
+
+                companyInitialText.textContent =
                     initial;
+
+                companyInitialText.classList.toggle(
+                    'hidden',
+                    Boolean(logo)
+                );
             }
 
 
@@ -845,8 +896,21 @@ document.addEventListener(
                 .forEach(
                     function (element) {
 
+                        if (element.id === 'companyInitial') {
+                            return;
+                        }
+
                         element.textContent =
                             initial;
+
+                        element.style.backgroundImage =
+                            logo ? `url("${logo}")` : '';
+
+                        element.style.backgroundSize =
+                            'cover';
+
+                        element.style.backgroundPosition =
+                            'center';
                     }
                 );
 

@@ -79,6 +79,7 @@ Route::redirect('/fresher/settings', '/direct-mode/settings');
 
 Route::view('/fast-track/dashboard', 'fresher.fast-track.index');
 Route::view('/fast-track/profile', 'fresher.profile.show');
+Route::view('/fast-track/profile/edit', 'fresher.profile.show', ['editMode' => true]);
 Route::view('/fast-track/courses', 'fresher.fast-track.courses');
 Route::redirect('/fast-track/assessment', '/direct-mode/flow-selection');
 Route::view('/fast-track/final-assessment', 'fresher.final-assessment.index');
@@ -207,19 +208,34 @@ if (! function_exists('openAssignedCompanyResume')) {
             ->where('resume', '!=', '')
             ->firstOrFail();
 
-        abort_unless(
-            CompanyResumeAssignment::query()
-                ->where('company_profile_id', $companyProfile->id)
-                ->where('fresher_profile_id', $resumeProfile->id)
-                ->exists(),
-            403
-        );
+        $assignment = CompanyResumeAssignment::query()
+            ->where('company_profile_id', $companyProfile->id)
+            ->where('fresher_profile_id', $resumeProfile->id)
+            ->first();
 
-        if ((int) $companyProfile->job_credits < 50) {
+        abort_unless($assignment, 403);
+
+        if (! companyResumeAlreadyCharged($assignment) && (int) $companyProfile->job_credits < 50) {
             return redirect('/company/billing?reason=resume-credits-over');
         }
 
-        DB::transaction(function () use ($companyProfile) {
+        DB::transaction(function () use ($companyProfile, $assignment, $download) {
+            $lockedAssignment = $assignment->newQuery()
+                ->whereKey($assignment->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+            $chargedAtColumn = $download ? 'resume_downloaded_at' : 'resume_opened_at';
+
+            if (companyResumeAlreadyCharged($lockedAssignment)) {
+                if (! $lockedAssignment->{$chargedAtColumn}) {
+                    $lockedAssignment->forceFill([
+                        $chargedAtColumn => now(),
+                    ])->save();
+                }
+
+                return;
+            }
+
             $lockedProfile = $companyProfile->newQuery()
                 ->whereKey($companyProfile->id)
                 ->lockForUpdate()
@@ -229,6 +245,10 @@ if (! function_exists('openAssignedCompanyResume')) {
 
             $lockedProfile->decrement('job_credits', 50);
             $lockedProfile->increment('total_job_credits_used', 50);
+
+            $lockedAssignment->forceFill([
+                $chargedAtColumn => now(),
+            ])->save();
         });
 
         $path = $resumeProfile->resume;
@@ -255,6 +275,26 @@ if (! function_exists('openAssignedCompanyResume')) {
             'Cache-Control' => 'private, max-age=0, must-revalidate',
             'Pragma' => 'public',
         ]);
+    }
+}
+
+if (! function_exists('companyResumeAlreadyCharged')) {
+    function companyResumeAlreadyCharged(CompanyResumeAssignment $assignment): bool
+    {
+        foreach ([
+            'resume_opened_at',
+            'resume_downloaded_at',
+            'shortlisted_at',
+            'interview_sent_at',
+            'interview_completed_at',
+            'final_status_sent_at',
+        ] as $column) {
+            if (filled($assignment->{$column})) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

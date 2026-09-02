@@ -7,6 +7,7 @@ use App\Models\CompanyResumeAssignment;
 use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class CompanyResumeController extends Controller
@@ -103,15 +104,33 @@ class CompanyResumeController extends Controller
             ], 403);
         }
 
-        $assignment->update([
-            'status' => 'shortlisted',
-        ]);
+        DB::transaction(function () use ($assignment, $companyProfile) {
+            $this->chargeResumeActionCredits($companyProfile, $assignment, 'shortlisted_at');
+
+            $assignment->update([
+                'status' => 'shortlisted',
+                'shortlisted_at' => $assignment->shortlisted_at ?? now(),
+            ]);
+        });
+
+        $assignment->load('fresherProfile.user');
+
+        if ($assignment->fresherProfile?->user_id) {
+            Notification::create([
+                'user_id' => $assignment->fresherProfile->user_id,
+                'type' => 'application',
+                'title' => 'Resume Shortlisted',
+                'message' => "{$companyProfile->company_name} shortlisted your resume. Interview details will be shared if selected for the next round.",
+                'is_read' => false,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Resume shortlisted successfully.',
             'data' => [
                 'assignment' => $assignment->fresh('fresherProfile.user'),
+                'credits' => $this->resumeCredits($companyProfile->fresh()),
             ],
         ]);
     }
@@ -135,14 +154,20 @@ class CompanyResumeController extends Controller
         ]);
 
         $assignment->load('fresherProfile.user');
-        $assignment->update([
-            'status' => 'interview_sent',
-            'interview_link' => $validated['interview_link'],
-            'interview_date' => $validated['interview_date'],
-            'interview_time' => $validated['interview_time'],
-            'company_joined_at' => null,
-            'fresher_joined_at' => null,
-        ]);
+
+        DB::transaction(function () use ($assignment, $companyProfile, $validated) {
+            $this->chargeResumeActionCredits($companyProfile, $assignment, 'interview_sent_at');
+
+            $assignment->update([
+                'status' => 'interview_sent',
+                'interview_link' => $validated['interview_link'],
+                'interview_date' => $validated['interview_date'],
+                'interview_time' => $validated['interview_time'],
+                'interview_sent_at' => $assignment->interview_sent_at ?? now(),
+                'company_joined_at' => null,
+                'fresher_joined_at' => null,
+            ]);
+        });
 
         if ($assignment->fresherProfile?->user_id) {
             Notification::create([
@@ -159,6 +184,7 @@ class CompanyResumeController extends Controller
             'message' => 'Interview link sent successfully.',
             'data' => [
                 'assignment' => $assignment->fresh('fresherProfile.user'),
+                'credits' => $this->resumeCredits($companyProfile->fresh()),
             ],
         ]);
     }
@@ -181,22 +207,44 @@ class CompanyResumeController extends Controller
             ], 422);
         }
 
-        $assignment->load(['companyProfile', 'fresherProfile']);
+        $assignment->load(['companyProfile', 'fresherProfile.user']);
 
         if ($user->role === 'company') {
             abort_unless($user->companyProfile?->id === $assignment->company_profile_id, 403);
 
             if (! $assignment->company_joined_at) {
                 $assignment->update(['company_joined_at' => now()]);
+                $assignment->company_joined_at = $assignment->fresh()->company_joined_at;
             }
         } elseif ($user->role === 'fresher') {
             abort_unless($user->fresherProfile?->id === $assignment->fresher_profile_id, 403);
 
             if (! $assignment->fresher_joined_at) {
                 $assignment->update(['fresher_joined_at' => now()]);
+                $assignment->fresher_joined_at = $assignment->fresh()->fresher_joined_at;
             }
         } else {
             abort(403);
+        }
+
+        if (
+            $assignment->status === 'interview_sent' &&
+            $assignment->company_joined_at &&
+            $assignment->fresher_joined_at
+        ) {
+            $assignment->update([
+                'status' => 'interview_completed',
+            ]);
+
+            if ($assignment->fresherProfile?->user_id) {
+                Notification::create([
+                    'user_id' => $assignment->fresherProfile->user_id,
+                    'type' => 'interview',
+                    'title' => 'Interview Completed',
+                    'message' => "{$assignment->companyProfile->company_name} marked your interview as completed. Final status will be shared soon.",
+                    'is_read' => false,
+                ]);
+            }
         }
 
         return response()->json([
@@ -234,9 +282,15 @@ class CompanyResumeController extends Controller
         }
 
         $assignment->load('fresherProfile.user');
-        $assignment->update([
-            'status' => 'interview_completed',
-        ]);
+
+        DB::transaction(function () use ($assignment, $companyProfile) {
+            $this->chargeResumeActionCredits($companyProfile, $assignment, 'interview_completed_at');
+
+            $assignment->update([
+                'status' => 'interview_completed',
+                'interview_completed_at' => $assignment->interview_completed_at ?? now(),
+            ]);
+        });
 
         if ($assignment->fresherProfile?->user_id) {
             Notification::create([
@@ -253,6 +307,7 @@ class CompanyResumeController extends Controller
             'message' => 'Interview marked as completed.',
             'data' => [
                 'assignment' => $assignment->fresh('fresherProfile.user'),
+                'credits' => $this->resumeCredits($companyProfile->fresh()),
             ],
         ]);
     }
@@ -280,9 +335,15 @@ class CompanyResumeController extends Controller
         }
 
         $assignment->load('fresherProfile.user');
-        $assignment->update([
-            'status' => $validated['status'],
-        ]);
+
+        DB::transaction(function () use ($assignment, $companyProfile, $validated) {
+            $this->chargeResumeActionCredits($companyProfile, $assignment, 'final_status_sent_at');
+
+            $assignment->update([
+                'status' => $validated['status'],
+                'final_status_sent_at' => $assignment->final_status_sent_at ?? now(),
+            ]);
+        });
 
         if ($assignment->fresherProfile?->user_id) {
             $title = $validated['status'] === 'hired' ? 'You Are Hired' : 'Not Selected';
@@ -304,8 +365,74 @@ class CompanyResumeController extends Controller
             'message' => 'Candidate status updated successfully.',
             'data' => [
                 'assignment' => $assignment->fresh('fresherProfile.user'),
+                'credits' => $this->resumeCredits($companyProfile->fresh()),
             ],
         ]);
+    }
+
+    private function chargeResumeActionCredits(
+        $companyProfile,
+        CompanyResumeAssignment $assignment,
+        string $chargedAtColumn
+    ): void
+    {
+        $lockedAssignment = $assignment->newQuery()
+            ->whereKey($assignment->id)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        if ($this->hasResumeActionCharge($lockedAssignment)) {
+            if (! $lockedAssignment->{$chargedAtColumn}) {
+                $lockedAssignment->forceFill([
+                    $chargedAtColumn => now(),
+                ])->save();
+            }
+
+            $assignment->setAttribute($chargedAtColumn, $lockedAssignment->{$chargedAtColumn});
+
+            return;
+        }
+
+        $lockedProfile = $companyProfile->newQuery()
+            ->whereKey($companyProfile->id)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        abort_if(
+            (int) $lockedProfile->job_credits < self::RESUME_VIEW_CREDIT_COST,
+            402,
+            'Resume credits are over.'
+        );
+
+        $lockedProfile->decrement('job_credits', self::RESUME_VIEW_CREDIT_COST);
+        $lockedProfile->increment('total_job_credits_used', self::RESUME_VIEW_CREDIT_COST);
+
+        $lockedAssignment->forceFill([
+            $chargedAtColumn => now(),
+        ])->save();
+
+        $assignment->setAttribute($chargedAtColumn, $lockedAssignment->{$chargedAtColumn});
+    }
+
+    private function hasResumeActionCharge(CompanyResumeAssignment $assignment): bool
+    {
+        return collect([
+            'resume_opened_at',
+            'resume_downloaded_at',
+            'shortlisted_at',
+            'interview_sent_at',
+            'interview_completed_at',
+            'final_status_sent_at',
+        ])->contains(fn (string $column) => filled($assignment->{$column}));
+    }
+
+    private function resumeCredits($companyProfile): array
+    {
+        return [
+            'remaining' => (int) $companyProfile->job_credits,
+            'cost_per_action' => self::RESUME_VIEW_CREDIT_COST,
+            'can_continue' => $companyProfile->job_credits >= self::RESUME_VIEW_CREDIT_COST,
+        ];
     }
 
     private function authorizedResumeCompany(Request $request)

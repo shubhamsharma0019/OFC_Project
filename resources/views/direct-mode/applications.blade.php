@@ -167,6 +167,10 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
             const j = job(app);
             const [label, tone, stage] = statusInfo(app);
             const rejected = tone === 'red';
+            const isResumeAssignment = app.source === 'resume_assignment' || String(j.id || '').startsWith('resume-');
+            const detailUrl = isResumeAssignment
+                ? (statusKey(app) === 'interview_scheduled' ? '/direct-mode/interviews' : '/direct-mode/activity')
+                : `/direct-mode/jobs/${j.id || ''}`;
             const companyLogo = company(app).company_logo;
             const logo = companyLogo
                 ? `<img src="${escapeAttr(companyLogo)}" alt="${escapeAttr(companyName(app))}">`
@@ -177,7 +181,7 @@ body{height:100vh!important;overflow:hidden!important}.shell{height:100vh!import
                     <div class="app-main"><h3>${escapeHtml(j.title || 'Untitled Job')}</h3><p>${escapeHtml(companyName(app))}</p><div class="job-meta"><span><span class="icon" data-icon="pin"></span>${escapeHtml(j.location || 'Location not shared')}</span><span><span class="icon" data-icon="briefcase"></span>${escapeHtml((j.job_type || 'Full Time').replace('_', ' '))}</span><span>${escapeHtml(j.salary || 'Salary not disclosed')}</span></div></div>
                     <span class="pill ${tone}">${escapeHtml(label)}</span>
                     <span class="applied">Applied ${escapeHtml(timeAgo(app.applied_at || app.created_at))}</span>
-                    <a class="outline" href="/direct-mode/jobs/${j.id || ''}">View Details</a>
+                    <a class="outline" href="${detailUrl}">${isResumeAssignment ? 'View Update' : 'View Details'}</a>
                     <button class="outline save ${state.savedJobs.includes(Number(j.id)) ? 'saved' : ''}" data-save type="button"><span class="icon" data-icon="bookmark"></span></button>
                     <div class="progress">${['Applied', 'Shortlisted', 'Interview', 'Offered'].map((name, index) => stepHtml(index + 1, stage, rejected, tone, name)).join('')}</div>
                 </article>`;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssessmentAttempt;
+use App\Models\CompanyResumeAssignment;
 use App\Models\FresherProfile;
 use App\Models\Job;
 use App\Models\JobApplication;
@@ -49,6 +50,51 @@ class FresherJobApplicationController extends Controller
             ])
             ->latest('applied_at')
             ->get();
+
+        $resumeApplications = CompanyResumeAssignment::query()
+            ->where('fresher_profile_id', $fresherProfile->id)
+            ->whereIn('status', [
+                'shortlisted',
+                'interview_sent',
+                'interview_completed',
+                'hired',
+                'not_selected',
+            ])
+            ->with('companyProfile:id,company_name,company_logo,industry')
+            ->latest()
+            ->get()
+            ->map(fn (CompanyResumeAssignment $assignment) => [
+                'id' => 'resume-' . $assignment->id,
+                'source' => 'resume_assignment',
+                'assignment_id' => $assignment->id,
+                'application_status' => match ($assignment->status) {
+                    'interview_sent' => 'interview_scheduled',
+                    'interview_completed' => 'interview_completed',
+                    'not_selected' => 'rejected',
+                    default => $assignment->status,
+                },
+                'status' => $assignment->status,
+                'applied_at' => $assignment->created_at,
+                'created_at' => $assignment->created_at,
+                'updated_at' => $assignment->updated_at,
+                'interview_link' => $assignment->interview_link,
+                'interview_date' => $assignment->interview_date?->format('Y-m-d'),
+                'interview_time' => $assignment->interview_time,
+                'job' => [
+                    'id' => 'resume-' . $assignment->id,
+                    'title' => 'Resume Shortlist',
+                    'hiring_mode' => 'resume_only',
+                    'status' => 'active',
+                    'location' => $fresherProfile->city,
+                    'job_type' => $fresherProfile->preferred_job_category ?: 'Resume Access',
+                    'company_profile' => $assignment->companyProfile,
+                ],
+            ]);
+
+        $applications = $applications
+            ->concat($resumeApplications)
+            ->sortByDesc(fn ($item) => $item['updated_at'] ?? $item->updated_at ?? $item['created_at'] ?? $item->created_at)
+            ->values();
 
         return response()->json([
             'success' => true,

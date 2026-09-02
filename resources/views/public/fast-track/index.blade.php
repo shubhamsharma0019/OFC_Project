@@ -207,10 +207,11 @@
                 <h2 class="mb-4 text-[16px] font-bold text-[#061942]">{{ $faqHeader['title'] }}</h2>
                 <div class="grid gap-2">
                     @foreach ($fastTrackFaqs as $faq)
-                        <button type="button" class="flex h-10 w-full items-center justify-between rounded-md border border-[#e7eef8] bg-white px-3 text-left text-[12px] font-bold text-[#07518f]">
-                            <span>{{ $faq }}</span>
+                        <button type="button" class="flex h-10 w-full items-center justify-between rounded-md border border-[#e7eef8] bg-white px-3 text-left text-[12px] font-bold text-[#07518f]" data-faq-toggle>
+                            <span>{{ $faq['question'] }}</span>
                             <span class="text-[#6f7d90]">⌄</span>
                         </button>
+                        <p class="hidden rounded-md border border-t-0 border-[#e7eef8] bg-[#f8fbff] px-3 py-3 text-[12px] font-semibold leading-5 text-[#34445e]" data-faq-answer>{{ $faq['answer'] }}</p>
                     @endforeach
                 </div>
                 <a href="{{ $faqHeader['href'] }}" class="mt-4 inline-flex h-10 w-full items-center justify-center rounded-md border border-[#cfdceb] bg-white px-4 text-[12px] font-bold text-[#07518f] transition hover:bg-[#f3f8ff]">{{ $faqHeader['button'] }}</a>
@@ -243,6 +244,21 @@
 
 @push('scripts')
 <script>
+    document.querySelectorAll('[data-faq-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('span:last-child');
+
+            if (!answer?.hasAttribute('data-faq-answer')) {
+                return;
+            }
+
+            const isOpening = answer.classList.contains('hidden');
+            answer.classList.toggle('hidden', !isOpening);
+            if (icon) icon.textContent = isOpening ? '^' : '⌄';
+        });
+    });
+
     const fastTrackStats = document.getElementById('fastTrackStats');
     const careerTracks = document.getElementById('careerTracks');
 

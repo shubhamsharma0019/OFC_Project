@@ -27,14 +27,18 @@ class PublicJobController extends Controller
                     ->whereNull('application_last_date')
                     ->orWhereDate('application_last_date', '>=', now()->toDateString());
             })
-            ->whereRaw(
-                "openings IS NULL OR openings > (
-                    SELECT COUNT(*)
-                    FROM job_applications
-                    WHERE job_applications.job_id = jobs.id
-                    AND job_applications.application_status = 'hired'
-                )"
-            )
+            ->where(function ($query) {
+                $query
+                    ->whereNull('openings')
+                    ->orWhereRaw(
+                        "openings > (
+                            SELECT COUNT(*)
+                            FROM job_applications
+                            WHERE job_applications.job_id = jobs.id
+                            AND job_applications.application_status = 'hired'
+                        )"
+                    );
+            })
             ->when(
                 $request->filled('search'),
                 function ($query) use ($request) {
@@ -240,7 +244,29 @@ class PublicJobController extends Controller
 
         return match (true) {
             str_contains($normalized, 'data') => ['data analyst', 'data', 'sql', 'excel', 'power bi', 'analytics'],
-            str_contains($normalized, 'software') || str_contains($normalized, 'developer') => ['software', 'developer', 'laravel', 'php', 'react', 'javascript', 'python'],
+            str_contains($normalized, 'software') || str_contains($normalized, 'developer') => [
+                'software',
+                'developer',
+                'development',
+                'programmer',
+                'engineer',
+                'laravel',
+                'php',
+                'react',
+                'javascript',
+                'python',
+                'java',
+                'web',
+                'frontend',
+                'backend',
+                'full stack',
+                'devops',
+                'tester',
+                'testing',
+                'qa',
+                'automation',
+                'selenium',
+            ],
             str_contains($normalized, 'ui') || str_contains($normalized, 'ux') || str_contains($normalized, 'design') => ['ui', 'ux', 'designer', 'figma', 'wireframe'],
             str_contains($normalized, 'marketing') => ['marketing', 'seo', 'social media', 'content', 'analytics'],
             default => [$category],

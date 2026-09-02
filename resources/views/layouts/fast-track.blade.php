@@ -10,8 +10,16 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Fast Track')</title>
+    @include('components.common.auth-storage')
+    <script>
+        document.documentElement.classList.add('fast-track-auth-pending');
+    </script>
     @include('components.common.compiled-assets')
     <style>
+        html.fast-track-auth-pending body {
+            visibility: hidden;
+        }
+
         #fastTrackLayout,
         #fastTrackLayout * {
             font-family: Inter, Arial, Helvetica, sans-serif !important;
@@ -84,9 +92,14 @@
     </div>
 
     <script>
-        (function guardFastTrackSession() {
+        function guardFastTrackSession() {
+            document.documentElement.classList.add('fast-track-auth-pending');
             const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token');
             let user = null;
+            const isLoggedOut = localStorage.getItem('ofc_logged_out') ||
+                sessionStorage.getItem('ofc_logged_out') ||
+                localStorage.getItem('ofc_fresher_logged_out') ||
+                sessionStorage.getItem('ofc_fresher_logged_out');
 
             try {
                 user = JSON.parse(localStorage.getItem('onlyfreshers_user') || localStorage.getItem('ofc_fresher_user') || localStorage.getItem('ofc_auth_user') || 'null');
@@ -94,22 +107,22 @@
                 user = null;
             }
 
-            if (!token || user?.role !== 'fresher') {
-                ['ofc_auth_token', 'ofc_auth_user', 'onlyfreshers_token', 'onlyfreshers_user', 'fast_track_course_id'].forEach((key) => localStorage.removeItem(key));
-                window.location.href = '/fast-track/login';
-            }
-        })();
-
-        window.addEventListener('pageshow', function () {
-            const token = localStorage.getItem('onlyfreshers_token') || localStorage.getItem('ofc_fresher_token') || localStorage.getItem('ofc_auth_token');
-            let user = null;
-            try {
-                user = JSON.parse(localStorage.getItem('onlyfreshers_user') || localStorage.getItem('ofc_fresher_user') || localStorage.getItem('ofc_auth_user') || 'null');
-            } catch (error) {}
-            if (!token || user?.role !== 'fresher') {
+            if (isLoggedOut || !token || user?.role !== 'fresher') {
                 ['ofc_auth_token', 'ofc_auth_user', 'ofc_fresher_token', 'ofc_fresher_user', 'onlyfreshers_token', 'onlyfreshers_user', 'fast_track_course_id'].forEach((key) => localStorage.removeItem(key));
                 window.location.replace('/fast-track/login');
+                return false;
             }
+
+            localStorage.setItem('onlyfreshers_intended_mode', 'fast_track');
+            localStorage.setItem('onlyfreshers_selected_mode', 'fast_track');
+            document.documentElement.classList.remove('fast-track-auth-pending');
+            return true;
+        }
+
+        guardFastTrackSession();
+        window.addEventListener('pageshow', guardFastTrackSession);
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') guardFastTrackSession();
         });
 
         function logoutFastTrack(event) {

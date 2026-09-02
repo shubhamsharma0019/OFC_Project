@@ -263,6 +263,7 @@
     let interviews = [];
     let activeStatus = 'all';
     let editingInterviewId = null;
+    let resumeMeetOpenedAt = 0;
 
     const statusClasses = {
         scheduled: 'bg-[#fff0d1] text-[#c86b00]',
@@ -495,7 +496,10 @@
             button.addEventListener('click', () => updateResumeHiringStatus(button));
         });
         document.querySelectorAll('.join-meet-action[data-assignment-id]').forEach((link) => {
-            link.addEventListener('click', () => markResumeInterviewJoined(link.dataset.assignmentId));
+            link.addEventListener('click', () => {
+                resumeMeetOpenedAt = Date.now();
+                markResumeInterviewJoined(link.dataset.assignmentId);
+            });
         });
         resultText.textContent = `Showing ${filtered.length} of ${interviews.length} interviews`;
     }
@@ -659,6 +663,14 @@
         renderInterviews();
     }
 
+    function refreshAfterResumeMeet() {
+        if (!resumeMeetOpenedAt || Date.now() - resumeMeetOpenedAt < 1000) return;
+
+        window.setTimeout(() => {
+            loadInterviews().catch((error) => showMessage(error.message || 'Unable to refresh interviews.'));
+        }, 300);
+    }
+
     document.querySelectorAll('.interview-tab').forEach((tab) => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.interview-tab').forEach((item) => {
@@ -685,6 +697,10 @@
         searchInput.value = '';
         jobFilter.value = 'all';
         renderInterviews();
+    });
+    window.addEventListener('focus', refreshAfterResumeMeet);
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) refreshAfterResumeMeet();
     });
 
     loadInterviews().catch((error) => {
